@@ -15,31 +15,31 @@
 
     /**
      * Item SKU etc
-     * @var string
+     * @return string
      */
     public function getDescription();
 
     /**
      * Item width in mm
-     * @var int
+     * @return int
      */
     public function getWidth();
 
     /**
      * Item length in mm
-     * @var int
+     * @return int
      */
     public function getLength();
 
     /**
      * Item depth in mm
-     * @var int
+     * @return int
      */
     public function getDepth();
 
     /**
      * Item weight in g
-     * @var int
+     * @return int
      */
     public function getWeight();
 
