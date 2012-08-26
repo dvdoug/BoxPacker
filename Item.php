@@ -17,30 +17,30 @@
      * Item SKU etc
      * @var string
      */
-    public $reference;
+    public function getDescription();
 
     /**
      * Item width in mm
      * @var int
      */
-    public $width;
+    public function getWidth();
 
     /**
      * Item length in mm
      * @var int
      */
-    public $length;
+    public function getLength();
 
     /**
      * Item depth in mm
      * @var int
      */
-    public $depth;
+    public function getDepth();
 
     /**
      * Item weight in g
      * @var int
      */
-    public $weight;
+    public function getWeight();
 
   }
