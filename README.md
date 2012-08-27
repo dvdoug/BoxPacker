@@ -3,7 +3,7 @@ BoxPacker
 
 (What will be!) An implementation of 3D bin packing/knapsack problem.
 
-Wikipedia says this is NP-hard, and there is no way to always achieve an
+[Wikipedia](http://en.wikipedia.org/wiki/Bin_packing_problem) says this is NP-hard, and there is no way to always achieve an
 optimum solution without running through every single permutation. But
 that's OK because this implementation is designed to simulate a naive human
 approach to the problem rather than search for the "perfect" solution.
