@@ -25,7 +25,7 @@ Principles
  * Only very small overhangs are allowed (25%) to prevent items bending in
    transit. The available width/height for each layer will normally decrease
    as the stack of items gets taller.
- * If more then 1 box is needed to accomodate all of the items, then aim for
+ * If more then 1 box is needed to accommodate all of the items, then aim for
    boxes of roughly equal weight   
    
   
