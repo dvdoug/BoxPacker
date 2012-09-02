@@ -1,0 +1,27 @@
+<?php
+/**
+ * Box packing (3D bin packing, knapsack problem)
+ * @package BoxPacker
+ * @author Doug Wright
+ */
+  namespace DVDoug\BoxPacker;
+
+  /**
+   * List of items to be packed, ordered by volume
+   * @author Doug Wright
+   * @package BoxPacker
+   */
+  class ItemList extends \SplMaxHeap {
+
+    /**
+     * Compare elements in order to place them correctly in the heap while sifting up.
+     * @see \SplMaxHeap::compare()
+     */
+    public function compare(Item $aItemA, Item $aItemB) {
+      $volumeA = $aItemA->getLength() * $aItemA->getWidth() * $aItemA->getDepth();
+      $volumeB = $aItemB->getLength() * $aItemB->getWidth() * $aItemB->getDepth();
+      
+      return $volumeA - $volumeB;
+    }
+
+  }
