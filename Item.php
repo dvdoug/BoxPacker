@@ -42,5 +42,11 @@
      * @return int
      */
     public function getWeight();
+    
+    /**
+     * Item volume in mm^3
+     * @return int
+     */
+    public function getVolume();
 
   }

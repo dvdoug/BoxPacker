@@ -18,10 +18,7 @@
      * @see \SplMaxHeap::compare()
      */
     public function compare(Item $aItemA, Item $aItemB) {
-      $volumeA = $aItemA->getLength() * $aItemA->getWidth() * $aItemA->getDepth();
-      $volumeB = $aItemB->getLength() * $aItemB->getWidth() * $aItemB->getDepth();
-      
-      return $volumeA - $volumeB;
+      return $aItemA->getVolume() - $aItemB->getVolume();
     }
 
   }
