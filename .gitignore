@@ -163,3 +163,6 @@ pip-log.txt
 .DS_Store
 /.idea
 /tests/coverage
+/vendor
+
+/composer.lock
