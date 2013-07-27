@@ -18,7 +18,7 @@
          verbose="false">
 
   <testsuites>
-    <testsuite name="My Test Suite">
+    <testsuite name="BoxPacker">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
@@ -30,8 +30,12 @@
   </logging>
 
   <filter>
-    <blacklist>
-      <directory suffix=".php">vendor</directory>
-    </blacklist>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">.</directory>
+      <exclude>
+        <directory>vendor</directory>
+      </exclude>
+    </whitelist>
   </filter>
 </phpunit>
+
