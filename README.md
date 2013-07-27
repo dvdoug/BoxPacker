@@ -42,7 +42,7 @@ Constraints
 Requirements
 ------------
 
-* PHP version 5.3 or higher (it may work on earlier versions, but has not been tested) 
+* PHP version 5.3 or higher
 
 License
 -------
