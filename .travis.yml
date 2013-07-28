@@ -1,0 +1,10 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+
+# omitting "script:" will default to phpunit
+# use the $DB env variable to determine the phpunit.xml to use
+script: phpunit --coverage-text tests
