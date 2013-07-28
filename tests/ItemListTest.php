@@ -22,12 +22,9 @@
       $list->insert($box2);
       $list->insert($box3);
 
-      $list->top();
-
       $sorted = [];
-      while ($list->valid()) {
-        $sorted[] = $list->current();
-        $list->next();
+      while (!$list->isEmpty()) {
+        $sorted[] = $list->extract();
       }
       self::assertEquals([$box2,$box3,$box1], $sorted);
     }
