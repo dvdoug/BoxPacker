@@ -3,6 +3,8 @@ BoxPacker
 
 An implementation of 3D bin packing/knapsack problem.
 
+[![Build Status](https://travis-ci.org/dvdoug/BoxPacker.png)](https://travis-ci.org/dvdoug/BoxPacker)
+
 [Wikipedia](http://en.wikipedia.org/wiki/Bin_packing_problem) says this is NP-hard, and there is no way to always achieve an
 optimum solution without running through every single permutation. But
 that's OK because this implementation is designed to simulate a naive human
