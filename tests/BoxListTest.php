@@ -26,6 +26,6 @@
       while (!$list->isEmpty()) {
         $sorted[] = $list->extract();
       }
-      self::assertEquals([$box1,$box3,$box2], $sorted);
+      self::assertEquals(array($box1,$box3,$box2), $sorted);
     }
   }

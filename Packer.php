@@ -62,7 +62,7 @@
         throw new \RuntimeException('Please specify at least 1 size of box to pack items into');
       }
 
-      $packedBoxes = [];
+      $packedBoxes = array();
       $unpackedItems = $this->items;
       $boxesToEvaluate = clone $this->boxes;
 
