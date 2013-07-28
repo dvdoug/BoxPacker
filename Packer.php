@@ -67,18 +67,16 @@
       $boxesToEvaluate = clone $this->boxes;
 
       while (!$boxesToEvaluate->isEmpty()) {
-        $packedItems = $this->packBox($boxesToEvaluate->top(), $unpackedItems);
-        if ($packedItems->count() == 0) {
-          $boxesToEvaluate->extract();
-          continue;
-        }
-        $packedBoxes[] = new PackedBox($boxesToEvaluate->extract(), $packedItems);
-
-        /*
-         * Have we found a single box that contains everything?
-         */
-        if ($unpackedItems->count() == 0) {
-          return $packedBoxes;
+        $box = $boxesToEvaluate->extract();
+        $packedItems = $this->packBox($box, $unpackedItems);
+        if ($packedItems->count()) {
+          $packedBoxes[] = new PackedBox($box, $packedItems);
+          /*
+           * Have we found a single box that contains everything?
+           */
+          if ($unpackedItems->count() == 0) {
+            return $packedBoxes;
+          }
         }
       }
       throw new \RuntimeException('Could not find a single box large enough');
