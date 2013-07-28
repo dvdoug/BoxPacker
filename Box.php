@@ -9,7 +9,7 @@
   /**
    * A "box" (or envelope?) to pack items into
    * @author Doug Wright
-   * @package Publication
+   * @package BoxPacker
    */
   interface Box {
 
