@@ -68,6 +68,10 @@
 
       while (!$boxesToEvaluate->isEmpty()) {
         $packedItems = $this->packBox($boxesToEvaluate->top(), $unpackedItems);
+        if ($packedItems->count() == 0) {
+          $boxesToEvaluate->extract();
+          continue;
+        }
         $packedBoxes[] = new PackedBox($boxesToEvaluate->extract(), $packedItems);
 
         /*

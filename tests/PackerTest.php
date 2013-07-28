@@ -73,12 +73,35 @@
 
     public function testPackThreeItemsFitEasilyInSmallerOfTwoBoxes() {
 
+    $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+    $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
+
+    $item1 = new TestItem('Item 1', 250, 250, 2, 200);
+    $item2 = new TestItem('Item 2', 250, 250, 2, 200);
+    $item3 = new TestItem('Item 3', 250, 250, 2, 200);
+
+    $packer = new Packer();
+    $packer->addBox($box1);
+    $packer->addBox($box2);
+    $packer->addItem($item1);
+    $packer->addItem($item2);
+    $packer->addItem($item3);
+    $packedBoxes = $packer->pack();
+
+    self::assertEquals(1, sizeof($packedBoxes));
+    self::assertEquals(3, $packedBoxes[0]->getItems()->count());
+    self::assertEquals($box1, $packedBoxes[0]->getBox());
+    self::assertEquals(610, $packedBoxes[0]->getWeight());
+  }
+
+    public function testPackThreeItemsFitEasilyInLargerOfTwoBoxes() {
+
       $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
       $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
-      $item1 = new TestItem('Item 1', 250, 250, 2, 200);
-      $item2 = new TestItem('Item 2', 250, 250, 2, 200);
-      $item3 = new TestItem('Item 3', 250, 250, 2, 200);
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
+      $item2 = new TestItem('Item 2', 2500, 2500, 20, 2000);
+      $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);
 
       $packer = new Packer();
       $packer->addBox($box1);
@@ -90,8 +113,8 @@
 
       self::assertEquals(1, sizeof($packedBoxes));
       self::assertEquals(3, $packedBoxes[0]->getItems()->count());
-      self::assertEquals($box1, $packedBoxes[0]->getBox());
-      self::assertEquals(610, $packedBoxes[0]->getWeight());
+      self::assertEquals($box2, $packedBoxes[0]->getBox());
+      self::assertEquals(6100, $packedBoxes[0]->getWeight());
     }
 
   }
