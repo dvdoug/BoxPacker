@@ -91,6 +91,7 @@
       self::assertEquals(1, sizeof($packedBoxes));
       self::assertEquals(3, $packedBoxes[0]->getItems()->count());
       self::assertEquals($box1, $packedBoxes[0]->getBox());
+      self::assertEquals(610, $packedBoxes[0]->getWeight());
     }
 
   }

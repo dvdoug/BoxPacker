@@ -41,6 +41,19 @@
       return $this->items;
     }
 
+    /**
+     * Get packed weight
+     * @return int weight in grams
+     */
+    public function getWeight() {
+      $weight = $this->box->getEmptyWeight();
+      $items = clone $this->items;
+      foreach ($items as $item) {
+        $weight += $item->getWeight();
+      }
+      return $weight;
+    }
+
     public function __construct(Box $aBox, ItemList $aItemList) {
       $this->box = $aBox;
       $this->items = $aItemList;
