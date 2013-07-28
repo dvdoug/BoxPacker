@@ -22,7 +22,7 @@
       $list->insert($box2);
       $list->insert($box3);
 
-      $sorted = [];
+      $sorted = array();
       while (!$list->isEmpty()) {
         $sorted[] = $list->extract();
       }
