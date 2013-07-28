@@ -55,6 +55,10 @@
      return $this->innerDepth;
    }
 
+   public function getInnerVolume() {
+     return $this->innerWidth * $this->innerLength * $this->innerDepth;
+   }
+
    public function getMaxWeight() {
      return $this->maxWeight;
    }
