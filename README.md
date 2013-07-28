@@ -38,6 +38,7 @@ Constraints
    their side.
  * The algorithm does consider spatial constraints in all 3 dimensions, plus
    consideration of weight.
+ * The code is alpha, use at your own risk
 
 Requirements
 ------------
