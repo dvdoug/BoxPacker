@@ -87,9 +87,16 @@
           }
         }
 
+        /*
+         * Check iteration was productive
+         */
         if ($packedBoxesIteration->isEmpty()) {
           throw new \RuntimeException('Item ' . $unpackedItems->top()->getDescription() . ' is too large to fit into any box');
         }
+
+        /*
+         * Find best box of iteration, and remove packed items from unpacked list
+         */
         $bestBox = $packedBoxesIteration->top();
         for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
           $unpackedItems->extract();
