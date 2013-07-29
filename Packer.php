@@ -62,24 +62,42 @@
         throw new \RuntimeException('Please specify at least 1 size of box to pack items into');
       }
 
-      $packedBoxes = array();
+      $packedBoxes = new PackedBoxList;
       $unpackedItems = $this->items;
-      $boxesToEvaluate = clone $this->boxes;
 
-      while (!$boxesToEvaluate->isEmpty()) {
-        $box = $boxesToEvaluate->extract();
-        $packedItems = $this->packBox($box, $unpackedItems);
-        if ($packedItems->count()) {
-          $packedBoxes[] = new PackedBox($box, $packedItems);
-          /*
-           * Have we found a single box that contains everything?
-           */
-          if ($unpackedItems->count() == 0) {
-            return $packedBoxes;
+      /*
+       * Keep going until everything packed
+       */
+      while ($unpackedItems->count()) {
+        $boxesToEvaluate = clone $this->boxes;
+        $packedBoxesIteration = new PackedBoxList;
+        /*
+         * Loop through boxes starting with smallest, see what happens
+         */
+        while (!$boxesToEvaluate->isEmpty()) {
+          $box = $boxesToEvaluate->extract();
+          $packedItems = $this->packBox($box, clone $unpackedItems);
+          if ($packedItems->count()) {
+            $packedBoxesIteration->insert(new PackedBox($box, $packedItems));
+
+            //Have we found a single box that contains everything?
+            if ($packedItems->count() == $unpackedItems->count()) {
+              break;
+            }
           }
         }
+
+        if ($packedBoxesIteration->isEmpty()) {
+          throw new \RuntimeException('Item ' . $unpackedItems->top()->getDescription() . ' is too large to fit into any box');
+        }
+        $bestBox = $packedBoxesIteration->top();
+        for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
+          $unpackedItems->extract();
+        }
+        $packedBoxes->insert($bestBox);
+
       }
-      throw new \RuntimeException('Could not find a single box large enough');
+      return $packedBoxes;
     }
 
 

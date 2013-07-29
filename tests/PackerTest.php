@@ -23,7 +23,7 @@
       $packer = new Packer();
       $packedItems = $packer->packBox($box, $items);
 
-      self::assertEquals(3, sizeof($packedItems));
+      self::assertEquals(3, $packedItems->count());
     }
 
     public function testPackBoxThreeItemsFitExactly() {
@@ -38,7 +38,7 @@
       $packer = new Packer();
       $packedItems = $packer->packBox($box, $items);
 
-      self::assertEquals(3, sizeof($packedItems));
+      self::assertEquals(3, $packedItems->count());
     }
 
     public function testPackBoxThreeItemsFitSizeButOverweight() {
@@ -53,7 +53,7 @@
       $packer = new Packer();
       $packedItems = $packer->packBox($box, $items);
 
-      self::assertEquals(2, sizeof($packedItems));
+      self::assertEquals(2, $packedItems->count());
     }
 
     public function testPackBoxThreeItemsFitWeightBut2Oversize() {
@@ -68,7 +68,7 @@
       $packer = new Packer();
       $packedItems = $packer->packBox($box, $items);
 
-      self::assertEquals(1, sizeof($packedItems));
+      self::assertEquals(1, $packedItems->count());
     }
 
     public function testPackThreeItemsFitEasilyInSmallerOfTwoBoxes() {
@@ -88,10 +88,10 @@
     $packer->addItem($item3);
     $packedBoxes = $packer->pack();
 
-    self::assertEquals(1, sizeof($packedBoxes));
-    self::assertEquals(3, $packedBoxes[0]->getItems()->count());
-    self::assertEquals($box1, $packedBoxes[0]->getBox());
-    self::assertEquals(610, $packedBoxes[0]->getWeight());
+    self::assertEquals(1, $packedBoxes->count());
+    self::assertEquals(3, $packedBoxes->top()->getItems()->count());
+    self::assertEquals($box1, $packedBoxes->top()->getBox());
+    self::assertEquals(610, $packedBoxes->top()->getWeight());
   }
 
     public function testPackThreeItemsFitEasilyInLargerOfTwoBoxes() {
@@ -111,10 +111,101 @@
       $packer->addItem($item3);
       $packedBoxes = $packer->pack();
 
-      self::assertEquals(1, sizeof($packedBoxes));
-      self::assertEquals(3, $packedBoxes[0]->getItems()->count());
-      self::assertEquals($box2, $packedBoxes[0]->getBox());
-      self::assertEquals(6100, $packedBoxes[0]->getWeight());
+      self::assertEquals(1, $packedBoxes->count());
+      self::assertEquals(3, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box2, $packedBoxes->top()->getBox());
+      self::assertEquals(6100, $packedBoxes->top()->getWeight());
+    }
+
+    public function testPackFiveItemsTwoLargeOneSmallBox() {
+
+      $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+      $box2 = new TestBox('Le grande box', 3000, 3000, 50, 100, 2960, 2960, 40, 10000);
+
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
+      $item2 = new TestItem('Item 2', 250, 250, 2, 200);
+      $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);
+      $item4 = new TestItem('Item 4', 2500, 2500, 20, 2000);
+      $item5 = new TestItem('Item 5', 2500, 2500, 20, 2000);
+
+      $packer = new Packer();
+      $packer->addBox($box1);
+      $packer->addBox($box2);
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packer->addItem($item4);
+      $packer->addItem($item5);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(3, $packedBoxes->count());
+
+      self::assertEquals(2, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box2, $packedBoxes->top()->getBox());
+      self::assertEquals(4100, $packedBoxes->top()->getWeight());
+
+      $packedBoxes->extract();
+
+      self::assertEquals(2, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box2, $packedBoxes->top()->getBox());
+      self::assertEquals(4100, $packedBoxes->top()->getWeight());
+
+      $packedBoxes->extract();
+
+      self::assertEquals(1, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box1, $packedBoxes->top()->getBox());
+      self::assertEquals(210, $packedBoxes->top()->getWeight());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testPackThreeItemsOneDoesntFitInAnyBox() {
+
+      $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+      $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
+
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
+      $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000);
+      $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);
+
+      $packer = new Packer();
+      $packer->addBox($box1);
+      $packer->addBox($box2);
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packedBoxes = $packer->pack();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testPackWithoutBox() {
+
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
+      $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000);
+      $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);
+
+      $packer = new Packer();
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packedBoxes = $packer->pack();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testPackWithoutItems() {
+
+      $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+      $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
+
+      $packer = new Packer();
+      $packer->addBox($box1);
+      $packer->addBox($box2);
+      $packedBoxes = $packer->pack();
     }
 
   }
