@@ -20,7 +20,7 @@ Principles
 ----------
 
  * Pack largest (by volume) items first
- * [TODO] Pack vertically up the side of the box
+ * Pack vertically up the side of the box
  * [TODO] Exception is where the item under consideration is half-size or less than
    the item underneath it. Then pack side-by-side. Again, prefer mini-stacks
    where possible
@@ -34,13 +34,13 @@ Principles
 Constraints
 -----------
 
- * My use case for this code is a store that sell publications, which need to
+ * My use case for this code is a store that sells books, which need to
    be shipped flat. The algorithm as implemented therefore considers simple 2D
    rotation of items when determining fit but will not try turning items on
    their side.
  * The algorithm does consider spatial constraints in all 3 dimensions, plus
    consideration of weight.
- * The code is alpha, use at your own risk
+ * The code is beta, use at your own risk
 
 Requirements
 ------------
