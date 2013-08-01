@@ -42,6 +42,7 @@ Constraints
    consideration of weight
  * The code is beta, use at your own risk
 
+
  Usage
  -----
  Just make your items implement the BoxPacker\Item and BoxPacker\Box interfaces, and then:
