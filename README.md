@@ -45,7 +45,7 @@ Constraints
 
  Usage
  -----
- Just make your items implement the BoxPacker\Item and BoxPacker\Box interfaces, and then:
+ Just make your items and boxes implement the BoxPacker\Item and BoxPacker\Box interfaces, and then:
 
 ```php
 
