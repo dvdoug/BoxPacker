@@ -63,6 +63,8 @@
 
     /**
      * Pack items into boxes
+     *
+     * @throws \RuntimeException
      * @return PackedBox[]
      */
     public function pack() {
