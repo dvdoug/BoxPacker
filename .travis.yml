@@ -7,4 +7,8 @@ php:
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
+before_script:
+  - composer self-update
+  - composer install
+
 script: phpunit --coverage-text tests
