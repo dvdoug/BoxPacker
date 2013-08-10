@@ -162,7 +162,7 @@
 
         $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
         $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
-        $notTooMuchShallower = ($layerDepth ? $aItems->top()->getDepth() > ($layerDepth * 0.75) : true);
+        $notTooMuchShallower = ($layerDepth ? $aItems->top()->getDepth() > ($layerDepth * 0.9) : true);
 
         if ($notTooMuchShallower && $fitsSameGap >= 0 && $fitsRotatedGap < 0) {
           $this->logger->debug("fits only without rotation");
@@ -215,8 +215,8 @@
           $this->logger->debug("doesn't fit at all");
 
           if ($layerWidth) {
-            $remainingWidth = min(floor($layerWidth * 1.25), $horizontalDimensions[0]);
-            $remainingLength = min(floor($layerLength * 1.25), $horizontalDimensions[1]);
+            $remainingWidth = min(floor($layerWidth * 1.1), $horizontalDimensions[0]);
+            $remainingLength = min(floor($layerLength * 1.1), $horizontalDimensions[1]);
             $layerWidth = 0;
             $layerLength = 0;
           }

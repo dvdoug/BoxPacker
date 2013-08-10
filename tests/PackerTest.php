@@ -257,8 +257,8 @@
 
       $items = new ItemList;
       $items->insert(new TestItem('Item 1', 200, 200, 4, 200));
-      $items->insert(new TestItem('Item 2', 120, 120, 4, 200));
-      $items->insert(new TestItem('Item 3', 120, 120, 4, 200));
+      $items->insert(new TestItem('Item 2', 110, 110, 4, 200));
+      $items->insert(new TestItem('Item 3', 110, 110, 4, 200));
 
       $packer = new Packer();
       $packedItems = $packer->packBox($box, $items);
