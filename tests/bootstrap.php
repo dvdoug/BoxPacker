@@ -9,6 +9,7 @@
   require_once(__DIR__ . '/../PackedBox.php');
   require_once(__DIR__ . '/../PackedBoxList.php');
   require_once(__DIR__ . '/../Packer.php');
+  require_once(__DIR__ . '/../vendor/autoload.php');
 
  class TestBox implements Box {
 
