@@ -119,11 +119,11 @@
 
     public function testPackFiveItemsTwoLargeOneSmallBox() {
 
-      $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+      $box1 = new TestBox('Le petite box', 600, 600, 10, 10, 596, 596, 8, 1000);
       $box2 = new TestBox('Le grande box', 3000, 3000, 50, 100, 2960, 2960, 40, 10000);
 
       $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
-      $item2 = new TestItem('Item 2', 250, 250, 2, 200);
+      $item2 = new TestItem('Item 2', 550, 550, 2, 200);
       $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);
       $item4 = new TestItem('Item 4', 2500, 2500, 20, 2000);
       $item5 = new TestItem('Item 5', 2500, 2500, 20, 2000);
@@ -206,6 +206,50 @@
       $packer->addBox($box1);
       $packer->addBox($box2);
       $packedBoxes = $packer->pack();
+    }
+
+    public function testPackTwoItemsFitExactlySideBySide() {
+
+      $box = new TestBox('Le box', 300, 400, 10, 10, 296, 496, 8, 1000);
+
+      $items = new ItemList;
+      $items->insert(new TestItem('Item 1', 296, 248, 8, 200));
+      $items->insert(new TestItem('Item 2', 248, 296, 8, 200));
+
+      $packer = new Packer();
+      $packedItems = $packer->packBox($box, $items);
+
+      self::assertEquals(2, $packedItems->count());
+    }
+
+    public function testPackThreeItemsBottom2FitSideBySideOneExactlyOnTop() {
+
+      $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+
+      $items = new ItemList;
+      $items->insert(new TestItem('Item 1', 248, 148, 4, 200));
+      $items->insert(new TestItem('Item 2', 148, 248, 4, 200));
+      $items->insert(new TestItem('Item 3', 296, 296, 4, 200));
+
+      $packer = new Packer();
+      $packedItems = $packer->packBox($box, $items);
+
+      self::assertEquals(3, $packedItems->count());
+    }
+
+    public function testPackThreeItemsBottom2FitSideBySideWithSpareSpaceOneOverhangSlightlyOnTop() {
+
+      $box = new TestBox('Le box', 250, 250, 10, 10, 248, 248, 8, 1000);
+
+      $items = new ItemList;
+      $items->insert(new TestItem('Item 1', 200, 200, 4, 200));
+      $items->insert(new TestItem('Item 2', 120, 120, 4, 200));
+      $items->insert(new TestItem('Item 3', 120, 120, 4, 200));
+
+      $packer = new Packer();
+      $packedItems = $packer->packBox($box, $items);
+
+      self::assertEquals(3, $packedItems->count());
     }
 
   }

@@ -6,6 +6,9 @@
  */
   namespace DVDoug\BoxPacker;
 
+  use Psr\Log\LoggerInterface;
+  use Psr\Log\NullLogger;
+
   /**
    * Actual packer
    * @author Doug Wright
@@ -25,9 +28,16 @@
      */
     protected $boxes;
 
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     public function __construct() {
       $this->items = new ItemList;
       $this->boxes = new BoxList;
+
+      $this->logger = new NullLogger();
     }
 
     /**
@@ -39,6 +49,7 @@
       for ($i = 0; $i < $aQty; $i++) {
         $this->items->insert($aItem);
       }
+      $this->logger->info("added {$aQty} x {$aItem->getDescription()}");
     }
 
     /**
@@ -47,6 +58,7 @@
      */
     public function addBox(Box $aBox) {
       $this->boxes->insert($aBox);
+      $this->logger->info("added box {$aBox->getReference()}");
     }
 
     /**
@@ -110,32 +122,124 @@
 
     /**
      * Pack as many items as possible into specific given box
-     * XXX for now, simply stacks items on top of each other, no side-by-side evaluation performed yet
      * @param Box      $aBox
      * @param ItemList $aItems
      * @return ItemList items packed into box
      */
     public function packBox(Box $aBox, ItemList $aItems) {
 
+      $this->logger->debug("evaluating box {$aBox->getReference()}");
+
       $packedItems = new ItemList;
       $remainingDepth = $aBox->getInnerDepth();
       $remainingWeight = $aBox->getMaxWeight() - $aBox->getEmptyWeight();
-      while(!$aItems->isEmpty() && $aItems->top()->getDepth() <= $remainingDepth && $aItems->top()->getWeight() <= $remainingWeight) {
-        $itemD1 = $aItems->top()->getWidth();
-        $itemD2 = $aItems->top()->getLength();
-        $boxD1 = $aBox->getInnerWidth();
-        $boxD2 = $aBox->getInnerLength();
 
-        if (($itemD1 <= $boxD1 && $itemD2 <= $boxD2) || ($itemD2 <= $boxD1 && $itemD1 <= $boxD2)) { //check 2D rotation
+      //Define length as longer of 2 dimensions
+      $horizontalDimensions = array($aBox->getInnerWidth(), $aBox->getInnerLength());
+      sort($horizontalDimensions);
+      $remainingWidth = $horizontalDimensions[0];
+      $remainingLength = $horizontalDimensions[1];
+
+      $layerWidth = 0;
+      $layerLength = 0;
+      $layerDepth = 0;
+
+      $packedDepth = 0;
+
+      while(!$aItems->isEmpty() && $aItems->top()->getDepth() <= ($layerDepth ?: $remainingDepth) && $aItems->top()->getWeight() <= $remainingWeight) {
+
+        $this->logger->debug("evaluating item {$aItems->top()->getDescription()}");
+        $this->logger->debug("remainingWidth: {$remainingWidth}");
+        $this->logger->debug("remainingLength: {$remainingLength}");
+        $this->logger->debug("remainingDepth: {$remainingDepth}");
+        $this->logger->debug("layerWidth: {$layerWidth}");
+        $this->logger->debug("layerLength: {$layerLength}");
+        $this->logger->debug("layerDepth: {$layerDepth}");
+        $this->logger->debug("packedDepth: {$packedDepth}");
+
+        $itemWidth = $aItems->top()->getWidth();
+        $itemLength = $aItems->top()->getLength();
+
+        $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
+        $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+
+        if ($fitsSameGap >= 0 && $fitsRotatedGap < 0) {
+          $this->logger->debug("fits only without rotation");
+
           $itemToPack = $aItems->extract();
-          $remainingDepth -= $itemToPack->getDepth();
-          $remainingWeight -= $itemToPack->getWeight();
           $packedItems->insert($itemToPack);
+
+          $remainingWeight -= $itemToPack->getWeight();
+
+          $remainingLength -= $itemLength;
+          $layerWidth += $itemWidth;
+          $layerLength += $itemLength;
+          $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+
         }
-        else {
-          break;
+        else if ($fitsSameGap < 0 && $fitsRotatedGap >= 0) {
+          $this->logger->debug("fits only with rotation");
+
+          $itemToPack = $aItems->extract();
+          $packedItems->insert($itemToPack);
+
+          $remainingWeight -= $itemToPack->getWeight();
+
+          $remainingLength -= $itemWidth;
+          $layerWidth += $itemLength;
+          $layerLength += $itemWidth;
+          $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+        }
+        else if ($fitsSameGap >= 0 && $fitsRotatedGap >= 0) {
+          $this->logger->debug("fits both ways");
+
+          $itemToPack = $aItems->extract();
+          $packedItems->insert($itemToPack);
+
+          $remainingWeight -= $itemToPack->getWeight();
+
+          if ($fitsSameGap <= $fitsRotatedGap) {
+            $remainingLength -= $itemLength;
+            $layerWidth += $itemWidth;
+            $layerLength += $itemLength;
+          }
+          else {
+            $remainingLength -= $itemWidth;
+            $layerWidth += $itemLength;
+            $layerLength += $itemWidth;
+          }
+          $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+        }
+        else if ($fitsSameGap < 0 && $fitsRotatedGap < 0) {
+          $this->logger->debug("doesn't fit at all");
+
+          if ($layerWidth) {
+            $remainingWidth = min(floor($layerWidth * 1.25), $horizontalDimensions[0]);
+            $remainingLength = min(floor($layerLength * 1.25), $horizontalDimensions[1]);
+            $layerWidth = 0;
+            $layerLength = 0;
+          }
+
+          $packedDepth += $layerDepth;
+          $layerDepth = 0;
+          $remainingDepth = $aBox->getInnerDepth() - $packedDepth;
+
+          $this->logger->debug("starting next vertical layer");
+          $this->logger->debug("remainingWidth: {$remainingWidth}");
+          $this->logger->debug("remainingLength: {$remainingLength}");
+          $this->logger->debug("remainingDepth: {$remainingDepth}");
+          $this->logger->debug("layerWidth: {$layerWidth}");
+          $this->logger->debug("layerLength: {$layerLength}");
+          $this->logger->debug("layerDepth: {$layerDepth}");
+          $this->logger->debug("packedDepth: {$packedDepth}");
+
+          if ($itemWidth > $horizontalDimensions[1] || $itemLength > $horizontalDimensions[1]) {
+            break; //item is oversize for box, move on
+          }
+
         }
       }
+      $this->logger->debug("done with this box");
       return $packedItems;
     }
 

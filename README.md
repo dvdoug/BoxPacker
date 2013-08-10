@@ -21,12 +21,9 @@ Principles
 
  * Pack largest (by volume) items first
  * Pack vertically up the side of the box
- * [TODO] Exception is where the item under consideration is half-size or less than
-   the item underneath it. Then pack side-by-side. Again, prefer mini-stacks
-   where possible
- * [TODO] Only very small overhangs are allowed (25%) to prevent items bending in
-   transit. The available width/height for each layer will normally decrease
-   as the stack of items gets taller.
+ * Pack side-by-side of where item under consideration fits alongside the previous item
+ * Only very small overhangs are allowed (25%) to prevent items bending in transit
+ * The available width/height for each layer will therefore decrease as the stack of items gets taller
  * [TODO] If more then 1 box is needed to accommodate all of the items, then aim for
    boxes of roughly equal weight
    
@@ -34,10 +31,8 @@ Principles
 Constraints
 -----------
 
- * My use case for this code is a store that sells books, which need to
-   be shipped flat. The algorithm as implemented therefore considers simple 2D
-   rotation of items when determining fit but will not try turning items on
-   their side
+ * Items are assumed to be shipped flat (e.g. books, fragile items). The algorithm as implemented therefore considers
+   simple 2D rotation of items when determining fit but will not try turning items on their side
  * The algorithm does consider spatial constraints in all 3 dimensions, plus
    consideration of weight
  * The code is beta, use at your own risk
