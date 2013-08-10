@@ -266,4 +266,17 @@
       self::assertEquals(3, $packedItems->count());
     }
 
+    public function testPackSingleItemFitsBetterRotated() {
+
+      $box = new TestBox('Le box', 400, 300, 10, 10, 396, 296, 8, 1000);
+
+      $items = new ItemList;
+      $items->insert(new TestItem('Item 1', 250, 290, 2, 200));
+
+      $packer = new Packer();
+      $packedItems = $packer->packBox($box, $items);
+
+      self::assertEquals(1, $packedItems->count());
+    }
+
   }
