@@ -35,7 +35,6 @@ Constraints
    simple 2D rotation of items when determining fit but will not try turning items on their side
  * The algorithm does consider spatial constraints in all 3 dimensions, plus
    consideration of weight
- * The code is beta, use at your own risk
 
 
  Usage
