@@ -23,6 +23,7 @@
      $this->innerLength = $aInnerLength;
      $this->innerDepth = $aInnerDepth;
      $this->maxWeight = $aMaxWeight;
+     $this->innerVolume = $this->innerWidth * $this->innerLength * $this->innerDepth;
    }
 
    public function getReference() {
@@ -58,7 +59,7 @@
    }
 
    public function getInnerVolume() {
-     return $this->innerWidth * $this->innerLength * $this->innerDepth;
+     return $this->innerVolume;
    }
 
    public function getMaxWeight() {
@@ -74,6 +75,7 @@
      $this->length = $aLength;
      $this->depth = $aDepth;
      $this->weight = $aWeight;
+     $this->volume = $this->width * $this->length * $this->depth;
    }
 
    public function getDescription() {
@@ -97,7 +99,7 @@
    }
 
    public function getVolume() {
-     return $this->width * $this->length * $this->depth;
+     return $this->volume;
    }
  }
 
