@@ -24,7 +24,7 @@
 
     /**
      * List of box sizes available to pack items into
-     * @var Box[]
+     * @var BoxList
      */
     protected $boxes;
 
@@ -222,6 +222,10 @@
             $layerWidth = 0;
             $layerLength = 0;
           }
+          else {
+            $this->logger->debug("doesn't fit on layer even when empty");
+            break;
+          }
 
           $packedDepth += $layerDepth;
           $layerDepth = 0;
@@ -235,10 +239,6 @@
           $this->logger->debug("layerLength: {$layerLength}");
           $this->logger->debug("layerDepth: {$layerDepth}");
           $this->logger->debug("packedDepth: {$packedDepth}");
-
-          if ($itemWidth > $horizontalDimensions[1] || $itemLength > $horizontalDimensions[1]) {
-            break; //item is oversize for box, move on
-          }
 
         }
       }
