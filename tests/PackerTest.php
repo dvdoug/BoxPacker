@@ -281,6 +281,7 @@
 
 
     /**
+     * @coversNothing
      * @dataProvider getSamples
      */
     public function testCanPackRepresentativeSample($test, $boxes, $items) {
