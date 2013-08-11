@@ -279,4 +279,55 @@
       self::assertEquals(1, $packedItems->count());
     }
 
+
+    /**
+     * @dataProvider getSamples
+     */
+    public function testCanPackRepresentativeSample($test, $boxes, $items) {
+      $packer = new Packer();
+      foreach($boxes as $box) {
+        $packer->addBox($box);
+      }
+      foreach ($items as $item) {
+        $packer->addItem(new TestItem($item['name'], $item['width'], $item['length'], $item['depth'], $item['weight']), $item['qty']);
+      }
+      $packer->pack();
+    }
+
+    public function getSamples() {
+
+      $boxes = array();
+      $boxData = fopen(__DIR__ . '/boxes.csv', 'r');
+      while ($data = fgetcsv($boxData)) {
+        $boxes[] = new TestBox($data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8]);
+      }
+      fclose($boxData);
+
+      $tests = array();
+      $itemData = fopen(__DIR__ . '/items.csv', 'r');
+      while ($data = fgetcsv($itemData)) {
+        if (isset($items[$data[0]])) {
+          $tests[$data[0]]['items'][] = array('qty' => $data[1],
+                                              'name' => $data[2],
+                                              'width' => $data[3],
+                                              'length' => $data[4],
+                                              'depth' => $data[5],
+                                              'weight' => $data[6]);
+        }
+        else {
+          $tests[$data[0]] = array('test'  => $data[0],
+                                   'boxes' => $boxes,
+                                   'items' => array(array('qty' => $data[1],
+                                                          'name' => $data[2],
+                                                          'width' => $data[3],
+                                                          'length' => $data[4],
+                                                          'depth' => $data[5],
+                                                          'weight' => $data[6])));
+        }
+      }
+      fclose($itemData);
+
+      return $tests;
+    }
+
   }
