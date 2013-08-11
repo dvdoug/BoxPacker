@@ -284,7 +284,7 @@
      * @coversNothing
      * @dataProvider getSamples
      */
-    public function testCanPackRepresentativeSample($test, $boxes, $items) {
+    public function testCanPackRepresentativeLargerSamples($test, $boxes, $items) {
       $packer = new Packer();
       foreach($boxes as $box) {
         $packer->addBox($box);
