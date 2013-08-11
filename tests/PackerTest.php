@@ -284,7 +284,7 @@
      * @coversNothing
      * @dataProvider getSamples
      */
-    public function testCanPackRepresentativeLargerSamples($test, $boxes, $items) {
+    public function testCanPackRepresentativeLargerSamples($test, $boxes, $items, $expectedBoxes) {
       $packer = new Packer();
       foreach($boxes as $box) {
         $packer->addBox($box);
@@ -292,10 +292,20 @@
       foreach ($items as $item) {
         $packer->addItem(new TestItem($item['name'], $item['width'], $item['length'], $item['depth'], $item['weight']), $item['qty']);
       }
-      $packer->pack();
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals($expectedBoxes, $packedBoxes->count());
+
     }
 
     public function getSamples() {
+
+      $expected = array();
+      $expectedData = fopen(__DIR__ . '/expected.csv', 'r');
+      while ($data = fgetcsv($expectedData)) {
+        $expected[$data[0]] = $data[1];
+      }
+      fclose($expectedData);
 
       $boxes = array();
       $boxData = fopen(__DIR__ . '/boxes.csv', 'r');
@@ -323,7 +333,8 @@
                                                           'width' => $data[3],
                                                           'length' => $data[4],
                                                           'depth' => $data[5],
-                                                          'weight' => $data[6])));
+                                                          'weight' => $data[6])),
+                                   'expected' => $expected[$data[0]]);
         }
       }
       fclose($itemData);
