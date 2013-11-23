@@ -41,6 +41,14 @@
     }
 
     /**
+     * Set logger to use
+     * @param LoggerInterface $aLogger
+     */
+    public function setLogger(LoggerInterface $aLogger) {
+      $this->logger = $aLogger;
+    }
+
+    /**
      * Add item to be packed
      * @param Item $aItem
      * @param int  $aQty
