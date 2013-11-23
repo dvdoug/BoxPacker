@@ -33,6 +33,9 @@
      */
     protected $logger;
 
+    /**
+     * Constructor
+     */
     public function __construct() {
       $this->items = new ItemList;
       $this->boxes = new BoxList;
