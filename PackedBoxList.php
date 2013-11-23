@@ -25,4 +25,26 @@
       return $choice;
     }
 
+    /**
+     * Calculate the variance in weight between these boxes
+     * @return float
+     */
+    public function getWeightVariance() {
+      $weights = array();
+      $variance = 0;
+
+      foreach (clone $this as $box) {
+        $weights[] = $box->getWeight();
+      }
+
+      $mean = array_sum($weights) / count($weights);
+
+      foreach ($weights as $weight) {
+        $variance += pow($weight - $mean, 2);
+      }
+
+      return $variance / count($weights);
+
+    }
+
   }
