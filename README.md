@@ -72,7 +72,7 @@ Constraints
 Requirements
 ------------
 
-* PHP version 5.3 or higher
+* PHP version 5.4 or higher
 
 License
 -------
