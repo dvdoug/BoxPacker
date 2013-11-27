@@ -6,6 +6,8 @@
  */
   namespace DVDoug\BoxPacker;
 
+  use Psr\Log\LoggerAwareInterface;
+  use Psr\Log\LoggerAwareTrait;
   use Psr\Log\LoggerInterface;
   use Psr\Log\NullLogger;
 
@@ -14,7 +16,8 @@
    * @author Doug Wright
    * @package BoxPacker
    */
-  class Packer  {
+  class Packer implements LoggerAwareInterface {
+    use LoggerAwareTrait;
 
     /**
      * List of items to be packed
@@ -29,11 +32,6 @@
     protected $boxes;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * Constructor
      */
     public function __construct() {
@@ -41,14 +39,6 @@
       $this->boxes = new BoxList;
 
       $this->logger = new NullLogger();
-    }
-
-    /**
-     * Set logger to use
-     * @param LoggerInterface $aLogger
-     */
-    public function setLogger(LoggerInterface $aLogger) {
-      $this->logger = $aLogger;
     }
 
     /**
