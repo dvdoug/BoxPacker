@@ -11,4 +11,4 @@ before_script:
   - composer self-update
   - composer install
 
-script: phpunit --coverage-text tests
+script: vendor/bin/phpunit --coverage-text tests
