@@ -30,7 +30,7 @@
      * @return float
      */
     public function getWeightVariance() {
-      $weights = array();
+      $weights = [];
       $variance = 0;
 
       foreach (clone $this as $box) {

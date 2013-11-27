@@ -300,21 +300,21 @@
 
     public function getSamples() {
 
-      $expected = array();
+      $expected = [];
       $expectedData = fopen(__DIR__ . '/expected.csv', 'r');
       while ($data = fgetcsv($expectedData)) {
         $expected[$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
       }
       fclose($expectedData);
 
-      $boxes = array();
+      $boxes = [];
       $boxData = fopen(__DIR__ . '/boxes.csv', 'r');
       while ($data = fgetcsv($boxData)) {
         $boxes[] = new TestBox($data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8]);
       }
       fclose($boxData);
 
-      $tests = array();
+      $tests = [];
       $itemData = fopen(__DIR__ . '/items.csv', 'r');
       while ($data = fgetcsv($itemData)) {
         if (isset($items[$data[0]])) {
