@@ -65,7 +65,7 @@
      * Pack items into boxes
      *
      * @throws \RuntimeException
-     * @return PackedBox[]
+     * @return PackedBoxList[]
      */
     public function pack() {
       if (!sizeof($this->items)) {

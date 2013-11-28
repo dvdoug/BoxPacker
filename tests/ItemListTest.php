@@ -1,11 +1,9 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Doug
- * Date: 28/07/13
- * Time: 12:58
- * To change this template use File | Settings | File Templates.
- */
+  /**
+   * Box packing (3D bin packing, knapsack problem)
+   * @package BoxPacker
+   * @author Doug Wright
+   */
 
   namespace DVDoug\BoxPacker;
 
