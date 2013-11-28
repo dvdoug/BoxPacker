@@ -26,6 +26,12 @@
     protected $items;
 
     /**
+     * Total weight of box
+     * @var float
+     */
+    protected $weight;
+
+    /**
      * Get box used
      * @return Box
      */
@@ -46,12 +52,17 @@
      * @return int weight in grams
      */
     public function getWeight() {
-      $weight = $this->box->getEmptyWeight();
+
+      if (!is_null($this->weight)) {
+        return $this->weight;
+      }
+
+      $this->weight = $this->box->getEmptyWeight();
       $items = clone $this->items;
       foreach ($items as $item) {
-        $weight += $item->getWeight();
+        $this->weight += $item->getWeight();
       }
-      return $weight;
+      return $this->weight;
     }
 
     public function __construct(Box $aBox, ItemList $aItemList) {
