@@ -68,6 +68,9 @@
      * @return PackedBoxList[]
      */
     public function pack() {
+
+      $this->logger->info("packing started");
+
       if (!sizeof($this->items)) {
         throw new \RuntimeException('Please specify at least 1 item to be packed');
       }
@@ -118,6 +121,111 @@
         $packedBoxes->insert($bestBox);
 
       }
+
+      /*
+       * If we have multiple boxes, try and optimise/even-out weight distribution
+       */
+      if ($packedBoxes->count() > 1 && $packedBoxes->getWeightVariance() > 0) {
+
+        $targetWeight = $packedBoxes->getMeanWeight();
+        $this->logger->debug("repacking for weight distribution, weight variance {$packedBoxes->getWeightVariance()}, target weight {$targetWeight}");
+
+        /*
+         * Keep moving items from most overweight box to most underweight box
+         */
+        do {
+          $tryRepack = false;
+
+          //Transfer boxes into 3 categories
+          $overWeightBoxes = [];
+          $underWeightBoxes = [];
+          $targetWeightBoxes = [];
+          foreach ($packedBoxes as $packedBox) {
+            if ($packedBox->getWeight() > $targetWeight) {
+              $overWeightBoxes[] = $packedBox;
+            }
+            else if ($packedBox->getWeight() < $targetWeight) {
+              $underWeightBoxes[] = $packedBox;
+            }
+            else {
+              $targetWeightBoxes[] = $packedBox;
+            }
+          }
+          $this->logger->debug("boxes over weight target: " . count($overWeightBoxes));
+          $this->logger->debug("boxes under weight target: " . count($underWeightBoxes));
+          $this->logger->debug("boxes exactly on weight target: " . count($targetWeightBoxes));
+
+          if (count($overWeightBoxes) && count($underWeightBoxes)) {
+
+            foreach ($underWeightBoxes as $u => $underWeightBox) {
+              foreach ($overWeightBoxes as $o => $overWeightBox) {
+
+                //Get list of items in box
+                $overWeightBoxItems = [];
+                foreach (clone $overWeightBox->getItems() as $overWeightBoxItem) {
+                  $overWeightBoxItems[] = $overWeightBoxItem;
+                }
+
+                /*
+                 * For each item in the heavier box, try and move it to the lighter one if helps weight distribution
+                 */
+                foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
+
+                  if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
+                    continue;
+                  }
+
+                  $newItemsForLighterBox = clone $underWeightBox->getItems();
+                  $newItemsForLighterBox->insert($overWeightBoxItem);
+
+                  $newLighterBoxPacker = new Packer();
+                  foreach (clone $this->boxes as $box) {
+                    $newLighterBoxPacker->addBox($box);
+                  }
+                  foreach ($newItemsForLighterBox as $item) {
+                    $newLighterBoxPacker->addItem($item);
+                  }
+                  $newLighterBoxPacking = $newLighterBoxPacker->pack();
+
+                  if ($newLighterBoxPacking->count() == 1) { //new item fits
+
+                    $newLighterBox = $newLighterBoxPacking->extract();
+
+                    //See if variance between the 2 is better
+                    $newItemsForOverWeightBox = $overWeightBoxItems;
+                    unset($newItemsForOverWeightBox[$oi]);
+                    $newHeavierBoxPacker = new Packer();
+                    foreach (clone $this->boxes as $box) {
+                      $newHeavierBoxPacker->addBox($box);
+                    }
+                    foreach ($newItemsForOverWeightBox as $item) {
+                      $newHeavierBoxPacker->addItem($item);
+                    }
+
+                    $newHeavierBoxPacking = $newHeavierBoxPacker->pack();
+                    $newHeavierBox = $newHeavierBoxPacking->extract();
+
+                    $underWeightBoxes[$u] = $underWeightBox = $newLighterBox;
+                    $overWeightBoxes[$o] = $overWeightBox = $newHeavierBox;
+                    $tryRepack = true; //we did some work
+                    break 3;
+                  }
+                }
+              }
+            }
+          }
+
+          //Combine the 3 box classifications back into a single list
+          $packedBoxes = new PackedBoxList;
+          foreach (array_merge($overWeightBoxes, $underWeightBoxes, $targetWeightBoxes) as $box) {
+            $packedBoxes->insert($box);
+          }
+        } while ($tryRepack);
+
+      }
+
+      $this->logger->info("packing completed, {$packedBoxes->count()} boxes");
+
       return $packedBoxes;
     }
 

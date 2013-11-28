@@ -134,6 +134,46 @@
       $box1 = new TestBox('Le petite box', 600, 600, 10, 10, 596, 596, 8, 1000);
       $box2 = new TestBox('Le grande box', 3000, 3000, 50, 100, 2960, 2960, 40, 10000);
 
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 500);
+      $item2 = new TestItem('Item 2', 550, 550, 2, 500);
+      $item3 = new TestItem('Item 3', 2500, 2500, 20, 500);
+      $item4 = new TestItem('Item 4', 2500, 2500, 20, 500);
+      $item5 = new TestItem('Item 5', 2500, 2500, 20, 500);
+
+      $packer = new Packer();
+      $packer->addBox($box1);
+      $packer->addBox($box2);
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packer->addItem($item4);
+      $packer->addItem($item5);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(3, $packedBoxes->count());
+
+      self::assertEquals(2, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box2, $packedBoxes->top()->getBox());
+      self::assertEquals(1100, $packedBoxes->top()->getWeight());
+
+      $packedBoxes->extract();
+
+      self::assertEquals(2, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box2, $packedBoxes->top()->getBox());
+      self::assertEquals(1100, $packedBoxes->top()->getWeight());
+
+      $packedBoxes->extract();
+
+      self::assertEquals(1, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box1, $packedBoxes->top()->getBox());
+      self::assertEquals(510, $packedBoxes->top()->getWeight());
+    }
+
+    public function testPackFiveItemsTwoLargeOneSmallBoxButThreeAfterRepack() {
+
+      $box1 = new TestBox('Le petite box', 600, 600, 10, 10, 596, 596, 8, 1000);
+      $box2 = new TestBox('Le grande box', 3000, 3000, 50, 100, 2960, 2960, 40, 10000);
+
       $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
       $item2 = new TestItem('Item 2', 550, 550, 2, 200);
       $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);
@@ -160,13 +200,13 @@
 
       self::assertEquals(2, $packedBoxes->top()->getItems()->count());
       self::assertEquals($box2, $packedBoxes->top()->getBox());
-      self::assertEquals(4100, $packedBoxes->top()->getWeight());
+      self::assertEquals(2300, $packedBoxes->top()->getWeight());
 
       $packedBoxes->extract();
 
       self::assertEquals(1, $packedBoxes->top()->getItems()->count());
-      self::assertEquals($box1, $packedBoxes->top()->getBox());
-      self::assertEquals(210, $packedBoxes->top()->getWeight());
+      self::assertEquals($box2, $packedBoxes->top()->getBox());
+      self::assertEquals(2100, $packedBoxes->top()->getWeight());
     }
 
     /**
@@ -283,17 +323,29 @@
      * @dataProvider getSamples
      */
     public function testCanPackRepresentativeLargerSamples($test, $boxes, $items, $expectedBoxes, $expectedWeightVariance) {
+
+      $expectedItemCount = 0;
+      $packedItemCount = 0;
+
       $packer = new Packer();
       foreach($boxes as $box) {
         $packer->addBox($box);
       }
       foreach ($items as $item) {
         $packer->addItem(new TestItem($item['name'], $item['width'], $item['length'], $item['depth'], $item['weight']), $item['qty']);
+        $expectedItemCount += $item['qty'];
       }
       $packedBoxes = $packer->pack();
 
+      foreach (clone $packedBoxes as $packedBox) {
+        $packedItemCount += $packedBox->getItems()->count();
+      }
+
+
       self::assertEquals($expectedBoxes, $packedBoxes->count());
+      self::assertEquals($expectedItemCount, $packedItemCount);
       self::assertEquals($expectedWeightVariance, (int) $packedBoxes->getWeightVariance());
+
     }
 
     public function getSamples() {
