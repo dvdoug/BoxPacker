@@ -167,10 +167,11 @@
                 }
 
                 /*
-                 * For each item in the heavier box, try and move it to the lighter one if helps weight distribution
+                 * For each item in the heavier box, try and move it to the lighter one
                  */
                 foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
 
+                  //skip if moving this item would hinder rather than help weight distribution
                   if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
                     continue;
                   }
@@ -178,6 +179,7 @@
                   $newItemsForLighterBox = clone $underWeightBox->getItems();
                   $newItemsForLighterBox->insert($overWeightBoxItem);
 
+                  //we may need a bigger box, so do a full repack calculation rather than box-specific
                   $newLighterBoxPacker = new Packer();
                   foreach (clone $this->boxes as $box) {
                     $newLighterBoxPacker->addBox($box);
@@ -191,9 +193,9 @@
 
                     $newLighterBox = $newLighterBoxPacking->extract();
 
-                    //See if variance between the 2 is better
+                    //we may be able to use a smaller box so do a full repack calculation
                     $newItemsForOverWeightBox = $overWeightBoxItems;
-                    unset($newItemsForOverWeightBox[$oi]);
+                    unset($newItemsForOverWeightBox[$oi]); //now packed in different box
                     $newHeavierBoxPacker = new Packer();
                     foreach (clone $this->boxes as $box) {
                       $newHeavierBoxPacker->addBox($box);
@@ -207,7 +209,7 @@
 
                     $underWeightBoxes[$u] = $underWeightBox = $newLighterBox;
                     $overWeightBoxes[$o] = $overWeightBox = $newHeavierBox;
-                    $tryRepack = true; //we did some work
+                    $tryRepack = true; //we did some work, so see if we can do even better
                     break 3;
                   }
                 }
