@@ -17,7 +17,7 @@
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
      */
-    public function compare(Box $aBoxA, Box $aBoxB) {
+    public function compare($aBoxA, $aBoxB) {
       return $aBoxB->getInnerVolume() - $aBoxA->getInnerVolume();
     }
 

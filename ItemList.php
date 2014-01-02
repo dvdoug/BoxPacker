@@ -17,7 +17,7 @@
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMaxHeap::compare()
      */
-    public function compare(Item $aItemA, Item $aItemB) {
+    public function compare($aItemA, $aItemB) {
       return $aItemA->getVolume() - $aItemB->getVolume();
     }
 

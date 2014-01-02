@@ -29,7 +29,7 @@
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
      */
-    public function compare(PackedBox $aBoxA, PackedBox $aBoxB) {
+    public function compare($aBoxA, $aBoxB) {
       $choice = $aBoxA->getItems()->count() - $aBoxB->getItems()->count();
       if ($choice === 0) {
         $choice = $aBoxB->getBox()->getInnerVolume() - $aBoxA->getBox()->getInnerVolume();
