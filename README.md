@@ -47,7 +47,7 @@ If you use [Composer](http://getcomposer.org/), just add `dvdoug/boxpacker` to y
     }
 ```
 
-Otherwise, the library is PSR-0 compliant, so will work with the autoloader of your choice.
+Otherwise, the library is PSR-4 compliant, so will work with the autoloader of your choice.
 
 Usage
 -----
