@@ -71,7 +71,7 @@ Just make your items and boxes implement the `BoxPacker\Item` and `BoxPacker\Box
    */
   $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
 
-  $items = new ItemList;
+  $items = new ItemList();
   $items->insert(new TestItem('Item 1', 297, 296, 2, 200));
   $items->insert(new TestItem('Item 2', 297, 296, 2, 500));
   $items->insert(new TestItem('Item 3', 296, 296, 4, 290));
