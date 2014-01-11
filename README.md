@@ -41,7 +41,7 @@ Installation
 If you use [Composer](http://getcomposer.org/), just add `dvdoug/boxpacker` to your project's `composer.json` file:
 ```json
     {
-        "require-dev": {
+        "require": {
             "dvdoug/boxpacker": "~1.0"
         }
     }
