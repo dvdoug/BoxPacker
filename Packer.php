@@ -298,9 +298,8 @@
 
         $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
         $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
-        $notTooMuchShallower = ($layerDepth ? $aItems->top()->getDepth() > ($layerDepth * 0.9) : true);
 
-        if ($notTooMuchShallower && $fitsSameGap >= 0 && $fitsRotatedGap < 0) {
+        if ($fitsSameGap >= 0 && $fitsRotatedGap < 0) {
           $this->logger->debug("fits only without rotation");
 
           $itemToPack = $aItems->extract();
@@ -314,7 +313,7 @@
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
 
         }
-        else if ($notTooMuchShallower && $fitsSameGap < 0 && $fitsRotatedGap >= 0) {
+        else if ($fitsSameGap < 0 && $fitsRotatedGap >= 0) {
           $this->logger->debug("fits only with rotation");
 
           $itemToPack = $aItems->extract();
@@ -327,7 +326,7 @@
           $layerLength += $itemWidth;
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
-        else if ($notTooMuchShallower && $fitsSameGap >= 0 && $fitsRotatedGap >= 0) {
+        else if ($fitsSameGap >= 0 && $fitsRotatedGap >= 0) {
           $this->logger->debug("fits both ways");
 
           $itemToPack = $aItems->extract();
@@ -347,7 +346,7 @@
           }
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
-        else if (!$notTooMuchShallower || ($fitsSameGap < 0 && $fitsRotatedGap < 0)) {
+        else if ($fitsSameGap < 0 && $fitsRotatedGap < 0) {
           $this->logger->debug("doesn't fit at all");
 
           if ($layerWidth) {

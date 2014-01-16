@@ -317,6 +317,18 @@
       self::assertEquals(1, $packedItems->count());
     }
 
+    public function testIssue1() {
+
+      $packer = new Packer();
+      $packer->addBox(new TestBox('Le petite box', 292, 336, 60, 10, 292, 336, 60, 9000));
+      $packer->addBox(new TestBox('Le grande box', 421, 548, 335, 100, 421, 548, 335, 10000));
+      $packer->addItem(new TestItem('Item 1', 226, 200, 40, 440));
+      $packer->addItem(new TestItem('Item 2', 200, 200, 155, 1660));
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+    }
+
 
     /**
      * @coversNothing
