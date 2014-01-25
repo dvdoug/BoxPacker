@@ -98,12 +98,8 @@
 
       $this->logger->info("packing started");
 
-      if (!sizeof($this->items)) {
-        throw new \RuntimeException('Please specify at least 1 item to be packed');
-      }
-
-      if (!sizeof($this->boxes)) {
-        throw new \RuntimeException('Please specify at least 1 size of box to pack items into');
+      if (!count($this->items) || !count($this->boxes)) {
+        throw new \RuntimeException('Please specify at least 1 item and 1 size of box to pack items into');
       }
 
       $packedBoxes = $this->doVolumePacking();
