@@ -261,9 +261,8 @@
 
         //Combine the 3 box classifications back into a single list
         $packedBoxes = new PackedBoxList;
-        foreach (array_merge($overWeightBoxes, $underWeightBoxes, $targetWeightBoxes) as $box) {
-          $packedBoxes->insert($box);
-        }
+        $packedBoxes->insertFromArray(array_merge($overWeightBoxes, $underWeightBoxes, $targetWeightBoxes));
+
       } while ($tryRepack);
 
       return $packedBoxes;

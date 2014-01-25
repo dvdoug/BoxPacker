@@ -75,4 +75,14 @@
 
     }
 
+    /**
+     * Do a bulk insert
+     * @param array $aBoxes
+     */
+    public function insertFromArray(array $aBoxes) {
+      foreach ($aBoxes as $box) {
+        $this->insert($box);
+      }
+    }
+
   }
