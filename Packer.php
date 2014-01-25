@@ -250,8 +250,8 @@
                 $newHeavierBoxPacking = $newHeavierBoxPacker->doVolumePacking();
                 $newHeavierBox = $newHeavierBoxPacking->extract();
 
-                $underWeightBoxes[$u] = $underWeightBox = $newLighterBox;
-                $overWeightBoxes[$o] = $overWeightBox = $newHeavierBox;
+                $underWeightBoxes[$u] = $newLighterBox;
+                $overWeightBoxes[$o] = $newHeavierBox;
                 $tryRepack = true; //we did some work, so see if we can do even better
                 break 3;
               }
