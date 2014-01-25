@@ -34,8 +34,8 @@
      * Constructor
      */
     public function __construct() {
-      $this->items = new ItemList;
-      $this->boxes = new BoxList;
+      $this->items = new ItemList();
+      $this->boxes = new BoxList();
 
       $this->logger = new NullLogger();
     }
