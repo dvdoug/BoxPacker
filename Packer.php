@@ -53,6 +53,25 @@
     }
 
     /**
+     * Set a list of items all at once
+     * @param \Traversable $aItemList
+     */
+    public function setItems($aItems) {
+      if ($aItems instanceof ItemList) {
+        $this->items = $aItems;
+      }
+      else if (is_array($aItems)) {
+        $this->items = new ItemList();
+        foreach ($aItems as $item) {
+          $this->items->insert($item);
+        }
+      }
+      else {
+        throw new \RuntimeException('Not a valid list of items');
+      }
+    }
+
+    /**
      * Add box size
      * @param Box $aBox
      */
