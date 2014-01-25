@@ -169,10 +169,11 @@
         $underWeightBoxes = [];
         $targetWeightBoxes = [];
         foreach ($packedBoxes as $packedBox) {
-          if ($packedBox->getWeight() > $targetWeight) {
+          $boxWeight = $packedBox->getWeight();
+          if ($boxWeight > $targetWeight) {
             $overWeightBoxes[] = $packedBox;
           }
-          else if ($packedBox->getWeight() < $targetWeight) {
+          else if ($boxWeight < $targetWeight) {
             $underWeightBoxes[] = $packedBox;
           }
           else {
