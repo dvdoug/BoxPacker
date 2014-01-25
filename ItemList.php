@@ -21,4 +21,16 @@
       return $aItemA->getVolume() - $aItemB->getVolume();
     }
 
+    /**
+     * Get copy of this list as a standard PHP array
+     * @return array
+     */
+    public function asArray() {
+      $return = [];
+      foreach (clone $this as $item) {
+        $return[] = $item;
+      }
+      return $return;
+    }
+
   }

@@ -215,10 +215,7 @@
           foreach ($overWeightBoxes as $o => $overWeightBox) {
 
             //Get list of items in box
-            $overWeightBoxItems = [];
-            foreach (clone $overWeightBox->getItems() as $overWeightBoxItem) {
-              $overWeightBoxItems[] = $overWeightBoxItem;
-            }
+            $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
             /*
              * For each item in the heavier box, try and move it to the lighter one
