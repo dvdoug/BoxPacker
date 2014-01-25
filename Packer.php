@@ -143,11 +143,11 @@
         while (!$boxesToEvaluate->isEmpty()) {
           $box = $boxesToEvaluate->extract();
           $packedItems = $this->packBox($box, clone $unpackedItems);
-          if ($packedItems->count()) {
+          if ($packedItemCount = $packedItems->count()) {
             $packedBoxesIteration->insert(new PackedBox($box, $packedItems));
 
             //Have we found a single box that contains everything?
-            if ($packedItems->count() == $unpackedItems->count()) {
+            if ($packedItemCount == $unpackedItems->count()) {
               break;
             }
           }
