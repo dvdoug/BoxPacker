@@ -365,14 +365,6 @@
           $remainingDepth = $aBox->getInnerDepth() - $packedDepth;
 
           $this->logger->debug("starting next vertical layer");
-          $this->logger->debug("remainingWidth: {$remainingWidth}");
-          $this->logger->debug("remainingLength: {$remainingLength}");
-          $this->logger->debug("remainingDepth: {$remainingDepth}");
-          $this->logger->debug("layerWidth: {$layerWidth}");
-          $this->logger->debug("layerLength: {$layerLength}");
-          $this->logger->debug("layerDepth: {$layerDepth}");
-          $this->logger->debug("packedDepth: {$packedDepth}");
-
         }
       }
       $this->logger->debug("done with this box");
