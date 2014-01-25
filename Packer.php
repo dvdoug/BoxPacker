@@ -62,6 +62,14 @@
     }
 
     /**
+     * Add a pre-prepared set of boxes all at once
+     * @param BoxList $aBoxList
+     */
+    public function setBoxes(BoxList $aBoxList) {
+      $this->boxes = clone $aBoxList;
+    }
+
+    /**
      * Pack items into boxes
      *
      * @throws \RuntimeException
