@@ -184,63 +184,60 @@
         $this->logger->debug("boxes under weight target: " . count($underWeightBoxes));
         $this->logger->debug("boxes exactly on weight target: " . count($targetWeightBoxes));
 
-        if (count($overWeightBoxes) && count($underWeightBoxes)) {
+        foreach ($underWeightBoxes as $u => $underWeightBox) {
+          foreach ($overWeightBoxes as $o => $overWeightBox) {
 
-          foreach ($underWeightBoxes as $u => $underWeightBox) {
-            foreach ($overWeightBoxes as $o => $overWeightBox) {
+            //Get list of items in box
+            $overWeightBoxItems = [];
+            foreach (clone $overWeightBox->getItems() as $overWeightBoxItem) {
+              $overWeightBoxItems[] = $overWeightBoxItem;
+            }
 
-              //Get list of items in box
-              $overWeightBoxItems = [];
-              foreach (clone $overWeightBox->getItems() as $overWeightBoxItem) {
-                $overWeightBoxItems[] = $overWeightBoxItem;
+            /*
+             * For each item in the heavier box, try and move it to the lighter one
+             */
+            foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
+
+              //skip if moving this item would hinder rather than help weight distribution
+              if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
+                continue;
               }
 
-              /*
-               * For each item in the heavier box, try and move it to the lighter one
-               */
-              foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
+              $newItemsForLighterBox = clone $underWeightBox->getItems();
+              $newItemsForLighterBox->insert($overWeightBoxItem);
 
-                //skip if moving this item would hinder rather than help weight distribution
-                if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
-                  continue;
-                }
+              //we may need a bigger box, so do a full repack calculation rather than box-specific
+              $newLighterBoxPacker = new Packer();
+              foreach (clone $this->boxes as $box) {
+                $newLighterBoxPacker->addBox($box);
+              }
+              foreach ($newItemsForLighterBox as $item) {
+                $newLighterBoxPacker->addItem($item);
+              }
+              $newLighterBoxPacking = $newLighterBoxPacker->doVolumePacking();
 
-                $newItemsForLighterBox = clone $underWeightBox->getItems();
-                $newItemsForLighterBox->insert($overWeightBoxItem);
+              if ($newLighterBoxPacking->count() == 1) { //new item fits
 
-                //we may need a bigger box, so do a full repack calculation rather than box-specific
-                $newLighterBoxPacker = new Packer();
+                $newLighterBox = $newLighterBoxPacking->extract();
+
+                //we may be able to use a smaller box so do a full repack calculation
+                $newItemsForOverWeightBox = $overWeightBoxItems;
+                unset($newItemsForOverWeightBox[$oi]); //now packed in different box
+                $newHeavierBoxPacker = new Packer();
                 foreach (clone $this->boxes as $box) {
-                  $newLighterBoxPacker->addBox($box);
+                  $newHeavierBoxPacker->addBox($box);
                 }
-                foreach ($newItemsForLighterBox as $item) {
-                  $newLighterBoxPacker->addItem($item);
+                foreach ($newItemsForOverWeightBox as $item) {
+                  $newHeavierBoxPacker->addItem($item);
                 }
-                $newLighterBoxPacking = $newLighterBoxPacker->doVolumePacking();
 
-                if ($newLighterBoxPacking->count() == 1) { //new item fits
+                $newHeavierBoxPacking = $newHeavierBoxPacker->doVolumePacking();
+                $newHeavierBox = $newHeavierBoxPacking->extract();
 
-                  $newLighterBox = $newLighterBoxPacking->extract();
-
-                  //we may be able to use a smaller box so do a full repack calculation
-                  $newItemsForOverWeightBox = $overWeightBoxItems;
-                  unset($newItemsForOverWeightBox[$oi]); //now packed in different box
-                  $newHeavierBoxPacker = new Packer();
-                  foreach (clone $this->boxes as $box) {
-                    $newHeavierBoxPacker->addBox($box);
-                  }
-                  foreach ($newItemsForOverWeightBox as $item) {
-                    $newHeavierBoxPacker->addItem($item);
-                  }
-
-                  $newHeavierBoxPacking = $newHeavierBoxPacker->doVolumePacking();
-                  $newHeavierBox = $newHeavierBoxPacking->extract();
-
-                  $underWeightBoxes[$u] = $underWeightBox = $newLighterBox;
-                  $overWeightBoxes[$o] = $overWeightBox = $newHeavierBox;
-                  $tryRepack = true; //we did some work, so see if we can do even better
-                  break 3;
-                }
+                $underWeightBoxes[$u] = $underWeightBox = $newLighterBox;
+                $overWeightBoxes[$o] = $overWeightBox = $newHeavierBox;
+                $tryRepack = true; //we did some work, so see if we can do even better
+                break 3;
               }
             }
           }
