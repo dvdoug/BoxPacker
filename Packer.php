@@ -216,9 +216,7 @@
 
               //we may need a bigger box, so do a full repack calculation rather than box-specific
               $newLighterBoxPacker = new Packer();
-              foreach (clone $this->boxes as $box) {
-                $newLighterBoxPacker->addBox($box);
-              }
+              $newLighterBoxPacker->setBoxes($this->boxes);
               foreach ($newItemsForLighterBox as $item) {
                 $newLighterBoxPacker->addItem($item);
               }
@@ -232,9 +230,7 @@
                 $newItemsForOverWeightBox = $overWeightBoxItems;
                 unset($newItemsForOverWeightBox[$oi]); //now packed in different box
                 $newHeavierBoxPacker = new Packer();
-                foreach (clone $this->boxes as $box) {
-                  $newHeavierBoxPacker->addBox($box);
-                }
+                $newHeavierBoxPacker->setBoxes($this->boxes);
                 foreach ($newItemsForOverWeightBox as $item) {
                   $newHeavierBoxPacker->addItem($item);
                 }
