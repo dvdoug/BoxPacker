@@ -199,9 +199,7 @@
             $targetWeightBoxes[] = $packedBox;
           }
         }
-        $this->logger->debug("boxes over weight target: " . count($overWeightBoxes));
-        $this->logger->debug("boxes under weight target: " . count($underWeightBoxes));
-        $this->logger->debug("boxes exactly on weight target: " . count($targetWeightBoxes));
+        $this->logger->debug('boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
 
         foreach ($underWeightBoxes as $u => $underWeightBox) {
           foreach ($overWeightBoxes as $o => $overWeightBox) {
