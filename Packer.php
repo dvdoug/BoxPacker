@@ -227,21 +227,8 @@
 
                 $newHeavierBox = $newHeavierBoxPacker->doVolumePacking()->extract();
 
-                if ($newLighterBox->getWeight() === $targetWeight) {
-                  $packedBoxes->insert($newLighterBox);
-                  unset($underWeightBoxes[$u]);
-                }
-                else {
-                  $underWeightBoxes[$u] = $newLighterBox;
-                }
-
-                if ($newHeavierBox->getWeight() === $targetWeight) {
-                  $packedBoxes->insert($newHeavierBox);
-                  unset($overWeightBoxes[$o]);
-                }
-                else {
-                  $overWeightBoxes[$o] = $newHeavierBox;
-                }
+                $underWeightBoxes[$u] = $newLighterBox;
+                $overWeightBoxes[$o] = $newHeavierBox;
 
                 $tryRepack = true; //we did some work, so see if we can do even better
                 usort($overWeightBoxes, [$packedBoxes, 'reverseCompare']);
