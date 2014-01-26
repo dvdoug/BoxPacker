@@ -8,6 +8,7 @@
 
   use Psr\Log\LoggerAwareInterface;
   use Psr\Log\LoggerAwareTrait;
+  use Psr\Log\LogLevel;
   use Psr\Log\NullLogger;
 
   /**
@@ -49,7 +50,7 @@
       for ($i = 0; $i < $aQty; $i++) {
         $this->items->insert($aItem);
       }
-      $this->logger->info("added {$aQty} x {$aItem->getDescription()}");
+      $this->logger->log(LogLevel::INFO, "added {$aQty} x {$aItem->getDescription()}");
     }
 
     /**
@@ -77,7 +78,7 @@
      */
     public function addBox(Box $aBox) {
       $this->boxes->insert($aBox);
-      $this->logger->info("added box {$aBox->getReference()}");
+      $this->logger->log(LogLevel::INFO, "added box {$aBox->getReference()}");
     }
 
     /**
@@ -96,7 +97,7 @@
      */
     public function pack() {
 
-      $this->logger->info("packing started");
+      $this->logger->log(LogLevel::INFO, "packing started");
 
       $packedBoxes = $this->doVolumePacking();
 
@@ -107,7 +108,7 @@
         $packedBoxes = $this->redistributeWeight($packedBoxes);
       }
 
-      $this->logger->info("packing completed, {$packedBoxes->count()} boxes");
+      $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
 
       return $packedBoxes;
     }
@@ -174,7 +175,7 @@
      */
     public function redistributeWeight(PackedBoxList $aPackedBoxes) {
       $targetWeight = $aPackedBoxes->getMeanWeight();
-      $this->logger->debug("repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
+      $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
       /*
        * Keep moving items from most overweight box to most underweight box
@@ -199,7 +200,7 @@
             $targetWeightBoxes[] = $packedBox;
           }
         }
-        $this->logger->debug('boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
+        $this->logger->log(LogLevel::DEBUG,  'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
 
         foreach ($underWeightBoxes as $u => $underWeightBox) {
           foreach ($overWeightBoxes as $o => $overWeightBox) {
@@ -267,7 +268,7 @@
      */
     public function packBox(Box $aBox, ItemList $aItems) {
 
-      $this->logger->debug("evaluating box {$aBox->getReference()}");
+      $this->logger->log(LogLevel::DEBUG,  "evaluating box {$aBox->getReference()}");
 
       $packedItems = new ItemList;
       $remainingDepth = $aBox->getInnerDepth();
@@ -283,10 +284,10 @@
 
       while(!$aItems->isEmpty() && $aItems->top()->getDepth() <= ($layerDepth ?: $remainingDepth) && $aItems->top()->getWeight() <= $remainingWeight) {
 
-        $this->logger->debug("evaluating item {$aItems->top()->getDescription()}");
-        $this->logger->debug("remaining width :{$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
-        $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
-        $this->logger->debug("packedDepth: {$packedDepth}");
+        $this->logger->log(LogLevel::DEBUG,  "evaluating item {$aItems->top()->getDescription()}");
+        $this->logger->log(LogLevel::DEBUG,  "remaining width :{$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
+        $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
+        $this->logger->log(LogLevel::DEBUG,  "packedDepth: {$packedDepth}");
 
         $itemWidth = $aItems->top()->getWidth();
         $itemLength = $aItems->top()->getLength();
@@ -295,7 +296,7 @@
         $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
 
         if ($fitsSameGap >= 0 && $fitsRotatedGap < 0) {
-          $this->logger->debug("fits only without rotation");
+          $this->logger->log(LogLevel::DEBUG,  "fits only without rotation");
 
           $itemToPack = $aItems->extract();
           $packedItems->insert($itemToPack);
@@ -309,7 +310,7 @@
 
         }
         else if ($fitsSameGap < 0 && $fitsRotatedGap >= 0) {
-          $this->logger->debug("fits only with rotation");
+          $this->logger->log(LogLevel::DEBUG,  "fits only with rotation");
 
           $itemToPack = $aItems->extract();
           $packedItems->insert($itemToPack);
@@ -322,7 +323,7 @@
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
         else if ($fitsSameGap >= 0 && $fitsRotatedGap >= 0) {
-          $this->logger->debug("fits both ways");
+          $this->logger->log(LogLevel::DEBUG,  "fits both ways");
 
           $itemToPack = $aItems->extract();
           $packedItems->insert($itemToPack);
@@ -342,7 +343,7 @@
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
         else if ($fitsSameGap < 0 && $fitsRotatedGap < 0) {
-          $this->logger->debug("doesn't fit at all");
+          $this->logger->log(LogLevel::DEBUG,  "doesn't fit at all");
 
           if ($layerWidth) {
             $remainingWidth = min(floor($layerWidth * 1.1), $aBox->getInnerWidth());
@@ -351,7 +352,7 @@
             $layerLength = 0;
           }
           else {
-            $this->logger->debug("doesn't fit on layer even when empty");
+            $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
             break;
           }
 
@@ -359,10 +360,10 @@
           $layerDepth = 0;
           $remainingDepth = $aBox->getInnerDepth() - $packedDepth;
 
-          $this->logger->debug("starting next vertical layer");
+          $this->logger->log(LogLevel::DEBUG,  "starting next vertical layer");
         }
       }
-      $this->logger->debug("done with this box");
+      $this->logger->log(LogLevel::DEBUG,  "done with this box");
       return $packedItems;
     }
 
