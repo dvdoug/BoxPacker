@@ -59,7 +59,7 @@
      */
     public function setItems($aItems) {
       if ($aItems instanceof ItemList) {
-        $this->items = $aItems;
+        $this->items = clone $aItems;
       }
       else if (is_array($aItems)) {
         $this->items = new ItemList();
