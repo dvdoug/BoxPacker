@@ -257,7 +257,7 @@
 
       } while ($tryRepack);
 
-      //Combine the 3 box classifications back into a single list
+      //Combine back into a single list
       $packedBoxes->insertFromArray($overWeightBoxes);
       $packedBoxes->insertFromArray($underWeightBoxes);
 
