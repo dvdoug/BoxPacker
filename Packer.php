@@ -177,29 +177,31 @@
       $targetWeight = $aPackedBoxes->getMeanWeight();
       $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
+
+      $packedBoxes = new PackedBoxList;
+
+      //Find out which boxes are over/under the target weight
+      $overWeightBoxes = [];
+      $underWeightBoxes = [];
+      foreach ($aPackedBoxes as $packedBox) {
+        $boxWeight = $packedBox->getWeight();
+        if ($boxWeight > $targetWeight) {
+          $overWeightBoxes[] = $packedBox;
+        }
+        else if ($boxWeight < $targetWeight) {
+          $underWeightBoxes[] = $packedBox;
+        }
+        else {
+          $packedBoxes->insert($packedBox);
+        }
+      }
+
       /*
        * Keep moving items from most overweight box to most underweight box
        */
-      $packedBoxes = clone $aPackedBoxes;
       do {
         $tryRepack = false;
 
-        //Transfer boxes into 3 categories
-        $overWeightBoxes = [];
-        $underWeightBoxes = [];
-        $targetWeightBoxes = [];
-        foreach ($packedBoxes as $packedBox) {
-          $boxWeight = $packedBox->getWeight();
-          if ($boxWeight > $targetWeight) {
-            $overWeightBoxes[] = $packedBox;
-          }
-          else if ($boxWeight < $targetWeight) {
-            $underWeightBoxes[] = $packedBox;
-          }
-          else {
-            $targetWeightBoxes[] = $packedBox;
-          }
-        }
         $this->logger->log(LogLevel::DEBUG,  'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
 
         foreach ($underWeightBoxes as $u => $underWeightBox) {
@@ -241,20 +243,40 @@
                 $newHeavierBoxPacking = $newHeavierBoxPacker->doVolumePacking();
                 $newHeavierBox = $newHeavierBoxPacking->extract();
 
-                $underWeightBoxes[$u] = $newLighterBox;
-                $overWeightBoxes[$o] = $newHeavierBox;
+                if ($newLighterBox->getWeight() === $targetWeight) {
+                  $packedBoxes->insert($newLighterBox);
+                  unset($underWeightBoxes[$u]);
+                }
+                else {
+                  $underWeightBoxes[$u] = $newLighterBox;
+                }
+
+                if ($newHeavierBox->getWeight() === $targetWeight) {
+                  $packedBoxes->insert($newHeavierBox);
+                  unset($overWeightBoxes[$o]);
+                }
+                else if ($newHeavierBox->getWeight() < $targetWeight) {
+                  $underWeightBoxes[] = $newHeavierBox;
+                  unset($overWeightBoxes[$o]);
+                }
+                else {
+                  $overWeightBoxes[$o] = $newHeavierBox;
+                }
+
                 $tryRepack = true; //we did some work, so see if we can do even better
+                usort($overWeightBoxes, [$packedBoxes, 'reverseCompare']);
+                usort($underWeightBoxes, [$packedBoxes, 'reverseCompare']);
                 break 3;
               }
             }
           }
         }
 
-        //Combine the 3 box classifications back into a single list
-        $packedBoxes = new PackedBoxList;
-        $packedBoxes->insertFromArray(array_merge($overWeightBoxes, $underWeightBoxes, $targetWeightBoxes));
-
       } while ($tryRepack);
+
+      //Combine the 3 box classifications back into a single list
+      $packedBoxes->insertFromArray($overWeightBoxes);
+      $packedBoxes->insertFromArray($underWeightBoxes);
 
       return $packedBoxes;
     }

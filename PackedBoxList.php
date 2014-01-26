@@ -38,6 +38,18 @@
     }
 
     /**
+     * Reversed version of compare
+     * @return int
+     */
+    public function reverseCompare($aBoxA, $aBoxB) {
+      $choice = $aBoxB->getItems()->count() - $aBoxA->getItems()->count();
+      if ($choice === 0) {
+        $choice = $aBoxA->getBox()->getInnerVolume() - $aBoxB->getBox()->getInnerVolume();
+      }
+      return $choice;
+    }
+
+    /**
      * Calculate the average (mean) weight of the boxes
      * @return float
      */
