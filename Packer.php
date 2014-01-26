@@ -140,7 +140,7 @@
             $packedBoxesIteration->insert(new PackedBox($box, $packedItems));
 
             //Have we found a single box that contains everything?
-            if ($packedItemCount == $unpackedItems->count()) {
+            if ($packedItemCount === $unpackedItems->count()) {
               break;
             }
           }
@@ -227,7 +227,7 @@
               $newLighterBoxPacker->setItems($newItemsForLighterBox);
               $newLighterBoxPacking = $newLighterBoxPacker->doVolumePacking();
 
-              if ($newLighterBoxPacking->count() == 1) { //new item fits
+              if ($newLighterBoxPacking->count() === 1) { //new item fits
 
                 $newLighterBox = $newLighterBoxPacking->extract();
 
