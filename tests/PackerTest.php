@@ -317,7 +317,6 @@
 
 
     /**
-     * @coversNothing
      * @dataProvider getSamples
      */
     public function testCanPackRepresentativeLargerSamples($test, $boxes, $items, $expectedBoxes, $expectedWeightVariance) {
