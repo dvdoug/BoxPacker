@@ -255,10 +255,6 @@
                   $packedBoxes->insert($newHeavierBox);
                   unset($overWeightBoxes[$o]);
                 }
-                else if ($newHeavierBox->getWeight() < $targetWeight) {
-                  $underWeightBoxes[] = $newHeavierBox;
-                  unset($overWeightBoxes[$o]);
-                }
                 else {
                   $overWeightBoxes[$o] = $newHeavierBox;
                 }
