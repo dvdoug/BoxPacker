@@ -272,12 +272,8 @@
       $packedItems = new ItemList;
       $remainingDepth = $aBox->getInnerDepth();
       $remainingWeight = $aBox->getMaxWeight() - $aBox->getEmptyWeight();
-
-      //Define length as longer of 2 dimensions
-      $horizontalDimensions = array($aBox->getInnerWidth(), $aBox->getInnerLength());
-      sort($horizontalDimensions);
-      $remainingWidth = $horizontalDimensions[0];
-      $remainingLength = $horizontalDimensions[1];
+      $remainingWidth = $aBox->getInnerWidth();
+      $remainingLength = $aBox->getInnerLength();
 
       $layerWidth = 0;
       $layerLength = 0;
@@ -353,8 +349,8 @@
           $this->logger->debug("doesn't fit at all");
 
           if ($layerWidth) {
-            $remainingWidth = min(floor($layerWidth * 1.1), $horizontalDimensions[0]);
-            $remainingLength = min(floor($layerLength * 1.1), $horizontalDimensions[1]);
+            $remainingWidth = min(floor($layerWidth * 1.1), $aBox->getInnerWidth());
+            $remainingLength = min(floor($layerLength * 1.1), $aBox->getInnerLength());
             $layerWidth = 0;
             $layerLength = 0;
           }
