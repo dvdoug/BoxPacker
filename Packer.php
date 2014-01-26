@@ -317,7 +317,7 @@
           }
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
-        else if ($fitsSameGap < 0 && $fitsRotatedGap < 0) {
+        else {
           $this->logger->log(LogLevel::DEBUG,  "doesn't fit at all");
 
           if ($layerWidth) {
