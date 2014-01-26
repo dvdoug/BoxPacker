@@ -215,11 +215,9 @@
               $newLighterBoxPacker = new Packer();
               $newLighterBoxPacker->setBoxes($this->boxes);
               $newLighterBoxPacker->setItems($newItemsForLighterBox);
-              $newLighterBoxPacking = $newLighterBoxPacker->doVolumePacking();
+              $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
 
-              if ($newLighterBoxPacking->count() === 1) { //new item fits
-
-                $newLighterBox = $newLighterBoxPacking->extract();
+              if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
 
                 //we may be able to use a smaller box so do a full repack calculation
                 unset($overWeightBoxItems[$oi]); //now packed in different box
