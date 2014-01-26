@@ -222,11 +222,10 @@
                 $newLighterBox = $newLighterBoxPacking->extract();
 
                 //we may be able to use a smaller box so do a full repack calculation
-                $newItemsForOverWeightBox = $overWeightBoxItems;
-                unset($newItemsForOverWeightBox[$oi]); //now packed in different box
+                unset($overWeightBoxItems[$oi]); //now packed in different box
                 $newHeavierBoxPacker = new Packer();
                 $newHeavierBoxPacker->setBoxes($this->boxes);
-                $newHeavierBoxPacker->setItems($newItemsForOverWeightBox);
+                $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
                 $newHeavierBoxPacking = $newHeavierBoxPacker->doVolumePacking();
                 $newHeavierBox = $newHeavierBoxPacking->extract();
