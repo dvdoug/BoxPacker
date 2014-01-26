@@ -284,12 +284,8 @@
       while(!$aItems->isEmpty() && $aItems->top()->getDepth() <= ($layerDepth ?: $remainingDepth) && $aItems->top()->getWeight() <= $remainingWeight) {
 
         $this->logger->debug("evaluating item {$aItems->top()->getDescription()}");
-        $this->logger->debug("remainingWidth: {$remainingWidth}");
-        $this->logger->debug("remainingLength: {$remainingLength}");
-        $this->logger->debug("remainingDepth: {$remainingDepth}");
-        $this->logger->debug("layerWidth: {$layerWidth}");
-        $this->logger->debug("layerLength: {$layerLength}");
-        $this->logger->debug("layerDepth: {$layerDepth}");
+        $this->logger->debug("remaining width :{$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
+        $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
         $this->logger->debug("packedDepth: {$packedDepth}");
 
         $itemWidth = $aItems->top()->getWidth();
