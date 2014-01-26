@@ -103,7 +103,7 @@
       /*
        * If we have multiple boxes, try and optimise/even-out weight distribution
        */
-      if ($packedBoxes->count() > 1 && $packedBoxes->getWeightVariance() > 0) {
+      if ($packedBoxes->count() > 1) {
         $packedBoxes = $this->redistributeWeight($packedBoxes);
       }
 
