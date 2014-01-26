@@ -295,47 +295,22 @@
         $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
         $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
 
-        if ($fitsSameGap >= 0 && $fitsRotatedGap < 0) {
-          $this->logger->log(LogLevel::DEBUG,  "fits only without rotation");
+        if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
           $itemToPack = $aItems->extract();
           $packedItems->insert($itemToPack);
 
           $remainingWeight -= $itemToPack->getWeight();
 
-          $remainingLength -= $itemLength;
-          $layerWidth += $itemWidth;
-          $layerLength += $itemLength;
-          $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+          if ($fitsSameGap <= $fitsRotatedGap || $fitsRotatedGap < 0 ) {
+            $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
 
-        }
-        else if ($fitsSameGap < 0 && $fitsRotatedGap >= 0) {
-          $this->logger->log(LogLevel::DEBUG,  "fits only with rotation");
-
-          $itemToPack = $aItems->extract();
-          $packedItems->insert($itemToPack);
-
-          $remainingWeight -= $itemToPack->getWeight();
-
-          $remainingLength -= $itemWidth;
-          $layerWidth += $itemLength;
-          $layerLength += $itemWidth;
-          $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
-        }
-        else if ($fitsSameGap >= 0 && $fitsRotatedGap >= 0) {
-          $this->logger->log(LogLevel::DEBUG,  "fits both ways");
-
-          $itemToPack = $aItems->extract();
-          $packedItems->insert($itemToPack);
-
-          $remainingWeight -= $itemToPack->getWeight();
-
-          if ($fitsSameGap <= $fitsRotatedGap) {
             $remainingLength -= $itemLength;
             $layerWidth += $itemWidth;
             $layerLength += $itemLength;
           }
           else {
+            $this->logger->log(LogLevel::DEBUG,  "fits (better) rotated");
             $remainingLength -= $itemWidth;
             $layerWidth += $itemLength;
             $layerLength += $itemWidth;
