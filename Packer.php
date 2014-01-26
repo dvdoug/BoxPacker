@@ -227,8 +227,7 @@
                 $newHeavierBoxPacker->setBoxes($this->boxes);
                 $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
-                $newHeavierBoxPacking = $newHeavierBoxPacker->doVolumePacking();
-                $newHeavierBox = $newHeavierBoxPacking->extract();
+                $newHeavierBox = $newHeavierBoxPacker->doVolumePacking()->extract();
 
                 if ($newLighterBox->getWeight() === $targetWeight) {
                   $packedBoxes->insert($newLighterBox);
