@@ -85,31 +85,4 @@
       }
     }
 
-    /**
-     * Classify boxes into under/on/over mean weight
-     * @return array
-     */
-    public function classifyBoxes() {
-
-      $targetWeight = $this->getMeanWeight();
-
-      $boxes = ['overWeight'   => [],
-                'underWeight'  => [],
-                'targetWeight' => []];
-      foreach (clone $this as $box) {
-        $boxWeight = $box->getWeight();
-        if ($boxWeight > $targetWeight) {
-          $boxes['overWeight'][] = $box;
-        }
-        else if ($boxWeight < $targetWeight) {
-          $boxes['underWeight'][] = $box;
-        }
-        else {
-          $boxes['targetWeight'][] = $box;
-        }
-      }
-
-      return $boxes;
-    }
-
   }

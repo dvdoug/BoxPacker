@@ -246,20 +246,6 @@
       $packedBoxes = $packer->pack();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testPackWithoutItems() {
-
-      $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
-      $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
-
-      $packer = new Packer();
-      $packer->addBox($box1);
-      $packer->addBox($box2);
-      $packedBoxes = $packer->pack();
-    }
-
     public function testPackTwoItemsFitExactlySideBySide() {
 
       $box = new TestBox('Le box', 300, 400, 10, 10, 296, 496, 8, 1000);
