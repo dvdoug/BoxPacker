@@ -124,15 +124,12 @@
       $packedBoxes = new PackedBoxList;
       $unpackedItems = $this->items;
 
-      /*
-       * Keep going until everything packed
-       */
+      //Keep going until everything packed
       while ($unpackedItems->count()) {
         $boxesToEvaluate = clone $this->boxes;
         $packedBoxesIteration = new PackedBoxList;
-        /*
-         * Loop through boxes starting with smallest, see what happens
-         */
+
+        //Loop through boxes starting with smallest, see what happens
         while (!$boxesToEvaluate->isEmpty()) {
           $box = $boxesToEvaluate->extract();
           $packedItems = $this->packBox($box, clone $unpackedItems);
@@ -146,16 +143,12 @@
           }
         }
 
-        /*
-         * Check iteration was productive
-         */
+        //Check iteration was productive
         if ($packedBoxesIteration->isEmpty()) {
           throw new \RuntimeException('Item ' . $unpackedItems->top()->getDescription() . ' is too large to fit into any box');
         }
 
-        /*
-         * Find best box of iteration, and remove packed items from unpacked list
-         */
+        //Find best box of iteration, and remove packed items from unpacked list
         $bestBox = $packedBoxesIteration->top();
         for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
           $unpackedItems->extract();
@@ -177,7 +170,6 @@
       $targetWeight = $aPackedBoxes->getMeanWeight();
       $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
-
       $packedBoxes = new PackedBoxList;
 
       //Find out which boxes are over/under the target weight
@@ -196,9 +188,7 @@
         }
       }
 
-      /*
-       * Keep moving items from most overweight box to most underweight box
-       */
+      //Keep moving items from most overweight box to most underweight box
       do {
         $tryRepack = false;
 
@@ -210,9 +200,7 @@
             //Get list of items in box
             $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
-            /*
-             * For each item in the heavier box, try and move it to the lighter one
-             */
+            //For each item in the heavier box, try and move it to the lighter one
             foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
 
               //skip if moving this item would hinder rather than help weight distribution
