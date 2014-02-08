@@ -96,20 +96,14 @@
      * @return PackedBoxList
      */
     public function pack() {
-
-      $this->logger->log(LogLevel::INFO, "packing started");
-
       $packedBoxes = $this->doVolumePacking();
 
-      /*
-       * If we have multiple boxes, try and optimise/even-out weight distribution
-       */
+      //If we have multiple boxes, try and optimise/even-out weight distribution
       if ($packedBoxes->count() > 1) {
         $packedBoxes = $this->redistributeWeight($packedBoxes);
       }
 
       $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
-
       return $packedBoxes;
     }
 
