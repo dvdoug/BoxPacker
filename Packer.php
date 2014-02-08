@@ -263,9 +263,7 @@
       $remainingWidth = $aBox->getInnerWidth();
       $remainingLength = $aBox->getInnerLength();
 
-      $layerWidth = 0;
-      $layerLength = 0;
-      $layerDepth = 0;
+      $layerWidth = $layerLength = $layerDepth = 0;
 
       while(!$aItems->isEmpty()) {
 
