@@ -116,22 +116,21 @@
     public function doVolumePacking() {
 
       $packedBoxes = new PackedBoxList;
-      $unpackedItems = $this->items;
 
       //Keep going until everything packed
-      while ($unpackedItems->count()) {
+      while ($this->items->count()) {
         $boxesToEvaluate = clone $this->boxes;
         $packedBoxesIteration = new PackedBoxList;
 
         //Loop through boxes starting with smallest, see what happens
         while (!$boxesToEvaluate->isEmpty()) {
           $box = $boxesToEvaluate->extract();
-          $packedItems = $this->packBox($box, clone $unpackedItems);
+          $packedItems = $this->packBox($box, clone $this->items);
           if ($packedItems->count()) {
             $packedBoxesIteration->insert(new PackedBox($box, $packedItems));
 
             //Have we found a single box that contains everything?
-            if ($packedItems->count() === $unpackedItems->count()) {
+            if ($packedItems->count() === $this->items->count()) {
               break;
             }
           }
@@ -139,13 +138,13 @@
 
         //Check iteration was productive
         if ($packedBoxesIteration->isEmpty()) {
-          throw new \RuntimeException('Item ' . $unpackedItems->top()->getDescription() . ' is too large to fit into any box');
+          throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
         }
 
         //Find best box of iteration, and remove packed items from unpacked list
         $bestBox = $packedBoxesIteration->top();
         for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
-          $unpackedItems->extract();
+          $this->items->extract();
         }
         $packedBoxes->insert($bestBox);
 
