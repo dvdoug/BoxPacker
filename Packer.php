@@ -165,7 +165,6 @@
 
       $packedBoxes = new PackedBoxList;
 
-      //Find out which boxes are over/under the target weight
       $overWeightBoxes = [];
       $underWeightBoxes = [];
       foreach ($aPackedBoxes as $packedBox) {
@@ -177,44 +176,36 @@
           $underWeightBoxes[] = $packedBox;
         }
         else {
-          $packedBoxes->insert($packedBox);
+          $packedBoxes->insert($packedBox); //target weight, so we'll keep these
         }
       }
 
-      //Keep moving items from most overweight box to most underweight box
-      do {
+      do { //Keep moving items from most overweight box to most underweight box
         $tryRepack = false;
-
         $this->logger->log(LogLevel::DEBUG,  'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
 
         foreach ($underWeightBoxes as $u => $underWeightBox) {
           foreach ($overWeightBoxes as $o => $overWeightBox) {
-
-            //Get list of items in box
             $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
             //For each item in the heavier box, try and move it to the lighter one
             foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
-
-              //skip if moving this item would hinder rather than help weight distribution
               if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
-                continue;
+                continue; //skip if moving this item would hinder rather than help weight distribution
               }
 
               $newItemsForLighterBox = clone $underWeightBox->getItems();
               $newItemsForLighterBox->insert($overWeightBoxItem);
 
-              //we may need a bigger box, so do a full repack calculation rather than box-specific
-              $newLighterBoxPacker = new Packer();
+              $newLighterBoxPacker = new Packer(); //we may need a bigger box
               $newLighterBoxPacker->setBoxes($this->boxes);
               $newLighterBoxPacker->setItems($newItemsForLighterBox);
               $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
 
               if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
-
-                //we may be able to use a smaller box so do a full repack calculation
                 unset($overWeightBoxItems[$oi]); //now packed in different box
-                $newHeavierBoxPacker = new Packer();
+
+                $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
                 $newHeavierBoxPacker->setBoxes($this->boxes);
                 $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
@@ -229,7 +220,6 @@
             }
           }
         }
-
       } while ($tryRepack);
 
       //Combine back into a single list
