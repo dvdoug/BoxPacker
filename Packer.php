@@ -254,7 +254,6 @@
      * @return ItemList items packed into box
      */
     public function packBox(Box $aBox, ItemList $aItems) {
-
       $this->logger->log(LogLevel::DEBUG,  "evaluating box {$aBox->getReference()}");
 
       $packedItems = new ItemList;
@@ -264,7 +263,6 @@
       $remainingLength = $aBox->getInnerLength();
 
       $layerWidth = $layerLength = $layerDepth = 0;
-
       while(!$aItems->isEmpty()) {
 
         $itemToPack = $aItems->top();
@@ -286,12 +284,10 @@
         if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
           $packedItems->insert($aItems->extract());
-
           $remainingWeight -= $itemToPack->getWeight();
 
           if ($fitsSameGap <= $fitsRotatedGap || $fitsRotatedGap < 0 ) {
             $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
-
             $remainingLength -= $itemLength;
             $layerWidth += $itemWidth;
             $layerLength += $itemLength;
@@ -305,8 +301,6 @@
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
         else {
-          $this->logger->log(LogLevel::DEBUG,  "doesn't fit at all");
-
           if (!$layerWidth) {
             $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
             break;
@@ -317,12 +311,10 @@
           $remainingDepth -= $layerDepth;
 
           $layerWidth = $layerLength = $layerDepth = 0;
-
-          $this->logger->log(LogLevel::DEBUG,  "starting next vertical layer");
+          $this->logger->log(LogLevel::DEBUG,  "doesn't fit, so starting next vertical layer");
         }
       }
       $this->logger->log(LogLevel::DEBUG,  "done with this box");
       return $packedItems;
     }
-
   }
