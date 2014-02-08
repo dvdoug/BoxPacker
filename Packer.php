@@ -267,8 +267,6 @@
       $layerLength = 0;
       $layerDepth = 0;
 
-      $packedDepth = 0;
-
       while(!$aItems->isEmpty()) {
 
         $itemToPack = $aItems->top();
@@ -280,7 +278,6 @@
         $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
         $this->logger->log(LogLevel::DEBUG,  "remaining width :{$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
         $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
-        $this->logger->log(LogLevel::DEBUG,  "packedDepth: {$packedDepth}");
 
         $itemWidth = $itemToPack->getWidth();
         $itemLength = $itemToPack->getLength();
@@ -319,12 +316,9 @@
 
           $remainingWidth = min(floor($layerWidth * 1.1), $aBox->getInnerWidth());
           $remainingLength = min(floor($layerLength * 1.1), $aBox->getInnerLength());
-          $layerWidth = 0;
-          $layerLength = 0;
+          $remainingDepth -= $layerDepth;
 
-          $packedDepth += $layerDepth;
-          $layerDepth = 0;
-          $remainingDepth = $aBox->getInnerDepth() - $packedDepth;
+          $layerWidth = $layerLength = $layerDepth = 0;
 
           $this->logger->log(LogLevel::DEBUG,  "starting next vertical layer");
         }
