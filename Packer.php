@@ -55,7 +55,7 @@
 
     /**
      * Set a list of items all at once
-     * @param \Traversable $aItemList
+     * @param \Traversable $aItems
      */
     public function setItems($aItems) {
       if ($aItems instanceof ItemList) {
