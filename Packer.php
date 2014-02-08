@@ -269,23 +269,28 @@
 
       $packedDepth = 0;
 
-      while(!$aItems->isEmpty() && $aItems->top()->getDepth() <= ($layerDepth ?: $remainingDepth) && $aItems->top()->getWeight() <= $remainingWeight) {
+      while(!$aItems->isEmpty()) {
 
-        $this->logger->log(LogLevel::DEBUG,  "evaluating item {$aItems->top()->getDescription()}");
+        $itemToPack = $aItems->top();
+
+        if ($itemToPack->getDepth() > ($layerDepth ?: $remainingDepth) || $itemToPack->getWeight() > $remainingWeight) {
+          break;
+        }
+
+        $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
         $this->logger->log(LogLevel::DEBUG,  "remaining width :{$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
         $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
         $this->logger->log(LogLevel::DEBUG,  "packedDepth: {$packedDepth}");
 
-        $itemWidth = $aItems->top()->getWidth();
-        $itemLength = $aItems->top()->getLength();
+        $itemWidth = $itemToPack->getWidth();
+        $itemLength = $itemToPack->getLength();
 
         $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
         $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
 
         if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
-          $itemToPack = $aItems->extract();
-          $packedItems->insert($itemToPack);
+          $packedItems->insert($aItems->extract());
 
           $remainingWeight -= $itemToPack->getWeight();
 
