@@ -307,16 +307,15 @@
         else {
           $this->logger->log(LogLevel::DEBUG,  "doesn't fit at all");
 
-          if ($layerWidth) {
-            $remainingWidth = min(floor($layerWidth * 1.1), $aBox->getInnerWidth());
-            $remainingLength = min(floor($layerLength * 1.1), $aBox->getInnerLength());
-            $layerWidth = 0;
-            $layerLength = 0;
-          }
-          else {
+          if (!$layerWidth) {
             $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
             break;
           }
+
+          $remainingWidth = min(floor($layerWidth * 1.1), $aBox->getInnerWidth());
+          $remainingLength = min(floor($layerLength * 1.1), $aBox->getInnerLength());
+          $layerWidth = 0;
+          $layerLength = 0;
 
           $packedDepth += $layerDepth;
           $layerDepth = 0;
