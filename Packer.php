@@ -269,7 +269,9 @@
           $packedItems->insert($aItems->extract());
           $remainingWeight -= $itemToPack->getWeight();
 
-          if ($fitsSameGap <= $fitsRotatedGap || $fitsRotatedGap < 0 ) {
+          if ($fitsRotatedGap < 0 ||
+              $fitsSameGap <= $fitsRotatedGap ||
+              (!$aItems->isEmpty() && $aItems->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
             $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
             $remainingLength -= $itemLength;
             $layerWidth += $itemWidth;

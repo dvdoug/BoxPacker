@@ -315,6 +315,17 @@
       self::assertEquals(1, $packedBoxes->count());
     }
 
+    public function testIssue3() {
+
+      $packer = new Packer();
+      $packer->addBox(new TestBox('OW Box 1', 51, 33, 33, 0.6, 51, 33, 33, 0.6));
+      $packer->addBox(new TestBox('OW Box 2', 50, 40, 40, 0.95, 50, 40, 40, 0.95));
+      $packer->addItem(new TestItem('Product', 28, 19, 9, 0), 6);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+    }
+
 
     /**
      * @dataProvider getSamples
