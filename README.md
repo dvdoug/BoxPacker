@@ -80,10 +80,10 @@ Just make your items and boxes implement the `BoxPacker\Item` and `BoxPacker\Box
   $packedItems = $packer->packBox($box, $items);
 ```
 
-BoxPacker is designed to run calculations as efficiently as possible, the 7500+ tests in the test suite run in 14
-seconds on my workstation, giving a rate of approx ≈550 solutions/second which should be more than sufficient for
+BoxPacker is designed to run calculations as efficiently as possible, the 7500+ tests in the test suite run in 11
+seconds on my workstation, giving a rate of approx ≈680 solutions/second which should be more than sufficient for
 most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
-disable Xdebug when doing so - in my experience the unit tests take 32x longer (14sec->460 sec) when Xdebug is loaded.
+disable Xdebug when doing so - in my experience the unit tests take 32x longer (11sec->360 sec) when Xdebug is loaded.
 
 Requirements
 ------------
