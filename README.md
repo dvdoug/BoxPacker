@@ -51,7 +51,12 @@ Otherwise, the library is PSR-4 compliant, so will work with the autoloader of y
 
 Usage
 -----
-Just make your items and boxes implement the `BoxPacker\Item` and `BoxPacker\Box` interfaces, and then:
+BoxPacker is designed to integrate as seamlessly as possible into your existing systems. To use the library, you will
+need to implement the `BoxPacker\Item` interface on your item/product objects and `BoxPacker\Box` on the objects you use to to represent a box.
+These interfaces are quite minimal, but provide a standardised way for the packing process to obtain the dimensional information it needs in order to work.
+
+Basic usage then looks something like the below:
+(although you'd probably want to do something more useful with the results than just output to the screen, and your dimensional data would hopefully come from a database!)
 
 ```php
 
@@ -66,8 +71,25 @@ Just make your items and boxes implement the `BoxPacker\Item` and `BoxPacker\Box
   $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200));
   $packedBoxes = $packer->pack();
 
+  echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
+  foreach ($packedBoxes as $packedBox) {
+    $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+    echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
+    echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
+
+    echo("The items in this box are:" . PHP_EOL);
+    $itemsInTheBox = $packedBox->getItems();
+    foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
+      echo($item->getDescription() . PHP_EOL);
+    }
+
+    echo(PHP_EOL);
+  }
+
+
+
   /*
-   * To just see if items will fit into a specific size of box
+   * To just see if a selection of items will fit into one specific box
    */
   $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
 
@@ -78,6 +100,7 @@ Just make your items and boxes implement the `BoxPacker\Item` and `BoxPacker\Box
 
   $packer = new Packer();
   $packedItems = $packer->packBox($box, $items);
+  /* $packedItems contains the items that fit */
 ```
 
 BoxPacker is designed to run calculations as efficiently as possible, the 7500+ tests in the test suite run in 11
