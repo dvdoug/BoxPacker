@@ -143,21 +143,8 @@
 
         //Find best box of iteration, and remove packed items from unpacked list
         $bestBox = $packedBoxesIteration->top();
-        $bestBoxItems = $bestBox->getItems()->asArray();
-        $unpackedItems = $this->items->asArray();
-
-        foreach ($bestBoxItems as $bestBoxItem) {
-          foreach ($unpackedItems as $key => $unpackedItem) {
-            if ($bestBoxItem == $unpackedItem) {
-              unset($unpackedItems[$key]);
-              break;
-            }
-          }
-        }
-
-        $this->items = new ItemList;
-        foreach ($unpackedItems as $item) {
-          $this->items->insert($item);
+        for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
+          $this->items->extract();
         }
         $packedBoxes->insert($bestBox);
 
@@ -264,8 +251,7 @@
         $itemToPack = $aItems->top();
 
         if ($itemToPack->getDepth() > ($layerDepth ?: $remainingDepth) || $itemToPack->getWeight() > $remainingWeight) {
-          $aItems->extract(); //ignore, move on
-          continue;
+          break;
         }
 
         $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
