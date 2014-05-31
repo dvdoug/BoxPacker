@@ -99,8 +99,8 @@ Basic usage then looks something like the below:
   $items->insert(new TestItem('Item 3', 296, 296, 4, 290));
 
   $packer = new Packer();
-  $packedItems = $packer->packBox($box, $items);
-  /* $packedItems contains the items that fit */
+  $packedBox = $packer->packIntoBox($box, $items);
+  /* $packedBox->getItems() contains the items that fit */
 ```
 
 BoxPacker is designed to run calculations as efficiently as possible, the 7500+ tests in the test suite run in 11
