@@ -125,12 +125,12 @@
         //Loop through boxes starting with smallest, see what happens
         while (!$boxesToEvaluate->isEmpty()) {
           $box = $boxesToEvaluate->extract();
-          $packedItems = $this->packBox($box, clone $this->items);
-          if ($packedItems->count()) {
-            $packedBoxesIteration->insert(new PackedBox($box, $packedItems));
+          $packedBox = $this->packIntoBox($box, clone $this->items);
+          if ($packedBox->getItems()->count()) {
+            $packedBoxesIteration->insert($packedBox);
 
             //Have we found a single box that contains everything?
-            if ($packedItems->count() === $this->items->count()) {
+            if ($packedBox->getItems()->count() === $this->items->count()) {
               break;
             }
           }
@@ -234,9 +234,9 @@
      * Pack as many items as possible into specific given box
      * @param Box      $aBox
      * @param ItemList $aItems
-     * @return ItemList items packed into box
+     * @return PackedBox packed box
      */
-    public function packBox(Box $aBox, ItemList $aItems) {
+    public function packIntoBox(Box $aBox, ItemList $aItems) {
       $this->logger->log(LogLevel::DEBUG,  "evaluating box {$aBox->getReference()}");
 
       $packedItems = new ItemList;
@@ -300,6 +300,18 @@
         }
       }
       $this->logger->log(LogLevel::DEBUG,  "done with this box");
-      return $packedItems;
+      return new PackedBox($aBox, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+    }
+
+    /**
+     * Pack as many items as possible into specific given box
+     * @deprecated
+     * @param Box      $aBox
+     * @param ItemList $aItems
+     * @return ItemList items packed into box
+     */
+    public function packBox(Box $aBox, ItemList $aItems) {
+      $packedBox = $this->packIntoBox($aBox, $aItems);
+      return $packedBox->getItems();
     }
   }
