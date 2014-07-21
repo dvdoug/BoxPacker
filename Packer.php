@@ -237,7 +237,7 @@
      * @return PackedBox packed box
      */
     public function packIntoBox(Box $aBox, ItemList $aItems) {
-      $this->logger->log(LogLevel::DEBUG,  "evaluating box {$aBox->getReference()}");
+      $this->logger->log(LogLevel::DEBUG,  "[EVALUATING BOX] {$aBox->getReference()}");
 
       $packedItems = new ItemList;
       $remainingDepth = $aBox->getInnerDepth();
