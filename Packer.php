@@ -274,25 +274,33 @@
               (!$aItems->isEmpty() && $aItems->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
             $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
             $remainingLength -= $itemLength;
-            $layerWidth += $itemWidth;
             $layerLength += $itemLength;
+            $layerWidth = max($itemWidth, $layerWidth);
           }
           else {
             $this->logger->log(LogLevel::DEBUG,  "fits (better) rotated");
             $remainingLength -= $itemWidth;
-            $layerWidth += $itemLength;
             $layerLength += $itemWidth;
+            $layerWidth = max($itemLength, $layerWidth);
           }
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
         }
         else {
-          if (!$layerWidth) {
+          if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0) {
+            $this->logger->log(LogLevel::DEBUG,  "No more fit in lengthwise, resetting for new row");
+            $remainingLength += $layerLength;
+            $remainingWidth -= $layerWidth;
+            $layerWidth = $layerLength = 0;
+            continue;
+          }
+
+          if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
             $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
             break;
           }
 
-          $remainingWidth = min(floor($layerWidth * 1.1), $aBox->getInnerWidth());
-          $remainingLength = min(floor($layerLength * 1.1), $aBox->getInnerLength());
+          $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
+          $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $aBox->getInnerLength()) : $aBox->getInnerLength();
           $remainingDepth -= $layerDepth;
 
           $layerWidth = $layerLength = $layerDepth = 0;
