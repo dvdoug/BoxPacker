@@ -340,6 +340,16 @@
 
     }
 
+    public function testIssue9() {
+      $packer = new Packer();
+      $packer->addBox(new TestBox('24x24x24Box', 24, 24, 24, 24, 24, 24, 24, 100));
+
+      $packer->addItem(new TestItem('6x6x6Item', 6, 6, 6, 1), 64);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+    }
+
 
     /**
      * @dataProvider getSamples
