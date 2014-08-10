@@ -250,7 +250,7 @@
 
         $itemToPack = $aItems->top();
 
-        if ($itemToPack->getDepth() > ($layerDepth ?: $remainingDepth) || $itemToPack->getWeight() > $remainingWeight) {
+        if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
           break;
         }
 
