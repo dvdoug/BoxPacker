@@ -284,6 +284,23 @@
             $layerWidth = max($itemLength, $layerWidth);
           }
           $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+
+          //allow items to be stacked in place within the same footprint up to current layerdepth
+          $maxStackDepth = $layerDepth - $itemToPack->getDepth();
+          while(!$aItems->isEmpty()) {
+            $potentialStackItem = $aItems->top();
+            if ($potentialStackItem->getDepth() <= $maxStackDepth &&
+                $potentialStackItem->getWeight() <= $remainingWeight &&
+                $potentialStackItem->getWidth() <= $itemToPack->getWidth() &&
+                $potentialStackItem->getLength() <= $itemToPack->getLength()) {
+              $remainingWeight -= $potentialStackItem->getWeight();
+              $maxStackDepth -= $potentialStackItem->getDepth();
+              $packedItems->insert($aItems->extract());
+            }
+            else {
+              break;
+            }
+          }
         }
         else {
           if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0) {

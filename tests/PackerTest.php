@@ -350,6 +350,17 @@
       self::assertEquals(1, $packedBoxes->count());
     }
 
+    public function testIssue11() {
+      $packer = new Packer();
+      $packer->addBox(new TestBox('4x4x4Box', 4, 4, 4, 4, 4, 4, 4, 100));
+
+      $packer->addItem(new TestItem('BigItem', 2, 2, 4, 1), 2);
+      $packer->addItem(new TestItem('SmallItem', 1, 1, 1, 1), 32);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+    }
+
     public function testIssue13() {
       $packer = new Packer();
       $packer->addBox(new TestBox('Le petite box', 12, 12, 12, 10, 10, 10, 10, 1000));
