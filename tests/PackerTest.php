@@ -373,6 +373,18 @@
       self::assertEquals(1, $packedBoxes->count());
     }
 
+    public function testIssue14() {
+      $packer = new Packer();
+      $packer->addBox(new TestBox('29x1x23Box', 29, 1, 23, 0, 29, 1, 23, 100));
+      $packer->addItem(new TestItem('13x1x10Item', 13, 1, 10, 1));
+      $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1));
+      $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1));
+      $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1));
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+    }
+
 
     /**
      * @dataProvider getSamples

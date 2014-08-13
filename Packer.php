@@ -303,7 +303,7 @@
           }
         }
         else {
-          if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0) {
+          if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0 && $layerWidth > 0 && $layerLength > 0) {
             $this->logger->log(LogLevel::DEBUG,  "No more fit in lengthwise, resetting for new row");
             $remainingLength += $layerLength;
             $remainingWidth -= $layerWidth;
