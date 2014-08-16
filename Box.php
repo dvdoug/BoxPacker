@@ -50,13 +50,13 @@
     public function getInnerWidth();
 
     /**
-     * Outer length in mm
+     * Inner length in mm
      * @return int
      */
     public function getInnerLength();
 
     /**
-     * Outer depth in mm
+     * Inner depth in mm
      * @return int
      */
     public function getInnerDepth();
