@@ -270,7 +270,7 @@
           $remainingWeight -= $itemToPack->getWeight();
 
           if ($fitsRotatedGap < 0 ||
-              $fitsSameGap <= $fitsRotatedGap ||
+              ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
               (!$aItems->isEmpty() && $aItems->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
             $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
             $remainingLength -= $itemLength;
