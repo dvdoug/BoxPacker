@@ -15,8 +15,8 @@
         "psr/log": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~3.7",
-        "monolog/monolog": "~1.3"
+        "phpunit/phpunit": "~4.3",
+        "monolog/monolog": "~1.11"
     },
     "autoload": {
         "psr-4": {
