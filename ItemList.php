@@ -13,6 +13,11 @@
    */
   class ItemList extends \SplMaxHeap {
 
+    public function insert($value) {
+      $value = Orient::item($value);
+      parent::insert($value);
+    }
+  	
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMaxHeap::compare()
