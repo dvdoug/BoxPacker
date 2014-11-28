@@ -47,6 +47,7 @@
      * @param int  $aQty
      */
     public function addItem(Item $aItem, $aQty = 1) {
+      $aItem = Orient::item($aItem);
       for ($i = 0; $i < $aQty; $i++) {
         $this->items->insert($aItem);
       }
@@ -77,6 +78,7 @@
      * @param Box $aBox
      */
     public function addBox(Box $aBox) {
+      $abox = Orient::box($aBox);
       $this->boxes->insert($aBox);
       $this->logger->log(LogLevel::INFO, "added box {$aBox->getReference()}");
     }
