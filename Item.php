@@ -49,4 +49,15 @@
      */
     public function getVolume();
 
+    /**
+     * Whether to allow vertical rotation
+     * @return boolean
+     */
+    public function isRotateVertical();
+
+    /**
+     * Set rotate vertical
+     * @param $rotate
+     */
+    public function setRotateVertical($rotate);
   }

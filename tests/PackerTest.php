@@ -9,6 +9,37 @@
 
   class PackerTest extends \PHPUnit_Framework_TestCase {
 
+    public function testPackBoxRotateItemFit()
+    {
+        $box = new TestBox('Le box', 130, 110, 300, 10, 126, 106, 296, 1000);
+
+        $items = new ItemList;
+        $items->insert(new TestItem('Item 1', 140, 126, 106, 200, true));
+        $items->insert(new TestItem('Item 2', 106, 126, 120, 200));
+
+        $packer = new Packer();
+        $packedItems = $packer->packBox($box, $items);
+
+        self::assertEquals(2, $packedItems->count());
+    }
+
+    public function testPackBoxItemsNotFittingReturned()
+    {
+        $box = new TestBox('Le box', 130, 110, 300, 10, 126, 106, 296, 1000);
+
+        $items = new ItemList;
+        $items->insert(new TestItem('Item 1', 140, 126, 106, 200));
+        $items->insert(new TestItem('Item 2', 106, 126, 120, 200));
+
+        $packer = new Packer();
+        $packer->setAllowPartialResults(true);
+        $packedItems = $packer->packBox($box, $items);
+
+        self::assertEquals(1, $packedItems->count());
+
+        self::assertEquals(1, $packer->getRemainingItems()->count());
+    }
+
     public function testPackBoxThreeItemsFitEasily() {
 
       $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
