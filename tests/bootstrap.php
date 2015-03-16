@@ -103,10 +103,5 @@
     {
         return $this->rotateVertical;
     }
-
-    public function setRotateVertical($rotate)
-    {
-        $this->rotateVertical = $rotate;
-    }
   }
 

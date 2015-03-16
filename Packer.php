@@ -163,9 +163,7 @@ class Packer implements LoggerAwareInterface
 
         $layerWidth = $layerLength = $layerDepth = 0;
         while (!$aItems->isEmpty()) {
-            /**
-             * @var Item $itemToPack
-             */
+
             $itemToPack = $aItems->top();
 
             if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
@@ -187,7 +185,7 @@ class Packer implements LoggerAwareInterface
              * Check if not cube and that the 2D rotations don't fit and isRotate is set to true
              * Assumption is that the item is in the this way up as given by dimensions
              */
-            if ($itemWidth !== $itemLength && $itemLength !== $itemDepth && $itemToPack->isRotateVertical()) {
+            if ($itemWidth !== $itemLength && $itemLength !== $itemDepth && ($itemToPack instanceof RotateItemInterface) && $itemToPack->isRotateVertical()) {
                 $fitsVerticalRotated = $remainingDepth - $itemDepth;
 
                 if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
