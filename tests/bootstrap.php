@@ -63,7 +63,7 @@
     }
   }
 
-  class TestItem implements Item {
+  class TestItem implements RotateItemInterface {
 
     public function __construct($aDescription,$aWidth,$aLength,$aDepth,$aWeight, $rotateVertical = false) {
       $this->description = $aDescription;
