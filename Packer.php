@@ -166,7 +166,7 @@ class Packer implements LoggerAwareInterface
 
             $itemToPack = $aItems->top();
 
-            if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
+            if ($itemToPack->getWeight() > $remainingWeight) {
                 break;
             }
 
@@ -178,14 +178,19 @@ class Packer implements LoggerAwareInterface
             $itemLength = $itemToPack->getLength();
             $itemDepth = $itemToPack->getDepth();
 
+            $isRotateVertical = $itemToPack instanceof RotateItemInterface && $itemToPack->isRotateVertical();
+
+            if (false === $isRotateVertical && $itemToPack->getDepth() > $remainingDepth) {
+                break;
+            }
+
             $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
             $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
 
             /**
-             * Check if not cube and that the 2D rotations don't fit and isRotate is set to true
-             * Assumption is that the item is in the this way up as given by dimensions
+             * Try vertical rotation when the item can be rotated vertically and it's not a cube.
              */
-            if ($itemWidth !== $itemLength && $itemLength !== $itemDepth && ($itemToPack instanceof RotateItemInterface) && $itemToPack->isRotateVertical()) {
+            if ($isRotateVertical && ($itemWidth !== $itemDepth || $itemLength !== $itemWidth)) {
                 $fitsVerticalRotated = $remainingDepth - $itemDepth;
 
                 if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
