@@ -63,15 +63,16 @@
     }
   }
 
-  class TestItem implements Item {
+  class TestItem implements RotateItemInterface {
 
-    public function __construct($aDescription,$aWidth,$aLength,$aDepth,$aWeight) {
+    public function __construct($aDescription,$aWidth,$aLength,$aDepth,$aWeight, $rotateVertical = false) {
       $this->description = $aDescription;
       $this->width = $aWidth;
       $this->length = $aLength;
       $this->depth = $aDepth;
       $this->weight = $aWeight;
       $this->volume = $this->width * $this->length * $this->depth;
+      $this->rotateVertical = $rotateVertical;
     }
 
     public function getDescription() {
@@ -97,5 +98,10 @@
     public function getVolume() {
       return $this->volume;
     }
- }
+
+    public function isRotateVertical()
+    {
+        return $this->rotateVertical;
+    }
+  }
 

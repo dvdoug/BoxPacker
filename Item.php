@@ -48,5 +48,4 @@
      * @return int
      */
     public function getVolume();
-
   }
