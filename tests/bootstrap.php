@@ -65,8 +65,8 @@
 
   class TestItem implements Item {
 
-    public function __construct($aDescription,$aWidth,$aLength,$aDepth,$aWeight) {
-      $this->description = $aDescription;
+    public function __construct($aName,$aWidth,$aLength,$aDepth,$aWeight) {
+      $this->name = $aName;
       $this->width = $aWidth;
       $this->length = $aLength;
       $this->depth = $aDepth;
@@ -74,8 +74,8 @@
       $this->volume = $this->width * $this->length * $this->depth;
     }
 
-    public function getDescription() {
-      return $this->description;
+    public function getName() {
+      return $this->name;
     }
 
     public function getWidth() {
