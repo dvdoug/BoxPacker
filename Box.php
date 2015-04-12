@@ -12,12 +12,22 @@
    * @package BoxPacker
    */
   interface Box {
+  	
+  	const TYPE_ENVELOPE		= 'envelope';
+  	const TYPE_BOX			= 'box';
 
     /**
      * Reference for box type (e.g. SKU or description)
      * @return string
      */
     public function getReference();
+    
+    
+    /**
+     * Is the Box an envelope or a box
+     * @return string
+     */
+    public function getType();
 
     /**
      * Outer width in mm
@@ -72,5 +82,17 @@
      * @return int
      */
     public function getMaxWeight();
+    
+    /**
+     * Returns true if the Box is a box
+     * @return bool
+     */
+    public function isTypeBox();
+    
+    /**
+     * Returns true if the Box is an envelope
+     * @return bool
+     */
+    public function isTypeEnvelope();
 
   }
