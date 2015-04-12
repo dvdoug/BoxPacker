@@ -50,7 +50,7 @@
       for ($i = 0; $i < $aQty; $i++) {
         $this->items->insert($aItem);
       }
-      $this->logger->log(LogLevel::INFO, "added {$aQty} x {$aItem->getDescription()}");
+      $this->logger->log(LogLevel::INFO, "added {$aQty} x {$aItem->getName()}");
     }
 
     /**
@@ -138,7 +138,7 @@
 
         //Check iteration was productive
         if ($packedBoxesIteration->isEmpty()) {
-          throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+          throw new \RuntimeException('Item ' . $this->items->top()->getName() . ' is too large to fit into any box');
         }
 
         //Find best box of iteration, and remove packed items from unpacked list
@@ -254,7 +254,7 @@
           break;
         }
 
-        $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
+        $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getName()}");
         $this->logger->log(LogLevel::DEBUG,  "remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
         $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 

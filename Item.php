@@ -17,7 +17,7 @@
      * Item SKU etc
      * @return string
      */
-    public function getDescription();
+    public function getName();
 
     /**
      * Item width in mm
