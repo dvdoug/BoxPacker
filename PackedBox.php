@@ -139,6 +139,7 @@
       $this->remainingLength = $aRemainingLength;
       $this->remainingDepth = $aRemainingDepth;
       $this->remainingWeight = $aRemainingWeight;
+      $this->weight = $this->getWeight();
     }
 
   }
