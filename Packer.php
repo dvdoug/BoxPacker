@@ -32,11 +32,24 @@
     protected $boxes;
 
     /**
+     * If setAllowPartialResults is true this will return any items that don't fit
+     * @var ItemList
+     */
+    protected $remainingItems;
+
+    /**
+     * If set this will allow remaining items to be returned
+     * @var boolean
+     */
+    protected $allowPartialResults = false;
+
+      /**
      * Constructor
      */
     public function __construct() {
       $this->items = new ItemList();
       $this->boxes = new BoxList();
+      $this->remainingItems = new ItemList();
 
       $this->logger = new NullLogger();
     }
@@ -250,19 +263,62 @@
 
         $itemToPack = $aItems->top();
 
-        if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
+        if ($itemToPack->getWeight() > $remainingWeight) {
           break;
         }
 
         $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
+        $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
         $this->logger->log(LogLevel::DEBUG,  "remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
         $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 
         $itemWidth = $itemToPack->getWidth();
         $itemLength = $itemToPack->getLength();
+        $itemDepth = $itemToPack->getDepth();
+
+        $isRotateVertical = $itemToPack instanceof RotateItemInterface && $itemToPack->isRotateVertical();
+
+        if (false === $isRotateVertical && $itemToPack->getDepth() > $remainingDepth) {
+          break;
+        }
 
         $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
         $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+
+        /*
+         * Try vertical rotation when the item can be rotated vertically and it's not a cube.
+         * If allowed tip box on side by transferring depth to width,
+         */
+        if ($isRotateVertical && ($itemWidth !== $itemDepth || $itemLength !== $itemWidth)) {
+          $fitsVerticalRotated = $remainingDepth - $itemDepth;
+          $this->logger->log(LogLevel::DEBUG, "Not a Cube");
+
+          if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
+            $this->logger->log(LogLevel::DEBUG, "Try vertical rotate item, set depth to length, set width to depth and length to width");
+
+            $itemToPack = $this->rotateItem($itemToPack);
+            $itemWidth = $itemToPack->getWidth();
+            $itemLength = $itemToPack->getLength();
+            $itemDepth = $itemToPack->getDepth();
+
+            $fitsVerticalRotated = $remainingDepth - $itemDepth;
+            $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
+            $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+
+            $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
+
+            if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
+              $this->logger->log(LogLevel::DEBUG, "Check that rotation is in correct plane");
+              $itemToPack = $this->rotateItem($itemToPack);
+              $itemWidth = $itemToPack->getWidth();
+              $itemLength = $itemToPack->getLength();
+
+              $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
+              $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+              $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
+            }
+          }
+        }
 
         if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
@@ -312,10 +368,14 @@
           }
 
           if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
-            $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
-            break;
-          }
+            $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
 
+            if (false === $this->allowPartialResults) {
+                break;
+            }
+
+            $this->remainingItems->insert($aItems->extract());
+          }
           $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
           $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $aBox->getInnerLength()) : $aBox->getInnerLength();
           $remainingDepth -= $layerDepth;
@@ -326,6 +386,40 @@
       }
       $this->logger->log(LogLevel::DEBUG,  "done with this box");
       return new PackedBox($aBox, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+    }
+
+    /**
+     * @param Item $itemToPack
+     * @return Item
+     */
+    public function rotateItem($itemToPack)
+    {
+      $rotatedItemWidth = $itemToPack->getLength();
+      $rotatedItemLength = $itemToPack->getDepth();
+      $rotatedItemDepth = $itemToPack->getWidth();
+
+      $itemToPack->setWidth($rotatedItemWidth);
+      $itemToPack->setLength($rotatedItemLength);
+      $itemToPack->setDepth($rotatedItemDepth);
+
+      return $itemToPack;
+    }
+
+    /**
+     * @param boolean $allowPartialResults
+     */
+    public function setAllowPartialResults($allowPartialResults)
+    {
+        $this->allowPartialResults = $allowPartialResults;
+    }
+
+    /**
+     * Return any remaining items that did not fit into any boxes
+     * @return ItemList
+     */
+    public function getRemainingItems()
+    {
+        return $this->remainingItems;
     }
 
     /**

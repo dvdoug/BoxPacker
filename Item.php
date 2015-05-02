@@ -20,16 +20,31 @@
     public function getDescription();
 
     /**
+     * @param $width
+     */
+    public function setWidth($width);
+
+    /**
      * Item width in mm
      * @return int
      */
     public function getWidth();
 
     /**
+     * @param $length
+     */
+    public function setLength($length);
+
+    /**
      * Item length in mm
      * @return int
      */
     public function getLength();
+
+    /**
+     * @param $depth
+     */
+    public function setDepth($depth);
 
     /**
      * Item depth in mm
