@@ -88,7 +88,7 @@
     }
 
     public function setLength($length) {
-        $this->length = $length;
+      $this->length = $length;
     }
 
     public function getLength() {
@@ -96,7 +96,7 @@
     }
 
     public function setDepth($depth) {
-        $this->depth = $depth;
+      $this->depth = $depth;
     }
 
     public function getDepth() {
