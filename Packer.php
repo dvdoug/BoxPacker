@@ -43,7 +43,7 @@
      */
     protected $allowPartialResults = false;
 
-      /**
+    /**
      * Constructor
      */
     public function __construct() {
@@ -371,7 +371,7 @@
             $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
 
             if (false === $this->allowPartialResults) {
-                break;
+              break;
             }
 
             $this->remainingItems->insert($aItems->extract());
@@ -410,7 +410,7 @@
      */
     public function setAllowPartialResults($allowPartialResults)
     {
-        $this->allowPartialResults = $allowPartialResults;
+      $this->allowPartialResults = $allowPartialResults;
     }
 
     /**
@@ -419,7 +419,7 @@
      */
     public function getRemainingItems()
     {
-        return $this->remainingItems;
+      return $this->remainingItems;
     }
 
     /**

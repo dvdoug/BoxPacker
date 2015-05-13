@@ -11,35 +11,35 @@
 
     public function testPackBoxRotateItemFit()
     {
-        $box = new TestBox('Le long box', 101, 301, 101, 10, 100, 300, 100, 1000);
-        $items = new ItemList;
-        $items->insert(new TestItem('Tall item', 90, 290, 90, 200));
-        $packer = new Packer();
-        $packedItems = $packer->packBox($box, $items);
-        self::assertEquals(1, $packedItems->count());
+      $box = new TestBox('Le long box', 101, 301, 101, 10, 100, 300, 100, 1000);
+      $items = new ItemList;
+      $items->insert(new TestItem('Tall item', 90, 290, 90, 200));
+      $packer = new Packer();
+      $packedItems = $packer->packBox($box, $items);
+      self::assertEquals(1, $packedItems->count());
     }
 
     public function testPackBoxVerticalRotate()
     {
-        $box = new TestBox('Le long box', 101, 101, 301, 10, 100, 100, 300, 1000);
-        $items = new ItemList;
-        $items->insert(new TestItem('Tall item', 90, 290, 90, 200, true));
-        $packer = new Packer();
-        $packedItems = $packer->packBox($box, $items);
-        self::assertEquals(1, $packedItems->count());
+      $box = new TestBox('Le long box', 101, 101, 301, 10, 100, 100, 300, 1000);
+      $items = new ItemList;
+      $items->insert(new TestItem('Tall item', 90, 290, 90, 200, true));
+      $packer = new Packer();
+      $packedItems = $packer->packBox($box, $items);
+      self::assertEquals(1, $packedItems->count());
     }
 
     public function testPackBoxItemsNotFittingReturned()
     {
-        $box = new TestBox('Le box', 130, 110, 300, 10, 126, 106, 296, 1000);
-        $items = new ItemList;
-        $items->insert(new TestItem('Item 1', 140, 126, 106, 200));
-        $items->insert(new TestItem('Item 2', 106, 126, 120, 200));
-        $packer = new Packer();
-        $packer->setAllowPartialResults(true);
-        $packedItems = $packer->packBox($box, $items);
-        self::assertEquals(1, $packedItems->count());
-        self::assertEquals(1, $packer->getRemainingItems()->count());
+      $box = new TestBox('Le box', 130, 110, 300, 10, 126, 106, 296, 1000);
+      $items = new ItemList;
+      $items->insert(new TestItem('Item 1', 140, 126, 106, 200));
+      $items->insert(new TestItem('Item 2', 106, 126, 120, 200));
+      $packer = new Packer();
+      $packer->setAllowPartialResults(true);
+      $packedItems = $packer->packBox($box, $items);
+      self::assertEquals(1, $packedItems->count());
+      self::assertEquals(1, $packer->getRemainingItems()->count());
     }
 
     public function testPackBoxThreeItemsFitEasily() {
@@ -118,26 +118,26 @@
 
     public function testPackThreeItemsFitEasilyInSmallerOfTwoBoxes() {
 
-    $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
-    $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
+      $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+      $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
-    $item1 = new TestItem('Item 1', 250, 250, 2, 200);
-    $item2 = new TestItem('Item 2', 250, 250, 2, 200);
-    $item3 = new TestItem('Item 3', 250, 250, 2, 200);
+      $item1 = new TestItem('Item 1', 250, 250, 2, 200);
+      $item2 = new TestItem('Item 2', 250, 250, 2, 200);
+      $item3 = new TestItem('Item 3', 250, 250, 2, 200);
 
-    $packer = new Packer();
-    $packer->addBox($box1);
-    $packer->addBox($box2);
-    $packer->addItem($item1);
-    $packer->addItem($item2);
-    $packer->addItem($item3);
-    $packedBoxes = $packer->pack();
+      $packer = new Packer();
+      $packer->addBox($box1);
+      $packer->addBox($box2);
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packedBoxes = $packer->pack();
 
-    self::assertEquals(1, $packedBoxes->count());
-    self::assertEquals(3, $packedBoxes->top()->getItems()->count());
-    self::assertEquals($box1, $packedBoxes->top()->getBox());
-    self::assertEquals(610, $packedBoxes->top()->getWeight());
-  }
+      self::assertEquals(1, $packedBoxes->count());
+      self::assertEquals(3, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box1, $packedBoxes->top()->getBox());
+      self::assertEquals(610, $packedBoxes->top()->getWeight());
+    }
 
     public function testPackThreeItemsFitEasilyInLargerOfTwoBoxes() {
 
