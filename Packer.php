@@ -4,19 +4,19 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-namespace DVDoug\BoxPacker;
+  namespace DVDoug\BoxPacker;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
+  use Psr\Log\LoggerAwareInterface;
+  use Psr\Log\LoggerAwareTrait;
+  use Psr\Log\LogLevel;
+  use Psr\Log\NullLogger;
 
-/**
- * Actual packer
- * @author Doug Wright
- * @package BoxPacker
- */
-class Packer implements LoggerAwareInterface {
+  /**
+   * Actual packer
+   * @author Doug Wright
+   * @package BoxPacker
+   */
+  class Packer implements LoggerAwareInterface {
     use LoggerAwareTrait;
 
     /**
@@ -32,26 +32,14 @@ class Packer implements LoggerAwareInterface {
     protected $boxes;
 
     /**
-     * If setAllowPartialResults is true this will return any items that don't fit
-     * @var ItemList
-     */
-    protected $remainingItems;
-
-    /**
-     * If set this will allow remaining items to be returned
-     * @var boolean
-     */
-    protected $allowPartialResults = false;
-
-    /**
      * Constructor
      */
     public function __construct() {
-        $this->items = new ItemList();
-        $this->boxes = new BoxList();
-        $this->remainingItems = new ItemList();
-
-        $this->logger = new NullLogger();
+      $this->items = new ItemList();
+      $this->boxes = new BoxList();
+      $this->remainingItems = new ItemList();
+      
+      $this->logger = new NullLogger();
     }
 
     /**
@@ -60,10 +48,10 @@ class Packer implements LoggerAwareInterface {
      * @param int  $aQty
      */
     public function addItem(Item $aItem, $aQty = 1) {
-        for ($i = 0; $i < $aQty; $i++) {
-            $this->items->insert($aItem);
-        }
-        $this->logger->log(LogLevel::INFO, "added {$aQty} x {$aItem->getDescription()}");
+      for ($i = 0; $i < $aQty; $i++) {
+        $this->items->insert($aItem);
+      }
+      $this->logger->log(LogLevel::INFO, "added {$aQty} x {$aItem->getDescription()}");
     }
 
     /**
@@ -71,18 +59,18 @@ class Packer implements LoggerAwareInterface {
      * @param \Traversable $aItems
      */
     public function setItems($aItems) {
-        if ($aItems instanceof ItemList) {
-            $this->items = clone $aItems;
+      if ($aItems instanceof ItemList) {
+        $this->items = clone $aItems;
+      }
+      else if (is_array($aItems)) {
+        $this->items = new ItemList();
+        foreach ($aItems as $item) {
+          $this->items->insert($item);
         }
-        else if (is_array($aItems)) {
-            $this->items = new ItemList();
-            foreach ($aItems as $item) {
-                $this->items->insert($item);
-            }
-        }
-        else {
-            throw new \RuntimeException('Not a valid list of items');
-        }
+      }
+      else {
+        throw new \RuntimeException('Not a valid list of items');
+      }
     }
 
     /**
@@ -90,8 +78,8 @@ class Packer implements LoggerAwareInterface {
      * @param Box $aBox
      */
     public function addBox(Box $aBox) {
-        $this->boxes->insert($aBox);
-        $this->logger->log(LogLevel::INFO, "added box {$aBox->getReference()}");
+      $this->boxes->insert($aBox);
+      $this->logger->log(LogLevel::INFO, "added box {$aBox->getReference()}");
     }
 
     /**
@@ -99,7 +87,7 @@ class Packer implements LoggerAwareInterface {
      * @param BoxList $aBoxList
      */
     public function setBoxes(BoxList $aBoxList) {
-        $this->boxes = clone $aBoxList;
+      $this->boxes = clone $aBoxList;
     }
 
     /**
@@ -109,15 +97,15 @@ class Packer implements LoggerAwareInterface {
      * @return PackedBoxList
      */
     public function pack() {
-        $packedBoxes = $this->doVolumePacking();
+      $packedBoxes = $this->doVolumePacking();
 
-        //If we have multiple boxes, try and optimise/even-out weight distribution
-        if ($packedBoxes->count() > 1) {
-            $packedBoxes = $this->redistributeWeight($packedBoxes);
-        }
+      //If we have multiple boxes, try and optimise/even-out weight distribution
+      if ($packedBoxes->count() > 1) {
+        $packedBoxes = $this->redistributeWeight($packedBoxes);
+      }
 
-        $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
-        return $packedBoxes;
+      $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
+      return $packedBoxes;
     }
 
     /**
@@ -128,42 +116,42 @@ class Packer implements LoggerAwareInterface {
      */
     public function doVolumePacking() {
 
-        $packedBoxes = new PackedBoxList;
+      $packedBoxes = new PackedBoxList;
 
-        //Keep going until everything packed
-        while ($this->items->count()) {
-            $boxesToEvaluate = clone $this->boxes;
-            $packedBoxesIteration = new PackedBoxList;
+      //Keep going until everything packed
+      while ($this->items->count()) {
+        $boxesToEvaluate = clone $this->boxes;
+        $packedBoxesIteration = new PackedBoxList;
 
-            //Loop through boxes starting with smallest, see what happens
-            while (!$boxesToEvaluate->isEmpty()) {
-                $box = $boxesToEvaluate->extract();
-                $packedBox = $this->packIntoBox($box, clone $this->items);
-                if ($packedBox->getItems()->count()) {
-                    $packedBoxesIteration->insert($packedBox);
+        //Loop through boxes starting with smallest, see what happens
+        while (!$boxesToEvaluate->isEmpty()) {
+          $box = $boxesToEvaluate->extract();
+          $packedBox = $this->packIntoBox($box, clone $this->items);
+          if ($packedBox->getItems()->count()) {
+            $packedBoxesIteration->insert($packedBox);
 
-                    //Have we found a single box that contains everything?
-                    if ($packedBox->getItems()->count() === $this->items->count()) {
-                        break;
-                    }
-                }
+            //Have we found a single box that contains everything?
+            if ($packedBox->getItems()->count() === $this->items->count()) {
+              break;
             }
-
-            //Check iteration was productive
-            if ($packedBoxesIteration->isEmpty()) {
-                throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
-            }
-
-            //Find best box of iteration, and remove packed items from unpacked list
-            $bestBox = $packedBoxesIteration->top();
-            for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
-                $this->items->extract();
-            }
-            $packedBoxes->insert($bestBox);
-
+          }
         }
 
-        return $packedBoxes;
+        //Check iteration was productive
+        if ($packedBoxesIteration->isEmpty()) {
+          throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+        }
+
+        //Find best box of iteration, and remove packed items from unpacked list
+        $bestBox = $packedBoxesIteration->top();
+        for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
+          $this->items->extract();
+        }
+        $packedBoxes->insert($bestBox);
+
+      }
+
+      return $packedBoxes;
     }
 
     /**
@@ -173,73 +161,73 @@ class Packer implements LoggerAwareInterface {
      * @return PackedBoxList
      */
     public function redistributeWeight(PackedBoxList $aPackedBoxes) {
-        $targetWeight = $aPackedBoxes->getMeanWeight();
-        $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
+      $targetWeight = $aPackedBoxes->getMeanWeight();
+      $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
-        $packedBoxes = new PackedBoxList;
+      $packedBoxes = new PackedBoxList;
 
-        $overWeightBoxes = [];
-        $underWeightBoxes = [];
-        foreach ($aPackedBoxes as $packedBox) {
-            $boxWeight = $packedBox->getWeight();
-            if ($boxWeight > $targetWeight) {
-                $overWeightBoxes[] = $packedBox;
-            }
-            else if ($boxWeight < $targetWeight) {
-                $underWeightBoxes[] = $packedBox;
-            }
-            else {
-                $packedBoxes->insert($packedBox); //target weight, so we'll keep these
-            }
+      $overWeightBoxes = [];
+      $underWeightBoxes = [];
+      foreach ($aPackedBoxes as $packedBox) {
+        $boxWeight = $packedBox->getWeight();
+        if ($boxWeight > $targetWeight) {
+          $overWeightBoxes[] = $packedBox;
         }
+        else if ($boxWeight < $targetWeight) {
+          $underWeightBoxes[] = $packedBox;
+        }
+        else {
+          $packedBoxes->insert($packedBox); //target weight, so we'll keep these
+        }
+      }
 
-        do { //Keep moving items from most overweight box to most underweight box
-            $tryRepack = false;
-            $this->logger->log(LogLevel::DEBUG,  'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
+      do { //Keep moving items from most overweight box to most underweight box
+        $tryRepack = false;
+        $this->logger->log(LogLevel::DEBUG,  'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
 
-            foreach ($underWeightBoxes as $u => $underWeightBox) {
-                foreach ($overWeightBoxes as $o => $overWeightBox) {
-                    $overWeightBoxItems = $overWeightBox->getItems()->asArray();
+        foreach ($underWeightBoxes as $u => $underWeightBox) {
+          foreach ($overWeightBoxes as $o => $overWeightBox) {
+            $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
-                    //For each item in the heavier box, try and move it to the lighter one
-                    foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
-                        if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
-                            continue; //skip if moving this item would hinder rather than help weight distribution
-                        }
+            //For each item in the heavier box, try and move it to the lighter one
+            foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
+              if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
+                continue; //skip if moving this item would hinder rather than help weight distribution
+              }
 
-                        $newItemsForLighterBox = clone $underWeightBox->getItems();
-                        $newItemsForLighterBox->insert($overWeightBoxItem);
+              $newItemsForLighterBox = clone $underWeightBox->getItems();
+              $newItemsForLighterBox->insert($overWeightBoxItem);
 
-                        $newLighterBoxPacker = new Packer(); //we may need a bigger box
-                        $newLighterBoxPacker->setBoxes($this->boxes);
-                        $newLighterBoxPacker->setItems($newItemsForLighterBox);
-                        $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
+              $newLighterBoxPacker = new Packer(); //we may need a bigger box
+              $newLighterBoxPacker->setBoxes($this->boxes);
+              $newLighterBoxPacker->setItems($newItemsForLighterBox);
+              $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
 
-                        if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
-                            unset($overWeightBoxItems[$oi]); //now packed in different box
+              if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
+                unset($overWeightBoxItems[$oi]); //now packed in different box
 
-                            $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
-                            $newHeavierBoxPacker->setBoxes($this->boxes);
-                            $newHeavierBoxPacker->setItems($overWeightBoxItems);
+                $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
+                $newHeavierBoxPacker->setBoxes($this->boxes);
+                $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
-                            $overWeightBoxes[$o] = $newHeavierBoxPacker->doVolumePacking()->extract();
-                            $underWeightBoxes[$u] = $newLighterBox;
+                $overWeightBoxes[$o] = $newHeavierBoxPacker->doVolumePacking()->extract();
+                $underWeightBoxes[$u] = $newLighterBox;
 
-                            $tryRepack = true; //we did some work, so see if we can do even better
-                            usort($overWeightBoxes, [$packedBoxes, 'reverseCompare']);
-                            usort($underWeightBoxes, [$packedBoxes, 'reverseCompare']);
-                            break 3;
-                        }
-                    }
-                }
+                $tryRepack = true; //we did some work, so see if we can do even better
+                usort($overWeightBoxes, [$packedBoxes, 'reverseCompare']);
+                usort($underWeightBoxes, [$packedBoxes, 'reverseCompare']);
+                break 3;
+              }
             }
-        } while ($tryRepack);
+          }
+        }
+      } while ($tryRepack);
 
-        //Combine back into a single list
-        $packedBoxes->insertFromArray($overWeightBoxes);
-        $packedBoxes->insertFromArray($underWeightBoxes);
+      //Combine back into a single list
+      $packedBoxes->insertFromArray($overWeightBoxes);
+      $packedBoxes->insertFromArray($underWeightBoxes);
 
-        return $packedBoxes;
+      return $packedBoxes;
     }
 
 
@@ -250,142 +238,142 @@ class Packer implements LoggerAwareInterface {
      * @return PackedBox packed box
      */
     public function packIntoBox(Box $aBox, ItemList $aItems) {
-        $this->logger->log(LogLevel::DEBUG,  "[EVALUATING BOX] {$aBox->getReference()}");
+      $this->logger->log(LogLevel::DEBUG,  "[EVALUATING BOX] {$aBox->getReference()}");
 
-        $packedItems = new ItemList;
-        $remainingDepth = $aBox->getInnerDepth();
-        $remainingWeight = $aBox->getMaxWeight() - $aBox->getEmptyWeight();
-        $remainingWidth = $aBox->getInnerWidth();
-        $remainingLength = $aBox->getInnerLength();
+      $packedItems = new ItemList;
+      $remainingDepth = $aBox->getInnerDepth();
+      $remainingWeight = $aBox->getMaxWeight() - $aBox->getEmptyWeight();
+      $remainingWidth = $aBox->getInnerWidth();
+      $remainingLength = $aBox->getInnerLength();
 
-        $layerWidth = $layerLength = $layerDepth = 0;
-        while(!$aItems->isEmpty()) {
+      $layerWidth = $layerLength = $layerDepth = 0;
+      while(!$aItems->isEmpty()) {
 
-            $itemToPack = $aItems->top();
+        $itemToPack = $aItems->top();
 
-            if ($itemToPack->getWeight() > $remainingWeight) {
-                break;
-            }
+        if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
+          break;
+        }
 
-            $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
-            $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
-            $this->logger->log(LogLevel::DEBUG,  "remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
-            $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
+        $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
+        $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
+        $this->logger->log(LogLevel::DEBUG,  "remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
+        $this->logger->log(LogLevel::DEBUG,  "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 
+        $itemWidth = $itemToPack->getWidth();
+        $itemLength = $itemToPack->getLength();
+        $itemDepth = $itemToPack->getDepth();
+
+        $isRotateVertical = $itemToPack instanceof RotateItemInterface && $itemToPack->isRotateVertical();
+
+        if (false === $isRotateVertical && $itemToPack->getDepth() > $remainingDepth) {
+          break;
+        }
+
+        $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
+        $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+
+        /*
+         * Try vertical rotation when the item can be rotated vertically and it's not a cube.
+         * If allowed tip box on side by transferring depth to width,
+         */
+        if ($isRotateVertical && ($itemWidth !== $itemDepth || $itemLength !== $itemWidth)) {
+          $fitsVertical = $remainingDepth - $itemDepth;
+          $this->logger->log(LogLevel::DEBUG, "Not a Cube");
+
+          if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVertical >= 0) {
+            $this->logger->log(LogLevel::DEBUG, "Try vertical rotate item, set depth to length, set width to depth and length to width");
+
+            $itemToPack = $this->rotateItem($itemToPack);
             $itemWidth = $itemToPack->getWidth();
             $itemLength = $itemToPack->getLength();
             $itemDepth = $itemToPack->getDepth();
 
-            $isRotateVertical = $itemToPack instanceof RotateItemInterface && $itemToPack->isRotateVertical();
-
-            if (false === $isRotateVertical && $itemToPack->getDepth() > $remainingDepth) {
-                break;
-            }
-
+            $fitsVerticalRotated = $remainingDepth - $itemDepth;
             $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
             $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
 
-            /*
-             * Try vertical rotation when the item can be rotated vertically and it's not a cube.
-             * If allowed tip box on side by transferring depth to width,
-             */
-            if ($isRotateVertical && ($itemWidth !== $itemDepth || $itemLength !== $itemWidth)) {
-                $fitsVertical = $remainingDepth - $itemDepth;
-                $this->logger->log(LogLevel::DEBUG, "Not a Cube");
+            $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
 
-                if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVertical >= 0) {
-                    $this->logger->log(LogLevel::DEBUG, "Try vertical rotate item, set depth to length, set width to depth and length to width");
+            if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
+              $this->logger->log(LogLevel::DEBUG, "Check that rotation is in correct plane");
+              $itemToPack = $this->rotateItem($itemToPack);
+              $itemWidth = $itemToPack->getWidth();
+              $itemLength = $itemToPack->getLength();
 
-                    $itemToPack = $this->rotateItem($itemToPack);
-                    $itemWidth = $itemToPack->getWidth();
-                    $itemLength = $itemToPack->getLength();
-                    $itemDepth = $itemToPack->getDepth();
-
-                    $fitsVerticalRotated = $remainingDepth - $itemDepth;
-                    $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
-                    $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
-
-                    $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
-
-                    if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
-                        $this->logger->log(LogLevel::DEBUG, "Check that rotation is in correct plane");
-                        $itemToPack = $this->rotateItem($itemToPack);
-                        $itemWidth = $itemToPack->getWidth();
-                        $itemLength = $itemToPack->getLength();
-
-                        $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
-                        $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
-                        $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
-                    }
-                }
+              $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
+              $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+              $this->logger->log(LogLevel::DEBUG,  "item dimensions width: {$itemToPack->getWidth()}, length: {$itemToPack->getLength()}, depth: {$itemToPack->getDepth()}");
             }
+          }
+        }
 
-            if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
+        if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
-                $packedItems->insert($aItems->extract());
-                $remainingWeight -= $itemToPack->getWeight();
+          $packedItems->insert($aItems->extract());
+          $remainingWeight -= $itemToPack->getWeight();
 
-                if ($fitsRotatedGap < 0 ||
-                    ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-                    (!$aItems->isEmpty() && $aItems->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
-                    $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
-                    $remainingLength -= $itemLength;
-                    $layerLength += $itemLength;
-                    $layerWidth = max($itemWidth, $layerWidth);
-                }
-                else {
-                    $this->logger->log(LogLevel::DEBUG,  "fits (better) rotated");
-                    $remainingLength -= $itemWidth;
-                    $layerLength += $itemWidth;
-                    $layerWidth = max($itemLength, $layerWidth);
-                }
-                $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+          if ($fitsRotatedGap < 0 ||
+              ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
+              (!$aItems->isEmpty() && $aItems->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
+            $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
+            $remainingLength -= $itemLength;
+            $layerLength += $itemLength;
+            $layerWidth = max($itemWidth, $layerWidth);
+          }
+          else {
+            $this->logger->log(LogLevel::DEBUG,  "fits (better) rotated");
+            $remainingLength -= $itemWidth;
+            $layerLength += $itemWidth;
+            $layerWidth = max($itemLength, $layerWidth);
+          }
+          $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
 
-                //allow items to be stacked in place within the same footprint up to current layerdepth
-                $maxStackDepth = $layerDepth - $itemToPack->getDepth();
-                while(!$aItems->isEmpty()) {
-                    $potentialStackItem = $aItems->top();
-                    if ($potentialStackItem->getDepth() <= $maxStackDepth &&
-                        $potentialStackItem->getWeight() <= $remainingWeight &&
-                        $potentialStackItem->getWidth() <= $itemToPack->getWidth() &&
-                        $potentialStackItem->getLength() <= $itemToPack->getLength()) {
-                        $remainingWeight -= $potentialStackItem->getWeight();
-                        $maxStackDepth -= $potentialStackItem->getDepth();
-                        $packedItems->insert($aItems->extract());
-                    }
-                    else {
-                        break;
-                    }
-                }
+          //allow items to be stacked in place within the same footprint up to current layerdepth
+          $maxStackDepth = $layerDepth - $itemToPack->getDepth();
+          while(!$aItems->isEmpty()) {
+            $potentialStackItem = $aItems->top();
+            if ($potentialStackItem->getDepth() <= $maxStackDepth &&
+                $potentialStackItem->getWeight() <= $remainingWeight &&
+                $potentialStackItem->getWidth() <= $itemToPack->getWidth() &&
+                $potentialStackItem->getLength() <= $itemToPack->getLength()) {
+              $remainingWeight -= $potentialStackItem->getWeight();
+              $maxStackDepth -= $potentialStackItem->getDepth();
+              $packedItems->insert($aItems->extract());
             }
             else {
-                if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0 && $layerWidth > 0 && $layerLength > 0) {
-                    $this->logger->log(LogLevel::DEBUG,  "No more fit in lengthwise, resetting for new row");
-                    $remainingLength += $layerLength;
-                    $remainingWidth -= $layerWidth;
-                    $layerWidth = $layerLength = 0;
-                    continue;
-                }
-
-                if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
-                    $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
-
-                    if (false === $this->allowPartialResults) {
-                        break;
-                    }
-
-                    $this->remainingItems->insert($aItems->extract());
-                }
-                $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
-                $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $aBox->getInnerLength()) : $aBox->getInnerLength();
-                $remainingDepth -= $layerDepth;
-
-                $layerWidth = $layerLength = $layerDepth = 0;
-                $this->logger->log(LogLevel::DEBUG,  "doesn't fit, so starting next vertical layer");
+              break;
             }
+          }
         }
-        $this->logger->log(LogLevel::DEBUG,  "done with this box");
-        return new PackedBox($aBox, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+        else {
+          if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0 && $layerWidth > 0 && $layerLength > 0) {
+            $this->logger->log(LogLevel::DEBUG,  "No more fit in lengthwise, resetting for new row");
+            $remainingLength += $layerLength;
+            $remainingWidth -= $layerWidth;
+            $layerWidth = $layerLength = 0;
+            continue;
+          }
+
+          if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
+            $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
+
+            if (false === $this->allowPartialResults) {
+              break;
+            }
+
+            $this->remainingItems->insert($aItems->extract());
+          }
+          $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
+          $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $aBox->getInnerLength()) : $aBox->getInnerLength();
+          $remainingDepth -= $layerDepth;
+
+          $layerWidth = $layerLength = $layerDepth = 0;
+          $this->logger->log(LogLevel::DEBUG,  "doesn't fit, so starting next vertical layer");
+        }
+      }
+      $this->logger->log(LogLevel::DEBUG,  "done with this box");
+      return new PackedBox($aBox, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
     }
 
     /**
@@ -394,15 +382,15 @@ class Packer implements LoggerAwareInterface {
      */
     public function rotateItem($itemToPack)
     {
-        $rotatedItemWidth = $itemToPack->getLength();
-        $rotatedItemLength = $itemToPack->getDepth();
-        $rotatedItemDepth = $itemToPack->getWidth();
+      $rotatedItemWidth = $itemToPack->getLength();
+      $rotatedItemLength = $itemToPack->getDepth();
+      $rotatedItemDepth = $itemToPack->getWidth();
 
-        $itemToPack->setWidth($rotatedItemWidth);
-        $itemToPack->setLength($rotatedItemLength);
-        $itemToPack->setDepth($rotatedItemDepth);
+      $itemToPack->setWidth($rotatedItemWidth);
+      $itemToPack->setLength($rotatedItemLength);
+      $itemToPack->setDepth($rotatedItemDepth);
 
-        return $itemToPack;
+      return $itemToPack;
     }
 
     /**
@@ -410,7 +398,7 @@ class Packer implements LoggerAwareInterface {
      */
     public function setAllowPartialResults($allowPartialResults)
     {
-        $this->allowPartialResults = $allowPartialResults;
+      $this->allowPartialResults = $allowPartialResults;
     }
 
     /**
@@ -419,7 +407,7 @@ class Packer implements LoggerAwareInterface {
      */
     public function getRemainingItems()
     {
-        return $this->remainingItems;
+      return $this->remainingItems;
     }
 
     /**
@@ -430,7 +418,7 @@ class Packer implements LoggerAwareInterface {
      * @return ItemList items packed into box
      */
     public function packBox(Box $aBox, ItemList $aItems) {
-        $packedBox = $this->packIntoBox($aBox, $aItems);
-        return $packedBox->getItems();
+      $packedBox = $this->packIntoBox($aBox, $aItems);
+      return $packedBox->getItems();
     }
-}
+  }
