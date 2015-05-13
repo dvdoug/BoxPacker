@@ -290,10 +290,10 @@ class Packer implements LoggerAwareInterface {
              * If allowed tip box on side by transferring depth to width,
              */
             if ($isRotateVertical && ($itemWidth !== $itemDepth || $itemLength !== $itemWidth)) {
-                $fitsVerticalRotated = $remainingDepth - $itemDepth;
+                $fitsVertical = $remainingDepth - $itemDepth;
                 $this->logger->log(LogLevel::DEBUG, "Not a Cube");
 
-                if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVerticalRotated >= 0) {
+                if ($fitsSameGap < 0 || $fitsRotatedGap < 0 || $fitsVertical >= 0) {
                     $this->logger->log(LogLevel::DEBUG, "Try vertical rotate item, set depth to length, set width to depth and length to width");
 
                     $itemToPack = $this->rotateItem($itemToPack);
