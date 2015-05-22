@@ -32,6 +32,18 @@
     protected $boxes;
 
     /**
+     * If setAllowPartialResults is true this will return any items that don't fit
+     * @var ItemList
+     */
+    protected $remainingItems;
+
+    /**
+     * If set this will allow remaining items to be returned
+     * @var boolean
+     */
+    protected $allowPartialResults = false;
+
+    /**
      * Constructor
      */
     public function __construct() {
