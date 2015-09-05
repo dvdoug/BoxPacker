@@ -9,6 +9,8 @@
 
   class PackerTest extends \PHPUnit_Framework_TestCase {
 
+
+
     public function testPackBoxThreeItemsFitEasily() {
 
       $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
@@ -418,21 +420,21 @@
     public function getSamples() {
 
       $expected = [];
-      $expectedData = fopen(__DIR__ . '/expected.csv', 'r');
+      $expectedData = fopen(__DIR__ . '/data/expected.csv', 'r');
       while ($data = fgetcsv($expectedData)) {
         $expected[$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
       }
       fclose($expectedData);
 
       $boxes = [];
-      $boxData = fopen(__DIR__ . '/boxes.csv', 'r');
+      $boxData = fopen(__DIR__ . '/data/boxes.csv', 'r');
       while ($data = fgetcsv($boxData)) {
         $boxes[] = new TestBox($data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8]);
       }
       fclose($boxData);
 
       $tests = [];
-      $itemData = fopen(__DIR__ . '/items.csv', 'r');
+      $itemData = fopen(__DIR__ . '/data/items.csv', 'r');
       while ($data = fgetcsv($itemData)) {
         if (isset($items[$data[0]])) {
           $tests[$data[0]]['items'][] = array('qty' => $data[1],
