@@ -88,6 +88,27 @@
     }
 
     /**
+     * Get volume utilisation of the set of packed boxes
+     * @return float
+     */
+    public function getVolumeUtilisation() {
+      $itemVolume = 0;
+      $boxVolume = 0;
+
+      /** @var PackedBox $box */
+      foreach (clone $this as $box) {
+        $boxVolume += $box->getBox()->getInnerVolume();
+
+        /** @var Item $item */
+        foreach (clone $box->getItems() as $item ) {
+          $itemVolume += $item->getVolume();
+        }
+      }
+
+      return round($itemVolume / $boxVolume * 100, 1);
+    }
+
+    /**
      * Do a bulk insert
      * @param array $aBoxes
      */

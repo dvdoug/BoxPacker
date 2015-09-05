@@ -121,6 +121,21 @@
       return $this->remainingWeight;
     }
 
+    /**
+     * Get volume utilisation of the packed box
+     * @return float
+     */
+    public function getVolumeUtilisation() {
+      $itemVolume = 0;
+
+      /** @var Item $item */
+      foreach (clone $this->items as $item) {
+        $itemVolume += $item->getVolume();
+      }
+
+      return round($itemVolume / $this->box->getInnerVolume() * 100, 1);
+    }
+
 
 
     /**
