@@ -262,7 +262,8 @@
         $itemToPack = $aItems->top();
 
         if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
-          break;
+          $aItems->extract();
+          continue;
         }
 
         $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
@@ -324,7 +325,8 @@
 
           if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
             $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
-            break;
+            $aItems->extract();
+            continue;
           }
 
           $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
