@@ -143,9 +143,20 @@
 
         //Find best box of iteration, and remove packed items from unpacked list
         $bestBox = $packedBoxesIteration->top();
-        for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
-          $this->items->extract();
+        $unPackedItems = $this->items->asArray();
+        foreach(clone $bestBox->getItems() as $packedItem) {
+          foreach ($unPackedItems as $unpackedKey => $unpackedItem) {
+            if ($packedItem === $unpackedItem) {
+              unset($unPackedItems[$unpackedKey]);
+              break;
+            }
+          }
         }
+        $unpackedItemList = new ItemList();
+        foreach ($unPackedItems as $unpackedItem) {
+          $unpackedItemList->insert($unpackedItem);
+        }
+        $this->items = $unpackedItemList;
         $packedBoxes->insert($bestBox);
 
       }
