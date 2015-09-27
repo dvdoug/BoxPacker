@@ -436,7 +436,7 @@
       $tests = [];
       $itemData = fopen(__DIR__ . '/data/items.csv', 'r');
       while ($data = fgetcsv($itemData)) {
-        if (isset($items[$data[0]])) {
+        if (isset($tests[$data[0]])) {
           $tests[$data[0]]['items'][] = array('qty' => $data[1],
                                               'name' => $data[2],
                                               'width' => $data[3],
