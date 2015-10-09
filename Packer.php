@@ -10,6 +10,7 @@
   use Psr\Log\LoggerAwareTrait;
   use Psr\Log\LogLevel;
   use Psr\Log\NullLogger;
+  use Psr\Log\LoggerInterface;
 
   /**
    * Actual packer
@@ -33,12 +34,13 @@
 
     /**
      * Constructor
+     * @param LoggerInterface $logger
      */
-    public function __construct() {
+    public function __construct(LoggerInterface $logger = null) {
       $this->items = new ItemList();
       $this->boxes = new BoxList();
 
-      $this->logger = new NullLogger();
+      ($logger) ? $this->setLogger($logger) : $this->setLogger(new NullLogger());
     }
 
     /**
