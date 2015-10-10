@@ -387,6 +387,42 @@
       self::assertEquals(1, $packedBoxes->count());
     }
 
+    public function testPackerPacksRotatedBoxesInNewRow() {
+      $packer = new Packer();
+      $packer->addItem(new TestItem('30x30x10item', 30, 30, 10, 0), 9);
+
+      //Box can hold 7 items in a row and then is completely full, so 9 items won't fit
+      $packer->addBox(new TestBox('30x70x30InternalBox', 30, 70, 30, 0, 30, 70, 30, 0, 1000));
+      $packedBoxes = $packer->pack();
+      self::assertEquals(2, $packedBoxes->count());
+
+      //Box can hold 7 items in a row, plus two more rotated, making 9 items
+      // with a 10x10x30 hole in the corner.
+      //
+      // Overhead view:
+      //
+      // +--+--++
+      // ++++++++
+      // ||||||||
+      // ++++++++
+      //
+      $packer = new Packer();
+      $packer->addItem(new TestItem('30x30x10item', 30, 30, 10, 0), 9);
+      $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 0, 1000));
+      $packedBoxes = $packer->pack();
+      self::assertEquals(1, $packedBoxes->count());
+    }
+
+    public function testPackerDoesNotPackRotatedBoxesInNewRowWhenWidthGreaterThanSpace() {
+      $packer = new Packer();
+      $packer->addItem(new TestItem('30x30x10item', 30, 30, 10, 0), 9);
+
+      //Box can hold 7 items in a row,  but boxes are 10mm deep and gap is 5mm deep
+      //therefore there's length left for two rotated boxes but not enough width
+      $packer->addBox(new TestBox('35x70x30InternalBox', 35, 70, 30, 0, 35, 70, 30, 0, 1000));
+      $packedBoxes = $packer->pack();
+      self::assertEquals(2, $packedBoxes->count());
+    }
 
     /**
      * @dataProvider getSamples
