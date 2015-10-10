@@ -1,7 +1,7 @@
 {
     "name": "dvdoug/boxpacker",
     "description": "An implementation of the 3D bin packing/knapsack problem (aka creating parcels by putting items into boxes)",
-    "keywords": ["packing","binpacking","bin packing","knapsack","box","boxpacking","parcel","parcelpacking","shipping","packaging","boxes"],
+    "keywords": ["packing","binpacking","bin packing","knapsack","box","boxpacking","parcel","parcelpacking","shipping","packaging","boxes", "container"],
     "homepage": "https://github.com/dvdoug/BoxPacker",
     "authors": [
         {
