@@ -18,7 +18,15 @@
      * @see \SplMaxHeap::compare()
      */
     public function compare($aItemA, $aItemB) {
-      return $aItemA->getVolume() - $aItemB->getVolume();
+      if ($aItemA->getVolume() > $aItemB->getVolume()) {
+        return 1;
+      }
+      else if ($aItemA->getVolume() < $aItemB->getVolume()) {
+        return -1;
+      }
+      else {
+        return 0;
+      }
     }
 
     /**

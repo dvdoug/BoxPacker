@@ -18,7 +18,15 @@
      * @see \SplMinHeap::compare()
      */
     public function compare($aBoxA, $aBoxB) {
-      return $aBoxB->getInnerVolume() - $aBoxA->getInnerVolume();
+      if ($aBoxB->getInnerVolume() > $aBoxA->getInnerVolume()) {
+        return 1;
+      }
+      else if ($aBoxB->getInnerVolume() < $aBoxA->getInnerVolume()) {
+        return -1;
+      }
+      else {
+        return 0;
+      }
     }
 
   }
