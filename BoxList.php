@@ -13,6 +13,11 @@
    */
   class BoxList extends \SplMinHeap {
 
+    public function insert($value) {
+      $value = Orient::box($value);
+      parent::insert($value);
+    }
+  	
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
