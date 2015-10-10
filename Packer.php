@@ -178,7 +178,7 @@
 
       $overWeightBoxes = [];
       $underWeightBoxes = [];
-      foreach ($aPackedBoxes as $packedBox) {
+      foreach (clone $aPackedBoxes as $packedBox) {
         $boxWeight = $packedBox->getWeight();
         if ($boxWeight > $targetWeight) {
           $overWeightBoxes[] = $packedBox;
@@ -220,7 +220,13 @@
                 $newHeavierBoxPacker->setBoxes($this->boxes);
                 $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
-                $overWeightBoxes[$o] = $newHeavierBoxPacker->doVolumePacking()->extract();
+                $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
+                if (count($newHeavierBoxes) > 1) { //found an edge case in packing algorithm that *increased* box count
+                  $this->logger->log(LogLevel::INFO,  "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original");
+                  return $aPackedBoxes;
+                }
+
+                $overWeightBoxes[$o] = $newHeavierBoxes->extract();
                 $underWeightBoxes[$u] = $newLighterBox;
 
                 $tryRepack = true; //we did some work, so see if we can do even better
