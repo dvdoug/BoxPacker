@@ -338,7 +338,7 @@
       $packer->addItem(new TestItem('Item 7', 330.2, 127, 101.6, 1));
       $packedBoxes = $packer->pack();
 
-      self::assertEquals(2, $packedBoxes->count());
+      self::assertEquals(1, $packedBoxes->count());
 
     }
 
