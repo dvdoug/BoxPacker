@@ -166,3 +166,6 @@ pip-log.txt
 /vendor
 
 /composer.lock
+
+Vagrantfile
+.vagrant
