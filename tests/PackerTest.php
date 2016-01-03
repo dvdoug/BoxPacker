@@ -338,7 +338,7 @@
       $packer->addItem(new TestItem('Item 7', 330.2, 127, 101.6, 1));
       $packedBoxes = $packer->pack();
 
-      self::assertEquals(2, $packedBoxes->count());
+      self::assertEquals(1, $packedBoxes->count());
 
     }
 
@@ -387,6 +387,38 @@
       self::assertEquals(1, $packedBoxes->count());
     }
 
+    public function testPackerPacksRotatedBoxesInNewRow() {
+      $packer = new Packer();
+      $packer->addItem(new TestItem('30x10x30item', 30, 10, 30, 0), 9);
+
+      //Box can hold 7 items in a row and then is completely full, so 9 items won't fit
+      $packer->addBox(new TestBox('30x70x30InternalBox', 30, 70, 30, 0, 30, 70, 30, 0, 1000));
+      $packedBoxes = $packer->pack();
+      self::assertEquals(2, $packedBoxes->count());
+
+      //Box can hold 7 items in a row, plus two more rotated, making 9 items
+      // with a 10x10x30 hole in the corner.
+      //
+      // Overhead view:
+      //
+      // +--+--++
+      // ++++++++
+      // ||||||||
+      // ++++++++
+      //
+      $packer = new Packer();
+      $packer->addItem(new TestItem('30x10x30item', 30, 10, 30, 0), 9);
+      $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 0, 1000));
+      $packedBoxes = $packer->pack();
+      self::assertEquals(1, $packedBoxes->count());
+
+      // Make sure that it doesn't try to fit in a 10th item
+      $packer = new Packer();
+      $packer->addItem(new TestItem('30x10x30item', 30, 10, 30, 0), 10);
+      $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 0, 1000));
+      $packedBoxes = $packer->pack();
+      self::assertEquals(2, $packedBoxes->count());
+    }
 
     /**
      * @dataProvider getSamples
