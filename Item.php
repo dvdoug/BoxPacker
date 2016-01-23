@@ -4,14 +4,15 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-  namespace DVDoug\BoxPacker;
+namespace DVDoug\BoxPacker;
 
-  /**
-   * An item to be packed
-   * @author Doug Wright
-   * @package BoxPacker
-   */
-  interface Item {
+/**
+ * An item to be packed
+ * @author Doug Wright
+ * @package BoxPacker
+ */
+interface Item
+{
 
     /**
      * Item SKU etc
@@ -42,11 +43,10 @@
      * @return int
      */
     public function getWeight();
-    
+
     /**
      * Item volume in mm^3
      * @return int
      */
     public function getVolume();
-
-  }
+}
