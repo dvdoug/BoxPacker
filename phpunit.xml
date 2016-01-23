@@ -2,7 +2,6 @@
          backupStaticAttributes="false"
          bootstrap="tests/bootstrap.php"
          cacheTokens="false"
-         colors="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
@@ -15,8 +14,8 @@
          stopOnIncomplete="false"
          stopOnSkipped="false"
          testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
-         strict="false"
          verbose="false">
+
 
   <testsuites>
     <testsuite name="BoxPacker">
@@ -34,10 +33,13 @@
     <whitelist processUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">.</directory>
       <exclude>
-        <directory>tests</directory>
-        <directory>vendor</directory>
+        <directory suffix=".php">tests</directory>
+        <directory suffix=".php">vendor</directory>
       </exclude>
     </whitelist>
   </filter>
-</phpunit>
 
+  <php>
+    <ini name="date.timezone" value="UTC"/>
+  </php>
+</phpunit>
