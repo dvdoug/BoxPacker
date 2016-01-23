@@ -8,11 +8,6 @@ php:
   - 7.0
   - hhvm
 
-matrix:
-  allow_failures:
-    - php: 7.0
-    - php: hhvm
-
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
 before_script:
