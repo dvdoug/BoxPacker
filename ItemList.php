@@ -17,11 +17,11 @@
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMaxHeap::compare()
      */
-    public function compare($aItemA, $aItemB) {
-      if ($aItemA->getVolume() > $aItemB->getVolume()) {
+    public function compare($itemA, $itemB) {
+      if ($itemA->getVolume() > $itemB->getVolume()) {
         return 1;
       }
-      else if ($aItemA->getVolume() < $aItemB->getVolume()) {
+      else if ($itemA->getVolume() < $itemB->getVolume()) {
         return -1;
       }
       else {

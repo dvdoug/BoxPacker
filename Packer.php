@@ -43,27 +43,27 @@
 
     /**
      * Add item to be packed
-     * @param Item $aItem
-     * @param int  $aQty
+     * @param Item $item
+     * @param int  $qty
      */
-    public function addItem(Item $aItem, $aQty = 1) {
-      for ($i = 0; $i < $aQty; $i++) {
-        $this->items->insert($aItem);
+    public function addItem(Item $item, $qty = 1) {
+      for ($i = 0; $i < $qty; $i++) {
+        $this->items->insert($item);
       }
-      $this->logger->log(LogLevel::INFO, "added {$aQty} x {$aItem->getDescription()}");
+      $this->logger->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}");
     }
 
     /**
      * Set a list of items all at once
-     * @param \Traversable $aItems
+     * @param \Traversable $items
      */
-    public function setItems($aItems) {
-      if ($aItems instanceof ItemList) {
-        $this->items = clone $aItems;
+    public function setItems($items) {
+      if ($items instanceof ItemList) {
+        $this->items = clone $items;
       }
-      else if (is_array($aItems)) {
+      else if (is_array($items)) {
         $this->items = new ItemList();
-        foreach ($aItems as $item) {
+        foreach ($items as $item) {
           $this->items->insert($item);
         }
       }
@@ -74,19 +74,19 @@
 
     /**
      * Add box size
-     * @param Box $aBox
+     * @param Box $box
      */
-    public function addBox(Box $aBox) {
-      $this->boxes->insert($aBox);
-      $this->logger->log(LogLevel::INFO, "added box {$aBox->getReference()}");
+    public function addBox(Box $box) {
+      $this->boxes->insert($box);
+      $this->logger->log(LogLevel::INFO, "added box {$box->getReference()}");
     }
 
     /**
      * Add a pre-prepared set of boxes all at once
-     * @param BoxList $aBoxList
+     * @param BoxList $boxList
      */
-    public function setBoxes(BoxList $aBoxList) {
-      $this->boxes = clone $aBoxList;
+    public function setBoxes(BoxList $boxList) {
+      $this->boxes = clone $boxList;
     }
 
     /**
@@ -167,19 +167,19 @@
     /**
      * Given a solution set of packed boxes, repack them to achieve optimum weight distribution
      *
-     * @param PackedBoxList $aPackedBoxes
+     * @param PackedBoxList $originalBoxes
      * @return PackedBoxList
      */
-    public function redistributeWeight(PackedBoxList $aPackedBoxes) {
+    public function redistributeWeight(PackedBoxList $originalBoxes) {
 
-      $targetWeight = $aPackedBoxes->getMeanWeight();
-      $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
+      $targetWeight = $originalBoxes->getMeanWeight();
+      $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
       $packedBoxes = new PackedBoxList;
 
       $overWeightBoxes = [];
       $underWeightBoxes = [];
-      foreach (clone $aPackedBoxes as $packedBox) {
+      foreach (clone $originalBoxes as $packedBox) {
         $boxWeight = $packedBox->getWeight();
         if ($boxWeight > $targetWeight) {
           $overWeightBoxes[] = $packedBox;
@@ -231,7 +231,7 @@
                 $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
                 if (count($newHeavierBoxes) > 1) { //found an edge case in packing algorithm that *increased* box count
                   $this->logger->log(LogLevel::INFO,  "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original");
-                  return $aPackedBoxes;
+                  return $originalBoxes;
                 }
 
                 $overWeightBoxes[$o] = $newHeavierBoxes->extract();
@@ -257,26 +257,26 @@
 
     /**
      * Pack as many items as possible into specific given box
-     * @param Box      $aBox
-     * @param ItemList $aItems
+     * @param Box      $box
+     * @param ItemList $items
      * @return PackedBox packed box
      */
-    public function packIntoBox(Box $aBox, ItemList $aItems) {
-      $this->logger->log(LogLevel::DEBUG,  "[EVALUATING BOX] {$aBox->getReference()}");
+    public function packIntoBox(Box $box, ItemList $items) {
+      $this->logger->log(LogLevel::DEBUG,  "[EVALUATING BOX] {$box->getReference()}");
 
       $packedItems = new ItemList;
-      $remainingDepth = $aBox->getInnerDepth();
-      $remainingWeight = $aBox->getMaxWeight() - $aBox->getEmptyWeight();
-      $remainingWidth = $aBox->getInnerWidth();
-      $remainingLength = $aBox->getInnerLength();
+      $remainingDepth = $box->getInnerDepth();
+      $remainingWeight = $box->getMaxWeight() - $box->getEmptyWeight();
+      $remainingWidth = $box->getInnerWidth();
+      $remainingLength = $box->getInnerLength();
 
       $layerWidth = $layerLength = $layerDepth = 0;
-      while(!$aItems->isEmpty()) {
+      while(!$items->isEmpty()) {
 
-        $itemToPack = $aItems->top();
+        $itemToPack = $items->top();
 
         if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
-          $aItems->extract();
+          $items->extract();
           continue;
         }
 
@@ -292,12 +292,12 @@
 
         if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
-          $packedItems->insert($aItems->extract());
+          $packedItems->insert($items->extract());
           $remainingWeight -= $itemToPack->getWeight();
 
           if ($fitsRotatedGap < 0 ||
               ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-              ($itemWidth <= $remainingWidth && !$aItems->isEmpty() && $aItems->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
+              ($itemWidth <= $remainingWidth && !$items->isEmpty() && $items->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
             $this->logger->log(LogLevel::DEBUG,  "fits (better) unrotated");
             $remainingLength -= $itemLength;
             $layerLength += $itemLength;
@@ -313,15 +313,15 @@
 
           //allow items to be stacked in place within the same footprint up to current layerdepth
           $maxStackDepth = $layerDepth - $itemToPack->getDepth();
-          while(!$aItems->isEmpty()) {
-            $potentialStackItem = $aItems->top();
+          while(!$items->isEmpty()) {
+            $potentialStackItem = $items->top();
             if ($potentialStackItem->getDepth() <= $maxStackDepth &&
                 $potentialStackItem->getWeight() <= $remainingWeight &&
                 $potentialStackItem->getWidth() <= $itemToPack->getWidth() &&
                 $potentialStackItem->getLength() <= $itemToPack->getLength()) {
               $remainingWeight -= $potentialStackItem->getWeight();
               $maxStackDepth -= $potentialStackItem->getDepth();
-              $packedItems->insert($aItems->extract());
+              $packedItems->insert($items->extract());
             }
             else {
               break;
@@ -339,12 +339,12 @@
 
           if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
             $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
-            $aItems->extract();
+            $items->extract();
             continue;
           }
 
-          $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
-          $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $aBox->getInnerLength()) : $aBox->getInnerLength();
+          $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $box->getInnerWidth()) : $box->getInnerWidth();
+          $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $box->getInnerLength()) : $box->getInnerLength();
           $remainingDepth -= $layerDepth;
 
           $layerWidth = $layerLength = $layerDepth = 0;
@@ -352,18 +352,18 @@
         }
       }
       $this->logger->log(LogLevel::DEBUG,  "done with this box");
-      return new PackedBox($aBox, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+      return new PackedBox($box, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
     }
 
     /**
      * Pack as many items as possible into specific given box
      * @deprecated
-     * @param Box      $aBox
-     * @param ItemList $aItems
+     * @param Box      $box
+     * @param ItemList $items
      * @return ItemList items packed into box
      */
-    public function packBox(Box $aBox, ItemList $aItems) {
-      $packedBox = $this->packIntoBox($aBox, $aItems);
+    public function packBox(Box $box, ItemList $items) {
+      $packedBox = $this->packIntoBox($box, $items);
       return $packedBox->getItems();
     }
   }

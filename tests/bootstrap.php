@@ -9,16 +9,16 @@
 
   class TestBox implements Box {
 
-    public function __construct($aReference, $aOuterWidth,$aOuterLength,$aOuterDepth,$aEmptyWeight,$aInnerWidth,$aInnerLength,$aInnerDepth,$aMaxWeight) {
-      $this->reference = $aReference;
-      $this->outerWidth = $aOuterWidth;
-      $this->outerLength = $aOuterLength;
-      $this->outerDepth = $aOuterDepth;
-      $this->emptyWeight = $aEmptyWeight;
-      $this->innerWidth = $aInnerWidth;
-      $this->innerLength = $aInnerLength;
-      $this->innerDepth = $aInnerDepth;
-      $this->maxWeight = $aMaxWeight;
+    public function __construct($reference,$outerWidth,$outerLength,$outerDepth,$emptyWeight,$innerWidth,$innerLength,$innerDepth,$maxWeight) {
+      $this->reference = $reference;
+      $this->outerWidth = $outerWidth;
+      $this->outerLength = $outerLength;
+      $this->outerDepth = $outerDepth;
+      $this->emptyWeight = $emptyWeight;
+      $this->innerWidth = $innerWidth;
+      $this->innerLength = $innerLength;
+      $this->innerDepth = $innerDepth;
+      $this->maxWeight = $maxWeight;
       $this->innerVolume = $this->innerWidth * $this->innerLength * $this->innerDepth;
     }
 
@@ -65,12 +65,12 @@
 
   class TestItem implements Item {
 
-    public function __construct($aDescription,$aWidth,$aLength,$aDepth,$aWeight) {
-      $this->description = $aDescription;
-      $this->width = $aWidth;
-      $this->length = $aLength;
-      $this->depth = $aDepth;
-      $this->weight = $aWeight;
+    public function __construct($description,$width,$length,$depth,$weight) {
+      $this->description = $description;
+      $this->width = $width;
+      $this->length = $length;
+      $this->depth = $depth;
+      $this->weight = $weight;
       $this->volume = $this->width * $this->length * $this->depth;
     }
 

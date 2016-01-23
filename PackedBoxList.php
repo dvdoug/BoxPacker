@@ -29,13 +29,13 @@
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
      */
-    public function compare($aBoxA, $aBoxB) {
-      $choice = $aBoxA->getItems()->count() - $aBoxB->getItems()->count();
+    public function compare($boxA, $boxB) {
+      $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
       if ($choice === 0) {
-        $choice = $aBoxB->getBox()->getInnerVolume() - $aBoxA->getBox()->getInnerVolume();
+        $choice = $boxB->getBox()->getInnerVolume() - $boxA->getBox()->getInnerVolume();
       }
       if ($choice === 0) {
-        $choice = $aBoxA->getWeight() - $aBoxB->getWeight();
+        $choice = $boxA->getWeight() - $boxB->getWeight();
       }
       return $choice;
     }
@@ -44,13 +44,13 @@
      * Reversed version of compare
      * @return int
      */
-    public function reverseCompare($aBoxA, $aBoxB) {
-      $choice = $aBoxB->getItems()->count() - $aBoxA->getItems()->count();
+    public function reverseCompare($boxA, $boxB) {
+      $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
       if ($choice === 0) {
-        $choice = $aBoxA->getBox()->getInnerVolume() - $aBoxB->getBox()->getInnerVolume();
+        $choice = $boxA->getBox()->getInnerVolume() - $boxB->getBox()->getInnerVolume();
       }
       if ($choice === 0) {
-        $choice = $aBoxB->getWeight() - $aBoxA->getWeight();
+        $choice = $boxB->getWeight() - $boxA->getWeight();
       }
       return $choice;
     }
@@ -116,10 +116,10 @@
 
     /**
      * Do a bulk insert
-     * @param array $aBoxes
+     * @param array $boxes
      */
-    public function insertFromArray(array $aBoxes) {
-      foreach ($aBoxes as $box) {
+    public function insertFromArray(array $boxes) {
+      foreach ($boxes as $box) {
         $this->insert($box);
       }
     }

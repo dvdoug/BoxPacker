@@ -17,11 +17,11 @@
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
      */
-    public function compare($aBoxA, $aBoxB) {
-      if ($aBoxB->getInnerVolume() > $aBoxA->getInnerVolume()) {
+    public function compare($boxA, $boxB) {
+      if ($boxB->getInnerVolume() > $boxA->getInnerVolume()) {
         return 1;
       }
-      else if ($aBoxB->getInnerVolume() < $aBoxA->getInnerVolume()) {
+      else if ($boxB->getInnerVolume() < $boxA->getInnerVolume()) {
         return -1;
       }
       else {

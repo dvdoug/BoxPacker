@@ -140,20 +140,20 @@
 
     /**
      * Constructor
-     * @param Box      $aBox
-     * @param ItemList $aItemList
-     * @param int      $aRemainingWidth
-     * @param int      $aRemainingLength
-     * @param int      $aRemainingDepth
-     * @param int      $aRemainingWeight
+     * @param Box      $box
+     * @param ItemList $itemList
+     * @param int      $remainingWidth
+     * @param int      $remainingLength
+     * @param int      $remainingDepth
+     * @param int      $remainingWeight
      */
-    public function __construct(Box $aBox, ItemList $aItemList, $aRemainingWidth, $aRemainingLength, $aRemainingDepth, $aRemainingWeight) {
-      $this->box = $aBox;
-      $this->items = $aItemList;
-      $this->remainingWidth = $aRemainingWidth;
-      $this->remainingLength = $aRemainingLength;
-      $this->remainingDepth = $aRemainingDepth;
-      $this->remainingWeight = $aRemainingWeight;
+    public function __construct(Box $box, ItemList $itemList, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight) {
+      $this->box = $box;
+      $this->items = $itemList;
+      $this->remainingWidth = $remainingWidth;
+      $this->remainingLength = $remainingLength;
+      $this->remainingDepth = $remainingDepth;
+      $this->remainingWeight = $remainingWeight;
     }
 
   }
