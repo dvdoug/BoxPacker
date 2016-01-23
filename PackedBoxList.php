@@ -34,6 +34,9 @@
       if ($choice === 0) {
         $choice = $aBoxB->getBox()->getInnerVolume() - $aBoxA->getBox()->getInnerVolume();
       }
+      if ($choice === 0) {
+        $choice = $aBoxA->getWeight() - $aBoxB->getWeight();
+      }
       return $choice;
     }
 
@@ -45,6 +48,9 @@
       $choice = $aBoxB->getItems()->count() - $aBoxA->getItems()->count();
       if ($choice === 0) {
         $choice = $aBoxA->getBox()->getInnerVolume() - $aBoxB->getBox()->getInnerVolume();
+      }
+      if ($choice === 0) {
+        $choice = $aBoxB->getWeight() - $aBoxA->getWeight();
       }
       return $choice;
     }
