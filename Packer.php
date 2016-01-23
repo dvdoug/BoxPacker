@@ -171,6 +171,7 @@
      * @return PackedBoxList
      */
     public function redistributeWeight(PackedBoxList $aPackedBoxes) {
+
       $targetWeight = $aPackedBoxes->getMeanWeight();
       $this->logger->log(LogLevel::DEBUG,  "repacking for weight distribution, weight variance {$aPackedBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
@@ -196,12 +197,16 @@
         $this->logger->log(LogLevel::DEBUG,  'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
 
         foreach ($underWeightBoxes as $u => $underWeightBox) {
+          $this->logger->log(LogLevel::DEBUG,  'Underweight Box ' . $u);
           foreach ($overWeightBoxes as $o => $overWeightBox) {
+            $this->logger->log(LogLevel::DEBUG,  'Overweight Box ' . $o);
             $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
             //For each item in the heavier box, try and move it to the lighter one
             foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
+              $this->logger->log(LogLevel::DEBUG,  'Overweight Item ' . $oi);
               if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
+                $this->logger->log(LogLevel::DEBUG,  'Skipping item for hindering weight distribution');
                 continue; //skip if moving this item would hinder rather than help weight distribution
               }
 
@@ -211,15 +216,18 @@
               $newLighterBoxPacker = new Packer(); //we may need a bigger box
               $newLighterBoxPacker->setBoxes($this->boxes);
               $newLighterBoxPacker->setItems($newItemsForLighterBox);
+              $this->logger->log(LogLevel::INFO,  "[ATTEMPTING TO PACK LIGHTER BOX]");
               $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
 
               if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
+                $this->logger->log(LogLevel::DEBUG,  'New item fits');
                 unset($overWeightBoxItems[$oi]); //now packed in different box
 
                 $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
                 $newHeavierBoxPacker->setBoxes($this->boxes);
                 $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
+                $this->logger->log(LogLevel::INFO,  "[ATTEMPTING TO PACK HEAVIER BOX]");
                 $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
                 if (count($newHeavierBoxes) > 1) { //found an edge case in packing algorithm that *increased* box count
                   $this->logger->log(LogLevel::INFO,  "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original");
