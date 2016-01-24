@@ -319,8 +319,8 @@ class Packer implements LoggerAwareInterface
                 $maxStackDepth = $layerDepth - $itemToPack->getDepth();
                 while (!$items->isEmpty()) {
                     if ($this->canStackItemInLayer($itemToPack, $items->top(), $maxStackDepth, $remainingWeight)) {
-                        $remainingWeight -= $nextItem->getWeight();
-                        $maxStackDepth -= $nextItem->getDepth();
+                        $remainingWeight -= $items->top()->getWeight();
+                        $maxStackDepth -= $items->top()->getDepth();
                         $packedItems->insert($items->extract());
                     } else {
                         break;
