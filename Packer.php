@@ -317,14 +317,10 @@ class Packer implements LoggerAwareInterface
 
                 //allow items to be stacked in place within the same footprint up to current layerdepth
                 $maxStackDepth = $layerDepth - $itemToPack->getDepth();
-                while (!$items->isEmpty()) {
-                    if ($this->canStackItemInLayer($itemToPack, $items->top(), $maxStackDepth, $remainingWeight)) {
-                        $remainingWeight -= $items->top()->getWeight();
-                        $maxStackDepth -= $items->top()->getDepth();
-                        $packedItems->insert($items->extract());
-                    } else {
-                        break;
-                    }
+                while (!$items->isEmpty() && $this->canStackItemInLayer($itemToPack, $items->top(), $maxStackDepth, $remainingWeight)) {
+                    $remainingWeight -= $items->top()->getWeight();
+                    $maxStackDepth -= $items->top()->getDepth();
+                    $packedItems->insert($items->extract());
                 }
             } else {
                 if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0 && $layerWidth > 0 && $layerLength > 0) {
@@ -333,9 +329,7 @@ class Packer implements LoggerAwareInterface
                     $remainingWidth -= $layerWidth;
                     $layerWidth = $layerLength = 0;
                     continue;
-                }
-
-                if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
+                } elseif ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
                     $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
                     $items->extract();
                     continue;
