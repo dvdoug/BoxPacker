@@ -58,19 +58,17 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Set a list of items all at once
-     * @param \Traversable $items
+     * @param \Traversable|array $items
      */
     public function setItems($items)
     {
         if ($items instanceof ItemList) {
             $this->items = clone $items;
-        } elseif (is_array($items)) {
+        } else {
             $this->items = new ItemList();
             foreach ($items as $item) {
                 $this->items->insert($item);
             }
-        } else {
-            throw new \RuntimeException('Not a valid list of items');
         }
     }
 
