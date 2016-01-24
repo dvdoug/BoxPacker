@@ -21,12 +21,6 @@ class PackedBoxList extends \SplMinHeap
     protected $meanWeight;
 
     /**
-     * Variance in weight between boxes
-     * @var float
-     */
-    protected $weightVariance;
-
-    /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
      */
@@ -83,18 +77,14 @@ class PackedBoxList extends \SplMinHeap
      */
     public function getWeightVariance()
     {
-
-        if (!is_null($this->weightVariance)) {
-            return $this->weightVariance;
-        }
-
         $mean = $this->getMeanWeight();
 
+        $weightVariance = 0;
         foreach (clone $this as $box) {
-            $this->weightVariance += pow($box->getWeight() - $mean, 2);
+            $weightVariance += pow($box->getWeight() - $mean, 2);
         }
 
-        return $this->weightVariance /= $this->count();
+        return $weightVariance / $this->count();
 
     }
 
