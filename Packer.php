@@ -294,10 +294,7 @@ class Packer implements LoggerAwareInterface
             $itemWidth = $itemToPack->getWidth();
             $itemLength = $itemToPack->getLength();
 
-            $fitsSameGap = $this->fitsSameGap($itemToPack, $remainingWidth, $remainingLength);
-            $fitsRotatedGap = $this->fitsRotatedGap($itemToPack, $remainingWidth, $remainingLength);
-
-            if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
+            if ($this->fitsGap($itemToPack, $remainingWidth, $remainingLength)) {
 
                 $packedItems->insert($items->extract());
                 $remainingWeight -= $itemToPack->getWeight();
@@ -395,6 +392,18 @@ class Packer implements LoggerAwareInterface
         return !!($fitsRotatedGap < 0 ||
         ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
         ($item->getWidth() <= $remainingWidth && $nextItem == $item && $remainingLength >= 2 * $item->getLength()));
+    }
+
+    /**
+     * Does item fit in specified gap
+     * @param Item $item
+     * @param $remainingWidth
+     * @param $remainingLength
+     * @return bool
+     */
+    protected function fitsGap(Item $item, $remainingWidth, $remainingLength) {
+        return $this->fitsSameGap($item, $remainingWidth, $remainingLength) >= 0 ||
+               $this->fitsRotatedGap($item, $remainingWidth, $remainingLength) >= 0;
     }
 
     /**
