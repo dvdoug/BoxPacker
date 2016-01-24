@@ -430,17 +430,4 @@ class Packer implements LoggerAwareInterface
     protected function isLayerStarted($layerWidth, $layerLength, $layerDepth) {
         return $layerWidth > 0 && $layerLength > 0 && $layerDepth > 0;
     }
-
-    /**
-     * Pack as many items as possible into specific given box
-     * @deprecated
-     * @param Box      $box
-     * @param ItemList $items
-     * @return ItemList items packed into box
-     */
-    public function packBox(Box $box, ItemList $items)
-    {
-        $packedBox = $this->packIntoBox($box, $items);
-        return $packedBox->getItems();
-    }
 }
