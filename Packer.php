@@ -293,17 +293,16 @@ class Packer implements LoggerAwareInterface
             $itemWidth = $itemToPack->getWidth();
             $itemLength = $itemToPack->getLength();
 
-            $fitsSameGap = min($remainingWidth - $itemWidth, $remainingLength - $itemLength);
-            $fitsRotatedGap = min($remainingWidth - $itemLength, $remainingLength - $itemWidth);
+            $fitsSameGap = $this->fitsSameGap($itemToPack, $remainingWidth, $remainingLength);
+            $fitsRotatedGap = $this->fitsRotatedGap($itemToPack, $remainingWidth, $remainingLength);
 
             if ($fitsSameGap >= 0 || $fitsRotatedGap >= 0) {
 
                 $packedItems->insert($items->extract());
                 $remainingWeight -= $itemToPack->getWeight();
 
-                if ($fitsRotatedGap < 0 ||
-                    ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-                    ($itemWidth <= $remainingWidth && !$items->isEmpty() && $items->top() == $itemToPack && $remainingLength >= 2 * $itemLength)) {
+                $nextItem = !$items->isEmpty() ? $items->top() : null;
+                if ($this->fitsBetterRotated($itemToPack, $nextItem, $remainingWidth, $remainingLength)) {
                     $this->logger->log(LogLevel::DEBUG, "fits (better) unrotated");
                     $remainingLength -= $itemLength;
                     $layerLength += $itemLength;
@@ -319,13 +318,9 @@ class Packer implements LoggerAwareInterface
                 //allow items to be stacked in place within the same footprint up to current layerdepth
                 $maxStackDepth = $layerDepth - $itemToPack->getDepth();
                 while (!$items->isEmpty()) {
-                    $potentialStackItem = $items->top();
-                    if ($potentialStackItem->getDepth() <= $maxStackDepth &&
-                        $potentialStackItem->getWeight() <= $remainingWeight &&
-                        $potentialStackItem->getWidth() <= $itemToPack->getWidth() &&
-                        $potentialStackItem->getLength() <= $itemToPack->getLength()) {
-                        $remainingWeight -= $potentialStackItem->getWeight();
-                        $maxStackDepth -= $potentialStackItem->getDepth();
+                    if ($this->canStackItemInLayer($itemToPack, $items->top(), $maxStackDepth, $remainingWeight)) {
+                        $remainingWeight -= $nextItem->getWeight();
+                        $maxStackDepth -= $nextItem->getDepth();
                         $packedItems->insert($items->extract());
                     } else {
                         break;
@@ -356,6 +351,62 @@ class Packer implements LoggerAwareInterface
         }
         $this->logger->log(LogLevel::DEBUG, "done with this box");
         return new PackedBox($box, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+    }
+
+    /**
+     * Figure out space left for next item if we pack this one in it's regular orientation
+     * @param Item $item
+     * @param int $remainingWidth
+     * @param int $remainingLength
+     * @return int
+     */
+    protected function fitsSameGap(Item $item, $remainingWidth, $remainingLength) {
+        return min($remainingWidth - $item->getWidth(), $remainingLength - $item->getLength());
+    }
+
+    /**
+     * Figure out space left for next item if we pack this one rotated by 90deg
+     * @param Item $item
+     * @param int $remainingWidth
+     * @param int $remainingLength
+     * @return int
+     */
+    protected function fitsRotatedGap(Item $item, $remainingWidth, $remainingLength) {
+        return min($remainingWidth - $item->getLength(), $remainingLength - $item->getWidth());
+    }
+
+    /**
+     * @param Item $item
+     * @param Item|null $nextItem
+     * @param $remainingWidth
+     * @param $remainingLength
+     * @return bool
+     */
+    protected function fitsBetterRotated(Item $item, Item $nextItem = null, $remainingWidth, $remainingLength) {
+
+        $fitsSameGap = $this->fitsSameGap($item, $remainingWidth, $remainingLength);
+        $fitsRotatedGap = $this->fitsRotatedGap($item, $remainingWidth, $remainingLength);
+
+        return !!($fitsRotatedGap < 0 ||
+        ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
+        ($item->getWidth() <= $remainingWidth && $nextItem == $item && $remainingLength >= 2 * $item->getLength()));
+    }
+
+    /**
+     * Figure out if we can stack the next item vertically on top of this rather than side by side
+     * Used when we've packed a tall item, and have just put a shorter one next to it
+     * @param Item $item
+     * @param Item $nextItem
+     * @param $maxStackDepth
+     * @param $remainingWeight
+     * @return bool
+     */
+    protected function canStackItemInLayer(Item $item, Item $nextItem, $maxStackDepth, $remainingWeight)
+    {
+        return $nextItem->getDepth() <= $maxStackDepth &&
+               $nextItem->getWeight() <= $remainingWeight &&
+               $nextItem->getWidth() <= $item->getWidth() &&
+               $nextItem->getLength() <= $item->getLength();
     }
 
     /**
