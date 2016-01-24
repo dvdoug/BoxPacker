@@ -324,7 +324,7 @@ class Packer implements LoggerAwareInterface
                     $packedItems->insert($items->extract());
                 }
             } else {
-                if ($remainingWidth >= min($itemWidth, $itemLength) && $layerDepth > 0 && $layerWidth > 0 && $layerLength > 0) {
+                if ($remainingWidth >= min($itemWidth, $itemLength) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
                     $this->logger->log(LogLevel::DEBUG, "No more fit in lengthwise, resetting for new row");
                     $remainingLength += $layerLength;
                     $remainingWidth -= $layerWidth;
@@ -412,6 +412,16 @@ class Packer implements LoggerAwareInterface
                $nextItem->getWeight() <= $remainingWeight &&
                $nextItem->getWidth() <= $item->getWidth() &&
                $nextItem->getLength() <= $item->getLength();
+    }
+
+    /**
+     * @param $layerWidth
+     * @param $layerLength
+     * @param $layerDepth
+     * @return bool
+     */
+    protected function isLayerStarted($layerWidth, $layerLength, $layerDepth) {
+        return $layerWidth > 0 && $layerLength > 0 && $layerDepth > 0;
     }
 
     /**
