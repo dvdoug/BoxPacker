@@ -281,7 +281,8 @@ class Packer implements LoggerAwareInterface
 
             $itemToPack = $items->top();
 
-            if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
+            //skip items that are simply too large
+            if ($this->isItemTooLargeForBox($itemToPack, $remainingDepth, $remainingWeight)) {
                 $items->extract();
                 continue;
             }
@@ -345,6 +346,16 @@ class Packer implements LoggerAwareInterface
         }
         $this->logger->log(LogLevel::DEBUG, "done with this box");
         return new PackedBox($box, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+    }
+
+    /**
+     * @param Item $item
+     * @param int $remainingDepth
+     * @param int $remainingWeight
+     * @return bool
+     */
+    protected function isItemTooLargeForBox(Item $item, $remainingDepth, $remainingWeight) {
+        return $item->getDepth() > $remainingDepth || $item->getWeight() > $remainingWeight;
     }
 
     /**
