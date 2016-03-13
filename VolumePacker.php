@@ -80,7 +80,7 @@ class VolumePacker implements LoggerAwareInterface
                 $remainingWeight -= $itemToPack->getWeight();
 
                 $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
-                if ($this->fitsBetterRotated($itemToPack, $nextItem, $remainingWidth, $remainingLength)) {
+                if ($this->fitsBetterUnrotated($itemToPack, $nextItem, $remainingWidth, $remainingLength)) {
                     $this->logger->log(LogLevel::DEBUG, "fits (better) unrotated");
                     $remainingLength -= $itemLength;
                     $layerLength += $itemLength;
@@ -164,7 +164,7 @@ class VolumePacker implements LoggerAwareInterface
      * @param $remainingLength
      * @return bool
      */
-    protected function fitsBetterRotated(Item $item, Item $nextItem = null, $remainingWidth, $remainingLength) {
+    protected function fitsBetterUnrotated(Item $item, Item $nextItem = null, $remainingWidth, $remainingLength) {
 
         $fitsSameGap = $this->fitsSameGap($item, $remainingWidth, $remainingLength);
         $fitsRotatedGap = $this->fitsRotatedGap($item, $remainingWidth, $remainingLength);
