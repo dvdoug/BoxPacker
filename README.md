@@ -115,7 +115,7 @@ disable Xdebug when doing so - in my experience the unit tests take 4.5x longer 
 Requirements
 ------------
 
-* PHP version 5.4 or higher
+* PHP version 5.4 or higher (including PHP7 and HHVM)
 
 License
 -------
