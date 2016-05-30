@@ -13,9 +13,9 @@ class ItemListTest extends \PHPUnit_Framework_TestCase
     function testCompare()
     {
 
-        $box1 = new TestItem('Small', 20, 20, 2, 100);
-        $box2 = new TestItem('Large', 200, 200, 20, 1000);
-        $box3 = new TestItem('Medium', 100, 100, 10, 500);
+        $box1 = new TestItem('Small', 20, 20, 2, 100, true);
+        $box2 = new TestItem('Large', 200, 200, 20, 1000, true);
+        $box3 = new TestItem('Medium', 100, 100, 10, 500, true);
 
         $list = new ItemList;
         $list->insert($box1);

@@ -12,7 +12,7 @@ class PackedBoxTest extends \PHPUnit_Framework_TestCase
     function testGetters()
     {
         $box = new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000);
-        $item = new TestItem('Item', 230, 330, 6, 320);
+        $item = new TestItem('Item', 230, 330, 6, 320, true);
 
         $boxItems = new ItemList();
         $boxItems->insert($item);
@@ -28,7 +28,7 @@ class PackedBoxTest extends \PHPUnit_Framework_TestCase
     function testVolumeUtilisation()
     {
         $box = new TestBox('Box', 10, 10, 10, 10, 10, 10, 10, 10);
-        $item = new TestItem('Item', 5, 10, 10, 10);
+        $item = new TestItem('Item', 5, 10, 10, 10, true);
 
         $boxItems = new ItemList();
         $boxItems->insert($item);

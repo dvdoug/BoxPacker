@@ -17,11 +17,11 @@ class WeightRedistributorTest extends \PHPUnit_Framework_TestCase
         $boxList = new BoxList();
         $boxList->insert($box);
 
-        $item1 = new TestItem('Item #1', 230, 330, 6, 320);
-        $item2 = new TestItem('Item #2', 210, 297, 5, 187);
-        $item3 = new TestItem('Item #3', 210, 297, 11, 674);
-        $item4 = new TestItem('Item #4', 210, 297, 3, 82);
-        $item5 = new TestItem('Item #5', 206, 295, 4, 217);
+        $item1 = new TestItem('Item #1', 230, 330, 6, 320, true);
+        $item2 = new TestItem('Item #2', 210, 297, 5, 187, true);
+        $item3 = new TestItem('Item #3', 210, 297, 11, 674, true);
+        $item4 = new TestItem('Item #4', 210, 297, 3, 82, true);
+        $item5 = new TestItem('Item #5', 206, 295, 4, 217, true);
 
         $box1Items = new ItemList();
         $box1Items->insert(clone $item1);
