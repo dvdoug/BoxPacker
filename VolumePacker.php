@@ -174,23 +174,6 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * @param Item $item
-     * @param Item|null $nextItem
-     * @param $widthLeft
-     * @param $lengthLeft
-     * @return bool
-     */
-    protected function fitsBetterUnrotated(Item $item, Item $nextItem = null, $widthLeft, $lengthLeft) {
-
-        $fitsSameGap = $this->fitsSameGap($item, $widthLeft, $lengthLeft);
-        $fitsRotatedGap = $this->fitsRotatedGap($item, $widthLeft, $lengthLeft);
-
-        return !!($fitsRotatedGap < 0 ||
-        ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-        ($item->getWidth() <= $widthLeft && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()));
-    }
-
-    /**
      * Figure out if we can stack the next item vertically on top of this rather than side by side
      * Used when we've packed a tall item, and have just put a shorter one next to it
      * @param Item $item
