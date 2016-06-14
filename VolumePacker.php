@@ -61,54 +61,46 @@ class VolumePacker implements LoggerAwareInterface
 
             $itemToPack = $this->items->extract();
 
-            //skip items that are simply too large
-            if ($this->isItemTooLargeForBox($itemToPack, $remainingDepth, $remainingWeight)) {
+            //skip items that are simply too heavy
+            if ($itemToPack->getWeight() > $remainingWeight) {
                 continue;
             }
 
-            $this->logger->log(LogLevel::DEBUG, "evaluating item {$itemToPack->getDescription()}");
-            $this->logger->log(LogLevel::DEBUG, "remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
-            $this->logger->log(LogLevel::DEBUG, "layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
+            $this->logger->debug("evaluating item {$itemToPack->getDescription()}");
+            $this->logger->debug("remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
+            $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 
-            $itemWidth = $itemToPack->getWidth();
-            $itemLength = $itemToPack->getLength();
+            $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
+            $orientatedItem = $this->findBestOrientation($itemToPack, $nextItem, $remainingWidth, $remainingLength, $remainingDepth);
 
-            if ($this->fitsGap($itemToPack, $remainingWidth, $remainingLength)) {
+            if ($orientatedItem) {
 
-                $packedItems->insert($itemToPack);
+                $packedItems->insert($orientatedItem->getItem());
                 $remainingWeight -= $itemToPack->getWeight();
 
-                $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
-                if ($this->fitsBetterUnrotated($itemToPack, $nextItem, $remainingWidth, $remainingLength)) {
-                    $this->logger->log(LogLevel::DEBUG, "fits (better) unrotated");
-                    $remainingLength -= $itemLength;
-                    $layerLength += $itemLength;
-                    $layerWidth = max($itemWidth, $layerWidth);
-                } else {
-                    $this->logger->log(LogLevel::DEBUG, "fits (better) rotated");
-                    $remainingLength -= $itemWidth;
-                    $layerLength += $itemWidth;
-                    $layerWidth = max($itemLength, $layerWidth);
-                }
-                $layerDepth = max($layerDepth, $itemToPack->getDepth()); //greater than 0, items will always be less deep
+                $remainingLength -= $orientatedItem->getLength();
+                $layerLength += $orientatedItem->getLength();
+                $layerWidth = max($orientatedItem->getWidth(), $layerWidth);
+
+                $layerDepth = max($layerDepth, $orientatedItem->getDepth()); //greater than 0, items will always be less deep
 
                 //allow items to be stacked in place within the same footprint up to current layerdepth
-                $maxStackDepth = $layerDepth - $itemToPack->getDepth();
+                $maxStackDepth = $layerDepth - $orientatedItem->getDepth();
                 while (!$this->items->isEmpty() && $this->canStackItemInLayer($itemToPack, $this->items->top(), $maxStackDepth, $remainingWeight)) {
                     $remainingWeight -= $this->items->top()->getWeight();
-                    $maxStackDepth -= $this->items->top()->getDepth();
+                    $maxStackDepth -= $this->items->top()->getDepth(); // XXX no attempt at best fit
                     $packedItems->insert($this->items->extract());
                 }
             } else {
-                if ($remainingWidth >= min($itemWidth, $itemLength) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
-                    $this->logger->log(LogLevel::DEBUG, "No more fit in lengthwise, resetting for new row");
+                if ($remainingWidth >= min($itemToPack->getWidth(), $itemToPack->getLength()) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
+                    $this->logger->debug("No more fit in lengthwise, resetting for new row");
                     $remainingLength += $layerLength;
                     $remainingWidth -= $layerWidth;
                     $layerWidth = $layerLength = 0;
                     $this->items->insert($itemToPack);
                     continue;
-                } elseif ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
-                    $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
+                } elseif ($remainingLength < min($itemToPack->getWidth(), $itemToPack->getLength()) || $layerDepth == 0) {
+                    $this->logger->debug("doesn't fit on layer even when empty");
                     continue;
                 }
 
@@ -123,16 +115,6 @@ class VolumePacker implements LoggerAwareInterface
         }
         $this->logger->log(LogLevel::DEBUG, "done with this box");
         return new PackedBox($this->box, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
-    }
-
-    /**
-     * @param Item $item
-     * @param int $remainingDepth
-     * @param int $remainingWeight
-     * @return bool
-     */
-    protected function isItemTooLargeForBox(Item $item, $remainingDepth, $remainingWeight) {
-        return $item->getDepth() > $remainingDepth || $item->getWeight() > $remainingWeight;
     }
 
     /**
@@ -158,6 +140,40 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
+     * Get the best orientation for an item
+     * @param Item $item
+     * @param Item|null $nextItem
+     * @param int $remainingWidth
+     * @param int $remainingLength
+     * @param int $remainingDepth
+     * @return bool|OrientatedItem
+     */
+    protected function findBestOrientation(Item $item, Item $nextItem = null, $remainingWidth, $remainingLength, $remainingDepth) {
+
+        $fitsSameGap = $this->fitsSameGap($item, $remainingWidth, $remainingLength);
+        $fitsRotatedGap = $this->fitsRotatedGap($item, $remainingWidth, $remainingLength);
+        $fitsDepth = $item->getDepth() <= $remainingDepth;
+
+        $fitsAtAll = $fitsDepth && ($fitsSameGap >= 0 || $fitsRotatedGap >= 0);
+
+        if (!$fitsAtAll) {
+            return false;
+        }
+
+        $betterUnRotated = !!($fitsRotatedGap < 0 ||
+            ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
+            ($item->getWidth() <= $remainingWidth && $nextItem == $item && $remainingLength >= 2 * $item->getLength()));
+
+        if ($betterUnRotated) {
+            $this->logger->debug("fits (better) unrotated");
+            return new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
+        } else {
+            $this->logger->debug("fits (better) rotated");
+            return new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
+        }
+    }
+
+    /**
      * @param Item $item
      * @param Item|null $nextItem
      * @param $remainingWidth
@@ -172,18 +188,6 @@ class VolumePacker implements LoggerAwareInterface
         return !!($fitsRotatedGap < 0 ||
         ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
         ($item->getWidth() <= $remainingWidth && $nextItem == $item && $remainingLength >= 2 * $item->getLength()));
-    }
-
-    /**
-     * Does item fit in specified gap
-     * @param Item $item
-     * @param $remainingWidth
-     * @param $remainingLength
-     * @return bool
-     */
-    protected function fitsGap(Item $item, $remainingWidth, $remainingLength) {
-        return $this->fitsSameGap($item, $remainingWidth, $remainingLength) >= 0 ||
-               $this->fitsRotatedGap($item, $remainingWidth, $remainingLength) >= 0;
     }
 
     /**
