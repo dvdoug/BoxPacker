@@ -48,13 +48,13 @@ class VolumePacker implements LoggerAwareInterface
      */
     public function pack()
     {
-        $this->logger->log(LogLevel::DEBUG, "[EVALUATING BOX] {$this->box->getReference()}");
+        $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}");
 
         $packedItems = new ItemList;
-        $remainingDepth = $this->box->getInnerDepth();
+        $depthLeft = $this->box->getInnerDepth();
         $remainingWeight = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
-        $remainingWidth = $this->box->getInnerWidth();
-        $remainingLength = $this->box->getInnerLength();
+        $widthLeft = $this->box->getInnerWidth();
+        $lengthLeft = $this->box->getInnerLength();
 
         $layerWidth = $layerLength = $layerDepth = 0;
         while (!$this->items->isEmpty()) {
@@ -67,18 +67,18 @@ class VolumePacker implements LoggerAwareInterface
             }
 
             $this->logger->debug("evaluating item {$itemToPack->getDescription()}");
-            $this->logger->debug("remaining width: {$remainingWidth}, length: {$remainingLength}, depth: {$remainingDepth}");
+            $this->logger->debug("remaining width: {$widthLeft}, length: {$lengthLeft}, depth: {$depthLeft}");
             $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 
             $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
-            $orientatedItem = $this->findBestOrientation($itemToPack, $nextItem, $remainingWidth, $remainingLength, $remainingDepth);
+            $orientatedItem = $this->findBestOrientation($itemToPack, $nextItem, $widthLeft, $lengthLeft, $depthLeft);
 
             if ($orientatedItem) {
 
                 $packedItems->insert($orientatedItem->getItem());
                 $remainingWeight -= $itemToPack->getWeight();
 
-                $remainingLength -= $orientatedItem->getLength();
+                $lengthLeft -= $orientatedItem->getLength();
                 $layerLength += $orientatedItem->getLength();
                 $layerWidth = max($orientatedItem->getWidth(), $layerWidth);
 
@@ -92,67 +92,67 @@ class VolumePacker implements LoggerAwareInterface
                     $packedItems->insert($this->items->extract());
                 }
             } else {
-                if ($remainingWidth >= min($itemToPack->getWidth(), $itemToPack->getLength()) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
+                if ($widthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength()) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
                     $this->logger->debug("No more fit in lengthwise, resetting for new row");
-                    $remainingLength += $layerLength;
-                    $remainingWidth -= $layerWidth;
+                    $lengthLeft += $layerLength;
+                    $widthLeft -= $layerWidth;
                     $layerWidth = $layerLength = 0;
                     $this->items->insert($itemToPack);
                     continue;
-                } elseif ($remainingLength < min($itemToPack->getWidth(), $itemToPack->getLength()) || $layerDepth == 0) {
+                } elseif ($lengthLeft < min($itemToPack->getWidth(), $itemToPack->getLength()) || $layerDepth == 0) {
                     $this->logger->debug("doesn't fit on layer even when empty");
                     continue;
                 }
 
-                $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $this->box->getInnerWidth()) : $this->box->getInnerWidth();
-                $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $this->box->getInnerLength()) : $this->box->getInnerLength();
-                $remainingDepth -= $layerDepth;
+                $widthLeft = $layerWidth ? min(floor($layerWidth * 1.1), $this->box->getInnerWidth()) : $this->box->getInnerWidth();
+                $lengthLeft = $layerLength ? min(floor($layerLength * 1.1), $this->box->getInnerLength()) : $this->box->getInnerLength();
+                $depthLeft -= $layerDepth;
 
                 $layerWidth = $layerLength = $layerDepth = 0;
-                $this->logger->log(LogLevel::DEBUG, "doesn't fit, so starting next vertical layer");
+                $this->logger->debug("doesn't fit, so starting next vertical layer");
                 $this->items->insert($itemToPack);
             }
         }
-        $this->logger->log(LogLevel::DEBUG, "done with this box");
-        return new PackedBox($this->box, $packedItems, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight);
+        $this->logger->debug("done with this box");
+        return new PackedBox($this->box, $packedItems, $widthLeft, $lengthLeft, $depthLeft, $remainingWeight);
     }
 
     /**
      * Figure out space left for next item if we pack this one in it's regular orientation
      * @param Item $item
-     * @param int $remainingWidth
-     * @param int $remainingLength
+     * @param int $widthLeft
+     * @param int $lengthLeft
      * @return int
      */
-    protected function fitsSameGap(Item $item, $remainingWidth, $remainingLength) {
-        return min($remainingWidth - $item->getWidth(), $remainingLength - $item->getLength());
+    protected function fitsSameGap(Item $item, $widthLeft, $lengthLeft) {
+        return min($widthLeft - $item->getWidth(), $lengthLeft - $item->getLength());
     }
 
     /**
      * Figure out space left for next item if we pack this one rotated by 90deg
      * @param Item $item
-     * @param int $remainingWidth
-     * @param int $remainingLength
+     * @param int $widthLeft
+     * @param int $lengthLeft
      * @return int
      */
-    protected function fitsRotatedGap(Item $item, $remainingWidth, $remainingLength) {
-        return min($remainingWidth - $item->getLength(), $remainingLength - $item->getWidth());
+    protected function fitsRotatedGap(Item $item, $widthLeft, $lengthLeft) {
+        return min($widthLeft - $item->getLength(), $lengthLeft - $item->getWidth());
     }
 
     /**
      * Get the best orientation for an item
      * @param Item $item
      * @param Item|null $nextItem
-     * @param int $remainingWidth
-     * @param int $remainingLength
-     * @param int $remainingDepth
+     * @param int $widthLeft
+     * @param int $lengthLeft
+     * @param int $depthLeft
      * @return bool|OrientatedItem
      */
-    protected function findBestOrientation(Item $item, Item $nextItem = null, $remainingWidth, $remainingLength, $remainingDepth) {
+    protected function findBestOrientation(Item $item, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
-        $fitsSameGap = $this->fitsSameGap($item, $remainingWidth, $remainingLength);
-        $fitsRotatedGap = $this->fitsRotatedGap($item, $remainingWidth, $remainingLength);
-        $fitsDepth = $item->getDepth() <= $remainingDepth;
+        $fitsSameGap = $this->fitsSameGap($item, $widthLeft, $lengthLeft);
+        $fitsRotatedGap = $this->fitsRotatedGap($item, $widthLeft, $lengthLeft);
+        $fitsDepth = $item->getDepth() <= $depthLeft;
 
         $fitsAtAll = $fitsDepth && ($fitsSameGap >= 0 || $fitsRotatedGap >= 0);
 
@@ -162,7 +162,7 @@ class VolumePacker implements LoggerAwareInterface
 
         $betterUnRotated = !!($fitsRotatedGap < 0 ||
             ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-            ($item->getWidth() <= $remainingWidth && $nextItem == $item && $remainingLength >= 2 * $item->getLength()));
+            ($item->getWidth() <= $widthLeft && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()));
 
         if ($betterUnRotated) {
             $this->logger->debug("fits (better) unrotated");
@@ -176,18 +176,18 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * @param Item $item
      * @param Item|null $nextItem
-     * @param $remainingWidth
-     * @param $remainingLength
+     * @param $widthLeft
+     * @param $lengthLeft
      * @return bool
      */
-    protected function fitsBetterUnrotated(Item $item, Item $nextItem = null, $remainingWidth, $remainingLength) {
+    protected function fitsBetterUnrotated(Item $item, Item $nextItem = null, $widthLeft, $lengthLeft) {
 
-        $fitsSameGap = $this->fitsSameGap($item, $remainingWidth, $remainingLength);
-        $fitsRotatedGap = $this->fitsRotatedGap($item, $remainingWidth, $remainingLength);
+        $fitsSameGap = $this->fitsSameGap($item, $widthLeft, $lengthLeft);
+        $fitsRotatedGap = $this->fitsRotatedGap($item, $widthLeft, $lengthLeft);
 
         return !!($fitsRotatedGap < 0 ||
         ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-        ($item->getWidth() <= $remainingWidth && $nextItem == $item && $remainingLength >= 2 * $item->getLength()));
+        ($item->getWidth() <= $widthLeft && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()));
     }
 
     /**
