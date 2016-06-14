@@ -59,11 +59,10 @@ class VolumePacker implements LoggerAwareInterface
         $layerWidth = $layerLength = $layerDepth = 0;
         while (!$this->items->isEmpty()) {
 
-            $itemToPack = $this->items->top();
+            $itemToPack = $this->items->extract();
 
             //skip items that are simply too large
             if ($this->isItemTooLargeForBox($itemToPack, $remainingDepth, $remainingWeight)) {
-                $this->items->extract();
                 continue;
             }
 
@@ -76,7 +75,7 @@ class VolumePacker implements LoggerAwareInterface
 
             if ($this->fitsGap($itemToPack, $remainingWidth, $remainingLength)) {
 
-                $packedItems->insert($this->items->extract());
+                $packedItems->insert($itemToPack);
                 $remainingWeight -= $itemToPack->getWeight();
 
                 $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
@@ -106,10 +105,10 @@ class VolumePacker implements LoggerAwareInterface
                     $remainingLength += $layerLength;
                     $remainingWidth -= $layerWidth;
                     $layerWidth = $layerLength = 0;
+                    $this->items->insert($itemToPack);
                     continue;
                 } elseif ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
                     $this->logger->log(LogLevel::DEBUG, "doesn't fit on layer even when empty");
-                    $this->items->extract();
                     continue;
                 }
 
@@ -119,6 +118,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 $layerWidth = $layerLength = $layerDepth = 0;
                 $this->logger->log(LogLevel::DEBUG, "doesn't fit, so starting next vertical layer");
+                $this->items->insert($itemToPack);
             }
         }
         $this->logger->log(LogLevel::DEBUG, "done with this box");
