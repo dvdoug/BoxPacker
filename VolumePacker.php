@@ -57,6 +57,9 @@ class VolumePacker implements LoggerAwareInterface
         $lengthLeft = $this->box->getInnerLength();
 
         $layerWidth = $layerLength = $layerDepth = 0;
+
+        $prevItem = null;
+
         while (!$this->items->isEmpty()) {
 
             $itemToPack = $this->items->extract();
@@ -71,7 +74,7 @@ class VolumePacker implements LoggerAwareInterface
             $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 
             $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
-            $orientatedItem = $this->findBestOrientation($itemToPack, $nextItem, $widthLeft, $lengthLeft, $depthLeft);
+            $orientatedItem = $this->findBestOrientation($itemToPack, $prevItem, $nextItem, $widthLeft, $lengthLeft, $depthLeft);
 
             if ($orientatedItem) {
 
@@ -91,7 +94,12 @@ class VolumePacker implements LoggerAwareInterface
                     $maxStackDepth -= $this->items->top()->getDepth(); // XXX no attempt at best fit
                     $packedItems->insert($this->items->extract());
                 }
+
+                $prevItem = $orientatedItem;
             } else {
+
+                $prevItem = null;
+
                 if ($widthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength()) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
                     $this->logger->debug("No more fit in lengthwise, resetting for new row");
                     $lengthLeft += $layerLength;
@@ -142,13 +150,28 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Get the best orientation for an item
      * @param Item $item
+     * @param OrientatedItem|null $prevItem
      * @param Item|null $nextItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
-     * @return bool|OrientatedItem
+     * @return OrientatedItem|false
      */
-    protected function findBestOrientation(Item $item, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    protected function findBestOrientation(Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+
+        //Special case items that are the same as what we just packed - keep orientation
+        if ($prevItem && $prevItem->getItem() == $item) {
+            $orientatedItem = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
+
+            if ($widthLeft - $orientatedItem->getWidth() >= 0 &&
+                $lengthLeft - $orientatedItem->getLength() >= 0 &&
+                $depthLeft - $orientatedItem->getDepth() >= 0) {
+                return $orientatedItem;
+            } else {
+                return false;
+            }
+        }
+
 
         $fitsSameGap = $this->fitsSameGap($item, $widthLeft, $lengthLeft);
         $fitsRotatedGap = $this->fitsRotatedGap($item, $widthLeft, $lengthLeft);
