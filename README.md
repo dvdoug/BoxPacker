@@ -33,12 +33,6 @@ Principles
  * If more than 1 box is needed to accommodate all of the items, then aim for boxes of roughly equal weight
    (e.g. 3 medium size/weight boxes are better than 1 small light box and 2 that are large and heavy)
 
-Constraints
------------
-
- * Items are assumed to be shipped flat (e.g. books, fragile items). The algorithm as implemented therefore considers
-   simple 2D rotation of items when determining fit but will not try turning items on their side
- * The algorithm does consider spatial constraints in all 3 dimensions, plus consideration of weight
 
 Installation
 ------------
@@ -70,9 +64,9 @@ Basic usage then looks something like the below:
   $packer = new Packer();
   $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
   $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
-  $packer->addItem(new TestItem('Item 1', 250, 250, 2, 200));
-  $packer->addItem(new TestItem('Item 2', 250, 250, 2, 200));
-  $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200));
+  $packer->addItem(new TestItem('Item 1', 250, 250, 2, 200, true));
+  $packer->addItem(new TestItem('Item 2', 250, 250, 2, 200, true));
+  $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200, true));
   $packedBoxes = $packer->pack();
 
   echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
@@ -98,17 +92,17 @@ Basic usage then looks something like the below:
   $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
 
   $items = new ItemList();
-  $items->insert(new TestItem('Item 1', 297, 296, 2, 200));
-  $items->insert(new TestItem('Item 2', 297, 296, 2, 500));
-  $items->insert(new TestItem('Item 3', 296, 296, 4, 290));
+  $items->insert(new TestItem('Item 1', 297, 296, 2, 200, true));
+  $items->insert(new TestItem('Item 2', 297, 296, 2, 500, true));
+  $items->insert(new TestItem('Item 3', 296, 296, 4, 290, true));
 
   $packer = new Packer();
   $packedBox = $packer->packIntoBox($box, $items);
   /* $packedBox->getItems() contains the items that fit */
 ```
 
-BoxPacker is designed to run calculations as efficiently as possible, the 4500+ tests in the test suite run in 11.9
-seconds in the Ubuntu VM on my workstation, giving a rate of approx ≈385 solutions/second which should be more than sufficient for
+BoxPacker is designed to run calculations as efficiently as possible, the 4500+ tests in the test suite run in 13
+seconds in the Ubuntu VM on my workstation, giving a rate of 350+ solutions/second which should be more than sufficient for
 most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
 disable Xdebug when doing so - in my experience the unit tests take 4.5x longer (11.9sec->54 sec) when Xdebug is loaded.
 

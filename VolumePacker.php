@@ -159,40 +159,53 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function findBestOrientation(Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
+        $orientations = [];
+
         //Special case items that are the same as what we just packed - keep orientation
         if ($prevItem && $prevItem->getItem() == $item) {
-            $orientatedItem = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
+            $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
+        } else {
 
-            if ($widthLeft - $orientatedItem->getWidth() >= 0 &&
-                $lengthLeft - $orientatedItem->getLength() >= 0 &&
-                $depthLeft - $orientatedItem->getDepth() >= 0) {
-                return $orientatedItem;
-            } else {
-                return false;
+            //simple 2D rotation
+            $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
+            $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
+
+            //add 3D rotation if we're allowed
+            if (!$item->getKeepFlat()) {
+                $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
+                $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
+                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());
+                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getLength(), $item->getWidth());
             }
         }
 
+        $orientationFits = [];
 
-        $fitsSameGap = $this->fitsSameGap($item, $widthLeft, $lengthLeft);
-        $fitsRotatedGap = $this->fitsRotatedGap($item, $widthLeft, $lengthLeft);
-        $fitsDepth = $item->getDepth() <= $depthLeft;
+        /** @var OrientatedItem $orientation */
+        foreach ($orientations as $o => $orientation) {
+            $orientationFit = min($widthLeft   - $orientation->getWidth(),
+                                  $lengthLeft  - $orientation->getLength());
 
-        $fitsAtAll = $fitsDepth && ($fitsSameGap >= 0 || $fitsRotatedGap >= 0);
-
-        if (!$fitsAtAll) {
-            return false;
+            if ($orientationFit >= 0 && $depthLeft - $orientation->getDepth() >= 0) {
+                $orientationFits[$o] = $orientationFit;
+            }
         }
 
-        $betterUnRotated = !!($fitsRotatedGap < 0 ||
-            ($fitsSameGap >= 0 && $fitsSameGap <= $fitsRotatedGap) ||
-            ($item->getWidth() <= $widthLeft && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()));
+        if ($orientationFits) {
 
-        if ($betterUnRotated) {
-            $this->logger->debug("fits (better) unrotated");
-            return new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
+            //special casing based on next item
+            if (isset($orientationFits[0]) && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()) {
+                $this->logger->debug("not rotating based on next item");
+                return $orientations[0];
+            }
+
+            asort($orientationFits);
+            reset($orientationFits);
+            $bestFit = key($orientationFits);
+            $this->logger->debug("Using orientation #{$bestFit}");
+            return $orientations[$bestFit];
         } else {
-            $this->logger->debug("fits (better) rotated");
-            return new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
+            return false;
         }
     }
 
