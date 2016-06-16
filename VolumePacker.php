@@ -126,28 +126,6 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Figure out space left for next item if we pack this one in it's regular orientation
-     * @param Item $item
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @return int
-     */
-    protected function fitsSameGap(Item $item, $widthLeft, $lengthLeft) {
-        return min($widthLeft - $item->getWidth(), $lengthLeft - $item->getLength());
-    }
-
-    /**
-     * Figure out space left for next item if we pack this one rotated by 90deg
-     * @param Item $item
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @return int
-     */
-    protected function fitsRotatedGap(Item $item, $widthLeft, $lengthLeft) {
-        return min($widthLeft - $item->getLength(), $lengthLeft - $item->getWidth());
-    }
-
-    /**
      * Get the best orientation for an item
      * @param Item $item
      * @param OrientatedItem|null $prevItem
