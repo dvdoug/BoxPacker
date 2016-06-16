@@ -148,4 +148,14 @@ class VolumePackerTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals(1, $packedBox->getItems()->count());
     }
+
+    public function testIssue20()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Le grande box', 100, 100, 300, 1, 100,100, 300, 1500));
+        $packer->addItem(new TestItem('Item 1', 150, 50, 50, 20, false));
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+    }
 }
