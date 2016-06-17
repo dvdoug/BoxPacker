@@ -136,25 +136,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function findBestOrientation(Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
-        $orientations = [];
-
-        //Special case items that are the same as what we just packed - keep orientation
-        if ($prevItem && $prevItem->getItem() == $item) {
-            $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
-        } else {
-
-            //simple 2D rotation
-            $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
-            $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
-
-            //add 3D rotation if we're allowed
-            if (!$item->getKeepFlat()) {
-                $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
-                $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
-                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());
-                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getLength(), $item->getWidth());
-            }
-        }
+        $orientations = $this->findPossibleOrientations($item, $prevItem);
 
         $orientationFits = [];
 
@@ -184,6 +166,36 @@ class VolumePacker implements LoggerAwareInterface
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get the best orientation for an item
+     * @param Item $item
+     * @param OrientatedItem|null $prevItem
+     * @return OrientatedItem[]
+     */
+    protected function findPossibleOrientations(Item $item, OrientatedItem $prevItem = null) {
+
+        $orientations = [];
+
+        //Special case items that are the same as what we just packed - keep orientation
+        if ($prevItem && $prevItem->getItem() == $item) {
+            $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
+        } else {
+
+            //simple 2D rotation
+            $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
+            $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
+
+            //add 3D rotation if we're allowed
+            if (!$item->getKeepFlat()) {
+                $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
+                $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
+                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());
+                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getLength(), $item->getWidth());
+            }
+        }
+        return $orientations;
     }
 
     /**
