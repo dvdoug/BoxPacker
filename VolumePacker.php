@@ -136,7 +136,11 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function findBestOrientation(Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
-        $orientations = $this->findPossibleOrientations($item, $prevItem);
+        $orientations = $this->findPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
+
+        if (empty($orientations)) {
+            return false;
+        }
 
         $orientationFits = [];
 
@@ -169,12 +173,15 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Get the best orientation for an item
+     * Find all possible orientations for an item
      * @param Item $item
      * @param OrientatedItem|null $prevItem
+     * @param int $widthLeft
+     * @param int $lengthLeft
+     * @param int $depthLeft
      * @return OrientatedItem[]
      */
-    protected function findPossibleOrientations(Item $item, OrientatedItem $prevItem = null) {
+    protected function findPossibleOrientations(Item $item, OrientatedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
         $orientations = [];
 
@@ -195,7 +202,12 @@ class VolumePacker implements LoggerAwareInterface
                 $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getLength(), $item->getWidth());
             }
         }
-        return $orientations;
+
+        //remove any that simply don't fit
+        return array_filter($orientations, function (OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
+            return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
+        });
+
     }
 
     /**
