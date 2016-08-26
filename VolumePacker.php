@@ -8,6 +8,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -34,11 +35,12 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Constructor
      */
-    public function __construct(Box $box, ItemList $items)
+    public function __construct(Box $box, ItemList $items, LoggerInterface $logger = null)
     {
         $this->box = $box;
         $this->items = $items;
-        $this->logger = new NullLogger();
+
+        $this->logger = ($logger) ?: new NullLogger();
     }
 
     /**
