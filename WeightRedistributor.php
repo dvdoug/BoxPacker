@@ -8,6 +8,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
@@ -30,10 +31,10 @@ class WeightRedistributor implements LoggerAwareInterface
     /**
      * Constructor
      */
-    public function __construct(BoxList $boxList)
+    public function __construct(BoxList $boxList, LoggerInterface $logger = null)
     {
         $this->boxes = clone $boxList;
-        $this->logger = new NullLogger();
+        $this->logger = ($logger) ?: new NullLogger();
     }
 
     /**

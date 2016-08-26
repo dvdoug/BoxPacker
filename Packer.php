@@ -8,6 +8,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
@@ -35,12 +36,12 @@ class Packer implements LoggerAwareInterface
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(LoggerInterface $logger = null)
     {
         $this->items = new ItemList();
         $this->boxes = new BoxList();
 
-        $this->logger = new NullLogger();
+        $this->logger = ($logger) ?: new NullLogger();
     }
 
     /**
@@ -103,7 +104,7 @@ class Packer implements LoggerAwareInterface
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
         if ($packedBoxes->count() > 1) {
-            $redistributor = new WeightRedistributor($this->boxes);
+            $redistributor = new WeightRedistributor($this->boxes, $this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
 
@@ -131,7 +132,7 @@ class Packer implements LoggerAwareInterface
             while (!$boxesToEvaluate->isEmpty()) {
                 $box = $boxesToEvaluate->extract();
 
-                $volumePacker = new VolumePacker($box, clone $this->items);
+                $volumePacker = new VolumePacker($box, clone $this->items, $this->logger);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
                     $packedBoxesIteration->insert($packedBox);
