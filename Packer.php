@@ -104,6 +104,7 @@ class Packer implements LoggerAwareInterface
         //If we have multiple boxes, try and optimise/even-out weight distribution
         if ($packedBoxes->count() > 1) {
             $redistributor = new WeightRedistributor($this->boxes);
+            $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
 
@@ -132,6 +133,7 @@ class Packer implements LoggerAwareInterface
                 $box = $boxesToEvaluate->extract();
 
                 $volumePacker = new VolumePacker($box, clone $this->items);
+                $volumePacker->setLogger($this->logger);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
                     $packedBoxesIteration->insert($packedBox);
