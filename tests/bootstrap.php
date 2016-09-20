@@ -7,6 +7,8 @@
 
 namespace DVDoug\BoxPacker;
 
+require_once __DIR__.'/../vendor/autoload.php';
+
 class TestBox implements Box
 {
 
