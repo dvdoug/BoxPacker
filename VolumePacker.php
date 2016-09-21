@@ -142,6 +142,12 @@ class VolumePacker implements LoggerAwareInterface
             return false;
         }
 
+        // special casing based on next item
+        if (isset($orientations[0]) && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()) {
+            $this->logger->debug("not rotating based on next item");
+            return $orientations[0]; // XXX this is tied to the ordering from ->findPossibleOrientations()
+        }
+
         $orientationFits = [];
 
         /** @var OrientatedItem $orientation */
@@ -155,13 +161,6 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         if ($orientationFits) {
-
-            //special casing based on next item
-            if (isset($orientationFits[0]) && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()) {
-                $this->logger->debug("not rotating based on next item");
-                return $orientations[0];
-            }
-
             asort($orientationFits);
             reset($orientationFits);
             $bestFit = key($orientationFits);
