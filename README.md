@@ -102,8 +102,8 @@ Basic usage then looks something like the below:
   $items->insert(new TestItem('Item 2', 297, 296, 2, 500));
   $items->insert(new TestItem('Item 3', 296, 296, 4, 290));
 
-  $packer = new Packer();
-  $packedBox = $packer->packIntoBox($box, $items);
+  $volumePacker = new VolumePacker($box, $items);
+  $packedBox = $volumePacker->pack();
   /* $packedBox->getItems() contains the items that fit */
 ```
 
