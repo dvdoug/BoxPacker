@@ -57,5 +57,5 @@ interface Item
      */
     public function getKeepFlat();
 
-  }
+}
 

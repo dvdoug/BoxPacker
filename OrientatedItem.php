@@ -79,5 +79,5 @@ class OrientatedItem
     public function getDepth() {
         return $this->depth;
     }
-  }
+}
 
