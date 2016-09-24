@@ -227,9 +227,9 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * @param $layerWidth
-     * @param $layerLength
-     * @param $layerDepth
+     * @param int $layerWidth
+     * @param int $layerLength
+     * @param int $layerDepth
      * @return bool
      */
     protected function isLayerStarted($layerWidth, $layerLength, $layerDepth) {
