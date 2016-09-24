@@ -298,8 +298,7 @@ class VolumePacker implements LoggerAwareInterface
         OrientatedItem $prevItem = null,
         Item $nextItem = null
     ) {
-        $stableOrientations = [];
-        $unstableOrientations = [];
+        $stableOrientations = $unstableOrientations = $orientationsToUse = [];
 
         foreach ($orientations as $o => $orientation) {
             if ($orientation->isStable()) {
@@ -308,8 +307,6 @@ class VolumePacker implements LoggerAwareInterface
                 $unstableOrientations[] = $orientation;
             }
         }
-
-        $orientationsToUse = [];
 
         if (count($stableOrientations) > 0) {
             $orientationsToUse = $stableOrientations;
