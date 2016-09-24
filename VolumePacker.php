@@ -152,12 +152,9 @@ class VolumePacker implements LoggerAwareInterface
 
         /** @var OrientatedItem $orientation */
         foreach ($orientations as $o => $orientation) {
-            $orientationFit = min($widthLeft   - $orientation->getWidth(),
-                                  $lengthLeft  - $orientation->getLength());
+            $orientationFit = min($widthLeft   - $orientation->getWidth(), $lengthLeft  - $orientation->getLength());
 
-            if ($orientationFit >= 0 && $depthLeft - $orientation->getDepth() >= 0) {
-                $orientationFits[$o] = $orientationFit;
-            }
+            $orientationFits[$o] = $orientationFit;
         }
 
         if ($orientationFits) {
