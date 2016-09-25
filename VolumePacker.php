@@ -32,13 +32,43 @@ class VolumePacker implements LoggerAwareInterface
     protected $items;
 
     /**
+     * Remaining width of the box to pack items into
+     * @var int
+     */
+    protected $widthLeft;
+
+    /**
+     * Remaining length of the box to pack items into
+     * @var int
+     */
+    protected $lengthLeft;
+
+    /**
+     * Remaining depth of the box to pack items into
+     * @var int
+     */
+    protected $depthLeft;
+
+    /**
+     * Remaining weight capacity of the box
+     * @var int
+     */
+    protected $remainingWeight;
+
+    /**
      * Constructor
      */
     public function __construct(Box $box, ItemList $items)
     {
+        $this->logger = new NullLogger();
+
         $this->box = $box;
         $this->items = $items;
-        $this->logger = new NullLogger();
+
+        $this->depthLeft = $this->box->getInnerDepth();
+        $this->remainingWeight = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
+        $this->widthLeft = $this->box->getInnerWidth();
+        $this->lengthLeft = $this->box->getInnerLength();
     }
 
     /**
@@ -50,10 +80,6 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}");
 
         $packedItems = new ItemList;
-        $depthLeft = $this->box->getInnerDepth();
-        $remainingWeight = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
-        $widthLeft = $this->box->getInnerWidth();
-        $lengthLeft = $this->box->getInnerLength();
 
         $layerWidth = $layerLength = $layerDepth = 0;
 
@@ -64,23 +90,23 @@ class VolumePacker implements LoggerAwareInterface
             $itemToPack = $this->items->extract();
 
             //skip items that are simply too heavy
-            if ($itemToPack->getWeight() > $remainingWeight) {
+            if ($itemToPack->getWeight() > $this->remainingWeight) {
                 continue;
             }
 
             $this->logger->debug("evaluating item {$itemToPack->getDescription()}");
-            $this->logger->debug("remaining width: {$widthLeft}, length: {$lengthLeft}, depth: {$depthLeft}");
+            $this->logger->debug("remaining width: {$this->widthLeft}, length: {$this->lengthLeft}, depth: {$this->depthLeft}");
             $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
 
             $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
-            $orientatedItem = $this->findBestOrientation($itemToPack, $prevItem, $nextItem, $widthLeft, $lengthLeft, $depthLeft);
+            $orientatedItem = $this->findBestOrientation($itemToPack, $prevItem, $nextItem, $this->widthLeft, $this->lengthLeft, $this->depthLeft);
 
             if ($orientatedItem) {
 
                 $packedItems->insert($orientatedItem->getItem());
-                $remainingWeight -= $itemToPack->getWeight();
+                $this->remainingWeight -= $itemToPack->getWeight();
 
-                $lengthLeft -= $orientatedItem->getLength();
+                $this->lengthLeft -= $orientatedItem->getLength();
                 $layerLength += $orientatedItem->getLength();
                 $layerWidth = max($orientatedItem->getWidth(), $layerWidth);
 
@@ -88,8 +114,8 @@ class VolumePacker implements LoggerAwareInterface
 
                 //allow items to be stacked in place within the same footprint up to current layerdepth
                 $maxStackDepth = $layerDepth - $orientatedItem->getDepth();
-                while (!$this->items->isEmpty() && $this->canStackItemInLayer($itemToPack, $this->items->top(), $maxStackDepth, $remainingWeight)) {
-                    $remainingWeight -= $this->items->top()->getWeight();
+                while (!$this->items->isEmpty() && $this->canStackItemInLayer($itemToPack, $this->items->top(), $maxStackDepth)) {
+                    $this->remainingWeight -= $this->items->top()->getWeight();
                     $maxStackDepth -= $this->items->top()->getDepth(); // XXX no attempt at best fit
                     $packedItems->insert($this->items->extract());
                 }
@@ -99,21 +125,21 @@ class VolumePacker implements LoggerAwareInterface
 
                 $prevItem = null;
 
-                if ($widthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength()) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
+                if ($this->widthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength()) && $this->isLayerStarted($layerWidth, $layerLength, $layerDepth)) {
                     $this->logger->debug("No more fit in lengthwise, resetting for new row");
-                    $lengthLeft += $layerLength;
-                    $widthLeft -= $layerWidth;
+                    $this->lengthLeft += $layerLength;
+                    $this->widthLeft -= $layerWidth;
                     $layerWidth = $layerLength = 0;
                     $this->items->insert($itemToPack);
                     continue;
-                } elseif ($lengthLeft < min($itemToPack->getWidth(), $itemToPack->getLength()) || $layerDepth == 0) {
+                } elseif ($this->lengthLeft < min($itemToPack->getWidth(), $itemToPack->getLength()) || $layerDepth == 0) {
                     $this->logger->debug("doesn't fit on layer even when empty");
                     continue;
                 }
 
-                $widthLeft = $layerWidth ? min(floor($layerWidth * 1.1), $this->box->getInnerWidth()) : $this->box->getInnerWidth();
-                $lengthLeft = $layerLength ? min(floor($layerLength * 1.1), $this->box->getInnerLength()) : $this->box->getInnerLength();
-                $depthLeft -= $layerDepth;
+                $this->widthLeft = $layerWidth ? min(floor($layerWidth * 1.1), $this->box->getInnerWidth()) : $this->box->getInnerWidth();
+                $this->lengthLeft = $layerLength ? min(floor($layerLength * 1.1), $this->box->getInnerLength()) : $this->box->getInnerLength();
+                $this->depthLeft -= $layerDepth;
 
                 $layerWidth = $layerLength = $layerDepth = 0;
                 $this->logger->debug("doesn't fit, so starting next vertical layer");
@@ -121,7 +147,7 @@ class VolumePacker implements LoggerAwareInterface
             }
         }
         $this->logger->debug("done with this box");
-        return new PackedBox($this->box, $packedItems, $widthLeft, $lengthLeft, $depthLeft, $remainingWeight);
+        return new PackedBox($this->box, $packedItems, $this->widthLeft, $this->lengthLeft, $this->depthLeft, $this->remainingWeight);
     }
 
     /**
@@ -211,13 +237,12 @@ class VolumePacker implements LoggerAwareInterface
      * @param Item $item
      * @param Item $nextItem
      * @param $maxStackDepth
-     * @param $remainingWeight
      * @return bool
      */
-    protected function canStackItemInLayer(Item $item, Item $nextItem, $maxStackDepth, $remainingWeight)
+    protected function canStackItemInLayer(Item $item, Item $nextItem, $maxStackDepth)
     {
         return $nextItem->getDepth() <= $maxStackDepth &&
-               $nextItem->getWeight() <= $remainingWeight &&
+               $nextItem->getWeight() <= $this->remainingWeight &&
                $nextItem->getWidth() <= $item->getWidth() &&
                $nextItem->getLength() <= $item->getLength();
     }
