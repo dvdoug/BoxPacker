@@ -160,10 +160,6 @@ class VolumePacker implements LoggerAwareInterface
 
         $orientations = $this->findPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
 
-        if (empty($orientations)) {
-            return false;
-        }
-
         // special casing based on next item
         if (isset($orientations[0]) && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()) {
             $this->logger->debug("not rotating based on next item");
