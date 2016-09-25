@@ -234,7 +234,6 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $maxWidth
      * @param int $maxLength
      * @param int $maxDepth
-     * @return bool
      */
     protected function tryAndStackItemsIntoSpace(ItemList $packedItems, $maxWidth, $maxLength, $maxDepth)
     {
