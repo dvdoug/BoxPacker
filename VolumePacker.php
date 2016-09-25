@@ -113,12 +113,8 @@ class VolumePacker implements LoggerAwareInterface
                 $layerDepth = max($layerDepth, $orientatedItem->getDepth()); //greater than 0, items will always be less deep
 
                 //allow items to be stacked in place within the same footprint up to current layerdepth
-                $maxStackDepth = $layerDepth - $orientatedItem->getDepth();
-                while (!$this->items->isEmpty() && $this->canStackItemInLayer($itemToPack, $this->items->top(), $maxStackDepth)) {
-                    $this->remainingWeight -= $this->items->top()->getWeight();
-                    $maxStackDepth -= $this->items->top()->getDepth(); // XXX no attempt at best fit
-                    $packedItems->insert($this->items->extract());
-                }
+                $stackableDepth = $layerDepth - $orientatedItem->getDepth();
+                $this->tryAndStackItemsIntoSpace($packedItems, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth);
 
                 $prevItem = $orientatedItem;
             } else {
@@ -234,17 +230,24 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Figure out if we can stack the next item vertically on top of this rather than side by side
      * Used when we've packed a tall item, and have just put a shorter one next to it
-     * @param Item $item
-     * @param Item $nextItem
-     * @param $maxStackDepth
+     * @param ItemList $packedItems
+     * @param int $maxWidth
+     * @param int $maxLength
+     * @param int $maxDepth
      * @return bool
      */
-    protected function canStackItemInLayer(Item $item, Item $nextItem, $maxStackDepth)
+    protected function tryAndStackItemsIntoSpace(ItemList $packedItems, $maxWidth, $maxLength, $maxDepth)
     {
-        return $nextItem->getDepth() <= $maxStackDepth &&
-               $nextItem->getWeight() <= $this->remainingWeight &&
-               $nextItem->getWidth() <= $item->getWidth() &&
-               $nextItem->getLength() <= $item->getLength();
+        while (!$this->items->isEmpty() && $this->remainingWeight >= $this->items->top()->getWeight()) {
+            $stackedItem = $this->findBestOrientation($this->items->top(), null, null, $maxWidth, $maxLength, $maxDepth);
+            if ($stackedItem) {
+                $this->remainingWeight -= $this->items->top()->getWeight();
+                $maxDepth -= $stackedItem->getDepth();
+                $packedItems->insert($this->items->extract());
+            } else {
+                break;
+            }
+        }
     }
 
     /**
