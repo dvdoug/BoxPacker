@@ -16,6 +16,7 @@ cache:
 # use the $DB env variable to determine the phpunit.xml to use
 before_script:
   - composer install
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "5.4" ] || [ "$TRAVIS_PHP_VERSION" = "5.5" ]; then phpenv config-rm xdebug.ini; fi;'
 
 script:
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests; else vendor/bin/phpunit; fi;'
