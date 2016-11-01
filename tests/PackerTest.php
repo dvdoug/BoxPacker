@@ -493,4 +493,64 @@
       return $tests;
     }
 
+    /**
+     * Exception will not be thrown - Only packed boxes are returned. Max Weight is not provided
+     * Provided Boxes are limited
+     * Remaining items are not ignored. Will be treated as standard ones
+     */
+    public function testPackingItemsIntoContainerWithoutMaxWeight() {
+
+      $box1 = new TestBox('Le grande box1', 3000, 3000, 100, 100, 2960, 2960, 80, null, 'container');
+
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
+      $item2 = new TestItem('Item 2', 2500, 2500, 20, 2000);
+      $item3 = new TestItem('Item 2', 2500, 2500, 20, 2000);
+      $item4 = new TestItem('Item 2', 25000, 25000, 20, 2000);
+
+      $packer = new Packer();
+      $packer->setLimitedBoxes(true);
+      $packer->addBox($box1);
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packer->addItem($item4);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+
+      self::assertEquals(3, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box1, $packedBoxes->top()->getBox());
+      self::assertEquals(6100, $packedBoxes->top()->getWeight());
+    }
+
+    /**
+     * Exception will not be thrown - Only packed boxes are returned. Max Weight is provided
+     * Provided Boxes are limited
+     * Remaining items are not ignored. Will be treated as standard ones
+     */
+    public function testPackingItemsIntoContainerWithMaxWeight() {
+
+      $box1 = new TestBox('Le grande box1', 3000, 3000, 100, 100, 2960, 2960, 80, 4500, 'container');
+
+      $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
+      $item2 = new TestItem('Item 2', 2500, 2500, 20, 2000);
+      $item3 = new TestItem('Item 2', 2500, 2500, 20, 2000);
+      $item4 = new TestItem('Item 2', 25000, 25000, 20, 2000);
+
+      $packer = new Packer();
+      $packer->setLimitedBoxes(true);
+      $packer->addBox($box1);
+      $packer->addItem($item1);
+      $packer->addItem($item2);
+      $packer->addItem($item3);
+      $packer->addItem($item4);
+      $packedBoxes = $packer->pack();
+
+      self::assertEquals(1, $packedBoxes->count());
+
+      self::assertEquals(2, $packedBoxes->top()->getItems()->count());
+      self::assertEquals($box1, $packedBoxes->top()->getBox());
+      self::assertEquals(4100, $packedBoxes->top()->getWeight());
+    }
+
   }
