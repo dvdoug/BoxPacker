@@ -1,22 +1,27 @@
 language: php
 sudo: false
 
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
+matrix:
+  include:
+    # Use the newer stack for HHVM as HHVM does not support Precise anymore
+    - php: hhvm-nightly
+      sudo: required
+      dist: trusty
+      group: edge
+    - php: 5.4
+      env: lowest=1
+    - php: 5.5
+    - php: 5.6
+    - php: 7.0
+    - php: 7.1
 
 cache:
   directories:
     - $HOME/.cache/composer/files
 
-# omitting "script:" will default to phpunit
-# use the $DB env variable to determine the phpunit.xml to use
-before_script:
-  - composer install
+install:
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "5.4" ] || [ "$TRAVIS_PHP_VERSION" = "5.5" ]; then phpenv config-rm xdebug.ini; fi;'
+  - if [ "$lowest" = "1" ]; then composer update --prefer-lowest --prefer-stable; else composer install; fi;
 
 script:
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests; else vendor/bin/phpunit; fi;'
