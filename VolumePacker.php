@@ -20,6 +20,11 @@ class VolumePacker implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * 3D rotation of items is a WIP and should not be used in production environments
+     */
+    const ALWAYS_SHIP_FLAT = true;
+
+    /**
      * Box to pack items into
      * @var Box
      */
@@ -254,7 +259,7 @@ class VolumePacker implements LoggerAwareInterface
             $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
 
             //add 3D rotation if we're allowed
-            if (!$item->getKeepFlat()) {
+            if (self::ALWAYS_SHIP_FLAT === false && !$item->getKeepFlat()) {
                 $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
                 $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
                 $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());

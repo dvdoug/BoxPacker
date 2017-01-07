@@ -151,11 +151,16 @@ class VolumePackerTest extends \PHPUnit_Framework_TestCase
 
     public function testIssue20()
     {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Le grande box', 100, 100, 300, 1, 100,100, 300, 1500));
-        $packer->addItem(new TestItem('Item 1', 150, 50, 50, 20, false));
-        $packedBoxes = $packer->pack();
+        if (VolumePacker::ALWAYS_SHIP_FLAT === false) {
 
-        self::assertEquals(1, $packedBoxes->count());
+            $packer = new Packer();
+            $packer->addBox(new TestBox('Le grande box', 100, 100, 300, 1, 100,100, 300, 1500));
+            $packer->addItem(new TestItem('Item 1', 150, 50, 50, 20, false));
+            $packedBoxes = $packer->pack();
+
+            self::assertEquals(1, $packedBoxes->count());
+        } else {
+            $this->markTestSkipped('3D rotation not enabled');
+        }
     }
 }
