@@ -321,6 +321,19 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(2, $packedBoxes->count());
     }
 
+    public function testIssue52()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 100, 50, 50, 0, 100, 50, 50, 5000));
+        $packer->addItem(new TestItem('Item', 15, 13, 8, 407, true), 2);
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+        self::assertEquals(15, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(26, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
+    }
+
     /**
      * @dataProvider getSamples
      * @coversNothing

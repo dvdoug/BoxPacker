@@ -44,9 +44,9 @@ class WeightRedistributorTest extends \PHPUnit_Framework_TestCase
         $box3Items->insert(clone $item5);
         $box3Items->insert(clone $item4);
 
-        $packedBox1 = new PackedBox($box, $box1Items, 0, 0, 0, 0);
-        $packedBox2 = new PackedBox($box, $box2Items, 0, 0, 0, 0);
-        $packedBox3 = new PackedBox($box, $box3Items, 0, 0, 0, 0);
+        $packedBox1 = new PackedBox($box, $box1Items, 0, 0, 0, 0, 0, 0, 0);
+        $packedBox2 = new PackedBox($box, $box2Items, 0, 0, 0, 0, 0, 0, 0);
+        $packedBox3 = new PackedBox($box, $box3Items, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox1);

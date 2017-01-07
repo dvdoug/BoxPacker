@@ -57,6 +57,24 @@ class PackedBox
     protected $remainingWeight;
 
     /**
+     * Used width inside box for packing items
+     * @var int
+     */
+    protected $usedWidth;
+
+    /**
+     * Used length inside box for packing items
+     * @var int
+     */
+    protected $usedLength;
+
+    /**
+     * Used depth inside box for packing items
+     * @var int
+     */
+    protected $usedDepth;
+
+    /**
      * Get box used
      * @return Box
      */
@@ -121,6 +139,33 @@ class PackedBox
     }
 
     /**
+     * Used width inside box for packing items
+     * @return int
+     */
+    public function getUsedWidth()
+    {
+        return $this->usedWidth;
+    }
+
+    /**
+     * Used length inside box for packing items
+     * @return int
+     */
+    public function getUsedLength()
+    {
+        return $this->usedLength;
+    }
+
+    /**
+     * Used depth inside box for packing items
+     * @return int
+     */
+    public function getUsedDepth()
+    {
+        return $this->usedDepth;
+    }
+
+    /**
      * Get remaining weight inside box for another item
      * @return int
      */
@@ -146,17 +191,30 @@ class PackedBox
     }
 
 
-
     /**
      * Constructor
+     *
      * @param Box      $box
      * @param ItemList $itemList
      * @param int      $remainingWidth
      * @param int      $remainingLength
      * @param int      $remainingDepth
      * @param int      $remainingWeight
+     * @param int      $usedWidth
+     * @param int      $usedLength
+     * @param int      $usedDepth
      */
-    public function __construct(Box $box, ItemList $itemList, $remainingWidth, $remainingLength, $remainingDepth, $remainingWeight)
+    public function __construct(
+        Box $box,
+        ItemList $itemList,
+        $remainingWidth,
+        $remainingLength,
+        $remainingDepth,
+        $remainingWeight,
+        $usedWidth,
+        $usedLength,
+        $usedDepth
+    )
     {
         $this->box = $box;
         $this->items = $itemList;
@@ -164,5 +222,8 @@ class PackedBox
         $this->remainingLength = $remainingLength;
         $this->remainingDepth = $remainingDepth;
         $this->remainingWeight = $remainingWeight;
+        $this->usedWidth = $usedWidth;
+        $this->usedLength = $usedLength;
+        $this->usedDepth = $usedDepth;
     }
 }
