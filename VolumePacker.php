@@ -94,9 +94,20 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $this->logger->debug("evaluating item {$itemToPack->getDescription()}");
-            $this->logger->debug("remaining width: {$this->widthLeft}, length: {$this->lengthLeft}, depth: {$this->depthLeft}");
-            $this->logger->debug("layerWidth: {$layerWidth}, layerLength: {$layerLength}, layerDepth: {$layerDepth}");
+            $this->logger->debug(
+                "evaluating item {$itemToPack->getDescription()}",
+                [
+                    'item' => $itemToPack,
+                    'space' => [
+                        'widthLeft'   => $this->widthLeft,
+                        'lengthLeft'  => $this->lengthLeft,
+                        'depthLeft'   => $this->depthLeft,
+                        'layerWidth'  => $layerWidth,
+                        'layerLength' => $layerLength,
+                        'layerDepth'  => $layerDepth
+                    ]
+                ]
+            );
 
             $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
             $orientatedItem = $this->findBestOrientation($itemToPack, $prevItem, $nextItem, $this->widthLeft, $this->lengthLeft, $this->depthLeft);
