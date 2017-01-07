@@ -20,6 +20,8 @@ class Packer implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+    const MAX_BOXES_TO_BALANCE_WEIGHT = 12;
+
     /**
      * List of items to be packed
      * @var ItemList
@@ -94,7 +96,6 @@ class Packer implements LoggerAwareInterface
     /**
      * Pack items into boxes
      *
-     * @throws \RuntimeException
      * @return PackedBoxList
      */
     public function pack()
@@ -102,7 +103,7 @@ class Packer implements LoggerAwareInterface
         $packedBoxes = $this->doVolumePacking();
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
-        if ($packedBoxes->count() > 1) {
+        if ($packedBoxes->count() > 1 && $packedBoxes->count() < static::MAX_BOXES_TO_BALANCE_WEIGHT) {
             $redistributor = new WeightRedistributor($this->boxes);
             $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
