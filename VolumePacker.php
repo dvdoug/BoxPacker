@@ -114,7 +114,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 //allow items to be stacked in place within the same footprint up to current layerdepth
                 $stackableDepth = $layerDepth - $orientatedItem->getDepth();
-                $this->tryAndStackItemsIntoSpace($packedItems, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth);
+                $this->tryAndStackItemsIntoSpace($packedItems, $prevItem, $nextItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth);
 
                 $prevItem = $orientatedItem;
             } else {
@@ -226,15 +226,18 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Figure out if we can stack the next item vertically on top of this rather than side by side
      * Used when we've packed a tall item, and have just put a shorter one next to it
-     * @param ItemList $packedItems
-     * @param int $maxWidth
-     * @param int $maxLength
-     * @param int $maxDepth
+     *
+     * @param ItemList       $packedItems
+     * @param OrientatedItem $prevItem
+     * @param Item           $nextItem
+     * @param int            $maxWidth
+     * @param int            $maxLength
+     * @param int            $maxDepth
      */
-    protected function tryAndStackItemsIntoSpace(ItemList $packedItems, $maxWidth, $maxLength, $maxDepth)
+    protected function tryAndStackItemsIntoSpace(ItemList $packedItems, OrientatedItem $prevItem = null, Item $nextItem = null, $maxWidth, $maxLength, $maxDepth)
     {
         while (!$this->items->isEmpty() && $this->remainingWeight >= $this->items->top()->getWeight()) {
-            $stackedItem = $this->findBestOrientation($this->items->top(), null, null, $maxWidth, $maxLength, $maxDepth);
+            $stackedItem = $this->findBestOrientation($this->items->top(), $prevItem, $nextItem, $maxWidth, $maxLength, $maxDepth);
             if ($stackedItem) {
                 $this->remainingWeight -= $this->items->top()->getWeight();
                 $maxDepth -= $stackedItem->getDepth();
