@@ -23,8 +23,8 @@ class BoxListTest extends \PHPUnit_Framework_TestCase
         $list->insert($box3);
 
         $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
+        foreach($list as $box) {
+            $sorted[] = $box;
         }
         self::assertEquals(array($box1, $box3, $box2), $sorted);
     }
@@ -39,8 +39,8 @@ class BoxListTest extends \PHPUnit_Framework_TestCase
         $list->insert($box2);
         $list->insert($box3);
         $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
+        foreach($list as $box) {
+            $sorted[] = $box;
         }
         self::assertEquals(array($box1, $box3, $box2), $sorted);
     }
@@ -55,8 +55,8 @@ class BoxListTest extends \PHPUnit_Framework_TestCase
         $list->insert($box2);
         $list->insert($box1);
         $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
+        foreach($list as $box) {
+            $sorted[] = $box;
         }
         self::assertEquals(array($box1, $box3, $box2), $sorted);
         $list = new BoxList;
@@ -64,8 +64,8 @@ class BoxListTest extends \PHPUnit_Framework_TestCase
         $list->insert($box1);
         $list->insert($box3);
         $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
+        foreach($list as $box) {
+            $sorted[] = $box;
         }
         self::assertEquals(array($box1, $box3, $box2), $sorted);
     }
