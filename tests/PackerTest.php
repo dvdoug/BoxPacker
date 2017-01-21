@@ -140,7 +140,7 @@ class PackerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \DVDoug\BoxPacker\ItemTooLargeException
      */
     public function testPackThreeItemsOneDoesntFitInAnyBox()
     {
@@ -162,7 +162,7 @@ class PackerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \DVDoug\BoxPacker\ItemTooLargeException
      */
     public function testPackWithoutBox()
     {
