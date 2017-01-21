@@ -116,7 +116,7 @@ class Packer implements LoggerAwareInterface
     /**
      * Pack items into boxes using the principle of largest volume item first
      *
-     * @throws \RuntimeException
+     * @throws ItemTooLargeException
      * @return PackedBoxList
      */
     public function doVolumePacking()
@@ -146,7 +146,7 @@ class Packer implements LoggerAwareInterface
 
             //Check iteration was productive
             if ($packedBoxesIteration->isEmpty()) {
-                throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+                throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
             }
 
             //Find best box of iteration, and remove packed items from unpacked list
