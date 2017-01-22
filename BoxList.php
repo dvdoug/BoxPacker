@@ -59,7 +59,7 @@ class BoxList implements \Countable, \IteratorAggregate
     protected function sort()
     {
         if (!$this->isSorted) {
-            uasort(
+            usort(
                 $this->list,
                 function (Box $boxA, Box $boxB) {
                     if ($boxB->getInnerVolume() > $boxA->getInnerVolume()) {

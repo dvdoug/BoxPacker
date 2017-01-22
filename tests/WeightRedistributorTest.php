@@ -57,7 +57,7 @@ class WeightRedistributorTest extends \PHPUnit_Framework_TestCase
         $packedBoxes = $redistributor->redistributeWeight($packedBoxList);
 
         $packedItemCount = 0;
-        foreach (clone $packedBoxes as $packedBox) {
+        foreach ($packedBoxes as $packedBox) {
             $packedItemCount += $packedBox->getItems()->count();
         }
 

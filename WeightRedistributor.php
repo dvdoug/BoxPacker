@@ -88,7 +88,7 @@ class WeightRedistributor implements LoggerAwareInterface
                         $newLighterBoxPacker->setBoxes($this->boxes);
                         $newLighterBoxPacker->setItems($newItemsForLighterBox);
                         $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK LIGHTER BOX]");
-                        $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
+                        $newLighterBox = $newLighterBoxPacker->doVolumePacking()->getIterator()->current();
 
                         if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
                             $this->logger->log(LogLevel::DEBUG, 'New item fits');
@@ -105,7 +105,7 @@ class WeightRedistributor implements LoggerAwareInterface
                                 return $originalBoxes;
                             }
 
-                            $overWeightBoxes[$o] = $newHeavierBoxes->extract();
+                            $overWeightBoxes[$o] = $newHeavierBoxes->getIterator()->current();
                             $underWeightBoxes[$u] = $newLighterBox;
 
                             $tryRepack = true; //we did some work, so see if we can do even better

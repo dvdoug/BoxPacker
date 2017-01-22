@@ -28,9 +28,9 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(3, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box1, $packedBoxes->top()->getBox());
-        self::assertEquals(610, $packedBoxes->top()->getWeight());
+        self::assertEquals(3, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box1, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(610, $packedBoxes->getIterator()->current()->getWeight());
     }
 
     public function testPackThreeItemsFitEasilyInLargerOfTwoBoxes()
@@ -52,9 +52,9 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(3, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(6100, $packedBoxes->top()->getWeight());
+        self::assertEquals(3, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box2, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(6100, $packedBoxes->getIterator()->current()->getWeight());
     }
 
     public function testPackFiveItemsTwoLargeOneSmallBox()
@@ -81,21 +81,21 @@ class PackerTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals(3, $packedBoxes->count());
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(1100, $packedBoxes->top()->getWeight());
+        self::assertEquals(2, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box2, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(1100, $packedBoxes->getIterator()->current()->getWeight());
 
         $packedBoxes->extract();
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(1100, $packedBoxes->top()->getWeight());
+        self::assertEquals(2, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box2, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(1100, $packedBoxes->getIterator()->current()->getWeight());
 
         $packedBoxes->extract();
 
-        self::assertEquals(1, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box1, $packedBoxes->top()->getBox());
-        self::assertEquals(510, $packedBoxes->top()->getWeight());
+        self::assertEquals(1, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box1, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(510, $packedBoxes->getIterator()->current()->getWeight());
     }
 
     public function testPackFiveItemsTwoLargeOneSmallBoxButThreeAfterRepack()
@@ -122,21 +122,21 @@ class PackerTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals(3, $packedBoxes->count());
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(4100, $packedBoxes->top()->getWeight());
+        self::assertEquals(2, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box2, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(4100, $packedBoxes->getIterator()->current()->getWeight());
 
         $packedBoxes->extract();
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(2300, $packedBoxes->top()->getWeight());
+        self::assertEquals(2, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box2, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(2300, $packedBoxes->getIterator()->current()->getWeight());
 
         $packedBoxes->extract();
 
-        self::assertEquals(1, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(2100, $packedBoxes->top()->getWeight());
+        self::assertEquals(1, $packedBoxes->getIterator()->current()->getItems()->count());
+        self::assertEquals($box2, $packedBoxes->getIterator()->current()->getBox());
+        self::assertEquals(2100, $packedBoxes->getIterator()->current()->getWeight());
     }
 
     /**
@@ -329,9 +329,9 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(15, $packedBoxes->top()->getUsedWidth());
-        self::assertEquals(26, $packedBoxes->top()->getUsedLength());
-        self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
+        self::assertEquals(15, $packedBoxes->getIterator()->current()->getUsedWidth());
+        self::assertEquals(26, $packedBoxes->getIterator()->current()->getUsedLength());
+        self::assertEquals(8, $packedBoxes->getIterator()->current()->getUsedDepth());
     }
 
     /**
@@ -360,7 +360,7 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         }
         $packedBoxes = $packer->pack();
 
-        foreach (clone $packedBoxes as $packedBox) {
+        foreach ($packedBoxes as $packedBox) {
             $packedItemCount += $packedBox->getItems()->count();
         }
 

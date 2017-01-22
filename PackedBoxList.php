@@ -11,7 +11,7 @@ namespace DVDoug\BoxPacker;
  * @author Doug Wright
  * @package BoxPacker
  */
-class PackedBoxList extends \SplMinHeap
+class PackedBoxList implements \Countable, \IteratorAggregate
 {
 
     /**
@@ -21,26 +21,72 @@ class PackedBoxList extends \SplMinHeap
     protected $meanWeight;
 
     /**
-     * Compare elements in order to place them correctly in the heap while sifting up.
-     * @see \SplMinHeap::compare()
+     * @var array
      */
-    public function compare($boxA, $boxB)
+    protected $list = [];
+
+    /**
+     * @var bool
+     */
+    protected $isSorted = true;
+
+    /**
+     * @return int
+     */
+    public function count()
     {
-        $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
-        if ($choice === 0) {
-            $choice = $boxB->getBox()->getInnerVolume() - $boxA->getBox()->getInnerVolume();
+        return count($this->list);
+    }
+
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        $this->sort();
+        return new \ArrayIterator($this->list);
+    }
+
+    /**
+     * Insert a box choice into the list
+     *
+     * @param PackedBox $box
+     */
+    public function insert(PackedBox $box)
+    {
+        $this->list[] = $box;
+        $this->isSorted = false;
+    }
+
+    /**
+     * Sort the boxes into order (smallest volume first)
+     */
+    protected function sort()
+    {
+        if (!$this->isSorted) {
+            usort(
+                $this->list,
+                function (PackedBox $boxA, PackedBox $boxB) {
+                    $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
+                    if ($choice === 0) {
+                        $choice = $boxA->getBox()->getInnerVolume() - $boxB->getBox()->getInnerVolume();
+                    }
+                    if ($choice === 0) {
+                        $choice = $boxB->getWeight() - $boxA->getWeight();
+                    }
+                    return $choice;
+                }
+            );
+            $this->isSorted = true;
         }
-        if ($choice === 0) {
-            $choice = $boxA->getWeight() - $boxB->getWeight();
-        }
-        return $choice;
     }
 
     /**
      * Reversed version of compare
+     *
      * @return int
      */
-    public function reverseCompare($boxA, $boxB)
+    public function reverseCompare(PackedBox $boxA, PackedBox $boxB)
     {
         $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
         if ($choice === 0) {
@@ -54,6 +100,7 @@ class PackedBoxList extends \SplMinHeap
 
     /**
      * Calculate the average (mean) weight of the boxes
+     *
      * @return float
      */
     public function getMeanWeight()
@@ -73,6 +120,7 @@ class PackedBoxList extends \SplMinHeap
 
     /**
      * Calculate the variance in weight between these boxes
+     *
      * @return float
      */
     public function getWeightVariance()
@@ -90,6 +138,7 @@ class PackedBoxList extends \SplMinHeap
 
     /**
      * Get volume utilisation of the set of packed boxes
+     *
      * @return float
      */
     public function getVolumeUtilisation()
@@ -112,6 +161,7 @@ class PackedBoxList extends \SplMinHeap
 
     /**
      * Do a bulk insert
+     *
      * @param array $boxes
      */
     public function insertFromArray(array $boxes)
@@ -119,5 +169,17 @@ class PackedBoxList extends \SplMinHeap
         foreach ($boxes as $box) {
             $this->insert($box);
         }
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return PackedBox
+     */
+    public function extract() {
+        $key = key($this->list);
+        $obj = current($this->list);
+        unset($this->list[$key]);
+        return $obj;
     }
 }
