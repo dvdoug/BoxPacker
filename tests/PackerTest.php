@@ -7,7 +7,9 @@
 
 namespace DVDoug\BoxPacker;
 
-class PackerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PackerTest extends TestCase
 {
     public function testPackThreeItemsFitEasilyInSmallerOfTwoBoxes()
     {

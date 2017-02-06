@@ -7,7 +7,9 @@
 
 namespace DVDoug\BoxPacker;
 
-class WeightRedistributorTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class WeightRedistributorTest extends TestCase
 {
     //PHP7/HHVM behave(d) differently than PHP5.x
     public function testWeightRedistribution()

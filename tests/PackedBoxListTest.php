@@ -7,7 +7,9 @@
 
 namespace DVDoug\BoxPacker;
 
-class PackedBoxListTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PackedBoxListTest extends TestCase
 {
     function testVolumeUtilisation()
     {
