@@ -7,7 +7,9 @@
 
 namespace DVDoug\BoxPacker;
 
-class ItemListTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ItemListTest extends TestCase
 {
 
     function testCompare()

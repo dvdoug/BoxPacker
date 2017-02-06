@@ -7,7 +7,9 @@
 
 namespace DVDoug\BoxPacker;
 
-class PackedBoxTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PackedBoxTest extends TestCase
 {
     function testGetters()
     {
