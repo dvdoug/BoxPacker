@@ -50,6 +50,7 @@ class OrientatedItem
 
     /**
      * Item
+     *
      * @return Item
      */
     public function getItem() {
@@ -58,6 +59,7 @@ class OrientatedItem
 
     /**
      * Item width in mm in it's packed orientation
+     *
      * @return int
      */
     public function getWidth() {
@@ -66,6 +68,7 @@ class OrientatedItem
 
     /**
      * Item length in mm in it's packed orientation
+     *
      * @return int
      */
     public function getLength() {
@@ -74,6 +77,7 @@ class OrientatedItem
 
     /**
      * Item depth in mm in it's packed orientation
+     *
      * @return int
      */
     public function getDepth() {
