@@ -83,5 +83,15 @@ class OrientatedItem
     public function getDepth() {
         return $this->depth;
     }
+
+    /**
+     * Is this orientation stable (low centre of gravity)
+     * N.B. Assumes equal weight distribution
+     *
+     * @return bool
+     */
+    public function isStable() {
+        return $this->getDepth() <= min($this->getLength(), $this->getWidth());
+    }
 }
 
