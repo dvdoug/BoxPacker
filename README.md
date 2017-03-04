@@ -101,10 +101,10 @@ Basic usage then looks something like the below:
   /* $packedBox->getItems() contains the items that fit */
 ```
 
-BoxPacker is designed to run calculations as efficiently as possible, the 4500+ tests in the test suite run in 13
-seconds in the Ubuntu VM on my workstation, giving a rate of 350+ solutions/second which should be more than sufficient for
+BoxPacker is designed to run calculations as efficiently as possible, the 9100+ tests in the test suite run in 41
+seconds on my workstation, giving a rate of 220+ solutions/second which should be more than sufficient for
 most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
-disable Xdebug when doing so - in my experience the unit tests take 4.5x longer (11.9sec->54 sec) when Xdebug is loaded.
+disable Xdebug when doing so - in my experience the unit tests take 24x longer (41 sec->16 min) when Xdebug is loaded.
 
 Requirements
 ------------

@@ -153,16 +153,11 @@ class VolumePackerTest extends TestCase
 
     public function testIssue20()
     {
-        if (VolumePacker::ALWAYS_SHIP_FLAT === false) {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Le grande box', 100, 100, 300, 1, 100,100, 300, 1500));
+        $packer->addItem(new TestItem('Item 1', 150, 50, 50, 20, false));
+        $packedBoxes = $packer->pack();
 
-            $packer = new Packer();
-            $packer->addBox(new TestBox('Le grande box', 100, 100, 300, 1, 100,100, 300, 1500));
-            $packer->addItem(new TestItem('Item 1', 150, 50, 50, 20, false));
-            $packedBoxes = $packer->pack();
-
-            self::assertEquals(1, $packedBoxes->count());
-        } else {
-            $this->markTestSkipped('3D rotation not enabled');
-        }
+        self::assertEquals(1, $packedBoxes->count());
     }
 }
