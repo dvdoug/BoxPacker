@@ -282,8 +282,28 @@ class PackerTest extends TestCase
     public function testIssue47B()
     {
         $packer = new Packer();
+        $packer->addBox(new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100));
+        $packer->addItem(new TestItem('20x69x20Item', 69, 20, 20, 0, true), 23);
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+    }
+
+    public function testIssue47C()
+    {
+        $packer = new Packer();
         $packer->addBox(new TestBox('Box', 11.75, 23.6875, 3, 0, 11.75, 23.6875, 3, 70));
         $packer->addItem(new TestItem('Item', 3.75, 6.5, 3, 0, true), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+    }
+
+    public function testIssue47D()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 11.75, 23.6875, 3, 0, 11.75, 23.6875, 3, 70));
+        $packer->addItem(new TestItem('Item', 6.5, 3.75, 3, 0, true), 9);
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
