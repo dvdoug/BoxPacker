@@ -202,53 +202,16 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $depthLeft
      * @return OrientatedItem|false
      */
-    protected function findBestOrientation(Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    protected function findBestOrientation(
+        Item $item,
+        OrientatedItem $prevItem = null,
+        Item $nextItem = null,
+        $widthLeft,
+        $lengthLeft,
+        $depthLeft) {
 
-        $orientations = $this->findPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
-
-        /*
-         * Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
-         */
-        $stableOrientations = [];
-        $unstableOrientations = [];
-
-        foreach ($orientations as $o => $orientation) {
-            if ($orientation->isStable()) {
-                $stableOrientations[] = $orientation;
-            } else {
-                $unstableOrientations[] = $orientation;
-            }
-        }
-
-        $orientationsToUse = [];
-
-        /*
-         * We prefer to use stable orientations only, but allow unstable ones if either
-         * the item is the last one left to pack OR
-         * the item doesn't fit in the box any other way
-         */
-        if (count($stableOrientations) > 0) {
-            $orientationsToUse = $stableOrientations;
-        } else if (count($unstableOrientations) > 0) {
-            $orientationsInEmptyBox = $this->findPossibleOrientations(
-                $item,
-                $prevItem,
-                $this->box->getInnerWidth(),
-                $this->box->getInnerLength(),
-                $this->box->getInnerDepth()
-            );
-
-            $stableOrientationsInEmptyBox = array_filter(
-                $orientationsInEmptyBox,
-                function(OrientatedItem $orientation) {
-                    return $orientation->isStable();
-                }
-            );
-
-            if (is_null($nextItem) || count($stableOrientationsInEmptyBox) == 0) {
-                $orientationsToUse = $unstableOrientations;
-            }
-        }
+        $possibleOrientations = $this->findAllPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
+        $orientationsToUse = $this->filterStableOrientations($possibleOrientations, $item, $prevItem, $nextItem);
 
         $orientationFits = [];
         /** @var OrientatedItem $orientation */
@@ -277,7 +240,12 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $depthLeft
      * @return OrientatedItem[]
      */
-    protected function findPossibleOrientations(Item $item, OrientatedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    protected function findAllPossibleOrientations(
+        Item $item,
+        OrientatedItem $prevItem = null,
+        $widthLeft,
+        $lengthLeft,
+        $depthLeft) {
 
         $orientations = [];
 
@@ -304,6 +272,63 @@ class VolumePacker implements LoggerAwareInterface
             return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
         });
 
+    }
+
+    /**
+     * Filter a set of orientations allow only those that have a stable base OR
+     * the item doesn't fit in the box any other way
+     * the item is the last one left to pack
+     *
+     * @param array $orientations
+     * @param Item $item
+     * @param OrientatedItem|null $prevItem
+     * @param Item|null $nextItem
+     *
+     * @return array
+     */
+    protected function filterStableOrientations(
+        array $orientations,
+        Item $item,
+        OrientatedItem $prevItem = null,
+        Item $nextItem = null
+    ) {
+        $stableOrientations = [];
+        $unstableOrientations = [];
+
+        foreach ($orientations as $o => $orientation) {
+            if ($orientation->isStable()) {
+                $stableOrientations[] = $orientation;
+            } else {
+                $unstableOrientations[] = $orientation;
+            }
+        }
+
+        $orientationsToUse = [];
+
+        if (count($stableOrientations) > 0) {
+            $orientationsToUse = $stableOrientations;
+        } else if (count($unstableOrientations) > 0) {
+            $orientationsInEmptyBox = $this->findAllPossibleOrientations(
+                $item,
+                $prevItem,
+                $this->box->getInnerWidth(),
+                $this->box->getInnerLength(),
+                $this->box->getInnerDepth()
+            );
+
+            $stableOrientationsInEmptyBox = array_filter(
+                $orientationsInEmptyBox,
+                function(OrientatedItem $orientation) {
+                    return $orientation->isStable();
+                }
+            );
+
+            if (is_null($nextItem) || count($stableOrientationsInEmptyBox) == 0) {
+                $orientationsToUse = $unstableOrientations;
+            }
+        }
+
+        return $orientationsToUse;
     }
 
     /**
