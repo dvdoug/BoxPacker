@@ -58,6 +58,10 @@ Basic usage then looks something like the below:
 
 ```php
 
+  use DVDoug\BoxPacker\Packer;
+  use DVDoug\BoxPacker\TestBox;  // use your own implementation
+  use DVDoug\BoxPacker\TestItem; // use your own implementation
+
   /*
    * To figure out which boxes you need, and which items go into which box
    */
