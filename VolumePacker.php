@@ -75,6 +75,9 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Constructor
+     *
+     * @param Box      $box
+     * @param ItemList $items
      */
     public function __construct(Box $box, ItemList $items)
     {
@@ -91,6 +94,7 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Pack as many items as possible into specific given box
+     *
      * @return PackedBox packed box
      */
     public function pack()
@@ -200,6 +204,7 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
+     *
      * @return OrientatedItem|false
      */
     protected function findBestOrientation(
@@ -216,7 +221,7 @@ class VolumePacker implements LoggerAwareInterface
         $orientationFits = [];
         /** @var OrientatedItem $orientation */
         foreach ($orientationsToUse as $o => $orientation) {
-            $orientationFit = min($widthLeft - $orientation->getWidth(), $lengthLeft  - $orientation->getLength());
+            $orientationFit = min($widthLeft - $orientation->getWidth(), $lengthLeft - $orientation->getLength());
             $orientationFits[$o] = $orientationFit;
         }
 
@@ -238,6 +243,7 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
+     *
      * @return OrientatedItem[]
      */
     protected function findAllPossibleOrientations(
@@ -268,7 +274,7 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         //remove any that simply don't fit
-        return array_filter($orientations, function (OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
+        return array_filter($orientations, function(OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
             return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
         });
 
@@ -279,12 +285,12 @@ class VolumePacker implements LoggerAwareInterface
      * the item doesn't fit in the box any other way
      * the item is the last one left to pack
      *
-     * @param array $orientations
+     * @param OrientatedItem[] $orientations
      * @param Item $item
      * @param OrientatedItem|null $prevItem
      * @param Item|null $nextItem
      *
-     * @return array
+     * @return OrientatedItem[]
      */
     protected function filterStableOrientations(
         array $orientations,
@@ -360,6 +366,7 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $layerWidth
      * @param int $layerLength
      * @param int $layerDepth
+     *
      * @return bool
      */
     protected function isLayerStarted($layerWidth, $layerLength, $layerDepth) {

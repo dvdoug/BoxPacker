@@ -29,6 +29,8 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Constructor
+     *
+     * @param BoxList $boxList
      */
     public function __construct(BoxList $boxList)
     {
@@ -40,6 +42,7 @@ class WeightRedistributor implements LoggerAwareInterface
      * Given a solution set of packed boxes, repack them to achieve optimum weight distribution
      *
      * @param PackedBoxList $originalBoxes
+     *
      * @return PackedBoxList
      */
     public function redistributeWeight(PackedBoxList $originalBoxes)
@@ -65,17 +68,17 @@ class WeightRedistributor implements LoggerAwareInterface
 
         do { //Keep moving items from most overweight box to most underweight box
             $tryRepack = false;
-            $this->logger->log(LogLevel::DEBUG, 'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
+            $this->logger->log(LogLevel::DEBUG, 'boxes under/over target: '.count($underWeightBoxes).'/'.count($overWeightBoxes));
 
             foreach ($underWeightBoxes as $u => $underWeightBox) {
-                $this->logger->log(LogLevel::DEBUG, 'Underweight Box ' . $u);
+                $this->logger->log(LogLevel::DEBUG, 'Underweight Box '.$u);
                 foreach ($overWeightBoxes as $o => $overWeightBox) {
-                    $this->logger->log(LogLevel::DEBUG, 'Overweight Box ' . $o);
+                    $this->logger->log(LogLevel::DEBUG, 'Overweight Box '.$o);
                     $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
                     //For each item in the heavier box, try and move it to the lighter one
                     foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
-                        $this->logger->log(LogLevel::DEBUG, 'Overweight Item ' . $oi);
+                        $this->logger->log(LogLevel::DEBUG, 'Overweight Item '.$oi);
                         if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
                             $this->logger->log(LogLevel::DEBUG, 'Skipping item for hindering weight distribution');
                             continue; //skip if moving this item would hinder rather than help weight distribution

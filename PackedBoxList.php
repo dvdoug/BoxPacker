@@ -66,7 +66,7 @@ class PackedBoxList implements \Countable, \IteratorAggregate
         if (!$this->isSorted) {
             usort(
                 $this->list,
-                function (PackedBox $boxA, PackedBox $boxB) {
+                function(PackedBox $boxA, PackedBox $boxB) {
                     $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
                     if ($choice === 0) {
                         $choice = $boxA->getBox()->getInnerVolume() - $boxB->getBox()->getInnerVolume();

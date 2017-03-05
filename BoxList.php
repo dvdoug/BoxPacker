@@ -61,7 +61,7 @@ class BoxList implements \Countable, \IteratorAggregate
         if (!$this->isSorted) {
             usort(
                 $this->list,
-                function (Box $boxA, Box $boxB) {
+                function(Box $boxA, Box $boxB) {
                     if ($boxB->getInnerVolume() > $boxA->getInnerVolume()) {
                         return -1;
                     } elseif ($boxB->getInnerVolume() < $boxA->getInnerVolume()) {

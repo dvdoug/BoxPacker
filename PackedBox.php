@@ -76,6 +76,7 @@ class PackedBox
 
     /**
      * Get box used
+     *
      * @return Box
      */
     public function getBox()
@@ -85,6 +86,7 @@ class PackedBox
 
     /**
      * Get items packed
+     *
      * @return ItemList
      */
     public function getItems()
@@ -94,11 +96,11 @@ class PackedBox
 
     /**
      * Get packed weight
+     *
      * @return int weight in grams
      */
     public function getWeight()
     {
-
         if (!is_null($this->weight)) {
             return $this->weight;
         }
@@ -113,6 +115,7 @@ class PackedBox
 
     /**
      * Get remaining width inside box for another item
+     *
      * @return int
      */
     public function getRemainingWidth()
@@ -122,6 +125,7 @@ class PackedBox
 
     /**
      * Get remaining length inside box for another item
+     *
      * @return int
      */
     public function getRemainingLength()
@@ -131,6 +135,7 @@ class PackedBox
 
     /**
      * Get remaining depth inside box for another item
+     *
      * @return int
      */
     public function getRemainingDepth()
@@ -140,6 +145,7 @@ class PackedBox
 
     /**
      * Used width inside box for packing items
+     *
      * @return int
      */
     public function getUsedWidth()
@@ -149,6 +155,7 @@ class PackedBox
 
     /**
      * Used length inside box for packing items
+     *
      * @return int
      */
     public function getUsedLength()
@@ -158,6 +165,7 @@ class PackedBox
 
     /**
      * Used depth inside box for packing items
+     *
      * @return int
      */
     public function getUsedDepth()
@@ -167,6 +175,7 @@ class PackedBox
 
     /**
      * Get remaining weight inside box for another item
+     *
      * @return int
      */
     public function getRemainingWeight()
@@ -176,6 +185,7 @@ class PackedBox
 
     /**
      * Get volume utilisation of the packed box
+     *
      * @return float
      */
     public function getVolumeUtilisation()
