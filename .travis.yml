@@ -20,11 +20,14 @@ cache:
     - $HOME/.cache/composer/files
 
 install:
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "5.4" ] || [ "$TRAVIS_PHP_VERSION" = "5.5" ] || [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then phpenv config-rm xdebug.ini; fi;'
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then phpenv config-rm xdebug.ini; fi;' # Xdebug makes tests *really* slow
   - if [ "$lowest" = "1" ]; then composer update --prefer-lowest --prefer-stable; else composer install; fi;
 
+before_script:
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ] && [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ] && [ "$TRAVIS_PHP_VERSION" != "5.6" ]; then echo "memory_limit = 3072M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi;' # phpdbg is RAM hungry
+
 script:
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ] && [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ] && [ "$TRAVIS_PHP_VERSION" != "5.6" ]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests; else vendor/bin/phpunit; fi;'
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ] && [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ] && [ "$TRAVIS_PHP_VERSION" != "5.6" ]; then phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests; else php vendor/bin/phpunit; fi;'
 
 after_script:
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ] && [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ] && [ "$TRAVIS_PHP_VERSION" != "5.6" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi;'
