@@ -25,61 +25,74 @@ class WeightRedistributor implements LoggerAwareInterface
      * List of box sizes available to pack items into
      * @var BoxList
      */
-    protected $boxes;
+    protected $boxList;
+
+    /**
+     * @var PackedBoxList
+     */
+    protected $originalPackedBoxes;
+
+    /**
+     * @var PackedBox[]
+     */
+    protected $underWeightBoxes = [];
+
+    /**
+     * @var PackedBox[]
+     */
+    protected $targetWeightBoxes = [];
+
+    /**
+     * @var PackedBox[]
+     */
+    protected $overWeightBoxes = [];
+
+    /**
+     * @var float
+     */
+    protected $targetWeight;
 
     /**
      * Constructor
      *
-     * @param BoxList $boxList
+     * @param BoxList       $boxList
+     * @param PackedBoxList $originalPackedBoxes
      */
-    public function __construct(BoxList $boxList)
+    public function __construct(BoxList $boxList, PackedBoxList $originalPackedBoxes)
     {
-        $this->boxes = clone $boxList;
+        $this->boxList = clone $boxList;
+        $this->originalPackedBoxes = $originalPackedBoxes;
         $this->logger = new NullLogger();
+
+        $this->targetWeight = $this->originalPackedBoxes->getMeanWeight();
+        $this->sortBoxes();
     }
 
     /**
      * Given a solution set of packed boxes, repack them to achieve optimum weight distribution
      *
-     * @param PackedBoxList $originalBoxes
-     *
      * @return PackedBoxList
      */
-    public function redistributeWeight(PackedBoxList $originalBoxes)
+    public function redistributeWeight()
     {
-
-        $targetWeight = $originalBoxes->getMeanWeight();
-        $this->logger->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
+        $this->logger->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$this->originalPackedBoxes->getWeightVariance()}, target weight {$this->targetWeight}");
 
         $packedBoxes = new PackedBoxList;
 
-        $overWeightBoxes = [];
-        $underWeightBoxes = [];
-        foreach (clone $originalBoxes as $packedBox) {
-            $boxWeight = $packedBox->getWeight();
-            if ($boxWeight > $targetWeight) {
-                $overWeightBoxes[] = $packedBox;
-            } elseif ($boxWeight < $targetWeight) {
-                $underWeightBoxes[] = $packedBox;
-            } else {
-                $packedBoxes->insert($packedBox); //target weight, so we'll keep these
-            }
-        }
-
         do { //Keep moving items from most overweight box to most underweight box
             $tryRepack = false;
-            $this->logger->log(LogLevel::DEBUG, 'boxes under/over target: '.count($underWeightBoxes).'/'.count($overWeightBoxes));
+            $this->logger->log(LogLevel::DEBUG, 'boxes under/over target: '.count($this->underWeightBoxes).'/'.count($this->overWeightBoxes));
 
-            foreach ($underWeightBoxes as $u => $underWeightBox) {
+            foreach ($this->underWeightBoxes as $u => $underWeightBox) {
                 $this->logger->log(LogLevel::DEBUG, 'Underweight Box '.$u);
-                foreach ($overWeightBoxes as $o => $overWeightBox) {
+                foreach ($this->overWeightBoxes as $o => $overWeightBox) {
                     $this->logger->log(LogLevel::DEBUG, 'Overweight Box '.$o);
                     $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
                     //For each item in the heavier box, try and move it to the lighter one
                     foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
                         $this->logger->log(LogLevel::DEBUG, 'Overweight Item '.$oi);
-                        if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
+                        if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $this->targetWeight) {
                             $this->logger->log(LogLevel::DEBUG, 'Skipping item for hindering weight distribution');
                             continue; //skip if moving this item would hinder rather than help weight distribution
                         }
@@ -88,7 +101,7 @@ class WeightRedistributor implements LoggerAwareInterface
                         $newItemsForLighterBox->insert($overWeightBoxItem);
 
                         $newLighterBoxPacker = new Packer(); //we may need a bigger box
-                        $newLighterBoxPacker->setBoxes($this->boxes);
+                        $newLighterBoxPacker->setBoxes($this->boxList);
                         $newLighterBoxPacker->setItems($newItemsForLighterBox);
                         $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK LIGHTER BOX]");
                         $newLighterBox = $newLighterBoxPacker->doVolumePacking()->getIterator()->current();
@@ -98,22 +111,22 @@ class WeightRedistributor implements LoggerAwareInterface
                             unset($overWeightBoxItems[$oi]); //now packed in different box
 
                             $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
-                            $newHeavierBoxPacker->setBoxes($this->boxes);
+                            $newHeavierBoxPacker->setBoxes($this->boxList);
                             $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
                             $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK HEAVIER BOX]");
                             $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
                             if (count($newHeavierBoxes) > 1) { //found an edge case in packing algorithm that *increased* box count
                                 $this->logger->log(LogLevel::INFO, "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original");
-                                return $originalBoxes;
+                                return $this->originalPackedBoxes;
                             }
 
-                            $overWeightBoxes[$o] = $newHeavierBoxes->getIterator()->current();
-                            $underWeightBoxes[$u] = $newLighterBox;
+                            $this->overWeightBoxes[$o] = $newHeavierBoxes->getIterator()->current();
+                            $this->underWeightBoxes[$u] = $newLighterBox;
 
                             $tryRepack = true; //we did some work, so see if we can do even better
-                            usort($overWeightBoxes, [$packedBoxes, 'reverseCompare']);
-                            usort($underWeightBoxes, [$packedBoxes, 'reverseCompare']);
+                            usort($this->overWeightBoxes, [$packedBoxes, 'reverseCompare']);
+                            usort($this->underWeightBoxes, [$packedBoxes, 'reverseCompare']);
                             break 3;
                         }
                     }
@@ -122,9 +135,26 @@ class WeightRedistributor implements LoggerAwareInterface
         } while ($tryRepack);
 
         //Combine back into a single list
-        $packedBoxes->insertFromArray($overWeightBoxes);
-        $packedBoxes->insertFromArray($underWeightBoxes);
+        $packedBoxes->insertFromArray($this->overWeightBoxes);
+        $packedBoxes->insertFromArray($this->underWeightBoxes);
+        $packedBoxes->insertFromArray($this->targetWeightBoxes);
 
         return $packedBoxes;
+    }
+
+    /**
+     * Perform initial classification of boxes into under/over/target weight
+     */
+    protected function sortBoxes() {
+        foreach (clone $this->originalPackedBoxes as $packedBox) {
+            $boxWeight = $packedBox->getWeight();
+            if ($boxWeight > $this->targetWeight) {
+                $this->overWeightBoxes[] = $packedBox;
+            } elseif ($boxWeight < $this->targetWeight) {
+                $this->underWeightBoxes[] = $packedBox;
+            } else {
+                $this->targetWeightBoxes[] = $packedBox; //target weight, so we'll keep these
+            }
+        }
     }
 }

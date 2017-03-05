@@ -55,8 +55,8 @@ class WeightRedistributorTest extends TestCase
         $packedBoxList->insert($packedBox2);
         $packedBoxList->insert($packedBox3);
 
-        $redistributor = new WeightRedistributor($boxList);
-        $packedBoxes = $redistributor->redistributeWeight($packedBoxList);
+        $redistributor = new WeightRedistributor($boxList, $packedBoxList);
+        $packedBoxes = $redistributor->redistributeWeight();
 
         $packedItemCount = 0;
         foreach ($packedBoxes as $packedBox) {

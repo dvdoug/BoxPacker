@@ -104,9 +104,9 @@ class Packer implements LoggerAwareInterface
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
         if ($packedBoxes->count() > 1 && $packedBoxes->count() < static::MAX_BOXES_TO_BALANCE_WEIGHT) {
-            $redistributor = new WeightRedistributor($this->boxes);
+            $redistributor = new WeightRedistributor($this->boxes, $packedBoxes);
             $redistributor->setLogger($this->logger);
-            $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
+            $packedBoxes = $redistributor->redistributeWeight();
         }
 
         $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
