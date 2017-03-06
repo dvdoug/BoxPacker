@@ -351,8 +351,8 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(15, $packedBoxes->top()->getUsedWidth());
-        self::assertEquals(26, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(13, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(30, $packedBoxes->top()->getUsedLength());
         self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
     }
 
@@ -360,14 +360,15 @@ class PackerTest extends TestCase
      * @dataProvider getSamples
      * @coversNothing
      */
-    public function testCanPackRepresentativeLargerSamples(
+    public function testCanPackRepresentativeLargerSamples2D(
         $test,
         $boxes,
         $items,
-        $expectedBoxes,
-        $expectedWeightVariance
+        $expectedBoxes2D,
+        $expectedBoxes3D,
+        $expectedWeightVariance2D,
+        $expectedWeightVariance3D
     ) {
-
         $expectedItemCount = 0;
         $packedItemCount = 0;
 
@@ -376,8 +377,17 @@ class PackerTest extends TestCase
             $packer->addBox($box);
         }
         foreach ($items as $item) {
-            $packer->addItem(new TestItem($item['name'], $item['width'], $item['length'], $item['depth'],
-                $item['weight'], true), $item['qty']);
+            $packer->addItem(
+                new TestItem(
+                    $item['name'],
+                    $item['width'],
+                    $item['length'],
+                    $item['depth'],
+                    $item['weight'],
+                    true
+                ),
+                $item['qty']
+            );
             $expectedItemCount += $item['qty'];
         }
         $packedBoxes = $packer->pack();
@@ -387,26 +397,88 @@ class PackerTest extends TestCase
         }
 
 
-        self::assertEquals($expectedBoxes, $packedBoxes->count());
+        self::assertEquals($expectedBoxes2D, $packedBoxes->count());
         self::assertEquals($expectedItemCount, $packedItemCount);
-        self::assertEquals($expectedWeightVariance, (int)$packedBoxes->getWeightVariance());
+        self::assertEquals($expectedWeightVariance2D, (int)$packedBoxes->getWeightVariance());
+    }
+
+    /**
+     * @dataProvider getSamples
+     * @coversNothing
+     */
+    public function testCanPackRepresentativeLargerSamples3D(
+        $test,
+        $boxes,
+        $items,
+        $expectedBoxes2D,
+        $expectedBoxes3D,
+        $expectedWeightVariance2D,
+        $expectedWeightVariance3D
+    ) {
+        //3D
+        $expectedItemCount = 0;
+        $packedItemCount = 0;
+
+        $packer = new Packer();
+        foreach ($boxes as $box) {
+            $packer->addBox($box);
+        }
+        foreach ($items as $item) {
+            $packer->addItem(
+                new TestItem(
+                    $item['name'],
+                    $item['width'],
+                    $item['length'],
+                    $item['depth'],
+                    $item['weight'],
+                    false
+                ),
+                $item['qty']
+            );
+            $expectedItemCount += $item['qty'];
+        }
+        $packedBoxes = $packer->pack();
+
+        foreach (clone $packedBoxes as $packedBox) {
+            $packedItemCount += $packedBox->getItems()->count();
+        }
+
+        self::assertEquals($expectedBoxes3D, $packedBoxes->count());
+        self::assertEquals($expectedItemCount, $packedItemCount);
+        self::assertEquals($expectedWeightVariance3D, (int)$packedBoxes->getWeightVariance());
 
     }
 
     public function getSamples()
     {
-        $expected = [];
-        $expectedData = fopen(__DIR__ . '/data/expected.csv', 'r');
-        while ($data = fgetcsv($expectedData)) {
-            $expected[$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
+        $expected = ['2D' => [], '3D' => []];
+
+        $expected2DData = fopen(__DIR__ . '/data/expected2d.csv', 'r');
+        while ($data = fgetcsv($expected2DData)) {
+            $expected['2D'][$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
         }
-        fclose($expectedData);
+        fclose($expected2DData);
+
+        $expected3DData = fopen(__DIR__ . '/data/expected3d.csv', 'r');
+        while ($data = fgetcsv($expected3DData)) {
+            $expected['3D'][$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
+        }
+        fclose($expected3DData);
 
         $boxes = [];
         $boxData = fopen(__DIR__ . '/data/boxes.csv', 'r');
         while ($data = fgetcsv($boxData)) {
-            $boxes[] = new TestBox($data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7],
-                $data[8]);
+            $boxes[] = new TestBox(
+                $data[0],
+                $data[1],
+                $data[2],
+                $data[3],
+                $data[4],
+                $data[5],
+                $data[6],
+                $data[7],
+                $data[8]
+            );
         }
         fclose($boxData);
 
@@ -437,8 +509,10 @@ class PackerTest extends TestCase
                             'weight' => $data[6]
                         )
                     ),
-                    'expected' => $expected[$data[0]]['boxes'],
-                    'weightVariance' => $expected[$data[0]]['weightVariance']
+                    'expected2D' => $expected['2D'][$data[0]]['boxes'],
+                    'expected3D' => $expected['3D'][$data[0]]['boxes'],
+                    'weightVariance2D' => $expected['2D'][$data[0]]['weightVariance'],
+                    'weightVariance3D' => $expected['3D'][$data[0]]['weightVariance']
                 );
             }
         }

@@ -20,11 +20,6 @@ class VolumePacker implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * 3D rotation of items is a WIP and should not be used in production environments
-     */
-    const ALWAYS_SHIP_FLAT = true;
-
-    /**
      * Box to pack items into
      * @var Box
      */
@@ -211,26 +206,63 @@ class VolumePacker implements LoggerAwareInterface
 
         $orientations = $this->findPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
 
-        // special casing based on next item
-        if (isset($orientations[0]) && $nextItem == $item && $lengthLeft >= 2 * $item->getLength()) {
-            $this->logger->debug("not rotating based on next item");
-            return $orientations[0]; // XXX this is tied to the ordering from ->findPossibleOrientations()
+        /*
+         * Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
+         */
+        $stableOrientations = [];
+        $unstableOrientations = [];
+
+        foreach ($orientations as $o => $orientation) {
+            if ($orientation->isStable()) {
+                $stableOrientations[] = $orientation;
+            } else {
+                $unstableOrientations[] = $orientation;
+            }
+        }
+
+        $orientationsToUse = [];
+
+        /*
+         * We prefer to use stable orientations only, but allow unstable ones if either
+         * the item is the last one left to pack OR
+         * the item doesn't fit in the box any other way
+         */
+        if (count($stableOrientations) > 0) {
+            $orientationsToUse = $stableOrientations;
+        } else if (count($unstableOrientations) > 0) {
+            $orientationsInEmptyBox = $this->findPossibleOrientations(
+                $item,
+                $prevItem,
+                $this->box->getInnerWidth(),
+                $this->box->getInnerLength(),
+                $this->box->getInnerDepth()
+            );
+
+            $stableOrientationsInEmptyBox = array_filter(
+                $orientationsInEmptyBox,
+                function(OrientatedItem $orientation) {
+                    return $orientation->isStable();
+                }
+            );
+
+            if (is_null($nextItem) || count($stableOrientationsInEmptyBox) == 0) {
+                $orientationsToUse = $unstableOrientations;
+            }
         }
 
         $orientationFits = [];
-
         /** @var OrientatedItem $orientation */
-        foreach ($orientations as $o => $orientation) {
-            $orientationFit = min($widthLeft   - $orientation->getWidth(), $lengthLeft  - $orientation->getLength());
+        foreach ($orientationsToUse as $o => $orientation) {
+            $orientationFit = min($widthLeft - $orientation->getWidth(), $lengthLeft  - $orientation->getLength());
             $orientationFits[$o] = $orientationFit;
         }
 
         if (!empty($orientationFits)) {
             asort($orientationFits);
             reset($orientationFits);
-            $bestFit = key($orientationFits);
-            $this->logger->debug("Using orientation #{$bestFit}");
-            return $orientations[$bestFit];
+            $bestFit = $orientationsToUse[key($orientationFits)];
+            $this->logger->debug("Selected best fit orientation", ['orientation' => $bestFit]);
+            return $bestFit;
         } else {
             return false;
         }
@@ -259,7 +291,7 @@ class VolumePacker implements LoggerAwareInterface
             $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
 
             //add 3D rotation if we're allowed
-            if (self::ALWAYS_SHIP_FLAT === false && !$item->getKeepFlat()) {
+            if (!$item->getKeepFlat()) {
                 $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
                 $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
                 $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());
