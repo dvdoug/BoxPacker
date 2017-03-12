@@ -148,7 +148,7 @@ class Packer implements LoggerAwareInterface
 
             //Check iteration was productive
             if ($packedBoxesIteration->isEmpty()) {
-                throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+                throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box', $this->items->top());
             }
 
             //Find best box of iteration, and remove packed items from unpacked list
