@@ -160,4 +160,15 @@ class VolumePackerTest extends TestCase
 
         self::assertEquals(1, $packedBoxes->count());
     }
+
+    public function testIssue53()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 500, 1000, 500, 0, 500, 1000, 500, 0));
+        $packer->addItem(new TestItem('Item 1', 500, 500, 500, 0, false));
+        $packer->addItem(new TestItem('Item 2', 500, 500, 250, 0, false), 2);
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+    }
 }
