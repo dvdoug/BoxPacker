@@ -75,6 +75,9 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Constructor
+     *
+     * @param Box      $box
+     * @param ItemList $items
      */
     public function __construct(Box $box, ItemList $items)
     {
@@ -108,12 +111,12 @@ class VolumePacker implements LoggerAwareInterface
             $itemToPack = $this->items->extract();
 
             //skip items that are simply too heavy
-            if ($itemToPack->getWeight() > $this->remainingWeight) {
+            if (!$this->checkNonDimensionalConstraints($itemToPack, $packedItems)) {
                 continue;
             }
 
             $this->logger->debug(
-                "evaluating item {$itemToPack->getDescription()}",
+                "evaluating item {$itemToPack->getDescription()} for fit",
                 [
                     'item' => $itemToPack,
                     'space' => [
@@ -246,5 +249,25 @@ class VolumePacker implements LoggerAwareInterface
     protected function isLayerStarted($layerWidth, $layerLength, $layerDepth)
     {
         return $layerWidth > 0 && $layerLength > 0 && $layerDepth > 0;
+    }
+
+    /**
+     * As well as purely dimensional constraints, there are other constraints that need to be met
+     * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box)
+     *
+     * @param Item     $itemToPack
+     * @param ItemList $packedItems
+     *
+     * @return bool
+     */
+    protected function checkNonDimensionalConstraints(Item $itemToPack, ItemList $packedItems)
+    {
+        $weightOK = $itemToPack->getWeight() <= $this->remainingWeight;
+
+        if ($itemToPack instanceof ConstrainedItem) {
+            return $weightOK && $itemToPack->canBePackedInBox(clone $packedItems, $this->box);
+        }
+
+        return $weightOK;
     }
 }

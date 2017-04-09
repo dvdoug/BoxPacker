@@ -110,6 +110,12 @@ seconds on my workstation, giving a rate of 220+ solutions/second which should b
 most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
 disable Xdebug when doing so - in my experience the unit tests take 24x longer (41 sec->16 min) when Xdebug is loaded.
 
+Advanced Usage
+--------------
+For more advanced use cases where greater control over the contents of each box is required (e.g. legal limits on the
+number of hazardous items per box), you may implement the `BoxPacker\ConstrainedItem` interface which contains an
+additional callback method allowing you to decide whether an item may be packed into a box given it's existing contents.
+
 Requirements
 ------------
 

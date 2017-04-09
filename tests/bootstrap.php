@@ -137,3 +137,20 @@ class TestItem implements Item
     }
 }
 
+class TestConstrainedItem extends TestItem implements ConstrainedItem
+{
+    public static $limit = 3;
+
+    public function canBePackedInBox(ItemList $alreadyPackedItems, Box $box)
+    {
+        $alreadyPackedType = array_filter(
+            $alreadyPackedItems->asArray(),
+            function(Item $item) {
+                return $item->getDescription() === $this->getDescription();
+            }
+        );
+
+        return count($alreadyPackedType) + 1 <= static::$limit;
+    }
+}
+
