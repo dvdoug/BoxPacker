@@ -128,7 +128,10 @@ class VolumePacker implements LoggerAwareInterface
             );
 
             $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
-            $orientatedItem = $this->findBestOrientation($itemToPack, $prevItem, $nextItem, $this->widthLeft, $this->lengthLeft, $this->depthLeft);
+
+            $orientatedItemFactory = new OrientatedItemFactory();
+            $orientatedItemFactory->setLogger($this->logger);
+            $orientatedItem = $orientatedItemFactory->getBestOrientation($this->box, $itemToPack, $prevItem, $nextItem, $this->widthLeft, $this->lengthLeft, $this->depthLeft);
 
             if ($orientatedItem) {
 
@@ -193,120 +196,6 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Get the best orientation for an item
-     * @param Item $item
-     * @param OrientatedItem|null $prevItem
-     * @param Item|null $nextItem
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
-     * @return OrientatedItem|false
-     */
-    protected function findBestOrientation(Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
-
-        $orientations = $this->findPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
-
-        /*
-         * Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
-         */
-        $stableOrientations = [];
-        $unstableOrientations = [];
-
-        foreach ($orientations as $o => $orientation) {
-            if ($orientation->isStable()) {
-                $stableOrientations[] = $orientation;
-            } else {
-                $unstableOrientations[] = $orientation;
-            }
-        }
-
-        $orientationsToUse = [];
-
-        /*
-         * We prefer to use stable orientations only, but allow unstable ones if either
-         * the item is the last one left to pack OR
-         * the item doesn't fit in the box any other way
-         */
-        if (count($stableOrientations) > 0) {
-            $orientationsToUse = $stableOrientations;
-        } else if (count($unstableOrientations) > 0) {
-            $orientationsInEmptyBox = $this->findPossibleOrientations(
-                $item,
-                $prevItem,
-                $this->box->getInnerWidth(),
-                $this->box->getInnerLength(),
-                $this->box->getInnerDepth()
-            );
-
-            $stableOrientationsInEmptyBox = array_filter(
-                $orientationsInEmptyBox,
-                function(OrientatedItem $orientation) {
-                    return $orientation->isStable();
-                }
-            );
-
-            if (is_null($nextItem) || count($stableOrientationsInEmptyBox) == 0) {
-                $orientationsToUse = $unstableOrientations;
-            }
-        }
-
-        $orientationFits = [];
-        /** @var OrientatedItem $orientation */
-        foreach ($orientationsToUse as $o => $orientation) {
-            $orientationFit = min($widthLeft - $orientation->getWidth(), $lengthLeft  - $orientation->getLength());
-            $orientationFits[$o] = $orientationFit;
-        }
-
-        if (!empty($orientationFits)) {
-            asort($orientationFits);
-            reset($orientationFits);
-            $bestFit = $orientationsToUse[key($orientationFits)];
-            $this->logger->debug("Selected best fit orientation", ['orientation' => $bestFit]);
-            return $bestFit;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Find all possible orientations for an item
-     * @param Item $item
-     * @param OrientatedItem|null $prevItem
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
-     * @return OrientatedItem[]
-     */
-    protected function findPossibleOrientations(Item $item, OrientatedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
-
-        $orientations = [];
-
-        //Special case items that are the same as what we just packed - keep orientation
-        if ($prevItem && $prevItem->getItem() == $item) {
-            $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
-        } else {
-
-            //simple 2D rotation
-            $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
-            $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
-
-            //add 3D rotation if we're allowed
-            if (!$item->getKeepFlat()) {
-                $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
-                $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
-                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());
-                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getLength(), $item->getWidth());
-            }
-        }
-
-        //remove any that simply don't fit
-        return array_filter($orientations, function (OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
-            return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
-        });
-
-    }
-
-    /**
      * Figure out if we can stack the next item vertically on top of this rather than side by side
      * Used when we've packed a tall item, and have just put a shorter one next to it
      *
@@ -317,10 +206,27 @@ class VolumePacker implements LoggerAwareInterface
      * @param int            $maxLength
      * @param int            $maxDepth
      */
-    protected function tryAndStackItemsIntoSpace(ItemList $packedItems, OrientatedItem $prevItem = null, Item $nextItem = null, $maxWidth, $maxLength, $maxDepth)
-    {
+    protected function tryAndStackItemsIntoSpace(
+        ItemList $packedItems,
+        OrientatedItem $prevItem = null,
+        Item $nextItem = null,
+        $maxWidth,
+        $maxLength,
+        $maxDepth
+    ) {
+        $orientatedItemFactory = new OrientatedItemFactory();
+        $orientatedItemFactory->setLogger($this->logger);
+
         while (!$this->items->isEmpty() && $this->remainingWeight >= $this->items->top()->getWeight()) {
-            $stackedItem = $this->findBestOrientation($this->items->top(), $prevItem, $nextItem, $maxWidth, $maxLength, $maxDepth);
+            $stackedItem = $orientatedItemFactory->getBestOrientation(
+                $this->box,
+                $this->items->top(),
+                $prevItem,
+                $nextItem,
+                $maxWidth,
+                $maxLength,
+                $maxDepth
+            );
             if ($stackedItem) {
                 $this->remainingWeight -= $this->items->top()->getWeight();
                 $maxDepth -= $stackedItem->getDepth();
@@ -337,7 +243,8 @@ class VolumePacker implements LoggerAwareInterface
      * @param int $layerDepth
      * @return bool
      */
-    protected function isLayerStarted($layerWidth, $layerLength, $layerDepth) {
+    protected function isLayerStarted($layerWidth, $layerLength, $layerDepth)
+    {
         return $layerWidth > 0 && $layerLength > 0 && $layerDepth > 0;
     }
 }
