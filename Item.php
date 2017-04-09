@@ -52,7 +52,6 @@ interface Item
 
     /**
      * Does this item need to be kept flat?
-     * XXX not yet used, all items are kept flat
      * @return bool
      */
     public function getKeepFlat();
