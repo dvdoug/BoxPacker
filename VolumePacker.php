@@ -156,7 +156,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 $prevItem = $orientatedItem;
 
-                if (!$nextItem) {
+                if ($this->items->isEmpty()) {
                     $this->usedDepth += $layerDepth;
                 }
             } else {
@@ -172,6 +172,7 @@ class VolumePacker implements LoggerAwareInterface
                     continue;
                 } elseif ($this->lengthLeft < min($itemToPack->getWidth(), $itemToPack->getLength()) || $layerDepth == 0) {
                     $this->logger->debug("doesn't fit on layer even when empty");
+                    $this->usedDepth += $layerDepth;
                     continue;
                 }
 

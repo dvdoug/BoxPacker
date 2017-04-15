@@ -343,7 +343,7 @@ class PackerTest extends TestCase
         self::assertEquals(2, $packedBoxes->count());
     }
 
-    public function testIssue52()
+    public function testIssue52A()
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 100, 50, 50, 0, 100, 50, 50, 5000));
@@ -354,6 +354,44 @@ class PackerTest extends TestCase
         self::assertEquals(13, $packedBoxes->top()->getUsedWidth());
         self::assertEquals(30, $packedBoxes->top()->getUsedLength());
         self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
+    }
+
+    public function testIssue52B()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box',370,375,60,140,364,374,40,3000));
+        $packer->addItem(new TestItem('Item 1',220,310,12,679, true));
+        $packer->addItem(new TestItem('Item 2',210,297,11,648, true));
+        $packer->addItem(new TestItem('Item 3',210,297,5,187, true));
+        $packer->addItem(new TestItem('Item 4',148,210,32,880, true));
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+        self::assertEquals(310, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(368, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(32, $packedBoxes->top()->getUsedDepth());
+    }
+
+    public function testIssue52C()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box',230,300,240,160,230,300,240,15000));
+        $packer->addItem(new TestItem('Item 1',210,297,4,213, true));
+        $packer->addItem(new TestItem('Item 2',80,285,70,199, true));
+        $packer->addItem(new TestItem('Item 3',80,285,70,199, true));
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(2, $packedBoxes->count());
+        $box1 = $packedBoxes->extract();
+        $box2 = $packedBoxes->extract();
+
+        self::assertEquals(80, $box1->getUsedWidth());
+        self::assertEquals(285, $box1->getUsedLength());
+        self::assertEquals(70, $box1->getUsedDepth());
+
+        self::assertEquals(210, $box2->getUsedWidth());
+        self::assertEquals(297, $box2->getUsedLength());
+        self::assertEquals(4, $box2->getUsedDepth());
     }
 
     /**
