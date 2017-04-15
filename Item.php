@@ -51,7 +51,7 @@ interface Item
     public function getVolume();
 
     /**
-     * Does this item need to be kept flat?
+     * Does this item need to be kept flat / packed "this way up"?
      * @return bool
      */
     public function getKeepFlat();

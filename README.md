@@ -1,10 +1,11 @@
 BoxPacker
 =========
 
-An implementation of the 3D bin packing/knapsack problem i.e. given a list of items, how many boxes do you need to fit
-them all in.
+An implementation of the "4D" bin packing/knapsack problem i.e. given a list of items, how many boxes do you need to fit
+them all in taking into account physical dimensions and weights.
 
-Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs.
+Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs, or
+even just want to know the right number of labels to print.
 
 [![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master)](https://travis-ci.org/dvdoug/BoxPacker)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=2.x-dev)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=2.x-dev)
@@ -68,9 +69,9 @@ Basic usage then looks something like the below:
   $packer = new Packer();
   $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
   $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
-  $packer->addItem(new TestItem('Item 1', 250, 250, 2, 200, true));
-  $packer->addItem(new TestItem('Item 2', 250, 250, 2, 200, true));
-  $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200, true));
+  $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200, false));
+  $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, false));
+  $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, true)); // you can even choose if an item needs to be kept flat (packed "this way up")
   $packedBoxes = $packer->pack();
 
   echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
