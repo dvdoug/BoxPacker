@@ -7,6 +7,7 @@
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
 class ItemListTest extends TestCase

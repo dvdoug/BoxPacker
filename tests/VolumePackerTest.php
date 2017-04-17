@@ -7,6 +7,9 @@
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\TestBox;
+use DVDoug\BoxPacker\Test\TestConstrainedTestItem;
+use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
 class VolumePackerTest extends TestCase
@@ -174,11 +177,11 @@ class VolumePackerTest extends TestCase
 
     public function testConstraints()
     {
-        TestConstrainedItem::$limit = 2;
+        TestConstrainedTestItem::$limit = 2;
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
-        $packer->addItem(new TestConstrainedItem('Item', 1, 1, 1, 0, false), 8);
+        $packer->addItem(new TestConstrainedTestItem('Item', 1, 1, 1, 0, false), 8);
         $packedBoxes = $packer->pack();
 
         self::assertEquals(4, $packedBoxes->count());

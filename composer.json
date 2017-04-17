@@ -23,5 +23,10 @@
         "psr-4": {
             "DVDoug\\BoxPacker\\": ""
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DVDoug\\BoxPacker\\Test\\": "tests/Test"
+        }
     }
 }
