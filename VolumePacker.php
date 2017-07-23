@@ -124,13 +124,13 @@ class VolumePacker implements LoggerAwareInterface
         while (!$this->items->isEmpty()) {
 
             $itemToPack = $this->items->extract();
+            $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
 
-            //skip items that are simply too heavy
-            if (!$this->checkNonDimensionalConstraints($itemToPack, $packedItems)) {
+            //skip items that are simply too heavy or too large
+            if (!$this->checkConstraints($itemToPack, $packedItems, $prevItem, $nextItem)) {
                 continue;
             }
 
-            $nextItem = !$this->items->isEmpty() ? $this->items->top() : null;
             $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $nextItem, $this->widthLeft, $this->lengthLeft, $this->depthLeft);
 
             if ($orientatedItem) {
@@ -281,6 +281,27 @@ class VolumePacker implements LoggerAwareInterface
         return $this->layerWidth > 0 && $this->layerLength > 0 && $this->layerDepth > 0;
     }
 
+
+    /**
+     * Check item generally fits into box
+     *
+     * @param Item            $itemToPack
+     * @param ItemList  $packedItems
+     * @param OrientatedItem|null $prevItem
+     * @param Item|null       $nextItem
+     *
+     * @return bool
+     */
+    protected function checkConstraints(
+        Item $itemToPack,
+        ItemList $packedItems,
+        OrientatedItem $prevItem = null,
+        Item $nextItem = null
+    ) {
+        return $this->checkNonDimensionalConstraints($itemToPack, $packedItems) &&
+               $this->checkDimensionalConstraints($itemToPack, $prevItem, $nextItem);
+    }
+
     /**
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box)
@@ -299,5 +320,26 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $weightOK;
+    }
+
+    /**
+     * Check the item physically fits in the box (at all)
+     *
+     * @param Item            $itemToPack
+     * @param OrientatedItem|null $prevItem
+     * @param Item|null       $nextItem
+     *
+     * @return bool
+     */
+    protected function checkDimensionalConstraints(Item $itemToPack, OrientatedItem $prevItem = null, Item $nextItem = null)
+    {
+        return !!$this->getOrientationForItem(
+            $itemToPack,
+            $prevItem,
+            $nextItem,
+            $this->box->getInnerWidth(),
+            $this->box->getInnerLength(),
+            $this->box->getInnerDepth()
+        );
     }
 }
