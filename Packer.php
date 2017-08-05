@@ -156,7 +156,7 @@ class Packer implements LoggerAwareInterface
             $unPackedItems = $this->items->asArray();
             foreach (clone $bestBox->getItems() as $packedItem) {
                 foreach ($unPackedItems as $unpackedKey => $unpackedItem) {
-                    if ($packedItem === $unpackedItem) {
+                    if ($packedItem->getItem() === $unpackedItem) {
                         unset($unPackedItems[$unpackedKey]);
                         break;
                     }

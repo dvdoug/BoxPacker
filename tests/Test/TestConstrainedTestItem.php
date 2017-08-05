@@ -9,7 +9,8 @@ namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedItem;
-use DVDoug\BoxPacker\ItemList;
+use DVDoug\BoxPacker\PackedItem;
+use DVDoug\BoxPacker\PackedItemList;
 
 class TestConstrainedTestItem extends TestItem implements ConstrainedItem
 {
@@ -19,17 +20,17 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
     public static $limit = 3;
 
     /**
-     * @param ItemList $alreadyPackedItems
+     * @param PackedItemList $alreadyPackedItems
      * @param TestBox  $box
      *
      * @return bool
      */
-    public function canBePackedInBox(ItemList $alreadyPackedItems, Box $box)
+    public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box)
     {
         $alreadyPackedType = array_filter(
             $alreadyPackedItems->asArray(),
-            function(TestItem $item) {
-                return $item->getDescription() === $this->getDescription();
+            function(PackedItem $item) {
+                return $item->getItem()->getDescription() === $this->getDescription();
             }
         );
 

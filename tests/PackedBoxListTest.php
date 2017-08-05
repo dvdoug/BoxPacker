@@ -15,13 +15,14 @@ class PackedBoxListTest extends TestCase
 {
     function testVolumeUtilisation()
     {
-        $box = new TestBox('Box', 10, 10, 10, 10, 10, 10, 10, 10);
+        $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
         $item = new TestItem('Item', 5, 10, 10, 10, true);
 
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4, 0, 0, 0);
+        $packer = new VolumePacker($box, $boxItems);
+        $packedBox = $packer->pack();
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);
@@ -31,13 +32,14 @@ class PackedBoxListTest extends TestCase
 
     function testWeightVariance()
     {
-        $box = new TestBox('Box', 10, 10, 10, 10, 10, 10, 10, 10);
+        $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
         $item = new TestItem('Item', 5, 10, 10, 10, true);
 
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4, 0, 0, 0);
+        $packer = new VolumePacker($box, $boxItems);
+        $packedBox = $packer->pack();
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);

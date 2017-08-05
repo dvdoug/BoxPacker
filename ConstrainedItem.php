@@ -18,12 +18,12 @@ interface ConstrainedItem extends Item
     /**
      * Hook for user implementation of item-specific constraints, e.g. max <x> batteries per box
      *
-     * @param ItemList $alreadyPackedItems
+     * @param PackedItemList $alreadyPackedItems
      * @param Box      $box
      *
      * @return bool
      */
-    public function canBePackedInBox(ItemList $alreadyPackedItems, Box $box);
+    public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box);
 
 }
 

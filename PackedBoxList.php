@@ -101,9 +101,9 @@ class PackedBoxList extends \SplMinHeap
         foreach (clone $this as $box) {
             $boxVolume += $box->getBox()->getInnerVolume();
 
-            /** @var Item $item */
+            /** @var PackedItem $item */
             foreach (clone $box->getItems() as $item) {
-                $itemVolume += $item->getVolume();
+                $itemVolume += $item->getItem()->getVolume();
             }
         }
 

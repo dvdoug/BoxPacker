@@ -71,7 +71,7 @@ class WeightRedistributor implements LoggerAwareInterface
                 $this->logger->log(LogLevel::DEBUG, 'Underweight Box ' . $u);
                 foreach ($overWeightBoxes as $o => $overWeightBox) {
                     $this->logger->log(LogLevel::DEBUG, 'Overweight Box ' . $o);
-                    $overWeightBoxItems = $overWeightBox->getItems()->asArray();
+                    $overWeightBoxItems = $overWeightBox->getItems()->asItemArray();
 
                     //For each item in the heavier box, try and move it to the lighter one
                     foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
@@ -81,8 +81,8 @@ class WeightRedistributor implements LoggerAwareInterface
                             continue; //skip if moving this item would hinder rather than help weight distribution
                         }
 
-                        $newItemsForLighterBox = clone $underWeightBox->getItems();
-                        $newItemsForLighterBox->insert($overWeightBoxItem);
+                        $newItemsForLighterBox = $underWeightBox->getItems()->asItemArray();
+                        $newItemsForLighterBox[] = $overWeightBoxItem;
 
                         $newLighterBoxPacker = new Packer(); //we may need a bigger box
                         $newLighterBoxPacker->setBoxes($this->boxes);
@@ -90,7 +90,7 @@ class WeightRedistributor implements LoggerAwareInterface
                         $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK LIGHTER BOX]");
                         $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
 
-                        if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
+                        if ($newLighterBox->getItems()->count() === count($newItemsForLighterBox)) { //new item fits
                             $this->logger->log(LogLevel::DEBUG, 'New item fits');
                             unset($overWeightBoxItems[$oi]); //now packed in different box
 

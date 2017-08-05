@@ -22,17 +22,17 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * Get the best orientation for an item
      * @param Box $box
      * @param Item $item
-     * @param OrientatedItem|null $prevItem
-     * @param Item|null $nextItem
+     * @param PackedItem|null $prevItem
+     * @param bool $isLastItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
      * @return OrientatedItem|false
      */
-    public function getBestOrientation(Box $box, Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    public function getBestOrientation(Box $box, Item $item, PackedItem $prevItem = null, $isLastItem, $widthLeft, $lengthLeft, $depthLeft) {
 
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
-        $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $prevItem, $nextItem);
+        $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $prevItem, $isLastItem);
 
         $orientationFits = [];
         /** @var OrientatedItem $orientation */
@@ -55,13 +55,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Find all possible orientations for an item
      * @param Item $item
-     * @param OrientatedItem|null $prevItem
+     * @param PackedItem|null $prevItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
      * @return OrientatedItem[]
      */
-    public function getPossibleOrientations(Item $item, OrientatedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    public function getPossibleOrientations(Item $item, PackedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
         $orientations = [];
 
@@ -93,8 +93,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * @param OrientatedItem[] $possibleOrientations
      * @param Box              $box
      * @param Item             $item
-     * @param OrientatedItem   $prevItem
-     * @param Item             $nextItem
+     * @param PackedItem       $prevItem
+     * @param bool             $isLastItem
      *
      * @return array
      */
@@ -102,8 +102,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $possibleOrientations,
         Box $box,
         Item $item,
-        OrientatedItem $prevItem = null,
-        Item $nextItem = null
+        PackedItem $prevItem = null,
+        $isLastItem
     ) {
         /*
          * Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
@@ -144,7 +144,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 }
             );
 
-            if (is_null($nextItem) || count($stableOrientationsInEmptyBox) == 0) {
+            if ($isLastItem || count($stableOrientationsInEmptyBox) == 0) {
                 $orientationsToUse = $unstableOrientations;
             }
         }
