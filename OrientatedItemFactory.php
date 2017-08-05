@@ -19,20 +19,25 @@ class OrientatedItemFactory implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @var OrientatedItem[]
+     */
+    protected static $emptyBoxCache = [];
+
+    /**
      * Get the best orientation for an item
      * @param Box $box
      * @param Item $item
-     * @param OrientatedItem|null $prevItem
-     * @param Item|null $nextItem
+     * @param PackedItem|null $prevItem
+     * @param bool $isLastItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
      * @return OrientatedItem|false
      */
-    public function getBestOrientation(Box $box, Item $item, OrientatedItem $prevItem = null, Item $nextItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    public function getBestOrientation(Box $box, Item $item, PackedItem $prevItem = null, $isLastItem, $widthLeft, $lengthLeft, $depthLeft) {
 
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
-        $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $prevItem, $nextItem);
+        $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
 
         $orientationFits = [];
         /** @var OrientatedItem $orientation */
@@ -55,17 +60,18 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Find all possible orientations for an item
      * @param Item $item
-     * @param OrientatedItem|null $prevItem
+     * @param PackedItem|null $prevItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
      * @return OrientatedItem[]
      */
-    public function getPossibleOrientations(Item $item, OrientatedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    public function getPossibleOrientations(Item $item, PackedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
 
         $orientations = [];
 
         //Special case items that are the same as what we just packed - keep orientation
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
         if ($prevItem && $prevItem->getItem() == $item) {
             $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
         } else {
@@ -90,20 +96,54 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
+     * @param Item $item
+     * @param Box  $box
+     * @return OrientatedItem[]
+     */
+    public function getPossibleOrientationsInEmptyBox(Item $item, Box $box)
+    {
+        $cacheKey = $item->getWidth() .
+            '|' .
+            $item->getLength() .
+            '|' .
+            $item->getDepth() .
+            '|' .
+            ($item->getKeepFlat() ? '2D' : '3D') .
+            '|' .
+            $box->getInnerWidth() .
+            '|' .
+            $box->getInnerLength() .
+            '|' .
+            $box->getInnerDepth();
+
+        if (isset(static::$emptyBoxCache[$cacheKey])) {
+            $orientations = static::$emptyBoxCache[$cacheKey];
+        } else {
+            $orientations = $this->getPossibleOrientations(
+                $item,
+                null,
+                $box->getInnerWidth(),
+                $box->getInnerLength(),
+                $box->getInnerDepth()
+            );
+            static::$emptyBoxCache[$cacheKey] = $orientations;
+        }
+        return $orientations;
+    }
+
+    /**
      * @param OrientatedItem[] $possibleOrientations
      * @param Box              $box
      * @param Item             $item
-     * @param OrientatedItem   $prevItem
-     * @param Item             $nextItem
+     * @param bool             $isLastItem
      *
-     * @return array
+     * @return OrientatedItem[]
      */
     protected function getUsableOrientations(
         $possibleOrientations,
         Box $box,
         Item $item,
-        OrientatedItem $prevItem = null,
-        Item $nextItem = null
+        $isLastItem
     ) {
         /*
          * Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
@@ -129,13 +169,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if (count($stableOrientations) > 0) {
             $orientationsToUse = $stableOrientations;
         } else if (count($unstableOrientations) > 0) {
-            $orientationsInEmptyBox = $this->getPossibleOrientations(
-                $item,
-                $prevItem,
-                $box->getInnerWidth(),
-                $box->getInnerLength(),
-                $box->getInnerDepth()
-            );
+            $orientationsInEmptyBox = $this->getPossibleOrientationsInEmptyBox($item, $box);
 
             $stableOrientationsInEmptyBox = array_filter(
                 $orientationsInEmptyBox,
@@ -144,7 +178,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 }
             );
 
-            if (is_null($nextItem) || count($stableOrientationsInEmptyBox) == 0) {
+            if ($isLastItem || count($stableOrientationsInEmptyBox) == 0) {
                 $orientationsToUse = $unstableOrientations;
             }
         }

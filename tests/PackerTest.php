@@ -353,8 +353,8 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(13, $packedBoxes->top()->getUsedWidth());
-        self::assertEquals(30, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(26, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(15, $packedBoxes->top()->getUsedLength());
         self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
     }
 
@@ -369,8 +369,8 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(310, $packedBoxes->top()->getUsedWidth());
-        self::assertEquals(368, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(368, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(310, $packedBoxes->top()->getUsedLength());
         self::assertEquals(32, $packedBoxes->top()->getUsedDepth());
     }
 
@@ -387,13 +387,29 @@ class PackerTest extends TestCase
         $box1 = $packedBoxes->extract();
         $box2 = $packedBoxes->extract();
 
-        self::assertEquals(80, $box1->getUsedWidth());
-        self::assertEquals(285, $box1->getUsedLength());
+        self::assertEquals(285, $box1->getUsedWidth());
+        self::assertEquals(160, $box1->getUsedLength());
         self::assertEquals(70, $box1->getUsedDepth());
 
-        self::assertEquals(210, $box2->getUsedWidth());
-        self::assertEquals(297, $box2->getUsedLength());
+        self::assertEquals(297, $box2->getUsedWidth());
+        self::assertEquals(210, $box2->getUsedLength());
         self::assertEquals(4, $box2->getUsedDepth());
+    }
+
+    public function testIssue79() {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Bundle', 75, 15, 15, 0, 75, 15, 15, 30));
+        $packer->addItem(new TestItem('Item 1', 14, 12, 2, 2, true));
+        $packer->addItem(new TestItem('Item 2', 14, 12, 2, 2, true));
+        $packer->addItem(new TestItem('Item 3', 14, 12, 2, 2, true));
+        $packer->addItem(new TestItem('Item 4', 14, 12, 2, 2, true));
+        $packer->addItem(new TestItem('Item 5', 14, 12, 2, 2, true));
+        $packedBoxes = $packer->pack();
+        $box = $packedBoxes->extract();
+
+        self::assertEquals(60, $box->getUsedWidth());
+        self::assertEquals(14, $box->getUsedLength());
+        self::assertEquals(2, $box->getUsedDepth());
     }
 
     /**

@@ -23,6 +23,11 @@ class PackedBoxList extends \SplMinHeap
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
+     *
+     * @param PackedBox $boxA
+     * @param PackedBox $boxB
+     *
+     * @return int
      */
     public function compare($boxA, $boxB)
     {
@@ -38,6 +43,10 @@ class PackedBoxList extends \SplMinHeap
 
     /**
      * Reversed version of compare
+     *
+     * @param PackedBox $boxA
+     * @param PackedBox $boxB
+     *
      * @return int
      */
     public function reverseCompare($boxA, $boxB)
@@ -101,7 +110,7 @@ class PackedBoxList extends \SplMinHeap
         foreach (clone $this as $box) {
             $boxVolume += $box->getBox()->getInnerVolume();
 
-            /** @var Item $item */
+            /** @var PackedItem $item */
             foreach (clone $box->getItems() as $item) {
                 $itemVolume += $item->getVolume();
             }

@@ -98,7 +98,6 @@ class PackedBox
      */
     public function getWeight()
     {
-
         if (!is_null($this->weight)) {
             return $this->weight;
         }
@@ -192,7 +191,8 @@ class PackedBox
 
 
     /**
-     * Constructor
+     * Legacy constructor
+     * @deprecated
      *
      * @param Box      $box
      * @param ItemList $itemList
@@ -225,5 +225,36 @@ class PackedBox
         $this->usedWidth = $usedWidth;
         $this->usedLength = $usedLength;
         $this->usedDepth = $usedDepth;
+    }
+
+    /**
+     * The constructor from v3
+     * @param Box            $box
+     * @param PackedItemList $packedItems
+     */
+    public static function fromPackedItemList(Box $box, PackedItemList $packedItems)
+    {
+        $maxWidth = $maxLength = $maxDepth = $weight = 0;
+        /** @var PackedItem $item */
+        foreach (clone $packedItems as $item) {
+            $maxWidth = max($maxWidth, $item->getX() + $item->getWidth());
+            $maxLength = max($maxLength, $item->getY() + $item->getLength());
+            $maxDepth = max($maxDepth, $item->getZ() + $item->getDepth());
+            $weight += $item->getItem()->getWeight();
+        }
+
+        $packedBox = new self(
+            $box,
+            $packedItems->asItemList(),
+            $box->getInnerWidth() - $maxWidth,
+            $box->getInnerLength() - $maxLength,
+            $box->getInnerDepth() - $maxDepth,
+            $box->getMaxWeight() - $box->getEmptyWeight() - $weight,
+            $maxWidth,
+            $maxLength,
+            $maxDepth
+        );
+
+        return $packedBox;
     }
 }

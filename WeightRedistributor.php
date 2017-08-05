@@ -29,6 +29,8 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Constructor
+     *
+     * @param BoxList $boxList
      */
     public function __construct(BoxList $boxList)
     {
@@ -74,6 +76,7 @@ class WeightRedistributor implements LoggerAwareInterface
                     $overWeightBoxItems = $overWeightBox->getItems()->asArray();
 
                     //For each item in the heavier box, try and move it to the lighter one
+                    /** @var Item $overWeightBoxItem */
                     foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
                         $this->logger->log(LogLevel::DEBUG, 'Overweight Item ' . $oi);
                         if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {
@@ -81,8 +84,8 @@ class WeightRedistributor implements LoggerAwareInterface
                             continue; //skip if moving this item would hinder rather than help weight distribution
                         }
 
-                        $newItemsForLighterBox = clone $underWeightBox->getItems();
-                        $newItemsForLighterBox->insert($overWeightBoxItem);
+                        $newItemsForLighterBox = $underWeightBox->getItems()->asArray();
+                        $newItemsForLighterBox[] = $overWeightBoxItem;
 
                         $newLighterBoxPacker = new Packer(); //we may need a bigger box
                         $newLighterBoxPacker->setBoxes($this->boxes);
@@ -90,7 +93,7 @@ class WeightRedistributor implements LoggerAwareInterface
                         $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK LIGHTER BOX]");
                         $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
 
-                        if ($newLighterBox->getItems()->count() === $newItemsForLighterBox->count()) { //new item fits
+                        if ($newLighterBox->getItems()->count() === count($newItemsForLighterBox)) { //new item fits
                             $this->logger->log(LogLevel::DEBUG, 'New item fits');
                             unset($overWeightBoxItems[$oi]); //now packed in different box
 
