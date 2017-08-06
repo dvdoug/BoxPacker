@@ -94,18 +94,27 @@ class WeightRedistributor implements LoggerAwareInterface
                             $this->logger->log(LogLevel::DEBUG, 'New item fits');
                             unset($overWeightBoxItems[$oi]); //now packed in different box
 
-                            $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
-                            $newHeavierBoxPacker->setBoxes($this->boxes);
-                            $newHeavierBoxPacker->setItems($overWeightBoxItems);
+                            if (count($overWeightBoxItems) > 0) {
+                                $newHeavierBoxPacker = new Packer(); //we may be able to use a smaller box
+                                $newHeavierBoxPacker->setBoxes($this->boxes);
+                                $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
-                            $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK HEAVIER BOX]");
-                            $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
-                            if (count($newHeavierBoxes) > 1) { //found an edge case in packing algorithm that *increased* box count
-                                $this->logger->log(LogLevel::INFO, "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original");
-                                return $originalBoxes;
+                                $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK HEAVIER BOX]");
+                                $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
+                                if ($newHeavierBoxes->count()
+                                    > 1) { //found an edge case in packing algorithm that *increased* box count
+                                    $this->logger->log(
+                                        LogLevel::INFO,
+                                        "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original"
+                                    );
+
+                                    return $originalBoxes;
+                                }
+
+                                $overWeightBoxes[$o] = $newHeavierBoxes->extract();
+                            } else {
+                                unset($overWeightBoxes[$o]);
                             }
-
-                            $overWeightBoxes[$o] = $newHeavierBoxes->extract();
                             $underWeightBoxes[$u] = $newLighterBox;
 
                             $tryRepack = true; //we did some work, so see if we can do even better
