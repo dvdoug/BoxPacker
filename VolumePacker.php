@@ -254,7 +254,7 @@ class VolumePacker implements LoggerAwareInterface
         $maxLength,
         $maxDepth
     ) {
-        while (!$this->items->isEmpty() && $this->remainingWeight >= $this->items->top()->getWeight()) {
+        while (!$this->items->isEmpty() && $this->checkNonDimensionalConstraints($this->items->top(), $packedItems)) {
             $stackedItem = $this->getOrientationForItem(
                 $this->items->top(),
                 $prevItem,
