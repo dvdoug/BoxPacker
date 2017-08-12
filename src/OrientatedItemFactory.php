@@ -21,7 +21,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * @var OrientatedItem[]
      */
-    static $emptyBoxCache = [];
+    protected static $emptyBoxCache = [];
 
     /**
      * Get the best orientation for an item
