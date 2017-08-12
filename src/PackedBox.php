@@ -22,7 +22,7 @@ class PackedBox
 
     /**
      * Items in the box
-     * @var ItemList
+     * @var PackedItemList
      */
     protected $items;
 
@@ -43,7 +43,7 @@ class PackedBox
 
     /**
      * Get items packed
-     * @return ItemList
+     * @return PackedItemList
      */
     public function getItems()
     {

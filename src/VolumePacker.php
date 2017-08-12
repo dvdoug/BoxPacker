@@ -203,14 +203,14 @@ class VolumePacker implements LoggerAwareInterface
      * Figure out if we can stack the next item vertically on top of this rather than side by side
      * Used when we've packed a tall item, and have just put a shorter one next to it
      *
-     * @param PackedItemList   $packedItems
-     * @param PackedItem $prevItem
-     * @param int        $maxWidth
-     * @param int        $maxLength
-     * @param int        $maxDepth
-     * @param int        $x
-     * @param int        $y
-     * @param int        $z
+     * @param PackedItemList $packedItems
+     * @param PackedItem|null $prevItem
+     * @param int $maxWidth
+     * @param int $maxLength
+     * @param int $maxDepth
+     * @param int $x
+     * @param int $y
+     * @param int $z
      */
     protected function tryAndStackItemsIntoSpace(
         PackedItemList $packedItems,
