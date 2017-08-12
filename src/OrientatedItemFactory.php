@@ -137,7 +137,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * @param Item             $item
      * @param bool             $isLastItem
      *
-     * @return array
+     * @return OrientatedItem[]
      */
     protected function getUsableOrientations(
         $possibleOrientations,
