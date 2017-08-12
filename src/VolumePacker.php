@@ -95,7 +95,7 @@ class VolumePacker implements LoggerAwareInterface
             $isLastItem = $this->skippedItems->isEmpty() && $this->items->isEmpty();
 
             //skip items that are simply too heavy or too large
-            if (!$this->checkConstraints($itemToPack, $packedItems, $prevItem)) {
+            if (!$this->checkConstraints($itemToPack, $packedItems)) {
                 $this->rebuildItemList();
                 continue;
             }
@@ -248,17 +248,15 @@ class VolumePacker implements LoggerAwareInterface
      *
      * @param Item            $itemToPack
      * @param PackedItemList  $packedItems
-     * @param PackedItem|null $prevItem
      *
      * @return bool
      */
     protected function checkConstraints(
         Item $itemToPack,
-        PackedItemList $packedItems,
-        PackedItem $prevItem = null
+        PackedItemList $packedItems
     ) {
         return $this->checkNonDimensionalConstraints($itemToPack, $packedItems) &&
-               $this->checkDimensionalConstraints($itemToPack, $prevItem);
+               $this->checkDimensionalConstraints($itemToPack);
     }
 
     /**
@@ -285,11 +283,10 @@ class VolumePacker implements LoggerAwareInterface
      * Check the item physically fits in the box (at all)
      *
      * @param Item            $itemToPack
-     * @param PackedItem|null $prevItem
      *
      * @return bool
      */
-    protected function checkDimensionalConstraints(Item $itemToPack, PackedItem $prevItem = null)
+    protected function checkDimensionalConstraints(Item $itemToPack)
     {
         $orientatedItemFactory = new OrientatedItemFactory();
         $orientatedItemFactory->setLogger($this->logger);
