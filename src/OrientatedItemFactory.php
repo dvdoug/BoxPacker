@@ -19,6 +19,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @var OrientatedItem[]
+     */
+    static $emptyBoxCache = [];
+
+    /**
      * Get the best orientation for an item
      * @param Box $box
      * @param Item $item
@@ -91,6 +96,42 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
+     * @param Item $item
+     * @param Box  $box
+     * @return OrientatedItem[]
+     */
+    public function getPossibleOrientationsInEmptyBox(Item $item, Box $box)
+    {
+        $cacheKey = $item->getWidth() .
+            '|' .
+            $item->getLength() .
+            '|' .
+            $item->getDepth() .
+            '|' .
+            ($item->getKeepFlat() ? '2D' : '3D') .
+            '|' .
+            $box->getInnerWidth() .
+            '|' .
+            $box->getInnerLength() .
+            '|' .
+            $box->getInnerDepth();
+
+        if (isset(static::$emptyBoxCache[$cacheKey])) {
+            $orientations = static::$emptyBoxCache[$cacheKey];
+        } else {
+            $orientations = $this->getPossibleOrientations(
+                $item,
+                null,
+                $box->getInnerWidth(),
+                $box->getInnerLength(),
+                $box->getInnerDepth()
+            );
+            static::$emptyBoxCache[$cacheKey] = $orientations;
+        }
+        return $orientations;
+    }
+
+    /**
      * @param OrientatedItem[] $possibleOrientations
      * @param Box              $box
      * @param Item             $item
@@ -130,13 +171,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if (count($stableOrientations) > 0) {
             $orientationsToUse = $stableOrientations;
         } else if (count($unstableOrientations) > 0) {
-            $orientationsInEmptyBox = $this->getPossibleOrientations(
-                $item,
-                $prevItem,
-                $box->getInnerWidth(),
-                $box->getInnerLength(),
-                $box->getInnerDepth()
-            );
+            $orientationsInEmptyBox = $this->getPossibleOrientationsInEmptyBox($item, $box);
 
             $stableOrientationsInEmptyBox = array_filter(
                 $orientationsInEmptyBox,

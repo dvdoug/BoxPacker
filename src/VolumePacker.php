@@ -291,14 +291,9 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function checkDimensionalConstraints(Item $itemToPack, PackedItem $prevItem = null)
     {
-        return !!$this->getOrientationForItem(
-            $itemToPack,
-            $prevItem,
-            true,
-            $this->boxWidth,
-            $this->boxLength,
-            $this->box->getInnerDepth()
-        );
+        $orientatedItemFactory = new OrientatedItemFactory();
+        $orientatedItemFactory->setLogger($this->logger);
+        return !!$orientatedItemFactory->getPossibleOrientationsInEmptyBox($itemToPack, $this->box);
     }
 
     /**
