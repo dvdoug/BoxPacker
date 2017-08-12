@@ -29,6 +29,8 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Constructor
+     *
+     * @param BoxList $boxList
      */
     public function __construct(BoxList $boxList)
     {
@@ -74,6 +76,7 @@ class WeightRedistributor implements LoggerAwareInterface
                     $overWeightBoxItems = $overWeightBox->getItems()->asItemArray();
 
                     //For each item in the heavier box, try and move it to the lighter one
+                    /** @var Item $overWeightBoxItem */
                     foreach ($overWeightBoxItems as $oi => $overWeightBoxItem) {
                         $this->logger->log(LogLevel::DEBUG, 'Overweight Item ' . $oi);
                         if ($underWeightBox->getWeight() + $overWeightBoxItem->getWeight() > $targetWeight) {

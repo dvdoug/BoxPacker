@@ -112,7 +112,7 @@ class VolumePacker implements LoggerAwareInterface
                 $rowLength = max($rowLength, $orientatedItem->getLength());
                 $layerDepth = max($layerDepth, $orientatedItem->getDepth());
 
-                //allow items to be stacked in place within the same footprint up to current layerdepth
+                //allow items to be stacked in place within the same footprint up to current layer depth
                 $stackableDepth = $layerDepth - $orientatedItem->getDepth();
                 $this->tryAndStackItemsIntoSpace($packedItems, $prevItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $z + $orientatedItem->getDepth());
                 $x += $orientatedItem->getWidth();
@@ -129,7 +129,7 @@ class VolumePacker implements LoggerAwareInterface
                     $this->logger->debug("doesn't fit, skipping for now");
                     $this->skippedItems->insert($itemToPack);
                 } elseif ($x > 0 && $packingLengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength())) {
-                    $this->logger->debug("No more fit in widthwise, resetting for new row");
+                    $this->logger->debug("No more fit in width wise, resetting for new row");
                     $layerWidth = max($layerWidth, $rowWidth);
                     $layerLength += $rowLength;
                     $packingWidthLeft += $rowWidth;

@@ -66,6 +66,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $orientations = [];
 
         //Special case items that are the same as what we just packed - keep orientation
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
         if ($prevItem && $prevItem->getItem() == $item) {
             $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
         } else {

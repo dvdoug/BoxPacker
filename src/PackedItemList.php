@@ -7,11 +7,11 @@
 namespace DVDoug\BoxPacker;
 
 /**
- * List of items to be packed, ordered by volume
+ * List of packed items, ordered by volume
  * @author Doug Wright
  * @package BoxPacker
  */
-class ItemList extends \SplMaxHeap
+class PackedItemList extends \SplMaxHeap
 {
 
     /**
@@ -19,31 +19,44 @@ class ItemList extends \SplMaxHeap
      *
      * @see \SplMaxHeap::compare()
      *
-     * @param mixed $itemA
-     * @param mixed $itemB
+     * @param PackedItem $itemA
+     * @param PackedItem $itemB
      *
-     * @return int|void
+     * @return int
      */
     public function compare($itemA, $itemB)
     {
-        if ($itemA->getVolume() > $itemB->getVolume()) {
+        if ($itemA->getItem()->getVolume() > $itemB->getItem()->getVolume()) {
             return 1;
-        } elseif ($itemA->getVolume() < $itemB->getVolume()) {
+        } elseif ($itemA->getItem()->getVolume() < $itemB->getItem()->getVolume()) {
             return -1;
         } else {
-            return $itemA->getWeight() - $itemB->getWeight();
+            return $itemA->getItem()->getWeight() - $itemB->getItem()->getWeight();
         }
     }
 
     /**
      * Get copy of this list as a standard PHP array
-     * @return array
+     * @return PackedItem[]
      */
     public function asArray()
     {
         $return = [];
         foreach (clone $this as $item) {
             $return[] = $item;
+        }
+        return $return;
+    }
+
+    /**
+     * Get copy of this list as a standard PHP array
+     * @return Item[]
+     */
+    public function asItemArray()
+    {
+        $return = [];
+        foreach (clone $this as $item) {
+            $return[] = $item->getItem();
         }
         return $return;
     }

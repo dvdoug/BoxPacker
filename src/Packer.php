@@ -152,6 +152,7 @@ class Packer implements LoggerAwareInterface
             }
 
             //Find best box of iteration, and remove packed items from unpacked list
+            /** @var PackedBox $bestBox */
             $bestBox = $packedBoxesIteration->top();
             $unPackedItems = $this->items->asArray();
             foreach (clone $bestBox->getItems() as $packedItem) {
