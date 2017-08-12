@@ -37,7 +37,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     public function getBestOrientation(Box $box, Item $item, PackedItem $prevItem = null, $isLastItem, $widthLeft, $lengthLeft, $depthLeft) {
 
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
-        $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $prevItem, $isLastItem);
+        $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
 
         $orientationFits = [];
         /** @var OrientatedItem $orientation */
@@ -135,7 +135,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * @param OrientatedItem[] $possibleOrientations
      * @param Box              $box
      * @param Item             $item
-     * @param PackedItem       $prevItem
      * @param bool             $isLastItem
      *
      * @return array
@@ -144,7 +143,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $possibleOrientations,
         Box $box,
         Item $item,
-        PackedItem $prevItem = null,
         $isLastItem
     ) {
         /*
