@@ -1,7 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+ - Introduced `PackedItem`s which are a wrapper around `Item`s with positional and dimensional information (x,y,z co-ordinates of corner closest to origin, width/length/depth as packed)
 ### Changed
+ - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - Significant reworking of core packing logic to clarify concepts used
 ### Fixed
  - Fixed issue where `getUsed[Width|Length|Depth]()` could sometimes return an incorrect value
