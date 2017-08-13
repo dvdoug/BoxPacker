@@ -11,11 +11,11 @@
     ],
     "license": "MIT",
     "require": {
-        "php": ">=5.4.0",
+        "php": "^7.0",
         "psr/log": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8.35||^5.0||^6.0",
+        "phpunit/phpunit": "^5.4.3||^6.0",
         "monolog/monolog": "^1.11",
         "squizlabs/php_codesniffer": "^2.5"
     },
