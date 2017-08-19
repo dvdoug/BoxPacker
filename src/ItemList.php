@@ -29,14 +29,7 @@ class ItemList extends \SplMaxHeap
     {
         $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
         $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
-
-        if ($itemAVolume > $itemBVolume) {
-            return 1;
-        } elseif ($itemAVolume < $itemBVolume) {
-            return -1;
-        } else {
-            return $itemA->getWeight() - $itemB->getWeight();
-        }
+        return ($itemAVolume <=> $itemBVolume) ?: ($itemA->getWeight() - $itemB->getWeight());
     }
 
     /**

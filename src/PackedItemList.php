@@ -29,14 +29,7 @@ class PackedItemList extends \SplMaxHeap
     {
         $itemAVolume = $itemA->getItem()->getWidth() * $itemA->getItem()->getLength() * $itemA->getItem()->getDepth();
         $itemBVolume = $itemB->getItem()->getWidth() * $itemB->getItem()->getLength() * $itemB->getItem()->getDepth();
-
-        if ($itemAVolume > $itemBVolume) {
-            return 1;
-        } elseif ($itemAVolume < $itemBVolume) {
-            return -1;
-        } else {
-            return $itemA->getItem()->getWeight() - $itemB->getItem()->getWeight();
-        }
+        return ($itemAVolume <=> $itemBVolume) ?: ($itemA->getItem()->getWeight() - $itemB->getItem()->getWeight());
     }
 
     /**
