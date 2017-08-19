@@ -4,14 +4,13 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-
+declare(strict_types=1);
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
 
 class TestBox implements Box
 {
-
     /**
      * @var string
      */
@@ -71,15 +70,15 @@ class TestBox implements Box
      * @param int $maxWeight
      */
     public function __construct(
-        $reference,
-        $outerWidth,
-        $outerLength,
-        $outerDepth,
-        $emptyWeight,
-        $innerWidth,
-        $innerLength,
-        $innerDepth,
-        $maxWeight
+        string $reference,
+        int $outerWidth,
+        int $outerLength,
+        int $outerDepth,
+        int $emptyWeight,
+        int $innerWidth,
+        int $innerLength,
+        int $innerDepth,
+        int $maxWeight
     ) {
         $this->reference = $reference;
         $this->outerWidth = $outerWidth;
@@ -95,7 +94,7 @@ class TestBox implements Box
     /**
      * @return string
      */
-    public function getReference()
+    public function getReference(): string
     {
         return $this->reference;
     }
@@ -103,7 +102,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getOuterWidth()
+    public function getOuterWidth(): int
     {
         return $this->outerWidth;
     }
@@ -111,7 +110,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getOuterLength()
+    public function getOuterLength(): int
     {
         return $this->outerLength;
     }
@@ -119,7 +118,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getOuterDepth()
+    public function getOuterDepth(): int
     {
         return $this->outerDepth;
     }
@@ -127,7 +126,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getEmptyWeight()
+    public function getEmptyWeight(): int
     {
         return $this->emptyWeight;
     }
@@ -135,7 +134,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getInnerWidth()
+    public function getInnerWidth(): int
     {
         return $this->innerWidth;
     }
@@ -143,7 +142,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getInnerLength()
+    public function getInnerLength(): int
     {
         return $this->innerLength;
     }
@@ -151,7 +150,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getInnerDepth()
+    public function getInnerDepth(): int
     {
         return $this->innerDepth;
     }
@@ -159,7 +158,7 @@ class TestBox implements Box
     /**
      * @return int
      */
-    public function getMaxWeight()
+    public function getMaxWeight(): int
     {
         return $this->maxWeight;
     }

@@ -4,7 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
@@ -199,27 +199,12 @@ class PackerTest extends TestCase
     {
 
         $packer = new Packer();
-        $packer->addBox(new TestBox('OW Box 1', 51, 33, 33, 0.6, 51, 33, 33, 0.6));
-        $packer->addBox(new TestBox('OW Box 2', 50, 40, 40, 0.95, 50, 40, 40, 0.95));
+        $packer->addBox(new TestBox('OW Box 1', 51, 33, 33, 1, 51, 33, 33, 1));
+        $packer->addBox(new TestBox('OW Box 2', 50, 40, 40, 1, 50, 40, 40, 1));
         $packer->addItem(new TestItem('Product', 28, 19, 9, 0, true), 6);
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-    }
-
-    public function testIssue6()
-    {
-
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Package 22', 675, 360, 210, 2, 670, 355, 204, 1000));
-        $packer->addBox(new TestBox('Package 2', 330, 130, 102, 2, 335, 135, 107, 1000));
-        $packer->addItem(new TestItem('Item 3', 355.6, 335.28, 127, 1.5, true));
-        $packer->addItem(new TestItem('Item 7', 330.2, 127, 101.6, 1, true));
-        $packer->addItem(new TestItem('Item 7', 330.2, 127, 101.6, 1, true));
-        $packedBoxes = $packer->pack();
-
-        self::assertEquals(1, $packedBoxes->count());
-
     }
 
     public function testIssue9()
@@ -291,33 +276,13 @@ class PackerTest extends TestCase
         self::assertEquals(1, $packedBoxes->count());
     }
 
-    public function testIssue47C()
-    {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 11.75, 23.6875, 3, 0, 11.75, 23.6875, 3, 70));
-        $packer->addItem(new TestItem('Item', 3.75, 6.5, 3, 0, true), 9);
-        $packedBoxes = $packer->pack();
-
-        self::assertEquals(1, $packedBoxes->count());
-    }
-
-    public function testIssue47D()
-    {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 11.75, 23.6875, 3, 0, 11.75, 23.6875, 3, 70));
-        $packer->addItem(new TestItem('Item', 6.5, 3.75, 3, 0, true), 9);
-        $packedBoxes = $packer->pack();
-
-        self::assertEquals(1, $packedBoxes->count());
-    }
-
     public function testPackerPacksRotatedBoxesInNewRow()
     {
         $packer = new Packer();
         $packer->addItem(new TestItem('30x10x30item', 30, 10, 30, 0, true), 9);
 
         //Box can hold 7 items in a row and then is completely full, so 9 items won't fit
-        $packer->addBox(new TestBox('30x70x30InternalBox', 30, 70, 30, 0, 30, 70, 30, 0, 1000));
+        $packer->addBox(new TestBox('30x70x30InternalBox', 30, 70, 30, 0, 30, 70, 30, 1000));
         $packedBoxes = $packer->pack();
         self::assertEquals(2, $packedBoxes->count());
 
@@ -333,14 +298,14 @@ class PackerTest extends TestCase
         //
         $packer = new Packer();
         $packer->addItem(new TestItem('30x10x30item', 30, 10, 30, 0, true), 9);
-        $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 0, 1000));
+        $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 1000));
         $packedBoxes = $packer->pack();
         self::assertEquals(1, $packedBoxes->count());
 
         // Make sure that it doesn't try to fit in a 10th item
         $packer = new Packer();
         $packer->addItem(new TestItem('30x10x30item', 30, 10, 30, 0, true), 10);
-        $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 0, 1000));
+        $packer->addBox(new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30,  1000));
         $packedBoxes = $packer->pack();
         self::assertEquals(2, $packedBoxes->count());
     }
@@ -436,13 +401,13 @@ class PackerTest extends TestCase
             $packer->addItem(
                 new TestItem(
                     $item['name'],
-                    $item['width'],
-                    $item['length'],
-                    $item['depth'],
-                    $item['weight'],
+                    (int)$item['width'],
+                    (int)$item['length'],
+                    (int)$item['depth'],
+                    (int)$item['weight'],
                     true
                 ),
-                $item['qty']
+                (int)$item['qty']
             );
             $expectedItemCount += $item['qty'];
         }
@@ -483,13 +448,13 @@ class PackerTest extends TestCase
             $packer->addItem(
                 new TestItem(
                     $item['name'],
-                    $item['width'],
-                    $item['length'],
-                    $item['depth'],
-                    $item['weight'],
+                    (int)$item['width'],
+                    (int)$item['length'],
+                    (int)$item['depth'],
+                    (int)$item['weight'],
                     false
                 ),
-                $item['qty']
+                (int)$item['qty']
             );
             $expectedItemCount += $item['qty'];
         }
@@ -526,14 +491,14 @@ class PackerTest extends TestCase
         while ($data = fgetcsv($boxData)) {
             $boxes[] = new TestBox(
                 $data[0],
-                $data[1],
-                $data[2],
-                $data[3],
-                $data[4],
-                $data[5],
-                $data[6],
-                $data[7],
-                $data[8]
+                (int)$data[1],
+                (int)$data[2],
+                (int)$data[3],
+                (int)$data[4],
+                (int)$data[5],
+                (int)$data[6],
+                (int)$data[7],
+                (int)$data[8]
             );
         }
         fclose($boxData);

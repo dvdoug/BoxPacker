@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
@@ -27,14 +28,22 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * Get the best orientation for an item
      * @param Box $box
      * @param Item $item
-     * @param PackedItem|null $prevItem
+     * @param ?PackedItem $prevItem
      * @param bool $isLastItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
-     * @return OrientatedItem|false
+     * @return ?OrientatedItem
      */
-    public function getBestOrientation(Box $box, Item $item, PackedItem $prevItem = null, $isLastItem, $widthLeft, $lengthLeft, $depthLeft) {
+    public function getBestOrientation(
+        Box $box,
+        Item $item,
+        ?PackedItem $prevItem,
+        bool $isLastItem,
+        int $widthLeft,
+        int $lengthLeft,
+        int $depthLeft
+    ): ?OrientatedItem {
 
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
         $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
@@ -53,20 +62,26 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $this->logger->debug("Selected best fit orientation", ['orientation' => $bestFit]);
             return $bestFit;
         } else {
-            return false;
+            return null;
         }
     }
 
     /**
      * Find all possible orientations for an item
      * @param Item $item
-     * @param PackedItem|null $prevItem
+     * @param ?PackedItem $prevItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
      * @return OrientatedItem[]
      */
-    public function getPossibleOrientations(Item $item, PackedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft) {
+    public function getPossibleOrientations(
+        Item $item,
+        ?PackedItem $prevItem,
+        int $widthLeft,
+        int $lengthLeft,
+        int $depthLeft
+    ): array {
 
         $orientations = [];
 
@@ -100,7 +115,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * @param Box  $box
      * @return OrientatedItem[]
      */
-    public function getPossibleOrientationsInEmptyBox(Item $item, Box $box)
+    public function getPossibleOrientationsInEmptyBox(Item $item, Box $box): array
     {
         $cacheKey = $item->getWidth() .
             '|' .
@@ -143,8 +158,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $possibleOrientations,
         Box $box,
         Item $item,
-        $isLastItem
-    ) {
+        bool $isLastItem
+    ): array {
         /*
          * Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
          */

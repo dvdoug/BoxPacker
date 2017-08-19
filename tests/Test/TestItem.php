@@ -4,14 +4,13 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-
+declare(strict_types=1);
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Item;
 
 class TestItem implements Item
 {
-
     /**
      * @var string
      */
@@ -50,9 +49,15 @@ class TestItem implements Item
      * @param int $length
      * @param int $depth
      * @param int $weight
-     * @param int $keepFlat
+     * @param bool $keepFlat
      */
-    public function __construct($description, $width, $length, $depth, $weight, $keepFlat)
+    public function __construct(
+        string $description,
+        int $width,
+        int $length,
+        int $depth,
+        int $weight,
+        bool $keepFlat)
     {
         $this->description = $description;
         $this->width = $width;
@@ -65,7 +70,7 @@ class TestItem implements Item
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -73,7 +78,7 @@ class TestItem implements Item
     /**
      * @return int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -81,7 +86,7 @@ class TestItem implements Item
     /**
      * @return int
      */
-    public function getLength()
+    public function getLength(): int
     {
         return $this->length;
     }
@@ -89,7 +94,7 @@ class TestItem implements Item
     /**
      * @return int
      */
-    public function getDepth()
+    public function getDepth(): int
     {
         return $this->depth;
     }
@@ -97,15 +102,15 @@ class TestItem implements Item
     /**
      * @return int
      */
-    public function getWeight()
+    public function getWeight(): int
     {
         return $this->weight;
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getKeepFlat()
+    public function getKeepFlat(): bool
     {
         return $this->keepFlat;
     }

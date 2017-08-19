@@ -7,9 +7,8 @@ matrix:
       sudo: required
       services:
        - docker
-    - php: 7.0
-      env: lowest=1
     - php: 7.1
+      env: lowest=1
     - php: 7.2
     - php: nightly
     - php: 7.1

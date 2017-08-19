@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 /**
@@ -24,7 +25,7 @@ class ItemList extends \SplMaxHeap
      *
      * @return int
      */
-    public function compare($itemA, $itemB)
+    public function compare($itemA, $itemB): int
     {
         $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
         $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
@@ -42,7 +43,7 @@ class ItemList extends \SplMaxHeap
      * Get copy of this list as a standard PHP array
      * @return array
      */
-    public function asArray()
+    public function asArray(): array
     {
         $return = [];
         foreach (clone $this as $item) {

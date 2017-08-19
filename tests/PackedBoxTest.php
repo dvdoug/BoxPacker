@@ -4,7 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;

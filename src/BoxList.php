@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 /**
@@ -22,7 +23,7 @@ class BoxList extends \SplMinHeap
      *
      * @return int
      */
-    public function compare($boxA, $boxB)
+    public function compare($boxA, $boxB): int
     {
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();

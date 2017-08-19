@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 /**
@@ -29,7 +30,7 @@ class PackedBoxList extends \SplMinHeap
      *
      * @return int
      */
-    public function compare($boxA, $boxB)
+    public function compare($boxA, $boxB): int
     {
         $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
         if ($choice === 0) {
@@ -49,7 +50,7 @@ class PackedBoxList extends \SplMinHeap
      *
      * @return int
      */
-    public function reverseCompare($boxA, $boxB)
+    public function reverseCompare($boxA, $boxB): int
     {
         $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
         if ($choice === 0) {
@@ -65,7 +66,7 @@ class PackedBoxList extends \SplMinHeap
      * Calculate the average (mean) weight of the boxes
      * @return float
      */
-    public function getMeanWeight()
+    public function getMeanWeight(): float
     {
 
         if (!is_null($this->meanWeight)) {
@@ -84,7 +85,7 @@ class PackedBoxList extends \SplMinHeap
      * Calculate the variance in weight between these boxes
      * @return float
      */
-    public function getWeightVariance()
+    public function getWeightVariance(): float
     {
         $mean = $this->getMeanWeight();
 
@@ -101,7 +102,7 @@ class PackedBoxList extends \SplMinHeap
      * Get volume utilisation of the set of packed boxes
      * @return float
      */
-    public function getVolumeUtilisation()
+    public function getVolumeUtilisation(): float
     {
         $itemVolume = 0;
         $boxVolume = 0;
@@ -123,7 +124,7 @@ class PackedBoxList extends \SplMinHeap
      * Do a bulk insert
      * @param array $boxes
      */
-    public function insertFromArray(array $boxes)
+    public function insertFromArray(array $boxes): void
     {
         foreach ($boxes as $box) {
             $this->insert($box);

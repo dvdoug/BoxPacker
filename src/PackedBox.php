@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 /**
@@ -36,7 +37,7 @@ class PackedBox
      * Get box used
      * @return Box
      */
-    public function getBox()
+    public function getBox(): Box
     {
         return $this->box;
     }
@@ -45,7 +46,7 @@ class PackedBox
      * Get items packed
      * @return PackedItemList
      */
-    public function getItems()
+    public function getItems(): PackedItemList
     {
         return $this->items;
     }
@@ -54,7 +55,7 @@ class PackedBox
      * Get packed weight
      * @return int weight in grams
      */
-    public function getWeight()
+    public function getWeight(): int
     {
         if (!is_null($this->weight)) {
             return $this->weight;
@@ -73,7 +74,7 @@ class PackedBox
      * Get remaining width inside box for another item
      * @return int
      */
-    public function getRemainingWidth()
+    public function getRemainingWidth(): int
     {
         return $this->box->getInnerWidth() - $this->getUsedWidth();
     }
@@ -82,7 +83,7 @@ class PackedBox
      * Get remaining length inside box for another item
      * @return int
      */
-    public function getRemainingLength()
+    public function getRemainingLength(): int
     {
         return $this->box->getInnerLength() - $this->getUsedLength();
     }
@@ -91,7 +92,7 @@ class PackedBox
      * Get remaining depth inside box for another item
      * @return int
      */
-    public function getRemainingDepth()
+    public function getRemainingDepth(): int
     {
         return $this->box->getInnerDepth() - $this->getUsedDepth();
     }
@@ -100,7 +101,7 @@ class PackedBox
      * Used width inside box for packing items
      * @return int
      */
-    public function getUsedWidth()
+    public function getUsedWidth(): int
     {
         $maxWidth = 0;
 
@@ -116,7 +117,7 @@ class PackedBox
      * Used length inside box for packing items
      * @return int
      */
-    public function getUsedLength()
+    public function getUsedLength(): int
     {
         $maxLength = 0;
 
@@ -132,7 +133,7 @@ class PackedBox
      * Used depth inside box for packing items
      * @return int
      */
-    public function getUsedDepth()
+    public function getUsedDepth(): int
     {
         $maxDepth = 0;
 
@@ -148,7 +149,7 @@ class PackedBox
      * Get remaining weight inside box for another item
      * @return int
      */
-    public function getRemainingWeight()
+    public function getRemainingWeight(): int
     {
         return $this->box->getMaxWeight() - $this->getWeight();
     }
@@ -156,7 +157,7 @@ class PackedBox
     /**
      * @return int
      */
-    public function getInnerVolume()
+    public function getInnerVolume(): int
     {
         return $this->box->getInnerDepth() * $this->box->getInnerDepth() * $this->box->getInnerDepth();
     }
@@ -165,7 +166,7 @@ class PackedBox
      * Get volume utilisation of the packed box
      * @return float
      */
-    public function getVolumeUtilisation()
+    public function getVolumeUtilisation(): float
     {
         $itemVolume = 0;
 

@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 /**
@@ -41,7 +42,7 @@ class OrientatedItem
      * @param int $length
      * @param int $depth
      */
-    public function __construct(Item $item, $width, $length, $depth) {
+    public function __construct(Item $item, int $width, int $length, int $depth) {
         $this->item = $item;
         $this->width = $width;
         $this->length = $length;
@@ -53,7 +54,7 @@ class OrientatedItem
      *
      * @return Item
      */
-    public function getItem() {
+    public function getItem(): Item {
         return $this->item;
     }
 
@@ -62,7 +63,7 @@ class OrientatedItem
      *
      * @return int
      */
-    public function getWidth() {
+    public function getWidth(): int {
         return $this->width;
     }
 
@@ -71,7 +72,7 @@ class OrientatedItem
      *
      * @return int
      */
-    public function getLength() {
+    public function getLength(): int {
         return $this->length;
     }
 
@@ -80,7 +81,7 @@ class OrientatedItem
      *
      * @return int
      */
-    public function getDepth() {
+    public function getDepth(): int {
         return $this->depth;
     }
 
@@ -90,7 +91,7 @@ class OrientatedItem
      *
      * @return bool
      */
-    public function isStable() {
+    public function isStable(): bool {
         return $this->getDepth() <= min($this->getLength(), $this->getWidth());
     }
 }

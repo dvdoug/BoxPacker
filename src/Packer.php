@@ -4,6 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
+declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
@@ -50,7 +51,7 @@ class Packer implements LoggerAwareInterface
      * @param Item $item
      * @param int  $qty
      */
-    public function addItem(Item $item, $qty = 1)
+    public function addItem(Item $item, int $qty = 1): void
     {
         for ($i = 0; $i < $qty; $i++) {
             $this->items->insert($item);
@@ -62,7 +63,7 @@ class Packer implements LoggerAwareInterface
      * Set a list of items all at once
      * @param \Traversable|array $items
      */
-    public function setItems($items)
+    public function setItems($items): void
     {
         if ($items instanceof ItemList) {
             $this->items = clone $items;
@@ -78,7 +79,7 @@ class Packer implements LoggerAwareInterface
      * Add box size
      * @param Box $box
      */
-    public function addBox(Box $box)
+    public function addBox(Box $box): void
     {
         $this->boxes->insert($box);
         $this->logger->log(LogLevel::INFO, "added box {$box->getReference()}");
@@ -88,7 +89,7 @@ class Packer implements LoggerAwareInterface
      * Add a pre-prepared set of boxes all at once
      * @param BoxList $boxList
      */
-    public function setBoxes(BoxList $boxList)
+    public function setBoxes(BoxList $boxList): void
     {
         $this->boxes = clone $boxList;
     }
@@ -98,7 +99,7 @@ class Packer implements LoggerAwareInterface
      *
      * @return PackedBoxList
      */
-    public function pack()
+    public function pack(): PackedBoxList
     {
         $packedBoxes = $this->doVolumePacking();
 
@@ -119,7 +120,7 @@ class Packer implements LoggerAwareInterface
      * @throws ItemTooLargeException
      * @return PackedBoxList
      */
-    public function doVolumePacking()
+    public function doVolumePacking(): PackedBoxList
     {
 
         $packedBoxes = new PackedBoxList;

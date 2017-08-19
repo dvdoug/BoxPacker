@@ -4,7 +4,7 @@
  * @package BoxPacker
  * @author Doug Wright
  */
-
+declare(strict_types=1);
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
@@ -21,11 +21,11 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
 
     /**
      * @param PackedItemList $alreadyPackedItems
-     * @param TestBox  $box
+     * @param Box $box
      *
      * @return bool
      */
-    public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box)
+    public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box): bool
     {
         $alreadyPackedType = array_filter(
             $alreadyPackedItems->asArray(),

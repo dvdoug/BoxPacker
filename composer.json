@@ -11,7 +11,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "psr/log": "^1.0"
     },
     "require-dev": {
