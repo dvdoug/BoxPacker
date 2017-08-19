@@ -33,7 +33,7 @@ class PackedBoxList extends \SplMinHeap
     {
         $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
         if ($choice === 0) {
-            $choice = $boxB->getBox()->getInnerVolume() - $boxA->getBox()->getInnerVolume();
+            $choice = $boxB->getInnerVolume() - $boxA->getInnerVolume();
         }
         if ($choice === 0) {
             $choice = $boxA->getWeight() - $boxB->getWeight();
@@ -53,7 +53,7 @@ class PackedBoxList extends \SplMinHeap
     {
         $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
         if ($choice === 0) {
-            $choice = $boxA->getBox()->getInnerVolume() - $boxB->getBox()->getInnerVolume();
+            $choice = $boxA->getInnerVolume() - $boxB->getInnerVolume();
         }
         if ($choice === 0) {
             $choice = $boxB->getWeight() - $boxA->getWeight();
@@ -108,7 +108,7 @@ class PackedBoxList extends \SplMinHeap
 
         /** @var PackedBox $box */
         foreach (clone $this as $box) {
-            $boxVolume += $box->getBox()->getInnerVolume();
+            $boxVolume += $box->getInnerVolume();
 
             /** @var PackedItem $item */
             foreach (clone $box->getItems() as $item) {

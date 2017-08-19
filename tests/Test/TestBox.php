@@ -58,11 +58,6 @@ class TestBox implements Box
     private $maxWeight;
 
     /**
-     * @var int
-     */
-    private $innerVolume;
-
-    /**
      * TestBox constructor.
      *
      * @param string $reference
@@ -95,7 +90,6 @@ class TestBox implements Box
         $this->innerLength = $innerLength;
         $this->innerDepth = $innerDepth;
         $this->maxWeight = $maxWeight;
-        $this->innerVolume = $this->innerWidth * $this->innerLength * $this->innerDepth;
     }
 
     /**
@@ -160,14 +154,6 @@ class TestBox implements Box
     public function getInnerDepth()
     {
         return $this->innerDepth;
-    }
-
-    /**
-     * @return int
-     */
-    public function getInnerVolume()
-    {
-        return $this->innerVolume;
     }
 
     /**

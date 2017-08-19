@@ -63,12 +63,6 @@ interface Box
     public function getInnerDepth();
 
     /**
-     * Total inner volume of packing in mm^3
-     * @return int
-     */
-    public function getInnerVolume();
-
-    /**
      * Max weight the packaging can hold in g
      * @return int
      */

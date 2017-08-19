@@ -154,6 +154,14 @@ class PackedBox
     }
 
     /**
+     * @return int
+     */
+    public function getInnerVolume()
+    {
+        return $this->box->getInnerDepth() * $this->box->getInnerDepth() * $this->box->getInnerDepth();
+    }
+
+    /**
      * Get volume utilisation of the packed box
      * @return float
      */
@@ -166,7 +174,7 @@ class PackedBox
             $itemVolume += $item->getItem()->getVolume();
         }
 
-        return round($itemVolume / $this->box->getInnerVolume() * 100, 1);
+        return round($itemVolume / $this->getInnerVolume() * 100, 1);
     }
 
 
