@@ -41,7 +41,7 @@ If you use [Composer](http://getcomposer.org/), just add `dvdoug/boxpacker` to y
 ```json
     {
         "require": {
-            "dvdoug/boxpacker": "^2.3.0"
+            "dvdoug/boxpacker": "^2.4.0"
         }
     }
 ```
