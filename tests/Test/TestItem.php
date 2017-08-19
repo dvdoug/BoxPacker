@@ -43,11 +43,6 @@ class TestItem implements Item
     private $keepFlat;
 
     /**
-     * @var int
-     */
-    private $volume;
-
-    /**
      * TestItem constructor.
      *
      * @param string $description
@@ -65,8 +60,6 @@ class TestItem implements Item
         $this->depth = $depth;
         $this->weight = $weight;
         $this->keepFlat = $keepFlat;
-
-        $this->volume = $this->width * $this->length * $this->depth;
     }
 
     /**
@@ -107,14 +100,6 @@ class TestItem implements Item
     public function getWeight()
     {
         return $this->weight;
-    }
-
-    /**
-     * @return int
-     */
-    public function getVolume()
-    {
-        return $this->volume;
     }
 
     /**

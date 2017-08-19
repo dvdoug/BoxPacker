@@ -45,12 +45,6 @@ interface Item
     public function getWeight();
 
     /**
-     * Item volume in mm^3
-     * @return int
-     */
-    public function getVolume();
-
-    /**
      * Does this item need to be kept flat / packed "this way up"?
      * @return bool
      */

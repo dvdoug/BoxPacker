@@ -19,16 +19,19 @@ class ItemList extends \SplMaxHeap
      *
      * @see \SplMaxHeap::compare()
      *
-     * @param mixed $itemA
-     * @param mixed $itemB
+     * @param Item $itemA
+     * @param Item $itemB
      *
      * @return int
      */
     public function compare($itemA, $itemB)
     {
-        if ($itemA->getVolume() > $itemB->getVolume()) {
+        $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
+        $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
+
+        if ($itemAVolume > $itemBVolume) {
             return 1;
-        } elseif ($itemA->getVolume() < $itemB->getVolume()) {
+        } elseif ($itemAVolume < $itemBVolume) {
             return -1;
         } else {
             return $itemA->getWeight() - $itemB->getWeight();

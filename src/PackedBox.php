@@ -171,7 +171,7 @@ class PackedBox
 
         /** @var PackedItem $item */
         foreach (clone $this->items as $item) {
-            $itemVolume += $item->getItem()->getVolume();
+            $itemVolume += ($item->getItem()->getWidth() * $item->getItem()->getLength() * $item->getItem()->getDepth());
         }
 
         return round($itemVolume / $this->getInnerVolume() * 100, 1);
