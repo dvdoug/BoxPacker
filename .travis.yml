@@ -17,7 +17,8 @@ matrix:
 
 cache:
   directories:
-    - $HOME/.cache/composer/files
+    - $HOME/.composer/cache
+    - $HOME/.cache/composer
     - $HOME/.cache/opcache
 
 install:
