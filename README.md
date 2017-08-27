@@ -4,7 +4,8 @@ BoxPacker
 An implementation of the 3D bin packing/knapsack problem i.e. given a list of items, how many boxes do you need to fit
 them all in.
 
-Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs.
+Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs, or
+even just want to know the right number of labels to print.
 
 [![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master)](https://travis-ci.org/dvdoug/BoxPacker)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=master)
@@ -43,12 +44,8 @@ Constraints
 Installation
 ------------
 If you use [Composer](http://getcomposer.org/), just add `dvdoug/boxpacker` to your project's `composer.json` file:
-```json
-    {
-        "require": {
-            "dvdoug/boxpacker": "~1.5"
-        }
-    }
+```
+composer require dvdoug/boxpacker
 ```
 
 Otherwise, the library is PSR-4 compliant, so will work with the autoloader of your choice.
@@ -64,15 +61,19 @@ Basic usage then looks something like the below:
 
 ```php
 
+  use DVDoug\BoxPacker\Packer;
+  use DVDoug\BoxPacker\Test\TestBox;  // use your own implementation
+  use DVDoug\BoxPacker\Test\TestItem; // use your own implementation
+
   /*
    * To figure out which boxes you need, and which items go into which box
    */
   $packer = new Packer();
   $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
   $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
-  $packer->addItem(new TestItem('Item 1', 250, 250, 2, 200));
-  $packer->addItem(new TestItem('Item 2', 250, 250, 2, 200));
-  $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200));
+  $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200));
+  $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200));
+  $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200));
   $packedBoxes = $packer->pack();
 
   echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
@@ -102,8 +103,8 @@ Basic usage then looks something like the below:
   $items->insert(new TestItem('Item 2', 297, 296, 2, 500));
   $items->insert(new TestItem('Item 3', 296, 296, 4, 290));
 
-  $packer = new Packer();
-  $packedBox = $packer->packIntoBox($box, $items);
+  $volumePacker = new VolumePacker($box, $items);
+  $packedBox = $volumePacker->pack();
   /* $packedBox->getItems() contains the items that fit */
 ```
 
@@ -112,10 +113,16 @@ seconds in the Ubuntu VM on my workstation, giving a rate of approx ≈385 solut
 most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
 disable Xdebug when doing so - in my experience the unit tests take 4.5x longer (11.9sec->54 sec) when Xdebug is loaded.
 
+Advanced Usage
+--------------
+For more advanced use cases where greater control over the contents of each box is required (e.g. legal limits on the
+number of hazardous items per box), you may implement the `BoxPacker\ConstrainedItem` interface which contains an
+additional callback method allowing you to decide whether an item may be packed into a box given it's existing contents.
+
 Requirements
 ------------
 
-* PHP version 5.4 or higher
+* PHP version 5.4 or higher (including PHP7 and HHVM)
 
 License
 -------

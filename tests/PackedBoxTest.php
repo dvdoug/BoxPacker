@@ -7,7 +7,11 @@
 
 namespace DVDoug\BoxPacker;
 
-class PackedBoxTest extends \PHPUnit_Framework_TestCase
+use DVDoug\BoxPacker\Test\TestBox;
+use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\TestCase;
+
+class PackedBoxTest extends TestCase
 {
     function testGetters()
     {
@@ -17,7 +21,7 @@ class PackedBoxTest extends \PHPUnit_Framework_TestCase
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4);
+        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4, 0, 0, 0);
 
         self::assertEquals(1, $packedBox->getRemainingWidth());
         self::assertEquals(2, $packedBox->getRemainingLength());
@@ -33,7 +37,7 @@ class PackedBoxTest extends \PHPUnit_Framework_TestCase
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4);
+        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4, 0, 0, 0);
 
         self::assertEquals(50, $packedBox->getVolumeUtilisation());
     }

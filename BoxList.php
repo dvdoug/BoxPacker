@@ -16,6 +16,11 @@ class BoxList extends \SplMinHeap
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      * @see \SplMinHeap::compare()
+     *
+     * @param Box $boxA
+     * @param Box $boxB
+     *
+     * @return int
      */
     public function compare($boxA, $boxB)
     {

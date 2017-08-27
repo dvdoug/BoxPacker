@@ -7,7 +7,11 @@
 
 namespace DVDoug\BoxPacker;
 
-class PackedBoxListTest extends \PHPUnit_Framework_TestCase
+use DVDoug\BoxPacker\Test\TestBox;
+use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\TestCase;
+
+class PackedBoxListTest extends TestCase
 {
     function testVolumeUtilisation()
     {
@@ -17,7 +21,7 @@ class PackedBoxListTest extends \PHPUnit_Framework_TestCase
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4);
+        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);
@@ -33,7 +37,7 @@ class PackedBoxListTest extends \PHPUnit_Framework_TestCase
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4);
+        $packedBox = new PackedBox($box, $boxItems, 1, 2, 3, 4, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);

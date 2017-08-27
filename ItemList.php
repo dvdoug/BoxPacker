@@ -16,7 +16,13 @@ class ItemList extends \SplMaxHeap
 
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
+     *
      * @see \SplMaxHeap::compare()
+     *
+     * @param mixed $itemA
+     * @param mixed $itemB
+     *
+     * @return int
      */
     public function compare($itemA, $itemB)
     {
@@ -25,7 +31,7 @@ class ItemList extends \SplMaxHeap
         } elseif ($itemA->getVolume() < $itemB->getVolume()) {
             return -1;
         } else {
-            return 0;
+            return $itemA->getWeight() - $itemB->getWeight();
         }
     }
 
