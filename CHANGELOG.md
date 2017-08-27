@@ -5,6 +5,7 @@
  - Introduced `PackedItem`s which are a wrapper around `Item`s with positional and dimensional information (x,y,z co-ordinates of corner closest to origin, width/length/depth as packed)
 ### Changed
  - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
+ - Minimum PHP version is now 7.1
  
 ## [2.4.0] - 2017-08-14
 ### Changed
@@ -60,6 +61,8 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
  - Added a method to the Item interface to specify whether the item should be kept flat or not - this does not do anything yet, but adding now to avoid another major version bump later.
 ### Changed
  - Various refactorings to split out large functions into more readable pieces
+### Removed
+ - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
 
 ## [1.5.3] - 2016-05-30
 ### Changed
