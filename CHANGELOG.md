@@ -65,6 +65,19 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
 ### Removed
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
 
+## [1.6.0] - 2017-08-27
+API-compatible backport of 2.4.0. All features present except 3D packing.
+
+### Added
+ - Added `getUsed[Width|Length|Depth]()` on PackedBoxes to allow for better visibility into space utilisation
+ - Added callback system for more complex constraints e.g. max number of hazardous items in a box. To take advantage of the additional flexibility, implement BoxPacker\ConstrainedItem rather than BoxPacker\Item
+ - A specific `ItemTooLargeException` exception is now thrown when an item cannot fit inside any boxes rather than a generic `\RuntimeException`
+ - Pass on the logger instance from the main Packer class into the helpers
+### Changed
+ - Significant reworking of core packing logic to clarify concepts used and split out large functions into more readable pieces
+ - Test classes refactored to be autoloadable and for unit tests to runnable with standalone PHPUnit
+ - Equal distribution of weight is now turned off when the number of boxes becomes large as it provides very little to no benefit at that scale and is slow to calculate
+
 ## [1.5.3] - 2016-05-30
 ### Changed
  - Some refactoring to ease future maintenance
@@ -159,6 +172,7 @@ Initial release
 [2.0.2]: https://github.com/dvdoug/BoxPacker/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/dvdoug/BoxPacker/compare/2.0...2.0.1
 [2.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...2.0
+[1.6.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...1.6.0
 [1.5.3]: https://github.com/dvdoug/BoxPacker/compare/1.5.2...1.5.3
 [1.5.2]: https://github.com/dvdoug/BoxPacker/compare/1.5.1...1.5.2
 [1.5.1]: https://github.com/dvdoug/BoxPacker/compare/1.5...1.5.1
