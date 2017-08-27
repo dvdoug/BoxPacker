@@ -13,7 +13,7 @@ See [documentation](http://boxpacker.readthedocs.io/en/2.x-dev/) for more detail
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=2.x-dev)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=2.x-dev)
 [![Download count](https://img.shields.io/packagist/dt/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
 [![Current version](https://img.shields.io/packagist/v/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
-[![Documentation](https://readthedocs.org/projects/boxpacker/badge/?version=2.x-dev)](https://boxpacker.readthedocs.io/en/1.x-dev/?badge=2.x-dev)
+[![Documentation](https://readthedocs.org/projects/boxpacker/badge/?version=2.x-dev)](https://boxpacker.readthedocs.io/en/2.x-dev/?badge=2.x-dev)
 
 Requirements
 ------------
