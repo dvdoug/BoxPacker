@@ -61,9 +61,9 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Set a list of items all at once
-     * @param iterable $items
+     * @param \Traversable|array $items
      */
-    public function setItems(iterable $items): void
+    public function setItems($items): void
     {
         if ($items instanceof ItemList) {
             $this->items = clone $items;
