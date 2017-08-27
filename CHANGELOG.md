@@ -1,10 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## [3.0.0] - Unreleased
 ### Added
  - Introduced `PackedItem`s which are a wrapper around `Item`s with positional and dimensional information (x,y,z co-ordinates of corner closest to origin, width/length/depth as packed)
 ### Changed
  - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
+ - `ConstrainedItem->canBePackedInBox` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - Minimum PHP version is now 7.1
  
 ## [2.4.0] - 2017-08-14
@@ -146,7 +147,7 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/2.4.0...master
+[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.0...master
 
 [2.4.0]: https://github.com/dvdoug/BoxPacker/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/dvdoug/BoxPacker/compare/2.3.1...2.3.2

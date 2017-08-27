@@ -32,6 +32,28 @@ Example - warning on a massively oversized box
             }
         }
 
+Positional information
+----------------------
+It is also possible to see the precise positional and dimensional information of each item as packed. This is exposed as x,y,z
+co-ordinates from origin, alongside length/width/depth in the packed orientation.
+
+Example
+^^^^^^^
+
+.. code-block:: php
+
+    <?php
+
+        // assuming packing already took place
+        foreach ($packedBoxes as $packedBox) {
+            $packedItems = $packedBox->getItems();
+            foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object
+                echo $packedItem->getItem->getDescription() .  ' was packed at co-ordinate ' ;
+                echo '(' . $packedItem->getX() . ', ' . $packedItem->getY() . ', ' . $packedItem->getZ() . ') with ';
+                echo 'l' . $packedItem->getLength() . ', w' . $packedItem->getWidth() . ', d' . $packedItem->getDepth();
+                echo PHP_EOL;
+            }
+        }
 
 Custom Constraints
 ------------------
@@ -58,16 +80,16 @@ Example - only allow 2 batteries per box
         {
 
             /**
-             * @param ItemList $alreadyPackedItems
-             * @param TestBox  $box
+             * @param PackedItemList $alreadyPackedItems
+             * @param Box  $box
              *
              * @return bool
              */
-            public function canBePackedInBox(ItemList $alreadyPackedItems, Box $box)
+            public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box)
             {
                 $batteriesPacked = 0;
                 foreach ($alreadyPackedItems as $packedItem) {
-                  if ($packedItem instanceof LithiumBattery) {
+                  if ($packedItem->getItem() instanceof LithiumBattery) {
                       $batteriesPacked++;
                   }
                 }
