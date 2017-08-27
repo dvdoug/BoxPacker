@@ -183,11 +183,11 @@ class PackedBox
      * Constructor
      *
      * @param Box      $box
-     * @param PackedItemList $itemList
+     * @param PackedItemList $packedItemList
      */
-    public function __construct(Box $box, PackedItemList $itemList)
+    public function __construct(Box $box, PackedItemList $packedItemList)
     {
         $this->box = $box;
-        $this->items = $itemList;
+        $this->items = $packedItemList;
     }
 }
