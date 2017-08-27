@@ -6,7 +6,7 @@ PHP interfaces. Applications wanting to use this library will typically already 
 the items needing packing, so BoxPacker attempts to take advantage of these as much as possible by allowing you to pass them
 directly into the Packer rather than needing you to construct library-specific datastructures first. This also makes it much
 easier to work with the output of the Packer - the returned list of packed items in each box will contain your own objects,
-not simply references to them.
+not simply references to them so if you want to calculate value for insurance purposes or anything else this is easy to do.
 
 Similarly, although it's much more uncommon to already have 'Box' objects before implementing this library, you'll typically
 want to implement them in an application-specific way to allow for storage/retrieval from a database. The Packer also allows
@@ -17,7 +17,7 @@ To accommodate the wide variety of possible object types, the library defines tw
 you may already have these defined.
 
 If you do happen to have methods defined with those names already, **and they are incompatible with the interface expectations**,
-then this will be only case where some kind of wrapper object.
+then this will be only case where some kind of wrapper object would be needed.
 
 Examples
 --------
@@ -65,3 +65,18 @@ Packing a set of items into a given set of box types
 
 Does a set of items fit into a particular box
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: php
+
+    <?php
+        /*
+         * To just see if a selection of items will fit into one specific box
+         */
+        $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Item 1', 297, 296, 2, 200));
+        $items->insert(new TestItem('Item 2', 297, 296, 2, 500));
+        $items->insert(new TestItem('Item 3', 296, 296, 4, 290));
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack(); //$packedBox->getItems() contains the items that fit

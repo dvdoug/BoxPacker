@@ -9,7 +9,13 @@ even just want to know the right number of labels to print.
 
 License
 -------
-BoxPacker is licensed under the `MIT license`_
+BoxPacker is licensed under the `MIT license`_.
+
+
+.. warning::
+
+    You are reading the documentation for BoxPacker v1. Although still supported with occasional backports from newer versions,
+    all users are recommended to upgrade to v2 which removes the "always keep flat" limitation on items.
 
 
 .. _NP-hard problem: http://en.wikipedia.org/wiki/Bin_packing_problem
@@ -23,3 +29,4 @@ BoxPacker is licensed under the `MIT license`_
     installation
     principles
     getting-started
+    advanced-usage
