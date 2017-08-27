@@ -161,9 +161,11 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
 /.idea
 /tests/coverage
 /vendor
+/docs/_build
 
 /composer.lock
 
