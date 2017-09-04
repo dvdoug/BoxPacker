@@ -8,6 +8,11 @@
  - `ConstrainedItem->canBePackedInBox` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - Minimum PHP version is now 7.1
  
+## [2.4.1] - 2017-09-04
+
+### Fixed
+ - Used/remaining space calculations were sometimes offset by 90 degrees leading to confusing numbers
+
 ## [2.4.0] - 2017-08-14
 ### Changed
  - Significant reworking of core packing logic to clarify concepts used
@@ -64,6 +69,11 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
  - Various refactorings to split out large functions into more readable pieces
 ### Removed
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
+
+## [1.6.1] - 2017-09-04
+
+### Fixed
+ - Used/remaining space calculations were sometimes offset by 90 degrees leading to confusing numbers
 
 ## [1.6.0] - 2017-08-27
 API-compatible backport of 2.4.0. All features present except 3D packing.
@@ -162,6 +172,7 @@ Initial release
 
 [3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.0...master
 
+[2.4.1]: https://github.com/dvdoug/BoxPacker/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/dvdoug/BoxPacker/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/dvdoug/BoxPacker/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/dvdoug/BoxPacker/compare/2.3.0...2.3.1
@@ -172,6 +183,7 @@ Initial release
 [2.0.2]: https://github.com/dvdoug/BoxPacker/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/dvdoug/BoxPacker/compare/2.0...2.0.1
 [2.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...2.0
+[1.6.1]: https://github.com/dvdoug/BoxPacker/compare/1.6.0...1.6.1
 [1.6.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...1.6.0
 [1.5.3]: https://github.com/dvdoug/BoxPacker/compare/1.5.2...1.5.3
 [1.5.2]: https://github.com/dvdoug/BoxPacker/compare/1.5.1...1.5.2
