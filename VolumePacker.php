@@ -55,6 +55,12 @@ class VolumePacker implements LoggerAwareInterface
     protected $remainingWeight;
 
     /**
+     * Whether the box was rotated for packing
+     * @var bool
+     */
+    protected $boxRotated = false;
+
+    /**
      * Constructor
      *
      * @param Box      $box
@@ -70,6 +76,12 @@ class VolumePacker implements LoggerAwareInterface
         $this->remainingWeight = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
         $this->skippedItems = new ItemList();
         $this->logger = new NullLogger();
+
+        // we may have just rotated the box for packing purposes, record if we did
+        if ($this->box->getInnerWidth() != $this->boxWidth || $this->box->getInnerLength() != $this->boxLength) {
+            $this->boxRotated = true;
+        }
+
     }
 
     /**
@@ -159,7 +171,7 @@ class VolumePacker implements LoggerAwareInterface
             }
         }
         $this->logger->debug("done with this box");
-        return PackedBox::fromPackedItemList($this->box, $packedItems);
+        return $this->createPackedBox($packedItems);
     }
 
     /**
@@ -188,7 +200,7 @@ class VolumePacker implements LoggerAwareInterface
                     'maxWidth'    => $maxWidth,
                     'maxLength'   => $maxLength,
                     'maxDepth'    => $maxDepth,
-                ]
+                ],
             ]
         );
 
@@ -301,5 +313,35 @@ class VolumePacker implements LoggerAwareInterface
             $this->items = $this->skippedItems;
             $this->skippedItems = new ItemList();
         }
+    }
+
+    /**
+     * @param PackedItemList $packedItems
+     *
+     * @return PackedBox
+     */
+    protected function createPackedBox(PackedItemList $packedItems)
+    {
+        //if we rotated the box for packing, need to swap back width/length of the packed items
+        if ($this->boxRotated) {
+            $items = iterator_to_array($packedItems);
+            $packedItems = new PackedItemList();
+            /** @var PackedItem $item */
+            foreach($items as $item) {
+                $packedItems->insert(
+                    new PackedItem(
+                        $item->getItem(),
+                        $item->getY(),
+                        $item->getX(),
+                        $item->getZ(),
+                        $item->getLength(),
+                        $item->getWidth(),
+                        $item->getDepth()
+                    )
+                );
+            }
+        }
+
+        return PackedBox::fromPackedItemList($this->box, $packedItems);
     }
 }

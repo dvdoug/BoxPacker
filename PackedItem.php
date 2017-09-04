@@ -60,7 +60,7 @@ class PackedItem
      * @param int  $length
      * @param int  $depth
      */
-    protected function __construct(Item $item, $x, $y, $z, $width, $length, $depth)
+    public function __construct(Item $item, $x, $y, $z, $width, $length, $depth)
     {
         $this->item = $item;
         $this->x = $x;
