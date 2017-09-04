@@ -369,8 +369,8 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(368, $packedBoxes->top()->getUsedWidth());
-        self::assertEquals(310, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(310, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(368, $packedBoxes->top()->getUsedLength());
         self::assertEquals(32, $packedBoxes->top()->getUsedDepth());
     }
 
@@ -387,12 +387,12 @@ class PackerTest extends TestCase
         $box1 = $packedBoxes->extract();
         $box2 = $packedBoxes->extract();
 
-        self::assertEquals(285, $box1->getUsedWidth());
-        self::assertEquals(160, $box1->getUsedLength());
+        self::assertEquals(160, $box1->getUsedWidth());
+        self::assertEquals(285, $box1->getUsedLength());
         self::assertEquals(70, $box1->getUsedDepth());
 
-        self::assertEquals(297, $box2->getUsedWidth());
-        self::assertEquals(210, $box2->getUsedLength());
+        self::assertEquals(210, $box2->getUsedWidth());
+        self::assertEquals(297, $box2->getUsedLength());
         self::assertEquals(4, $box2->getUsedDepth());
     }
 
