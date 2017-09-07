@@ -361,7 +361,8 @@ class PackerTest extends TestCase
         self::assertEquals(4, $box2->getUsedDepth());
     }
 
-    public function testIssue79() {
+    public function testIssue79()
+    {
         $packer = new Packer();
         $packer->addBox(new TestBox('Bundle', 75, 15, 15, 0, 75, 15, 15, 30));
         $packer->addItem(new TestItem('Item 1', 14, 12, 2, 2, true));
@@ -375,6 +376,42 @@ class PackerTest extends TestCase
         self::assertEquals(60, $box->getUsedWidth());
         self::assertEquals(14, $box->getUsedLength());
         self::assertEquals(2, $box->getUsedDepth());
+    }
+
+    public function testCanSetMaxBoxesToWeightBalance()
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(3);
+        $this->assertEquals(3, $packer->getMaxBoxesToBalanceWeight());
+    }
+
+    public function testWeightRedistributionActivatesUnderLimit()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packedBoxes = $packer->pack();
+
+        $box1 = $packedBoxes->extract();
+        $box2 = $packedBoxes->extract();
+
+        $this->assertEquals(2, $box1->getItems()->count());
+        $this->assertEquals(2, $box2->getItems()->count());
+    }
+
+    public function testWeightRedistributionDoesNotActivateOverLimit()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packer->setMaxBoxesToBalanceWeight(1);
+        $packedBoxes = $packer->pack();
+
+        $box1 = $packedBoxes->extract();
+        $box2 = $packedBoxes->extract();
+
+        $this->assertEquals(3, $box1->getItems()->count());
+        $this->assertEquals(1, $box2->getItems()->count());
     }
 
     /**

@@ -3,6 +3,7 @@
 ## [3.0.0] - Unreleased
 ### Added
  - Introduced `PackedItem`s which are a wrapper around `Item`s with positional and dimensional information (x,y,z co-ordinates of corner closest to origin, width/length/depth as packed)
+ - Added method to set threshold at which weight redistribution is disabled  
 ### Changed
  - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - `ConstrainedItem->canBePackedInBox` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
