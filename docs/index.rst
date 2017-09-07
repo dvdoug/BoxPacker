@@ -22,5 +22,6 @@ BoxPacker is licensed under the `MIT license`_.
     installation
     principles
     getting-started
+    weight-distribution
     advanced-usage
     whatsnew
