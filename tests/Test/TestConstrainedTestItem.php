@@ -28,7 +28,7 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
     public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box): bool
     {
         $alreadyPackedType = array_filter(
-            $alreadyPackedItems->asArray(),
+            iterator_to_array($alreadyPackedItems, false),
             function(PackedItem $item) {
                 return $item->getItem()->getDescription() === $this->getDescription();
             }

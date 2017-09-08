@@ -62,9 +62,8 @@ class PackedBox
         }
 
         $this->weight = $this->box->getEmptyWeight();
-        $items = clone $this->items;
         /** @var PackedItem $item */
-        foreach ($items as $item) {
+        foreach ($this->items as $item) {
             $this->weight += $item->getItem()->getWeight();
         }
         return $this->weight;
@@ -106,7 +105,7 @@ class PackedBox
         $maxWidth = 0;
 
         /** @var PackedItem $item */
-        foreach (clone $this->items as $item) {
+        foreach ($this->items as $item) {
             $maxWidth = max($maxWidth, $item->getX() + $item->getWidth());
         }
 
@@ -122,7 +121,7 @@ class PackedBox
         $maxLength = 0;
 
         /** @var PackedItem $item */
-        foreach (clone $this->items as $item) {
+        foreach ($this->items as $item) {
             $maxLength = max($maxLength, $item->getY() + $item->getLength());
         }
 
@@ -138,7 +137,7 @@ class PackedBox
         $maxDepth = 0;
 
         /** @var PackedItem $item */
-        foreach (clone $this->items as $item) {
+        foreach ($this->items as $item) {
             $maxDepth = max($maxDepth, $item->getZ() + $item->getDepth());
         }
 
@@ -171,7 +170,7 @@ class PackedBox
         $itemVolume = 0;
 
         /** @var PackedItem $item */
-        foreach (clone $this->items as $item) {
+        foreach ($this->items as $item) {
             $itemVolume += ($item->getItem()->getWidth() * $item->getItem()->getLength() * $item->getItem()->getDepth());
         }
 

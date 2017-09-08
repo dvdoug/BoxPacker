@@ -286,7 +286,7 @@ class VolumePacker implements LoggerAwareInterface
         $weightOK = $itemToPack->getWeight() <= $this->remainingWeight;
 
         if ($itemToPack instanceof ConstrainedItem) {
-            return $weightOK && $itemToPack->canBePackedInBox(clone $packedItems, $this->box);
+            return $weightOK && $itemToPack->canBePackedInBox($packedItems, $this->box);
         }
 
         return $weightOK;
@@ -325,7 +325,7 @@ class VolumePacker implements LoggerAwareInterface
     {
         //if we rotated the box for packing, need to swap back width/length of the packed items
         if ($this->boxRotated) {
-            $items = iterator_to_array($packedItems);
+            $items = iterator_to_array($packedItems, false);
             $packedItems = new PackedItemList();
             /** @var PackedItem $item */
             foreach($items as $item) {
