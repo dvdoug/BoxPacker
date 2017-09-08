@@ -1,18 +1,21 @@
 language: php
 sudo: false
 
+env:
+php:
+  - 7.1
+  - 7.2
+  - nightly
+
 matrix:
   include:
-    - php: hhvm
-      sudo: required
-      services:
-       - docker
     - php: 7.1
       env: lowest=1
-    - php: 7.2
-    - php: nightly
     - php: 7.1
       env: code_coverage=1
+  allow_failures:
+    - php: nightly
+    - php: hhvm
 
 cache:
   directories:
@@ -21,22 +24,9 @@ cache:
     - $HOME/.cache/opcache
 
 install:
+  - phpenv config-rm xdebug.ini || true;
   - |
-    if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker pull hhvm/hhvm:latest;
-      docker run hhvm/hhvm:latest hhvm --version;
-      docker run --name hhvmapt hhvm/hhvm:latest bash -c "apt update -y; apt install -y dialog apt-utils wget curl git";
-      docker commit hhvmapt dvdoug/hhvm:apt;
-      docker run --name hhvmcomposer dvdoug/hhvm:apt bash -c "/usr/bin/curl https://getcomposer.org/installer | hhvm -d hhvm.php7.all=1 --php -- /dev/stdin --install-dir=/usr/local/bin --filename=composer";
-      docker commit hhvmcomposer dvdoug/hhvm:composer;
-    else
-      phpenv config-rm xdebug.ini || true;
-    fi;
-
-  - |
-    if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /usr/local/bin/composer update --working-dir /var/source;
-    elif [ "$lowest" = "1" ]; then
+    if [ "$lowest" = "1" ]; then
       composer update --prefer-lowest --prefer-stable;
     else
       composer update;
@@ -44,18 +34,14 @@ install:
 
 before_script:
   - |
-    if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then
-      mkdir -p $HOME/.cache/opcache
-      echo "memory_limit = 3072M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-      echo "opcache.enable_cli = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-      echo "opcache.file_cache = $HOME/.cache/opcache" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-    fi;
+    mkdir -p $HOME/.cache/opcache
+    echo "memory_limit = 3072M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
+    echo "opcache.enable_cli = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
+    echo "opcache.file_cache = $HOME/.cache/opcache" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
 
 script:
   - |
-    if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /var/source/vendor/bin/phpunit /var/source/tests;
-    elif [ "$code_coverage" = "1" ]; then
+    if [ "$code_coverage" = "1" ]; then
       phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests;
     else
       php vendor/bin/phpunit;
