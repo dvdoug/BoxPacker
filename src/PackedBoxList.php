@@ -32,12 +32,12 @@ class PackedBoxList extends \SplMinHeap
      */
     public function compare($boxA, $boxB): int
     {
-        $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
+        $choice = $boxA->getItems()->count() <=> $boxB->getItems()->count();
         if ($choice === 0) {
-            $choice = $boxB->getInnerVolume() - $boxA->getInnerVolume();
+            $choice = $boxB->getInnerVolume() <=> $boxA->getInnerVolume();
         }
         if ($choice === 0) {
-            $choice = $boxA->getWeight() - $boxB->getWeight();
+            $choice = $boxA->getWeight() <=> $boxB->getWeight();
         }
         return $choice;
     }

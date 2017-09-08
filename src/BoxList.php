@@ -28,12 +28,6 @@ class BoxList extends \SplMinHeap
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
 
-        if ($boxBVolume > $boxAVolume) {
-            return 1;
-        } elseif ($boxBVolume < $boxAVolume) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return $boxBVolume <=> $boxAVolume;
     }
 }
