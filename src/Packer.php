@@ -95,7 +95,7 @@ class Packer implements LoggerAwareInterface
      */
     public function setBoxes(BoxList $boxList): void
     {
-        $this->boxes = clone $boxList;
+        $this->boxes = $boxList;
     }
 
     /**
@@ -149,13 +149,10 @@ class Packer implements LoggerAwareInterface
 
         //Keep going until everything packed
         while ($this->items->count()) {
-            $boxesToEvaluate = clone $this->boxes;
             $packedBoxesIteration = new PackedBoxList;
 
             //Loop through boxes starting with smallest, see what happens
-            while (!$boxesToEvaluate->isEmpty()) {
-                $box = $boxesToEvaluate->extract();
-
+            foreach ($this->boxes as $box) {
                 $volumePacker = new VolumePacker($box, clone $this->items);
                 $volumePacker->setLogger($this->logger);
                 $packedBox = $volumePacker->pack();

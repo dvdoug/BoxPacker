@@ -35,7 +35,7 @@ class WeightRedistributor implements LoggerAwareInterface
      */
     public function __construct(BoxList $boxList)
     {
-        $this->boxes = clone $boxList;
+        $this->boxes = $boxList;
         $this->logger = new NullLogger();
     }
 

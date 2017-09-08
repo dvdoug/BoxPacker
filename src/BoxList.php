@@ -7,17 +7,48 @@
 declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
+use ArrayIterator, IteratorAggregate, Traversable;
+
 /**
  * List of boxes available to put items into, ordered by volume
  * @author Doug Wright
  * @package BoxPacker
  */
-class BoxList extends \SplMinHeap
+class BoxList implements IteratorAggregate
 {
     /**
-     * Compare elements in order to place them correctly in the heap while sifting up.
-     * @see \SplMinHeap::compare()
-     *
+     * List containing boxes
+     * @var Box[]
+     */
+    private $list = [];
+
+    /**
+     * Has this list already been sorted?
+     * @var bool
+     */
+    private $isSorted = false;
+
+    /**
+     * @return Traversable
+     */
+    public function getIterator(): Traversable
+    {
+        if (!$this->isSorted) {
+            usort($this->list, [$this, 'compare']);
+            $this->isSorted = true;
+        }
+        return new ArrayIterator($this->list);
+    }
+
+    /**
+     * @param Box $item
+     */
+    public function insert(Box $item)
+    {
+        $this->list[] = $item;
+    }
+
+    /**
      * @param Box $boxA
      * @param Box $boxB
      *
@@ -28,6 +59,6 @@ class BoxList extends \SplMinHeap
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
 
-        return $boxBVolume <=> $boxAVolume;
+        return $boxAVolume <=> $boxBVolume;
     }
 }

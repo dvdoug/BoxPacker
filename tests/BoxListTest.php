@@ -25,10 +25,7 @@ class BoxListTest extends TestCase
         $list->insert($box2);
         $list->insert($box3);
 
-        $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
-        }
+        $sorted = iterator_to_array($list, false);
         self::assertEquals(array($box1, $box3, $box2), $sorted);
     }
 
@@ -41,10 +38,8 @@ class BoxListTest extends TestCase
         $list->insert($box1);
         $list->insert($box2);
         $list->insert($box3);
-        $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
-        }
+
+        $sorted = iterator_to_array($list, false);
         self::assertEquals(array($box1, $box3, $box2), $sorted);
     }
 
@@ -57,19 +52,16 @@ class BoxListTest extends TestCase
         $list->insert($box3);
         $list->insert($box2);
         $list->insert($box1);
-        $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
-        }
+
+        $sorted = iterator_to_array($list, false);
         self::assertEquals(array($box1, $box3, $box2), $sorted);
+
         $list = new BoxList;
         $list->insert($box2);
         $list->insert($box1);
         $list->insert($box3);
-        $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
-        }
+
+        $sorted = iterator_to_array($list, false);
         self::assertEquals(array($box1, $box3, $box2), $sorted);
     }
 }
