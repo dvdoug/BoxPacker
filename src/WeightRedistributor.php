@@ -55,7 +55,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
         $overWeightBoxes = [];
         $underWeightBoxes = [];
-        foreach (clone $originalBoxes as $packedBox) {
+        foreach ($originalBoxes as $packedBox) {
             $boxWeight = $packedBox->getWeight();
             if ($boxWeight > $targetWeight) {
                 $overWeightBoxes[] = $packedBox;
@@ -69,6 +69,9 @@ class WeightRedistributor implements LoggerAwareInterface
         do { //Keep moving items from most overweight box to most underweight box
             $tryRepack = false;
             $this->logger->log(LogLevel::DEBUG, 'boxes under/over target: ' . count($underWeightBoxes) . '/' . count($overWeightBoxes));
+
+            usort($overWeightBoxes, [$this, 'sortMoreSpaceFirst']);
+            usort($underWeightBoxes, [$this, 'sortMoreSpaceFirst']);
 
             foreach ($underWeightBoxes as $u => $underWeightBox) {
                 $this->logger->log(LogLevel::DEBUG, 'Underweight Box ' . $u);
@@ -92,7 +95,7 @@ class WeightRedistributor implements LoggerAwareInterface
                         $newLighterBoxPacker->setBoxes($this->boxes);
                         $newLighterBoxPacker->setItems($newItemsForLighterBox);
                         $this->logger->log(LogLevel::INFO, "[ATTEMPTING TO PACK LIGHTER BOX]");
-                        $newLighterBox = $newLighterBoxPacker->doVolumePacking()->extract();
+                        $newLighterBox = $newLighterBoxPacker->doVolumePacking()->top();
 
                         if ($newLighterBox->getItems()->count() === count($newItemsForLighterBox)) { //new item fits
                             $this->logger->log(LogLevel::DEBUG, 'New item fits');
@@ -115,15 +118,13 @@ class WeightRedistributor implements LoggerAwareInterface
                                     return $originalBoxes;
                                 }
 
-                                $overWeightBoxes[$o] = $newHeavierBoxes->extract();
+                                $overWeightBoxes[$o] = $newHeavierBoxes->top();
                             } else {
                                 unset($overWeightBoxes[$o]);
                             }
                             $underWeightBoxes[$u] = $newLighterBox;
 
                             $tryRepack = true; //we did some work, so see if we can do even better
-                            usort($overWeightBoxes, [$packedBoxes, 'reverseCompare']);
-                            usort($underWeightBoxes, [$packedBoxes, 'reverseCompare']);
                             break 3;
                         }
                     }
@@ -136,5 +137,23 @@ class WeightRedistributor implements LoggerAwareInterface
         $packedBoxes->insertFromArray($underWeightBoxes);
 
         return $packedBoxes;
+    }
+
+    /**
+     * @param PackedBox $boxA
+     * @param PackedBox $boxB
+     *
+     * @return int
+     */
+    private function sortMoreSpaceFirst(PackedBox $boxA, PackedBox $boxB): int
+    {
+        $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
+        if ($choice === 0) {
+            $choice = $boxA->getInnerVolume() - $boxB->getInnerVolume();
+        }
+        if ($choice === 0) {
+            $choice = $boxB->getWeight() - $boxA->getWeight();
+        }
+        return $choice;
     }
 }

@@ -9,6 +9,7 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use function iterator_to_array;
 use PHPUnit\Framework\TestCase;
 
 class PackerTest extends TestCase
@@ -29,12 +30,14 @@ class PackerTest extends TestCase
         $packer->addItem($item1);
         $packer->addItem($item2);
         $packer->addItem($item3);
-        $packedBoxes = $packer->pack();
 
-        self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(3, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box1, $packedBoxes->top()->getBox());
-        self::assertEquals(610, $packedBoxes->top()->getWeight());
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertEquals(1, count($packedBoxes));
+        self::assertEquals(3, $packedBoxes[0]->getItems()->count());
+        self::assertEquals($box1, $packedBoxes[0]->getBox());
+        self::assertEquals(610, $packedBoxes[0]->getWeight());
     }
 
     public function testPackThreeItemsFitEasilyInLargerOfTwoBoxes()
@@ -53,12 +56,14 @@ class PackerTest extends TestCase
         $packer->addItem($item1);
         $packer->addItem($item2);
         $packer->addItem($item3);
-        $packedBoxes = $packer->pack();
 
-        self::assertEquals(1, $packedBoxes->count());
-        self::assertEquals(3, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(6100, $packedBoxes->top()->getWeight());
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertEquals(1, count($packedBoxes));
+        self::assertEquals(3, $packedBoxes[0]->getItems()->count());
+        self::assertEquals($box2, $packedBoxes[0]->getBox());
+        self::assertEquals(6100, $packedBoxes[0]->getWeight());
     }
 
     public function testPackFiveItemsTwoLargeOneSmallBox()
@@ -81,25 +86,23 @@ class PackerTest extends TestCase
         $packer->addItem($item3);
         $packer->addItem($item4);
         $packer->addItem($item5);
-        $packedBoxes = $packer->pack();
 
-        self::assertEquals(3, $packedBoxes->count());
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(1100, $packedBoxes->top()->getWeight());
+        self::assertEquals(3, count($packedBoxes));
 
-        $packedBoxes->extract();
+        self::assertEquals(2, $packedBoxes[0]->getItems()->count());
+        self::assertEquals($box2, $packedBoxes[0]->getBox());
+        self::assertEquals(1100, $packedBoxes[0]->getWeight());
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(1100, $packedBoxes->top()->getWeight());
+        self::assertEquals(2, $packedBoxes[1]->getItems()->count());
+        self::assertEquals($box2, $packedBoxes[1]->getBox());
+        self::assertEquals(1100, $packedBoxes[1]->getWeight());
 
-        $packedBoxes->extract();
-
-        self::assertEquals(1, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box1, $packedBoxes->top()->getBox());
-        self::assertEquals(510, $packedBoxes->top()->getWeight());
+        self::assertEquals(1, $packedBoxes[2]->getItems()->count());
+        self::assertEquals($box1, $packedBoxes[2]->getBox());
+        self::assertEquals(510, $packedBoxes[2]->getWeight());
     }
 
     public function testPackFiveItemsTwoLargeOneSmallBoxButThreeAfterRepack()
@@ -122,25 +125,23 @@ class PackerTest extends TestCase
         $packer->addItem($item3);
         $packer->addItem($item4);
         $packer->addItem($item5);
-        $packedBoxes = $packer->pack();
 
-        self::assertEquals(3, $packedBoxes->count());
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(4100, $packedBoxes->top()->getWeight());
+        self::assertEquals(3, count($packedBoxes));
 
-        $packedBoxes->extract();
+        self::assertEquals(2, $packedBoxes[0]->getItems()->count());
+        self::assertEquals($box2, $packedBoxes[0]->getBox());
+        self::assertEquals(2300, $packedBoxes[0]->getWeight());
 
-        self::assertEquals(2, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(2300, $packedBoxes->top()->getWeight());
+        self::assertEquals(2, $packedBoxes[1]->getItems()->count());
+        self::assertEquals($box2, $packedBoxes[1]->getBox());
+        self::assertEquals(4100, $packedBoxes[1]->getWeight());
 
-        $packedBoxes->extract();
-
-        self::assertEquals(1, $packedBoxes->top()->getItems()->count());
-        self::assertEquals($box2, $packedBoxes->top()->getBox());
-        self::assertEquals(2100, $packedBoxes->top()->getWeight());
+        self::assertEquals(1, $packedBoxes[2]->getItems()->count());
+        self::assertEquals($box2, $packedBoxes[2]->getBox());
+        self::assertEquals(2100, $packedBoxes[2]->getWeight());
     }
 
     /**
@@ -346,19 +347,19 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item 1',210,297,4,213, true));
         $packer->addItem(new TestItem('Item 2',80,285,70,199, true));
         $packer->addItem(new TestItem('Item 3',80,285,70,199, true));
-        $packedBoxes = $packer->pack();
 
-        self::assertEquals(2, $packedBoxes->count());
-        $box1 = $packedBoxes->extract();
-        $box2 = $packedBoxes->extract();
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(160, $box1->getUsedWidth());
-        self::assertEquals(285, $box1->getUsedLength());
-        self::assertEquals(70, $box1->getUsedDepth());
+        self::assertEquals(2, count($packedBoxes));
 
-        self::assertEquals(210, $box2->getUsedWidth());
-        self::assertEquals(297, $box2->getUsedLength());
-        self::assertEquals(4, $box2->getUsedDepth());
+        self::assertEquals(160, $packedBoxes[0]->getUsedWidth());
+        self::assertEquals(285, $packedBoxes[0]->getUsedLength());
+        self::assertEquals(70, $packedBoxes[0]->getUsedDepth());
+
+        self::assertEquals(210, $packedBoxes[1]->getUsedWidth());
+        self::assertEquals(297, $packedBoxes[1]->getUsedLength());
+        self::assertEquals(4, $packedBoxes[1]->getUsedDepth());
     }
 
     public function testIssue79()
@@ -370,12 +371,13 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item 3', 14, 12, 2, 2, true));
         $packer->addItem(new TestItem('Item 4', 14, 12, 2, 2, true));
         $packer->addItem(new TestItem('Item 5', 14, 12, 2, 2, true));
-        $packedBoxes = $packer->pack();
-        $box = $packedBoxes->extract();
 
-        self::assertEquals(60, $box->getUsedWidth());
-        self::assertEquals(14, $box->getUsedLength());
-        self::assertEquals(2, $box->getUsedDepth());
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertEquals(60, $packedBoxes[0]->getUsedWidth());
+        self::assertEquals(14, $packedBoxes[0]->getUsedLength());
+        self::assertEquals(2, $packedBoxes[0]->getUsedDepth());
     }
 
     public function testCanSetMaxBoxesToWeightBalance()
@@ -390,13 +392,12 @@ class PackerTest extends TestCase
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
         $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
-        $packedBoxes = $packer->pack();
 
-        $box1 = $packedBoxes->extract();
-        $box2 = $packedBoxes->extract();
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(2, $box1->getItems()->count());
-        self::assertEquals(2, $box2->getItems()->count());
+        self::assertEquals(2, $packedBoxes[0]->getItems()->count());
+        self::assertEquals(2, $packedBoxes[1]->getItems()->count());
     }
 
     public function testWeightRedistributionDoesNotActivateOverLimit()
@@ -405,13 +406,12 @@ class PackerTest extends TestCase
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
         $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
         $packer->setMaxBoxesToBalanceWeight(1);
-        $packedBoxes = $packer->pack();
 
-        $box1 = $packedBoxes->extract();
-        $box2 = $packedBoxes->extract();
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(3, $box1->getItems()->count());
-        self::assertEquals(1, $box2->getItems()->count());
+        self::assertEquals(3, $packedBoxes[0]->getItems()->count());
+        self::assertEquals(1, $packedBoxes[1]->getItems()->count());
     }
 
     /**
@@ -521,7 +521,7 @@ class PackerTest extends TestCase
 
         $tests = [];
         $itemData = fopen(__DIR__ . '/data/items.csv', 'r');
-        while ($data = fgetcsv($itemData)) {
+        while ($data = fgetcsv($itemData)) { //if ($data[0] != '11018c4b5462adebf4e59d9969fc0459') {continue;}
 
             if (isset($tests[$data[0]])) {
                 $tests[$data[0]]['items'][] = array(

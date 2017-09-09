@@ -7,6 +7,7 @@
 declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
+use function array_unshift;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -149,7 +150,7 @@ class Packer implements LoggerAwareInterface
 
         //Keep going until everything packed
         while ($this->items->count()) {
-            $packedBoxesIteration = new PackedBoxList;
+            $packedBoxesIteration = [];
 
             //Loop through boxes starting with smallest, see what happens
             foreach ($this->boxes as $box) {
@@ -157,7 +158,7 @@ class Packer implements LoggerAwareInterface
                 $volumePacker->setLogger($this->logger);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
-                    $packedBoxesIteration->insert($packedBox);
+                    $packedBoxesIteration[] = $packedBox;
 
                     //Have we found a single box that contains everything?
                     if ($packedBox->getItems()->count() === $this->items->count()) {
@@ -167,13 +168,12 @@ class Packer implements LoggerAwareInterface
             }
 
             //Check iteration was productive
-            if ($packedBoxesIteration->isEmpty()) {
+            if (!$packedBoxesIteration) {
                 throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box', $this->items->top());
             }
 
             //Find best box of iteration, and remove packed items from unpacked list
-            /** @var PackedBox $bestBox */
-            $bestBox = $packedBoxesIteration->top();
+            $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
             $unPackedItems = $this->items->asArray();
             foreach ($bestBox->getItems() as $packedItem) {
                 foreach ($unPackedItems as $unpackedKey => $unpackedItem) {
@@ -193,5 +193,34 @@ class Packer implements LoggerAwareInterface
         }
 
         return $packedBoxes;
+    }
+
+    /**
+     * @param PackedBox[] $packedBoxes
+     *
+     * @return PackedBox
+     */
+    private function findBestBoxFromIteration($packedBoxes): PackedBox
+    {
+        usort($packedBoxes, [$this, 'compare']);
+        return array_shift($packedBoxes);
+    }
+
+    /**
+     * @param PackedBox $boxA
+     * @param PackedBox $boxB
+     *
+     * @return int
+     */
+    private static function compare(PackedBox $boxA, PackedBox $boxB): int
+    {
+        $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();
+        if ($choice === 0) {
+            $choice = $boxA->getInnerVolume() <=> $boxB->getInnerVolume();
+        }
+        if ($choice === 0) {
+            $choice = $boxA->getWeight() <=> $boxB->getWeight();
+        }
+        return $choice;
     }
 }
