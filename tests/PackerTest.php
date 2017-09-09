@@ -425,7 +425,9 @@ class PackerTest extends TestCase
         $expectedBoxes2D,
         $expectedBoxes3D,
         $expectedWeightVariance2D,
-        $expectedWeightVariance3D
+        $expectedWeightVariance3D,
+        $expectedVolumeUtilisation2D,
+        $expectedVolumeUtilisation3D
     ) {
         $expectedItemCount = 0;
 
@@ -479,11 +481,14 @@ class PackerTest extends TestCase
 
         self::assertEquals($expectedBoxes2D, $packedBoxes2D->count());
         self::assertEquals($expectedItemCount, $packedItemCount2D);
-        self::assertEquals($expectedWeightVariance2D, (int)$packedBoxes2D->getWeightVariance());
+        self::assertEquals($expectedVolumeUtilisation2D, $packedBoxes2D->getVolumeUtilisation());
+        self::assertEquals($expectedWeightVariance2D, $packedBoxes2D->getWeightVariance());
 
         self::assertEquals($expectedBoxes3D, $packedBoxes3D->count());
         self::assertEquals($expectedItemCount, $packedItemCount3D);
-        self::assertEquals($expectedWeightVariance3D, (int)$packedBoxes3D->getWeightVariance());
+        self::assertEquals($expectedVolumeUtilisation3D, $packedBoxes3D->getVolumeUtilisation());
+        self::assertEquals($expectedWeightVariance3D, $packedBoxes3D->getWeightVariance());
+
     }
 
     public function getSamples()
@@ -492,8 +497,8 @@ class PackerTest extends TestCase
 
         $expected2DData = fopen(__DIR__ . '/data/expected.csv', 'r');
         while ($data = fgetcsv($expected2DData)) {
-            $expected['2D'][$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
-            $expected['3D'][$data[0]] = array('boxes' => $data[3], 'weightVariance' => $data[4]);
+            $expected['2D'][$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2], 'utilisation' => $data[3]);
+            $expected['3D'][$data[0]] = array('boxes' => $data[4], 'weightVariance' => $data[5], 'utilisation' => $data[6]);
         }
         fclose($expected2DData);
 
@@ -544,7 +549,9 @@ class PackerTest extends TestCase
                     'expected2D' => $expected['2D'][$data[0]]['boxes'],
                     'expected3D' => $expected['3D'][$data[0]]['boxes'],
                     'weightVariance2D' => $expected['2D'][$data[0]]['weightVariance'],
-                    'weightVariance3D' => $expected['3D'][$data[0]]['weightVariance']
+                    'weightVariance3D' => $expected['3D'][$data[0]]['weightVariance'],
+                    'volumeUtilisation2D' => $expected['2D'][$data[0]]['utilisation'],
+                    'volumeUtilisation3D' => $expected['3D'][$data[0]]['utilisation']
                 );
             }
         }
