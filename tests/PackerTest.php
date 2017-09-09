@@ -417,7 +417,7 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->setMaxBoxesToBalanceWeight(3);
-        $this->assertEquals(3, $packer->getMaxBoxesToBalanceWeight());
+        self::assertEquals(3, $packer->getMaxBoxesToBalanceWeight());
     }
 
     public function testWeightRedistributionActivatesUnderLimit()
@@ -430,8 +430,8 @@ class PackerTest extends TestCase
         $box1 = $packedBoxes->extract();
         $box2 = $packedBoxes->extract();
 
-        $this->assertEquals(2, $box1->getItems()->count());
-        $this->assertEquals(2, $box2->getItems()->count());
+        self::assertEquals(2, $box1->getItems()->count());
+        self::assertEquals(2, $box2->getItems()->count());
     }
 
     public function testWeightRedistributionDoesNotActivateOverLimit()
@@ -445,8 +445,8 @@ class PackerTest extends TestCase
         $box1 = $packedBoxes->extract();
         $box2 = $packedBoxes->extract();
 
-        $this->assertEquals(3, $box1->getItems()->count());
-        $this->assertEquals(1, $box2->getItems()->count());
+        self::assertEquals(3, $box1->getItems()->count());
+        self::assertEquals(1, $box2->getItems()->count());
     }
 
     /**
