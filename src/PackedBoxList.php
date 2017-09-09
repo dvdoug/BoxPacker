@@ -91,7 +91,7 @@ class PackedBoxList extends \SplMinHeap
 
         $weightVariance = 0;
         foreach (clone $this as $box) {
-            $weightVariance += pow($box->getWeight() - $mean, 2);
+            $weightVariance += ($box->getWeight() - $mean) ** 2;
         }
 
         return round($weightVariance / $this->count(), 1);
