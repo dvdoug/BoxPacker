@@ -162,21 +162,38 @@ class PackedBox
     }
 
     /**
+     * Get used volume of the packed box
+     * @return int
+     */
+    public function getUsedVolume(): int
+    {
+        $volume = 0;
+
+        /** @var PackedItem $item */
+        foreach ($this->items as $item) {
+            $volume += ($item->getWidth() * $item->getLength() * $item->getDepth());
+        }
+
+        return $volume;
+    }
+
+    /**
+     * Get unused volume of the packed box
+     * @return int
+     */
+    public function getUnusedVolume(): int
+    {
+        return $this->getInnerVolume() - $this->getUsedVolume();
+    }
+
+    /**
      * Get volume utilisation of the packed box
      * @return float
      */
     public function getVolumeUtilisation(): float
     {
-        $itemVolume = 0;
-
-        /** @var PackedItem $item */
-        foreach ($this->items as $item) {
-            $itemVolume += ($item->getItem()->getWidth() * $item->getItem()->getLength() * $item->getItem()->getDepth());
-        }
-
-        return round($itemVolume / $this->getInnerVolume() * 100, 1);
+        return round($this->getUsedVolume() / $this->getInnerVolume() * 100, 1);
     }
-
 
     /**
      * Constructor
