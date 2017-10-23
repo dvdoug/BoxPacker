@@ -94,7 +94,15 @@ class ItemList implements Countable, IteratorAggregate
     {
         $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
         $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
-        return ($itemBVolume <=> $itemAVolume) ?: ($itemB->getWeight() - $itemA->getWeight());
+        $volumeDecider = $itemBVolume <=> $itemAVolume;
+        $weightDecider = $itemB->getWeight() - $itemA->getWeight();
+        if ($volumeDecider !== 0) {
+            return $volumeDecider;
+        } elseif ($weightDecider !== 0) {
+            return $weightDecider;
+        } else {
+            return $itemA->getDescription() <=> $itemB->getDescription();
+        }
     }
 
 }

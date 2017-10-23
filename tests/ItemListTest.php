@@ -28,4 +28,22 @@ class ItemListTest extends TestCase
         $sorted = iterator_to_array($list,false);
         self::assertEquals(array($item2, $item3, $item1), $sorted);
     }
+
+    function testDifferentItemsSameDimensions()
+    {
+
+        $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
+        $item2 = new TestItem('Item B', 20, 20, 2, 100, true);
+        $item3 = new TestItem('Item A', 20, 20, 2, 100, true);
+        $item4 = new TestItem('Item B', 20, 20, 2, 100, true);
+
+        $list = new ItemList;
+        $list->insert($item1);
+        $list->insert($item2);
+        $list->insert($item3);
+        $list->insert($item4);
+
+        $sorted = iterator_to_array($list,false);
+        self::assertEquals(array($item1, $item3, $item2, $item4), $sorted);
+    }
 }
