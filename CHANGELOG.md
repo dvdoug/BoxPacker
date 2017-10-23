@@ -7,6 +7,7 @@
 ### Changed
  - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - `ConstrainedItem->canBePackedInBox` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
+ - `BoxList`, `ItemList`, `PackedBoxList` have been altered to implement the `Traversable` interface rather than extend `SplHeap` directly so that any future changes to the internals will not need an API change  
  - Minimum PHP version is now 7.1
  
 ## [2.4.1] - 2017-09-04
