@@ -8,9 +8,6 @@ What's new / Upgrading
 
 Version 3
 ---------
-.. warning::
-
-    Version 3 is **unreleased**. Use v2 instead.
 
 Positional information on packed items
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
