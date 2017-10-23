@@ -18,7 +18,8 @@ See [documentation](http://boxpacker.readthedocs.io/) for more details.
 Requirements
 ------------
 
-* PHP version 7.1 or higher
+* PHP version 7.1 or higher (from version 3)
+* PHP version 5.4 or higher (versions 1 and 2 - still maintained)
 
 License
 -------
