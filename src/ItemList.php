@@ -7,41 +7,94 @@
 declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
+use ArrayIterator, Countable, IteratorAggregate, Traversable;
+
 /**
  * List of items to be packed, ordered by volume
  * @author Doug Wright
  * @package BoxPacker
  */
-class ItemList extends \SplMaxHeap
+class ItemList implements Countable, IteratorAggregate
 {
+    /**
+     * List containing items
+     * @var Item[]
+     */
+    private $list = [];
 
     /**
-     * Compare elements in order to place them correctly in the heap while sifting up.
-     *
-     * @see \SplMaxHeap::compare()
-     *
+     * Has this list already been sorted?
+     * @var bool
+     */
+    private $isSorted = false;
+
+    /**
+     * @param Item $item
+     */
+    public function insert(Item $item)
+    {
+        $this->list[] = $item;
+    }
+
+    /**
+     * @internal
+     * @return Item
+     */
+    public function extract(): Item
+    {
+        if (!$this->isSorted) {
+            usort($this->list, [$this, 'compare']);
+            $this->isSorted = true;
+        }
+        return array_shift($this->list);
+    }
+
+    /**
+     * @internal
+     * @return Item
+     */
+    public function top(): Item
+    {
+        if (!$this->isSorted) {
+            usort($this->list, [$this, 'compare']);
+            $this->isSorted = true;
+        }
+        $temp = $this->list;
+        return reset($temp);
+    }
+
+    /**
+     * @return Traversable
+     */
+    public function getIterator(): Traversable
+    {
+        if (!$this->isSorted) {
+            usort($this->list, [$this, 'compare']);
+            $this->isSorted = true;
+        }
+        return new ArrayIterator($this->list);
+    }
+
+    /**
+     * Number of items in list
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->list);
+    }
+
+    /**
      * @param Item $itemA
      * @param Item $itemB
      *
      * @return int
      */
-    public function compare($itemA, $itemB): int
+    private function compare(Item $itemA, Item $itemB): int
     {
         $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
         $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
-        return ($itemAVolume <=> $itemBVolume) ?: ($itemA->getWeight() - $itemB->getWeight());
+        return ($itemBVolume <=> $itemAVolume) ?: ($itemB->getWeight() - $itemA->getWeight());
     }
 
-    /**
-     * Get copy of this list as a standard PHP array
-     * @return array
-     */
-    public function asArray(): array
-    {
-        $return = [];
-        foreach (clone $this as $item) {
-            $return[] = $item;
-        }
-        return $return;
-    }
 }

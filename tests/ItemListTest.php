@@ -16,19 +16,16 @@ class ItemListTest extends TestCase
     function testCompare()
     {
 
-        $box1 = new TestItem('Small', 20, 20, 2, 100, true);
-        $box2 = new TestItem('Large', 200, 200, 20, 1000, true);
-        $box3 = new TestItem('Medium', 100, 100, 10, 500, true);
+        $item1 = new TestItem('Small', 20, 20, 2, 100, true);
+        $item2 = new TestItem('Large', 200, 200, 20, 1000, true);
+        $item3 = new TestItem('Medium', 100, 100, 10, 500, true);
 
         $list = new ItemList;
-        $list->insert($box1);
-        $list->insert($box2);
-        $list->insert($box3);
+        $list->insert($item1);
+        $list->insert($item2);
+        $list->insert($item3);
 
-        $sorted = [];
-        while (!$list->isEmpty()) {
-            $sorted[] = $list->extract();
-        }
-        self::assertEquals(array($box2, $box3, $box1), $sorted);
+        $sorted = iterator_to_array($list,false);
+        self::assertEquals(array($item2, $item3, $item1), $sorted);
     }
 }

@@ -103,9 +103,9 @@ class VolumePacker implements LoggerAwareInterface
         $packingLengthLeft = $this->boxLength;
         $packingDepthLeft = $this->box->getInnerDepth();
 
-        while (!$this->items->isEmpty()) {
+        while (count($this->items) > 0) {
             $itemToPack = $this->items->extract();
-            $isLastItem = $this->skippedItems->isEmpty() && $this->items->isEmpty();
+            $isLastItem = count($this->skippedItems) === 0 && count($this->items) === 0;
 
             //skip items that are simply too heavy or too large
             if (!$this->checkConstraints($itemToPack, $packedItems)) {
@@ -138,7 +138,7 @@ class VolumePacker implements LoggerAwareInterface
                     $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                     $prevItem = null;
                     continue;
-                } elseif (!$this->items->isEmpty()) { // skip for now, move on to the next item
+                } elseif (count($this->items) > 0) { // skip for now, move on to the next item
                     $this->logger->debug("doesn't fit, skipping for now");
                     $this->skippedItems->insert($itemToPack);
                 } elseif ($x > 0 && $packingLengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength())) {
@@ -235,7 +235,7 @@ class VolumePacker implements LoggerAwareInterface
         int $y,
         int $z
     ): void {
-        while (!$this->items->isEmpty() && $this->checkNonDimensionalConstraints($this->items->top(), $packedItems)) {
+        while (count($this->items) > 0 && $this->checkNonDimensionalConstraints($this->items->top(), $packedItems)) {
             $stackedItem = $this->getOrientationForItem(
                 $this->items->top(),
                 $prevItem,
@@ -310,7 +310,7 @@ class VolumePacker implements LoggerAwareInterface
      * Reintegrate skipped items into main list when nothing left to process
      */
     protected function rebuildItemList(): void {
-        if ($this->items->isEmpty()) {
+        if (count($this->items) === 0) {
             $this->items = $this->skippedItems;
             $this->skippedItems = new ItemList();
         }
