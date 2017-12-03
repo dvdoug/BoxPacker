@@ -48,22 +48,31 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
         $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
 
-        $orientationFits = [];
-        /** @var OrientatedItem $orientation */
-        foreach ($usableOrientations as $o => $orientation) {
-            $orientationFit = min($widthLeft - $orientation->getWidth(), $lengthLeft - $orientation->getLength());
-            $orientationFits[$o] = $orientationFit;
-        }
-
-        if (!empty($orientationFits)) {
-            asort($orientationFits);
-            reset($orientationFits);
-            $bestFit = $usableOrientations[key($orientationFits)];
-            $this->logger->debug("Selected best fit orientation", ['orientation' => $bestFit]);
-            return $bestFit;
-        } else {
+        if (empty($usableOrientations)) {
             return null;
         }
+
+        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft) {
+            $orientationAWidthLeft = $widthLeft - $a->getWidth();
+            $orientationALengthLeft = $lengthLeft - $a->getLength();
+            $orientationBWidthLeft = $widthLeft - $b->getWidth();
+            $orientationBLengthLeft = $lengthLeft - $b->getLength();
+
+            $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
+            $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
+
+            if ($orientationAMinGap === 0) {
+                return -1;
+            } elseif ($orientationBMinGap === 0) {
+                return 1;
+            } else {
+                return min($orientationAWidthLeft, $orientationALengthLeft) <=> min($orientationBWidthLeft, $orientationBLengthLeft);
+            }
+        });
+
+        $bestFit = reset($usableOrientations);
+        $this->logger->debug("Selected best fit orientation", ['orientation' => $bestFit]);
+        return $bestFit;
     }
 
     /**
