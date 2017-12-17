@@ -28,12 +28,12 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * Get the best orientation for an item
      * @param Box $box
      * @param Item $item
-     * @param ?PackedItem $prevItem
+     * @param PackedItem|null $prevItem
      * @param bool $isLastItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
-     * @return ?OrientatedItem
+     * @return OrientatedItem|null
      */
     public function getBestOrientation(
         Box $box,
@@ -78,7 +78,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Find all possible orientations for an item
      * @param Item $item
-     * @param ?PackedItem $prevItem
+     * @param PackedItem|null $prevItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
