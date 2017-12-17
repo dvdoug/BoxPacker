@@ -28,7 +28,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * Get the best orientation for an item
      * @param Box $box
      * @param Item $item
-     * @param PackedItem|null $prevItem
+     * @param OrientatedItem|null $prevItem
      * @param Item|null $nextItem
      * @param bool $isLastItem
      * @param int $widthLeft
@@ -39,7 +39,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     public function getBestOrientation(
         Box $box,
         Item $item,
-        ?PackedItem $prevItem,
+        ?OrientatedItem $prevItem,
         ?Item $nextItem,
         bool $isLastItem,
         int $widthLeft,
@@ -54,7 +54,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return null;
         }
 
-        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft) {
+        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItem) {
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
             $orientationALengthLeft = $lengthLeft - $a->getLength();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
@@ -63,11 +63,21 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
 
-            if ($orientationAMinGap === 0) {
+            if ($orientationAMinGap === 0) { // prefer A if it leaves no gap
                 return -1;
-            } elseif ($orientationBMinGap === 0) {
+            } elseif ($orientationBMinGap === 0) { // prefer B if it leaves no gap
                 return 1;
-            } else {
+            } else { // prefer leaving room for next item in current row
+                if ($nextItem) {
+                    $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $orientationALengthLeft, $depthLeft));
+                    $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $orientationBLengthLeft, $depthLeft));
+                    if ($nextItem && $nextItemFitA && !$nextItemFitB) {
+                        return -1;
+                    } elseif ($nextItem && $nextItemFitB && !$nextItemFitA) {
+                        return 1;
+                    }
+                }
+                // otherwise prefer leaving minimum possible gap
                 return min($orientationAWidthLeft, $orientationALengthLeft) <=> min($orientationBWidthLeft, $orientationBLengthLeft);
             }
         });
@@ -80,7 +90,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Find all possible orientations for an item
      * @param Item $item
-     * @param PackedItem|null $prevItem
+     * @param OrientatedItem|null $prevItem
      * @param int $widthLeft
      * @param int $lengthLeft
      * @param int $depthLeft
@@ -88,7 +98,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     public function getPossibleOrientations(
         Item $item,
-        ?PackedItem $prevItem,
+        ?OrientatedItem $prevItem,
         int $widthLeft,
         int $lengthLeft,
         int $depthLeft
