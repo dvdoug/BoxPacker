@@ -521,7 +521,7 @@ class PackerTest extends TestCase
 
         $tests = [];
         $itemData = fopen(__DIR__ . '/data/items.csv', 'r');
-        while ($data = fgetcsv($itemData)) { //if ($data[0] != '11018c4b5462adebf4e59d9969fc0459') {continue;}
+        while ($data = fgetcsv($itemData)) {
 
             if (isset($tests[$data[0]])) {
                 $tests[$data[0]]['items'][] = array(

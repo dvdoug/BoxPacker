@@ -149,5 +149,13 @@ class PackedItem
             $orientatedItem->getDepth()
         );
     }
+
+    /**
+     * @return OrientatedItem
+     */
+    public function toOrientatedItem(): OrientatedItem
+    {
+        return new OrientatedItem($this->item, $this->width, $this->length, $this->depth);
+    }
 }
 

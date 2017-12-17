@@ -208,9 +208,11 @@ class VolumePacker implements LoggerAwareInterface
             ]
         );
 
+        $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
+
         $orientatedItemFactory = new OrientatedItemFactory();
         $orientatedItemFactory->setLogger($this->logger);
-        $orientatedItem = $orientatedItemFactory->getBestOrientation($this->box, $itemToPack, $prevItem, $nextItem, $isLastItem, $maxWidth, $maxLength, $maxDepth);
+        $orientatedItem = $orientatedItemFactory->getBestOrientation($this->box, $itemToPack, $prevOrientatedItem, $nextItem, $isLastItem, $maxWidth, $maxLength, $maxDepth);
 
         return $orientatedItem;
     }
