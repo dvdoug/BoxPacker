@@ -177,13 +177,13 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * @param Item            $itemToPack
-     * @param ?PackedItem     $prevItem
+     * @param PackedItem|null $prevItem
      * @param bool            $isLastItem
      * @param int             $maxWidth
      * @param int             $maxLength
      * @param int             $maxDepth
      *
-     * @return ?OrientatedItem
+     * @return OrientatedItem|null
      */
     protected function getOrientationForItem(
         Item $itemToPack,
@@ -217,7 +217,7 @@ class VolumePacker implements LoggerAwareInterface
      * Used when we've packed a tall item, and have just put a shorter one next to it
      *
      * @param PackedItemList $packedItems
-     * @param ?PackedItem $prevItem
+     * @param PackedItem|null $prevItem
      * @param int $maxWidth
      * @param int $maxLength
      * @param int $maxDepth
