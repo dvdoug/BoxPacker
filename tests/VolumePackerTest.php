@@ -208,6 +208,16 @@ class VolumePackerTest extends TestCase
         self::assertEquals(4, $packedBox->getRemainingDepth());
     }
 
+    public function testIssue89()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('SRA3 Sheet', 450, 320, 1, 0, 450, 320, 1, 0));
+        $packer->addItem(new TestItem('A5 Sheet', 148, 210, 1, 0, true), 4);
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(1, $packedBoxes->count());
+    }
+
     public function testConstraints()
     {
         TestConstrainedTestItem::$limit = 2;

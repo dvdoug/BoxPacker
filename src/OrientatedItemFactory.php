@@ -29,6 +29,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * @param Box $box
      * @param Item $item
      * @param PackedItem|null $prevItem
+     * @param Item|null $nextItem
      * @param bool $isLastItem
      * @param int $widthLeft
      * @param int $lengthLeft
@@ -39,6 +40,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         Box $box,
         Item $item,
         ?PackedItem $prevItem,
+        ?Item $nextItem,
         bool $isLastItem,
         int $widthLeft,
         int $lengthLeft,

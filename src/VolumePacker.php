@@ -106,6 +106,7 @@ class VolumePacker implements LoggerAwareInterface
         while (count($this->items) > 0) {
             $itemToPack = $this->items->extract();
             $isLastItem = count($this->skippedItems) === 0 && count($this->items) === 0;
+            $nextItem = count($this->items) ? $this->items->top() : null;
 
             //skip items that are simply too heavy or too large
             if (!$this->checkConstraints($itemToPack, $packedItems)) {
@@ -113,7 +114,7 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $isLastItem, $packingWidthLeft, $packingLengthLeft, $packingDepthLeft);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $nextItem, $isLastItem, $packingWidthLeft, $packingLengthLeft, $packingDepthLeft);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -127,7 +128,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 //allow items to be stacked in place within the same footprint up to current layer depth
                 $stackableDepth = $layerDepth - $orientatedItem->getDepth();
-                $this->tryAndStackItemsIntoSpace($packedItems, $prevItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $z + $orientatedItem->getDepth());
+                $this->tryAndStackItemsIntoSpace($packedItems, $prevItem, $nextItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $z + $orientatedItem->getDepth());
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
@@ -178,6 +179,7 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * @param Item            $itemToPack
      * @param PackedItem|null $prevItem
+     * @param Item|null       $nextItem
      * @param bool            $isLastItem
      * @param int             $maxWidth
      * @param int             $maxLength
@@ -188,6 +190,7 @@ class VolumePacker implements LoggerAwareInterface
     protected function getOrientationForItem(
         Item $itemToPack,
         ?PackedItem $prevItem,
+        ?Item $nextItem,
         bool $isLastItem,
         int $maxWidth,
         int $maxLength,
@@ -207,7 +210,7 @@ class VolumePacker implements LoggerAwareInterface
 
         $orientatedItemFactory = new OrientatedItemFactory();
         $orientatedItemFactory->setLogger($this->logger);
-        $orientatedItem = $orientatedItemFactory->getBestOrientation($this->box, $itemToPack, $prevItem, $isLastItem, $maxWidth, $maxLength, $maxDepth);
+        $orientatedItem = $orientatedItemFactory->getBestOrientation($this->box, $itemToPack, $prevItem, $nextItem, $isLastItem, $maxWidth, $maxLength, $maxDepth);
 
         return $orientatedItem;
     }
@@ -218,6 +221,7 @@ class VolumePacker implements LoggerAwareInterface
      *
      * @param PackedItemList $packedItems
      * @param PackedItem|null $prevItem
+     * @param Item|null $nextItem
      * @param int $maxWidth
      * @param int $maxLength
      * @param int $maxDepth
@@ -228,6 +232,7 @@ class VolumePacker implements LoggerAwareInterface
     protected function tryAndStackItemsIntoSpace(
         PackedItemList $packedItems,
         ?PackedItem $prevItem,
+        ?Item $nextItem,
         int $maxWidth,
         int $maxLength,
         int $maxDepth,
@@ -239,6 +244,7 @@ class VolumePacker implements LoggerAwareInterface
             $stackedItem = $this->getOrientationForItem(
                 $this->items->top(),
                 $prevItem,
+                $nextItem,
                 $this->items->count() === 1,
                 $maxWidth,
                 $maxLength,
