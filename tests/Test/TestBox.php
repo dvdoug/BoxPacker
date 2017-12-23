@@ -1,10 +1,11 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
@@ -60,14 +61,14 @@ class TestBox implements Box
      * TestBox constructor.
      *
      * @param string $reference
-     * @param int $outerWidth
-     * @param int $outerLength
-     * @param int $outerDepth
-     * @param int $emptyWeight
-     * @param int $innerWidth
-     * @param int $innerLength
-     * @param int $innerDepth
-     * @param int $maxWeight
+     * @param int    $outerWidth
+     * @param int    $outerLength
+     * @param int    $outerDepth
+     * @param int    $emptyWeight
+     * @param int    $innerWidth
+     * @param int    $innerLength
+     * @param int    $innerDepth
+     * @param int    $maxWeight
      */
     public function __construct(
         string $reference,
@@ -163,4 +164,3 @@ class TestBox implements Box
         return $this->maxWeight;
     }
 }
-

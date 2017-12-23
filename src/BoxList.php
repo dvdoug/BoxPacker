@@ -1,29 +1,34 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
-use ArrayIterator, IteratorAggregate, Traversable;
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
 
 /**
- * List of boxes available to put items into, ordered by volume
+ * List of boxes available to put items into, ordered by volume.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class BoxList implements IteratorAggregate
 {
     /**
-     * List containing boxes
+     * List containing boxes.
+     *
      * @var Box[]
      */
     private $list = [];
 
     /**
      * Has this list already been sorted?
+     *
      * @var bool
      */
     private $isSorted = false;
@@ -37,6 +42,7 @@ class BoxList implements IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
+
         return new ArrayIterator($this->list);
     }
 

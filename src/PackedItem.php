@@ -1,20 +1,20 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
 /**
- * A packed item
+ * A packed item.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedItem
 {
-
     /**
      * @var int
      */
@@ -128,7 +128,6 @@ class PackedItem
         return $this->depth;
     }
 
-
     /**
      * @param OrientatedItem $orientatedItem
      * @param int            $x
@@ -137,7 +136,7 @@ class PackedItem
      *
      * @return PackedItem
      */
-    public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): PackedItem
+    public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): self
     {
         return new static(
             $orientatedItem->getItem(),
@@ -158,4 +157,3 @@ class PackedItem
         return new OrientatedItem($this->item, $this->width, $this->length, $this->depth);
     }
 }
-

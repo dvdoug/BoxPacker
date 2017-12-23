@@ -1,29 +1,35 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
-use ArrayIterator, Countable, IteratorAggregate, Traversable;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use Traversable;
 
 /**
- * List of packed items, ordered by volume
+ * List of packed items, ordered by volume.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedItemList implements Countable, IteratorAggregate
 {
     /**
-     * List containing items
+     * List containing items.
+     *
      * @var PackedItem[]
      */
     private $list = [];
 
     /**
      * Has this list already been sorted?
+     *
      * @var bool
      */
     private $isSorted = false;
@@ -45,11 +51,13 @@ class PackedItemList implements Countable, IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
+
         return new ArrayIterator($this->list);
     }
 
     /**
-     * Number of items in list
+     * Number of items in list.
+     *
      * @return int
      */
     public function count(): int
@@ -58,13 +66,15 @@ class PackedItemList implements Countable, IteratorAggregate
     }
 
     /**
-     * Get copy of this list as a standard PHP array
+     * Get copy of this list as a standard PHP array.
+     *
      * @internal
+     *
      * @return Item[]
      */
     public function asItemArray(): array
     {
-        return array_map(function(PackedItem $packedItem) {
+        return array_map(function (PackedItem $packedItem) {
             return $packedItem->getItem();
         }, $this->list);
     }
@@ -79,6 +89,7 @@ class PackedItemList implements Countable, IteratorAggregate
     {
         $itemAVolume = $itemA->getItem()->getWidth() * $itemA->getItem()->getLength() * $itemA->getItem()->getDepth();
         $itemBVolume = $itemB->getItem()->getWidth() * $itemB->getItem()->getLength() * $itemB->getItem()->getDepth();
+
         return ($itemBVolume <=> $itemAVolume) ?: ($itemB->getItem()->getWeight() <=> $itemA->getItem()->getWeight());
     }
 }
