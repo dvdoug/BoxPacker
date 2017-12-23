@@ -109,7 +109,6 @@ class VolumePacker implements LoggerAwareInterface
 
         while (count($this->items) > 0) {
             $itemToPack = $this->items->extract();
-            $isLastItem = count($this->skippedItems) === 0 && count($this->items) === 0;
             $nextItem = count($this->items) ? $this->items->top() : null;
 
             //skip items that are simply too heavy or too large
@@ -118,7 +117,7 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $nextItem, $isLastItem, $packingWidthLeft, $packingLengthLeft, $packingDepthLeft);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $nextItem, $this->hasItemsLeftToPack(), $packingWidthLeft, $packingLengthLeft, $packingDepthLeft);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -359,5 +358,15 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return new PackedBox($this->box, $packedItems);
+    }
+
+    /**
+     * Are there items left to pack?
+     *
+     * @return bool
+     */
+    protected function hasItemsLeftToPack(): bool
+    {
+        return count($this->skippedItems) + count($this->items) === 0;
     }
 }
