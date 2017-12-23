@@ -370,9 +370,8 @@ class VolumePacker implements LoggerAwareInterface
         return count($this->skippedItems) + count($this->items) === 0;
     }
 
-
     /**
-     * Return next item in line for packing
+     * Return next item in line for packing.
      *
      * @return Item|null
      */
