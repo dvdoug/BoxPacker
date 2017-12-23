@@ -109,7 +109,7 @@ class VolumePacker implements LoggerAwareInterface
 
         while (count($this->items) > 0) {
             $itemToPack = $this->items->extract();
-            $nextItem = count($this->items) ? $this->items->top() : null;
+            $nextItem = $this->getNextItem();
 
             //skip items that are simply too heavy or too large
             if (!$this->checkConstraints($itemToPack, $packedItems)) {
@@ -368,5 +368,16 @@ class VolumePacker implements LoggerAwareInterface
     protected function hasItemsLeftToPack(): bool
     {
         return count($this->skippedItems) + count($this->items) === 0;
+    }
+
+
+    /**
+     * Return next item in line for packing
+     *
+     * @return Item|null
+     */
+    protected function getNextItem(): ?Item
+    {
+        return count($this->items) ? $this->items->top() : null;
     }
 }
