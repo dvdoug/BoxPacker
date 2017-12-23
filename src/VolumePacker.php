@@ -153,8 +153,7 @@ class VolumePacker implements LoggerAwareInterface
                     $packingLengthLeft -= $rowLength;
                     $y += $rowLength;
                     $x = $rowWidth = $rowLength = 0;
-                    $this->rebuildItemList();
-                    $this->items->insert($itemToPack);
+                    $this->rebuildItemList($itemToPack);
                     $prevItem = null;
                     continue;
                 } else {
@@ -169,8 +168,7 @@ class VolumePacker implements LoggerAwareInterface
                     $z += $layerDepth;
                     $x = $y = $rowWidth = $rowLength = $layerWidth = $layerLength = $layerDepth = 0;
 
-                    $this->rebuildItemList();
-                    $this->items->insert($itemToPack);
+                    $this->rebuildItemList($itemToPack);
                     $prevItem = null;
                 }
             }
@@ -320,13 +318,18 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Reintegrate skipped items into main list when nothing left to process.
+     * Reintegrate skipped items into main list
+     * @param Item|null $currentItem item from current iteration
      */
-    protected function rebuildItemList(): void
+    protected function rebuildItemList(?Item $currentItem = null): void
     {
         if (count($this->items) === 0) {
             $this->items = $this->skippedItems;
             $this->skippedItems = new ItemList();
+        }
+
+        if ($currentItem instanceof Item) {
+            $this->items->insert($currentItem);
         }
     }
 
