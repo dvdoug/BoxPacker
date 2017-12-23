@@ -1,29 +1,35 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
-use ArrayIterator, Countable, IteratorAggregate, Traversable;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use Traversable;
 
 /**
- * List of items to be packed, ordered by volume
+ * List of items to be packed, ordered by volume.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class ItemList implements Countable, IteratorAggregate
 {
     /**
-     * List containing items
+     * List containing items.
+     *
      * @var Item[]
      */
     private $list = [];
 
     /**
      * Has this list already been sorted?
+     *
      * @var bool
      */
     private $isSorted = false;
@@ -38,6 +44,7 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * @internal
+     *
      * @return Item
      */
     public function extract(): Item
@@ -46,11 +53,13 @@ class ItemList implements Countable, IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
+
         return array_shift($this->list);
     }
 
     /**
      * @internal
+     *
      * @return Item
      */
     public function top(): Item
@@ -60,6 +69,7 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
         $temp = $this->list;
+
         return reset($temp);
     }
 
@@ -72,11 +82,13 @@ class ItemList implements Countable, IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
+
         return new ArrayIterator($this->list);
     }
 
     /**
-     * Number of items in list
+     * Number of items in list.
+     *
      * @return int
      */
     public function count(): int
@@ -104,5 +116,4 @@ class ItemList implements Countable, IteratorAggregate
             return $itemA->getDescription() <=> $itemB->getDescription();
         }
     }
-
 }

@@ -1,19 +1,20 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
 /**
- * Figure out orientations for an item and a given set of dimensions
+ * Figure out orientations for an item and a given set of dimensions.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class OrientatedItemFactory implements LoggerAwareInterface
 {
@@ -25,15 +26,17 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected static $emptyBoxCache = [];
 
     /**
-     * Get the best orientation for an item
-     * @param Box $box
-     * @param Item $item
+     * Get the best orientation for an item.
+     *
+     * @param Box                 $box
+     * @param Item                $item
      * @param OrientatedItem|null $prevItem
-     * @param Item|null $nextItem
-     * @param bool $isLastItem
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
+     * @param Item|null           $nextItem
+     * @param bool                $isLastItem
+     * @param int                 $widthLeft
+     * @param int                 $lengthLeft
+     * @param int                 $depthLeft
+     *
      * @return OrientatedItem|null
      */
     public function getBestOrientation(
@@ -46,7 +49,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $lengthLeft,
         int $depthLeft
     ): ?OrientatedItem {
-
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
         $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
 
@@ -83,17 +85,20 @@ class OrientatedItemFactory implements LoggerAwareInterface
         });
 
         $bestFit = reset($usableOrientations);
-        $this->logger->debug("Selected best fit orientation", ['orientation' => $bestFit]);
+        $this->logger->debug('Selected best fit orientation', ['orientation' => $bestFit]);
+
         return $bestFit;
     }
 
     /**
-     * Find all possible orientations for an item
-     * @param Item $item
+     * Find all possible orientations for an item.
+     *
+     * @param Item                $item
      * @param OrientatedItem|null $prevItem
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
+     * @param int                 $widthLeft
+     * @param int                 $lengthLeft
+     * @param int                 $depthLeft
+     *
      * @return OrientatedItem[]
      */
     public function getPossibleOrientations(
@@ -103,11 +108,10 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $lengthLeft,
         int $depthLeft
     ): array {
-
         $orientations = [];
 
         //Special case items that are the same as what we just packed - keep orientation
-        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        /* @noinspection PhpNonStrictObjectEqualityInspection */
         if ($prevItem && $prevItem->getItem() == $item) {
             $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
         } else {
@@ -126,7 +130,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         //remove any that simply don't fit
-        return array_filter($orientations, function(OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
+        return array_filter($orientations, function (OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
             return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
         });
     }
@@ -134,22 +138,23 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * @param Item $item
      * @param Box  $box
+     *
      * @return OrientatedItem[]
      */
     public function getPossibleOrientationsInEmptyBox(Item $item, Box $box): array
     {
-        $cacheKey = $item->getWidth() .
-            '|' .
-            $item->getLength() .
-            '|' .
-            $item->getDepth() .
-            '|' .
-            ($item->getKeepFlat() ? '2D' : '3D') .
-            '|' .
-            $box->getInnerWidth() .
-            '|' .
-            $box->getInnerLength() .
-            '|' .
+        $cacheKey = $item->getWidth().
+            '|'.
+            $item->getLength().
+            '|'.
+            $item->getDepth().
+            '|'.
+            ($item->getKeepFlat() ? '2D' : '3D').
+            '|'.
+            $box->getInnerWidth().
+            '|'.
+            $box->getInnerLength().
+            '|'.
             $box->getInnerDepth();
 
         if (isset(static::$emptyBoxCache[$cacheKey])) {
@@ -164,6 +169,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             );
             static::$emptyBoxCache[$cacheKey] = $orientations;
         }
+
         return $orientations;
     }
 
@@ -204,12 +210,12 @@ class OrientatedItemFactory implements LoggerAwareInterface
          */
         if (count($stableOrientations) > 0) {
             $orientationsToUse = $stableOrientations;
-        } else if (count($unstableOrientations) > 0) {
+        } elseif (count($unstableOrientations) > 0) {
             $orientationsInEmptyBox = $this->getPossibleOrientationsInEmptyBox($item, $box);
 
             $stableOrientationsInEmptyBox = array_filter(
                 $orientationsInEmptyBox,
-                function(OrientatedItem $orientation) {
+                function (OrientatedItem $orientation) {
                     return $orientation->isStable();
                 }
             );
@@ -222,4 +228,3 @@ class OrientatedItemFactory implements LoggerAwareInterface
         return $orientationsToUse;
     }
 }
-

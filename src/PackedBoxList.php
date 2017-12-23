@@ -1,36 +1,41 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
-use ArrayIterator, Countable, IteratorAggregate, Traversable;
-use function reset;
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
 
 /**
- * List of packed boxes
+ * List of packed boxes.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedBoxList implements IteratorAggregate
 {
     /**
-     * Average (mean) weight of boxes
+     * Average (mean) weight of boxes.
+     *
      * @var float
      */
     protected $meanWeight;
 
     /**
-     * List containing boxes
+     * List containing boxes.
+     *
      * @var Box[]
      */
     private $list = [];
 
     /**
      * Has this list already been sorted?
+     *
      * @var bool
      */
     private $isSorted = false;
@@ -44,11 +49,13 @@ class PackedBoxList implements IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
+
         return new ArrayIterator($this->list);
     }
 
     /**
-     * Number of items in list
+     * Number of items in list.
+     *
      * @return int
      */
     public function count(): int
@@ -65,8 +72,10 @@ class PackedBoxList implements IteratorAggregate
     }
 
     /**
-     * Do a bulk insert
+     * Do a bulk insert.
+     *
      * @internal
+     *
      * @param PackedBox[] $boxes
      */
     public function insertFromArray(array $boxes): void
@@ -78,6 +87,7 @@ class PackedBoxList implements IteratorAggregate
 
     /**
      * @internal
+     *
      * @return PackedBox
      */
     public function top(): PackedBox
@@ -86,6 +96,7 @@ class PackedBoxList implements IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
+
         return reset($this->list);
     }
 
@@ -104,11 +115,13 @@ class PackedBoxList implements IteratorAggregate
         if ($choice === 0) {
             $choice = $boxA->getWeight() <=> $boxB->getWeight();
         }
+
         return $choice;
     }
 
     /**
-     * Calculate the average (mean) weight of the boxes
+     * Calculate the average (mean) weight of the boxes.
+     *
      * @return float
      */
     public function getMeanWeight(): float
@@ -126,7 +139,8 @@ class PackedBoxList implements IteratorAggregate
     }
 
     /**
-     * Calculate the variance in weight between these boxes
+     * Calculate the variance in weight between these boxes.
+     *
      * @return float
      */
     public function getWeightVariance(): float
@@ -143,7 +157,8 @@ class PackedBoxList implements IteratorAggregate
     }
 
     /**
-     * Get volume utilisation of the set of packed boxes
+     * Get volume utilisation of the set of packed boxes.
+     *
      * @return float
      */
     public function getVolumeUtilisation(): float
@@ -163,5 +178,4 @@ class PackedBoxList implements IteratorAggregate
 
         return round($itemVolume / $boxVolume * 100, 1);
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
@@ -21,7 +22,7 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
 
     /**
      * @param PackedItemList $alreadyPackedItems
-     * @param Box $box
+     * @param Box            $box
      *
      * @return bool
      */
@@ -29,7 +30,7 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
     {
         $alreadyPackedType = array_filter(
             iterator_to_array($alreadyPackedItems, false),
-            function(PackedItem $item) {
+            function (PackedItem $item) {
                 return $item->getItem()->getDescription() === $this->getDescription();
             }
         );
@@ -37,4 +38,3 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
         return count($alreadyPackedType) + 1 <= static::$limit;
     }
 }
-

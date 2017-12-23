@@ -1,10 +1,11 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class PackedBoxListTest extends TestCase
 {
-    function testVolumeUtilisation()
+    public function testVolumeUtilisation()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
         $item = new TestItem('Item', 5, 10, 10, 10, true);
@@ -30,7 +31,7 @@ class PackedBoxListTest extends TestCase
         self::assertEquals(50, $packedBoxList->getVolumeUtilisation());
     }
 
-    function testWeightVariance()
+    public function testWeightVariance()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
         $item = new TestItem('Item', 5, 10, 10, 10, true);

@@ -1,20 +1,20 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 declare(strict_types=1);
+
 namespace DVDoug\BoxPacker;
 
 /**
- * An item to be packed
+ * An item to be packed.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class OrientatedItem
 {
-
     /**
      * @var Item
      */
@@ -37,12 +37,14 @@ class OrientatedItem
 
     /**
      * Constructor.
+     *
      * @param Item $item
-     * @param int $width
-     * @param int $length
-     * @param int $depth
+     * @param int  $width
+     * @param int  $length
+     * @param int  $depth
      */
-    public function __construct(Item $item, int $width, int $length, int $depth) {
+    public function __construct(Item $item, int $width, int $length, int $depth)
+    {
         $this->item = $item;
         $this->width = $width;
         $this->length = $length;
@@ -50,49 +52,53 @@ class OrientatedItem
     }
 
     /**
-     * Item
+     * Item.
      *
      * @return Item
      */
-    public function getItem(): Item {
+    public function getItem(): Item
+    {
         return $this->item;
     }
 
     /**
-     * Item width in mm in it's packed orientation
+     * Item width in mm in it's packed orientation.
      *
      * @return int
      */
-    public function getWidth(): int {
+    public function getWidth(): int
+    {
         return $this->width;
     }
 
     /**
-     * Item length in mm in it's packed orientation
+     * Item length in mm in it's packed orientation.
      *
      * @return int
      */
-    public function getLength(): int {
+    public function getLength(): int
+    {
         return $this->length;
     }
 
     /**
-     * Item depth in mm in it's packed orientation
+     * Item depth in mm in it's packed orientation.
      *
      * @return int
      */
-    public function getDepth(): int {
+    public function getDepth(): int
+    {
         return $this->depth;
     }
 
     /**
      * Is this orientation stable (low centre of gravity)
-     * N.B. Assumes equal weight distribution
+     * N.B. Assumes equal weight distribution.
      *
      * @return bool
      */
-    public function isStable(): bool {
+    public function isStable(): bool
+    {
         return $this->getDepth() <= min($this->getLength(), $this->getWidth());
     }
 }
-
