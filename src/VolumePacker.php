@@ -318,7 +318,8 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Reintegrate skipped items into main list
+     * Reintegrate skipped items into main list.
+     *
      * @param Item|null $currentItem item from current iteration
      */
     protected function rebuildItemList(?Item $currentItem = null): void
@@ -373,9 +374,8 @@ class VolumePacker implements LoggerAwareInterface
         return count($this->skippedItems) + count($this->items) === 0;
     }
 
-
     /**
-     * Return next item in line for packing
+     * Return next item in line for packing.
      *
      * @return Item|null
      */
