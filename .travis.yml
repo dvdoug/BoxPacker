@@ -4,6 +4,8 @@ sudo: false
 env:
   - TEST_SUITE=unit
   - TEST_SUITE=unit OLDEST_DEPS=1
+  - TEST_SUITE=functional
+  - TEST_SUITE=functional OLDEST_DEPS=1
   - TEST_SUITE=efficiency
 php:
   - 7.2
@@ -34,6 +36,8 @@ script:
       phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --exclude-group efficiency;
     elif [ "${TEST_SUITE}" = "efficiency" ]; then
       php vendor/bin/phpunit --group efficiency;
+    elif [ "${TEST_SUITE}" = "functional" ]; then
+      php vendor/bin/behat --strict;
     fi;
 
 after_script:
