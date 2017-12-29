@@ -1,6 +1,7 @@
 checks:
-    php: true
+  php: true
 
-tools:
-    external_code_coverage:
-        timeout: 3600 # Timeout in seconds.
+filter:
+  excluded_paths:
+    - 'features/'
+    - 'tests/'

@@ -11,9 +11,15 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \DVDoug\BoxPacker\ItemTooLargeException
+ */
 class ItemTooLargeExceptionTest extends TestCase
 {
-    public function testCanGetItem()
+    /**
+     * Test that the offending item can be retrieved from the object
+     */
+    public function testCanGetItem(): void
     {
         $item = new TestItem('Item 1', 2500, 2500, 20, 2000, true);
 

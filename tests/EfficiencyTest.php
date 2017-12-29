@@ -12,6 +12,9 @@ use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class EfficiencyTest extends TestCase
 {
     /**
