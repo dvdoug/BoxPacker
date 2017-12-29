@@ -20,13 +20,6 @@ use Traversable;
 class PackedBoxList implements IteratorAggregate
 {
     /**
-     * Average (mean) weight of boxes.
-     *
-     * @var float
-     */
-    protected $meanWeight;
-
-    /**
      * List containing boxes.
      *
      * @var Box[]
@@ -126,16 +119,14 @@ class PackedBoxList implements IteratorAggregate
      */
     public function getMeanWeight(): float
     {
-        if (!is_null($this->meanWeight)) {
-            return $this->meanWeight;
-        }
+        $meanWeight = 0;
 
         /** @var PackedBox $box */
         foreach ($this->list as $box) {
-            $this->meanWeight += $box->getWeight();
+            $meanWeight += $box->getWeight();
         }
 
-        return $this->meanWeight /= count($this->list);
+        return $meanWeight / count($this->list);
     }
 
     /**
