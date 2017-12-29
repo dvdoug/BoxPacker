@@ -16,7 +16,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6.4",
-        "monolog/monolog": "^1.0"
+        "monolog/monolog": "^1.0",
+        "behat/behat": "^3.4"
     },
     "autoload": {
         "psr-4": {
