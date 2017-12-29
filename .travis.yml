@@ -3,9 +3,7 @@ sudo: false
 
 env:
   - TEST_SUITE=unit
-  - TEST_SUITE=unit OLDEST_DEPS=1
   - TEST_SUITE=functional
-  - TEST_SUITE=functional OLDEST_DEPS=1
   - TEST_SUITE=efficiency
 php:
   - 7.2
@@ -23,26 +21,14 @@ cache:
 
 install:
   - phpenv config-rm xdebug.ini || true;
-  - |
-    if [ "${OLDEST_DEPS}" = "1" ]; then
-      composer update --prefer-lowest --prefer-stable;
-    else
-      composer update;
-    fi;
+  - composer update;
 
 script:
   - |
     if [ "${TEST_SUITE}" = "unit" ]; then
-      phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --exclude-group efficiency;
+      php vendor/bin/phpunit --exclude-group efficiency;
     elif [ "${TEST_SUITE}" = "efficiency" ]; then
       php vendor/bin/phpunit --group efficiency;
     elif [ "${TEST_SUITE}" = "functional" ]; then
       php vendor/bin/behat --strict;
-    fi;
-
-after_script:
-  - |
-    if [ "${TEST_SUITE}" = "unit" ]; then
-      wget https://scrutinizer-ci.com/ocular.phar;
-      php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
     fi;
