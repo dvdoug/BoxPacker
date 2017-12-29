@@ -2,54 +2,43 @@ language: php
 sudo: false
 
 env:
+  - TEST_SUITE=unit
+  - TEST_SUITE=efficiency
+  - OLDEST_DEPS=1
 php:
-  - 7.1
   - 7.2
+  - 7.1
   - nightly
 
 matrix:
-  include:
-    - php: 7.1
-      env: code_coverage=1
-    - php: 7.1
-      env: lowest=1
   allow_failures:
     - php: nightly
-    - php: hhvm
 
 cache:
   directories:
     - $HOME/.composer/cache
     - $HOME/.cache/composer
-    - $HOME/.cache/opcache
 
 install:
   - phpenv config-rm xdebug.ini || true;
   - |
-    if [ "$lowest" = "1" ]; then
+    if [ "${OLDEST_DEPS}" = "1" ]; then
       composer update --prefer-lowest --prefer-stable;
     else
       composer update;
     fi;
 
-before_script:
-  - |
-    mkdir -p $HOME/.cache/opcache
-    echo "memory_limit = 3072M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-    echo "opcache.enable_cli = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-    echo "opcache.file_cache = $HOME/.cache/opcache" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-
 script:
   - |
-    if [ "$code_coverage" = "1" ]; then
-      phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests --exclude-group efficiency;
-    else
-      php vendor/bin/phpunit;
+    if [ "${TEST_SUITE}" = "unit" ]; then
+      phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --exclude-group efficiency;
+    elif [ "${TEST_SUITE}" = "efficiency" ]; then
+      php vendor/bin/phpunit --exclude-group efficiency;
     fi;
 
 after_script:
   - |
-    if [ "$code_coverage" = "1" ]; then
+    if [ "${TEST_SUITE}" = "unit" ]; then
       wget https://scrutinizer-ci.com/ocular.phar;
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
     fi;
