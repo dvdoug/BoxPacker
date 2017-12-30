@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 use Traversable;
 
@@ -17,7 +18,7 @@ use Traversable;
  *
  * @author Doug Wright
  */
-class PackedBoxList implements IteratorAggregate
+class PackedBoxList implements IteratorAggregate, Countable
 {
     /**
      * List containing boxes.
