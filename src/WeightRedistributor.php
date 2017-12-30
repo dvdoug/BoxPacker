@@ -24,24 +24,28 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * List of box sizes available to pack items into.
+     *
      * @var BoxList
      */
     protected $boxes;
 
     /**
-     * Boxes over the target weight
+     * Boxes over the target weight.
+     *
      * @var PackedBox[]
      */
     protected $overWeightBoxes = [];
 
     /**
-     * Boxes exactly at the target weight
+     * Boxes exactly at the target weight.
+     *
      * @var PackedBox[]
      */
     protected $targetWeightBoxes = [];
 
     /**
-     * Boxes under the target weight
+     * Boxes under the target weight.
+     *
      * @var PackedBox[]
      */
     protected $underWeightBoxes = [];
@@ -147,9 +151,10 @@ class WeightRedistributor implements LoggerAwareInterface
     }
 
     /**
-     * Classify boxes into under/target/overweight
+     * Classify boxes into under/target/overweight.
+     *
      * @param PackedBoxList $boxes
-     * @param float $targetWeight
+     * @param float         $targetWeight
      */
     protected function classifyBoxes(PackedBoxList $boxes, float $targetWeight): void
     {
