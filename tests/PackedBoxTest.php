@@ -71,13 +71,13 @@ class PackedBoxTest extends TestCase
 
         $packedBox = new PackedBox($box, $boxItems);
 
-        self::assertEquals(20, $packedBox->getWeight());
+        self::assertEquals(10, $packedBox->getItemWeight());
 
         //inspect cache, then poke at the value and see if it's returned correctly
-        $cachedValue = new \ReflectionProperty($packedBox, 'weight');
+        $cachedValue = new \ReflectionProperty($packedBox, 'itemWeight');
         $cachedValue->setAccessible(true);
         $cachedValue->getValue($packedBox);
-        self::assertEquals(20, $cachedValue->getValue($packedBox));
+        self::assertEquals(10, $cachedValue->getValue($packedBox));
 
         $cachedValue->setValue($packedBox, 30);
         self::assertEquals(30, $cachedValue->getValue($packedBox));
