@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 class PackedBoxTest extends TestCase
 {
     /**
-     * Test various getters work correctly
+     * Test various getters work correctly.
      */
     public function testGetters(): void
     {
@@ -41,7 +41,7 @@ class PackedBoxTest extends TestCase
     }
 
     /**
-     * Test that volume utilisation is calculated correctly
+     * Test that volume utilisation is calculated correctly.
      */
     public function testVolumeUtilisation(): void
     {
@@ -59,7 +59,7 @@ class PackedBoxTest extends TestCase
     }
 
     /**
-     * Test that caching of weight calculation works correctly
+     * Test that caching of weight calculation works correctly.
      */
     public function testWeightCalcCaching(): void
     {
@@ -81,6 +81,5 @@ class PackedBoxTest extends TestCase
 
         $cachedValue->setValue($packedBox, 30);
         self::assertEquals(30, $cachedValue->getValue($packedBox));
-
     }
 }

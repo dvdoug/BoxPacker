@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class ItemTooLargeExceptionTest extends TestCase
 {
     /**
-     * Test that the offending item can be retrieved from the object
+     * Test that the offending item can be retrieved from the object.
      */
     public function testCanGetItem(): void
     {

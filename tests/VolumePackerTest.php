@@ -18,9 +18,8 @@ use PHPUnit\Framework\TestCase;
  */
 class VolumePackerTest extends TestCase
 {
-
     /**
-     * From issue #79
+     * From issue #79.
      */
     public function testUsedDimensionsCalculatedCorrectly(): void
     {
@@ -41,7 +40,7 @@ class VolumePackerTest extends TestCase
     }
 
     /**
-     * From issue #86
+     * From issue #86.
      */
     public function testUsedWidthAndRemainingWidthHandleRotationsCorrectly(): void
     {
@@ -65,7 +64,7 @@ class VolumePackerTest extends TestCase
     }
 
     /**
-     * Test that constraint handling works correctly
+     * Test that constraint handling works correctly.
      */
     public function testConstraints(): void
     {
@@ -88,9 +87,8 @@ class VolumePackerTest extends TestCase
         self::assertEquals(4, $packedBoxes->count());
     }
 
-
     /**
-     * Test an infinite loop doesn't come back
+     * Test an infinite loop doesn't come back.
      */
     public function testIssue14(): void
     {
@@ -106,14 +104,14 @@ class VolumePackerTest extends TestCase
     }
 
     /**
-     * Test identical items keep their orientation (with box length > width)
+     * Test identical items keep their orientation (with box length > width).
      */
     public function testIssue47A(): void
     {
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 20, 69, 20, 0, true);
         $itemList = new ItemList();
-        for($i = 0; $i < 23; $i++) {
+        for ($i = 0; $i < 23; $i++) {
             $itemList->insert($item);
         }
 
@@ -124,14 +122,14 @@ class VolumePackerTest extends TestCase
     }
 
     /**
-     * Test identical items keep their orientation (with box length < width)
+     * Test identical items keep their orientation (with box length < width).
      */
     public function testIssue47B(): void
     {
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 69, 20, 20, 0, true);
         $itemList = new ItemList();
-        for($i = 0; $i < 23; $i++) {
+        for ($i = 0; $i < 23; $i++) {
             $itemList->insert($item);
         }
 
@@ -143,14 +141,14 @@ class VolumePackerTest extends TestCase
 
     /**
      * Test that identical orientation doesn't survive change of row
-     * (7 side by side, then 2 side by side rotated)
+     * (7 side by side, then 2 side by side rotated).
      */
     public function testAllowsRotatedBoxesInNewRow(): void
     {
         $box = new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 1000);
         $item = new TestItem('30x10x30item', 30, 10, 30, 0, true);
         $itemList = new ItemList();
-        for($i = 0; $i < 9; $i++) {
+        for ($i = 0; $i < 9; $i++) {
             $itemList->insert($item);
         }
 
