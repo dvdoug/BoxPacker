@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 class PackedBoxListTest extends TestCase
 {
     /**
-     * Test that inserting individually correctly works
+     * Test that inserting individually correctly works.
      */
     public function testInsertAndCount(): void
     {
@@ -45,7 +45,7 @@ class PackedBoxListTest extends TestCase
     }
 
     /**
-     * Test that inserting in bulk correctly works
+     * Test that inserting in bulk correctly works.
      */
     public function testInsertFromArrayAndCount(): void
     {
@@ -71,7 +71,7 @@ class PackedBoxListTest extends TestCase
     }
 
     /**
-     * Test we can peek at the "top" (next) item in the list
+     * Test we can peek at the "top" (next) item in the list.
      */
     public function testTop(): void
     {
@@ -98,7 +98,7 @@ class PackedBoxListTest extends TestCase
     }
 
     /**
-     * Test that volume utilisation is correctly calculated
+     * Test that volume utilisation is correctly calculated.
      */
     public function testVolumeUtilisation(): void
     {
@@ -119,7 +119,7 @@ class PackedBoxListTest extends TestCase
     }
 
     /**
-     * Test that weight variance is correctly calculated
+     * Test that weight variance is correctly calculated.
      */
     public function testWeightVariance(): void
     {
@@ -146,7 +146,7 @@ class PackedBoxListTest extends TestCase
     }
 
     /**
-     * Test that mean weight is correctly calculated
+     * Test that mean weight is correctly calculated.
      */
     public function testMeanWeight(): void
     {

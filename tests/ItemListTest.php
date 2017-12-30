@@ -19,7 +19,7 @@ class ItemListTest extends TestCase
     /**
      * Test that sorting of items with different dimensions works as expected i.e.
      * - Largest (by volume) first
-     * - If identical volume, sort by weight
+     * - If identical volume, sort by weight.
      */
     public function testDimensionalSorting(): void
     {
@@ -40,7 +40,7 @@ class ItemListTest extends TestCase
 
     /**
      * Test that sorting of items with identical dimensions works as expected i.e.
-     * - Items with the same name (i.e. same type) are kept together
+     * - Items with the same name (i.e. same type) are kept together.
      */
     public function testKeepingItemsOfSameTypeTogether(): void
     {
@@ -60,7 +60,7 @@ class ItemListTest extends TestCase
     }
 
     /**
-     * Test that we can retrieve an accurate count of items in the list
+     * Test that we can retrieve an accurate count of items in the list.
      */
     public function testCount(): void
     {
@@ -81,7 +81,7 @@ class ItemListTest extends TestCase
     }
 
     /**
-     * Test we can peek at the "top" (next) item in the list
+     * Test we can peek at the "top" (next) item in the list.
      */
     public function testTop(): void
     {
@@ -94,7 +94,7 @@ class ItemListTest extends TestCase
     }
 
     /**
-     * Test we can retrieve the "top" (next) item in the list
+     * Test we can retrieve the "top" (next) item in the list.
      */
     public function testExtract(): void
     {

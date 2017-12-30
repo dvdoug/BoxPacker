@@ -18,7 +18,7 @@ class BoxListTest extends TestCase
 {
     /**
      * Test that sorting of boxes with different dimensions works as expected i.e.
-     * - Largest (by volume) first
+     * - Largest (by volume) first.
      */
     public function testSorting(): void
     {
@@ -36,7 +36,7 @@ class BoxListTest extends TestCase
     }
 
     /**
-     * Test that items with a volume greater than 2^31-1 (max signed integer) are sorted correctly
+     * Test that items with a volume greater than 2^31-1 (max signed integer) are sorted correctly.
      */
     public function testIssue30A(): void
     {
@@ -53,7 +53,7 @@ class BoxListTest extends TestCase
     }
 
     /**
-     * Test that items with a volume greater than 2^31-1 (max signed integer) are sorted correctly
+     * Test that items with a volume greater than 2^31-1 (max signed integer) are sorted correctly.
      */
     public function testIssue30B(): void
     {

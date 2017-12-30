@@ -8,9 +8,9 @@ use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\PackedBoxList;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\Packer;
-use DVDoug\BoxPacker\VolumePacker;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use DVDoug\BoxPacker\VolumePacker;
 use PHPUnit\Framework\Assert;
 
 /**

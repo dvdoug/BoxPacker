@@ -55,7 +55,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Test weight distribution getter/setter
+     * Test weight distribution getter/setter.
      */
     public function testCanSetMaxBoxesToWeightBalance(): void
     {
@@ -65,7 +65,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Test that weight redistribution activates (or not) correctly based on the current limit
+     * Test that weight redistribution activates (or not) correctly based on the current limit.
      */
     public function testWeightRedistributionActivatesOrNot(): void
     {
@@ -95,7 +95,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Test used width calculations on a case where it used to fail
+     * Test used width calculations on a case where it used to fail.
      */
     public function testIssue52A(): void
     {
@@ -111,7 +111,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Test used width calculations on a case where it used to fail
+     * Test used width calculations on a case where it used to fail.
      */
     public function testIssue52B(): void
     {
@@ -130,7 +130,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Test used width calculations on a case where it used to fail
+     * Test used width calculations on a case where it used to fail.
      */
     public function testIssue52C(): void
     {
