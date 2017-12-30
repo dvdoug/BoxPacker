@@ -154,7 +154,7 @@ class WeightRedistributor implements LoggerAwareInterface
      * Classify boxes into under/target/overweight.
      *
      * @param PackedBoxList $boxes
-     * @param float $targetWeight
+     * @param float         $targetWeight
      */
     protected function classifyBoxes(PackedBoxList $boxes, float $targetWeight): void
     {
