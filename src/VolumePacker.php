@@ -371,7 +371,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Swap back width/length of the packed items to match orientation of the box if needed
+     * Swap back width/length of the packed items to match orientation of the box if needed.
      */
     protected function rotateLayersNinetyDegrees(): void
     {
