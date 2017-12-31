@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 /**
- * A packed layer
+ * A packed layer.
  *
  * @author Doug Wright
  */
@@ -33,7 +33,7 @@ class PackedLayer
     }
 
     /**
-     * Get the packed items
+     * Get the packed items.
      *
      * @return PackedItem[]
      */

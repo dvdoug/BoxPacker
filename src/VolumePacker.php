@@ -125,7 +125,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Pack items into an individual layer
+     * Pack items into an individual layer.
      */
     protected function packLayer()
     {
@@ -136,7 +136,6 @@ class VolumePacker implements LoggerAwareInterface
         $x = $y = $rowWidth = $rowLength = $layerWidth = $layerLength = $layerDepth = 0;
 
         while (count($this->items) > 0) {
-
             $itemToPack = $this->items->extract();
             $nextItem = $this->getNextItem();
 
@@ -197,6 +196,7 @@ class VolumePacker implements LoggerAwareInterface
                     $this->z += $layerDepth;
 
                     $this->rebuildItemList($itemToPack);
+
                     return;
                 }
             }
@@ -294,7 +294,7 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Check item generally fits into box.
      *
-     * @param Item           $itemToPack
+     * @param Item $itemToPack
      *
      * @return bool
      */
@@ -309,7 +309,7 @@ class VolumePacker implements LoggerAwareInterface
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
      *
-     * @param Item           $itemToPack
+     * @param Item $itemToPack
      *
      * @return bool
      */
@@ -357,7 +357,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Create the final PackedBox object
+     * Create the final PackedBox object.
      *
      * @return PackedBox
      */
@@ -371,6 +371,7 @@ class VolumePacker implements LoggerAwareInterface
                 $packedItem = new PackedItem($item->getItem(), $item->getY(), $item->getX(), $item->getZ(), $item->getLength(), $item->getWidth(), $item->getDepth());
                 $rotatedPackedItems->insert($packedItem);
             }
+
             return new PackedBox($this->box, $rotatedPackedItems);
         }
 
@@ -398,7 +399,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Generate a single list of items packed
+     * Generate a single list of items packed.
      *
      * @return PackedItemList
      */
