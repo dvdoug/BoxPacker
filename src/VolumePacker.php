@@ -112,15 +112,15 @@ class VolumePacker implements LoggerAwareInterface
         $this->packingLengthLeft = $this->boxLength;
         $this->packingDepthLeft = $this->box->getInnerDepth();
 
-        // Pack 1 vertical "layer" at a time
         while (count($this->items) > 0) {
             $this->packLayer();
         }
 
-        // If the box was rotated for packing purposes, rotate things back
         if ($this->boxRotated) {
             $this->rotateLayersNinetyDegrees();
         }
+
+        $this->stabiliseLayers();
 
         $this->logger->debug('done with this box');
 
@@ -128,9 +128,9 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Pack items into an individual layer.
+     * Pack items into an individual vertical layer.
      */
-    protected function packLayer()
+    protected function packLayer(): void
     {
         $this->layers[] = $layer = new PackedLayer();
 
@@ -203,6 +203,18 @@ class VolumePacker implements LoggerAwareInterface
                 }
             }
         }
+    }
+
+    /**
+     * During packing, it is quite possible that layers have been created that aren't physically stable
+     * i.e. they overhang the ones below.
+     *
+     * This function reorders them so that the ones with the greatest surface area are placed at the bottom
+     */
+    public function stabiliseLayers(): void
+    {
+        $stabiliser = new LayerStabiliser();
+        $this->layers = $stabiliser->stabilise($this->layers);
     }
 
     /**
@@ -359,7 +371,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Swap back width/length of the packed items
+     * Swap back width/length of the packed items to match orientation of the box if needed
      */
     protected function rotateLayersNinetyDegrees(): void
     {
