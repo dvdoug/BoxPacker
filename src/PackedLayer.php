@@ -41,4 +41,54 @@ class PackedLayer
     {
         return $this->items;
     }
+
+    /**
+     * Calculate footprint area of this layer.
+     *
+     * @return int mm^2
+     */
+    public function getFootprint(): int
+    {
+        $layerWidth = 0;
+        $layerLength = 0;
+
+        foreach ($this->items as $item) {
+            $layerWidth = max($layerWidth, $item->getX() + $item->getWidth());
+            $layerLength = max($layerLength, $item->getY() + $item->getLength());
+        }
+
+        return $layerWidth * $layerLength;
+    }
+
+    /**
+     * Calculate start depth of this layer.
+     *
+     * @return int mm
+     */
+    public function getStartDepth(): int
+    {
+        $startDepth = PHP_INT_MAX;
+
+        foreach ($this->items as $item) {
+            $startDepth = min($startDepth, $item->getZ());
+        }
+
+        return $startDepth;
+    }
+
+    /**
+     * Calculate depth of this layer.
+     *
+     * @return int mm
+     */
+    public function getDepth(): int
+    {
+        $layerDepth = 0;
+
+        foreach ($this->items as $item) {
+            $layerDepth = max($layerDepth, $item->getZ() + $item->getDepth());
+        }
+
+        return $layerDepth - $this->getStartDepth();
+    }
 }
