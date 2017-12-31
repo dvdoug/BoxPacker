@@ -30,11 +30,11 @@ class PackedBox
     protected $items;
 
     /**
-     * Total weight of box.
+     * Total weight of items in the box.
      *
      * @var int
      */
-    protected $weight;
+    protected $itemWeight;
 
     /**
      * Get box used.
@@ -63,17 +63,27 @@ class PackedBox
      */
     public function getWeight(): int
     {
-        if (!is_null($this->weight)) {
-            return $this->weight;
+        return $this->box->getEmptyWeight() + $this->getItemWeight();
+    }
+
+    /**
+     * Get packed weight of the items only.
+     *
+     * @return int weight in grams
+     */
+    public function getItemWeight(): int
+    {
+        if (!is_null($this->itemWeight)) {
+            return $this->itemWeight;
         }
 
-        $this->weight = $this->box->getEmptyWeight();
+        $this->itemWeight = 0;
         /** @var PackedItem $item */
         foreach ($this->items as $item) {
-            $this->weight += $item->getItem()->getWeight();
+            $this->itemWeight += $item->getItem()->getWeight();
         }
 
-        return $this->weight;
+        return $this->itemWeight;
     }
 
     /**
