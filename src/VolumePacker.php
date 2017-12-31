@@ -166,9 +166,8 @@ class VolumePacker implements LoggerAwareInterface
 
                 $this->rebuildItemList();
             } else {
-                if ($layerWidth == 0 && $layerDepth == 0) { // zero items on layer
+                if (count($layer->getItems()) === 0) { // zero items on layer
                     $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
-                    $prevItem = null;
                     continue;
                 } elseif (count($this->items) > 0) { // skip for now, move on to the next item
                     $this->logger->debug("doesn't fit, skipping for now");
