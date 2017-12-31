@@ -112,16 +112,19 @@ class VolumePacker implements LoggerAwareInterface
         $this->packingLengthLeft = $this->boxLength;
         $this->packingDepthLeft = $this->box->getInnerDepth();
 
-        /*
-         * Pack 1 vertical "layer" at a time
-         */
+        // Pack 1 vertical "layer" at a time
         while (count($this->items) > 0) {
             $this->packLayer();
         }
 
+        // If the box was rotated for packing purposes, rotate things back
+        if ($this->boxRotated) {
+            $this->rotateLayersNinetyDegrees();
+        }
+
         $this->logger->debug('done with this box');
 
-        return $this->createPackedBox();
+        return new PackedBox($this->box, $this->getPackedItemList());
     }
 
     /**
@@ -356,25 +359,18 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Create the final PackedBox object.
-     *
-     * @return PackedBox
+     * Swap back width/length of the packed items
      */
-    protected function createPackedBox(): PackedBox
+    protected function rotateLayersNinetyDegrees(): void
     {
-        //if we rotated the box for packing, need to swap back width/length of the packed items
-        if ($this->boxRotated) {
-            $rotatedPackedItems = new PackedItemList();
-            /** @var PackedItem $item */
-            foreach ($this->getPackedItemList() as $item) {
+        foreach ($this->layers as $i => $originalLayer) {
+            $newLayer = new PackedLayer();
+            foreach ($originalLayer->getItems() as $item) {
                 $packedItem = new PackedItem($item->getItem(), $item->getY(), $item->getX(), $item->getZ(), $item->getLength(), $item->getWidth(), $item->getDepth());
-                $rotatedPackedItems->insert($packedItem);
+                $newLayer->insert($packedItem);
             }
-
-            return new PackedBox($this->box, $rotatedPackedItems);
+            $this->layers[$i] = $newLayer;
         }
-
-        return new PackedBox($this->box, $this->getPackedItemList());
     }
 
     /**
