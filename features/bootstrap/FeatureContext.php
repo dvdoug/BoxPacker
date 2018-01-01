@@ -3,10 +3,10 @@
 use Behat\Behat\Context\Context;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\BoxList;
+use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\ItemList;
 use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\PackedBoxList;
-use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\Packer;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;

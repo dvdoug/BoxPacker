@@ -52,7 +52,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
 
         if (empty($usableOrientations)) {
-            return null;
+            return;
         }
 
         usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItem) {
