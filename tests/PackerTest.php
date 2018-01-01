@@ -143,14 +143,10 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(2, count($packedBoxes));
+        self::assertEquals(1, count($packedBoxes));
 
-        self::assertEquals(160, $packedBoxes[0]->getUsedWidth());
-        self::assertEquals(285, $packedBoxes[0]->getUsedLength());
-        self::assertEquals(70, $packedBoxes[0]->getUsedDepth());
-
-        self::assertEquals(210, $packedBoxes[1]->getUsedWidth());
-        self::assertEquals(297, $packedBoxes[1]->getUsedLength());
-        self::assertEquals(4, $packedBoxes[1]->getUsedDepth());
+        self::assertEquals(210, $packedBoxes[0]->getUsedWidth());
+        self::assertEquals(297, $packedBoxes[0]->getUsedLength());
+        self::assertEquals(74, $packedBoxes[0]->getUsedDepth());
     }
 }
