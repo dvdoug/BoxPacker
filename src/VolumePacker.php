@@ -71,11 +71,6 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected $layers = [];
 
-    private $z = 0;
-    private $packingWidthLeft;
-    private $packingLengthLeft;
-    private $packingDepthLeft;
-
     /**
      * Constructor.
      *
@@ -108,12 +103,9 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}");
 
-        $this->packingWidthLeft = $this->boxWidth;
-        $this->packingLengthLeft = $this->boxLength;
-        $this->packingDepthLeft = $this->box->getInnerDepth();
-
         while (count($this->items) > 0) {
-            $this->packLayer();
+            $layerStartDepth = $this->getCurrentPackedDepth();
+            $this->packLayer($layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
         }
 
         if ($this->boxRotated) {
@@ -129,14 +121,17 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Pack items into an individual vertical layer.
+     *
+     * @param int $startDepth
+     * @param int $widthLeft
+     * @param int $lengthLeft
+     * @param int $depthLeft
      */
-    protected function packLayer(): void
+    protected function packLayer(int $startDepth, int $widthLeft, int $lengthLeft, int $depthLeft): void
     {
         $this->layers[] = $layer = new PackedLayer();
-
         $prevItem = null;
-
-        $x = $y = $rowWidth = $rowLength = $layerWidth = $layerLength = $layerDepth = 0;
+        $x = $y = $rowWidth = $rowLength = $layerDepth = 0;
 
         while (count($this->items) > 0) {
             $itemToPack = $this->items->extract();
@@ -148,13 +143,13 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $nextItem, $this->hasItemsLeftToPack(), $this->packingWidthLeft, $this->packingLengthLeft, $this->packingDepthLeft);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $nextItem, $this->hasItemsLeftToPack(), $widthLeft, $lengthLeft, $depthLeft);
 
             if ($orientatedItem instanceof OrientatedItem) {
-                $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $this->z);
+                $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $startDepth);
                 $layer->insert($packedItem);
                 $this->remainingWeight -= $orientatedItem->getItem()->getWeight();
-                $this->packingWidthLeft -= $orientatedItem->getWidth();
+                $widthLeft -= $orientatedItem->getWidth();
 
                 $rowWidth += $orientatedItem->getWidth();
                 $rowLength = max($rowLength, $orientatedItem->getLength());
@@ -162,11 +157,10 @@ class VolumePacker implements LoggerAwareInterface
 
                 //allow items to be stacked in place within the same footprint up to current layer depth
                 $stackableDepth = $layerDepth - $orientatedItem->getDepth();
-                $this->tryAndStackItemsIntoSpace($layer, $prevItem, $nextItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $this->z + $orientatedItem->getDepth());
+                $this->tryAndStackItemsIntoSpace($layer, $prevItem, $nextItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $startDepth + $orientatedItem->getDepth());
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
-
                 $this->rebuildItemList();
             } else {
                 if (count($layer->getItems()) === 0) { // zero items on layer
@@ -175,12 +169,10 @@ class VolumePacker implements LoggerAwareInterface
                 } elseif (count($this->items) > 0) { // skip for now, move on to the next item
                     $this->logger->debug("doesn't fit, skipping for now");
                     $this->skippedItems->insert($itemToPack);
-                } elseif ($x > 0 && $this->packingLengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength())) {
+                } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength())) {
                     $this->logger->debug('No more fit in width wise, resetting for new row');
-                    $layerWidth = max($layerWidth, $rowWidth);
-                    $layerLength += $rowLength;
-                    $this->packingWidthLeft += $rowWidth;
-                    $this->packingLengthLeft -= $rowLength;
+                    $widthLeft += $rowWidth;
+                    $lengthLeft -= $rowLength;
                     $y += $rowLength;
                     $x = $rowWidth = $rowLength = 0;
                     $this->rebuildItemList($itemToPack);
@@ -188,15 +180,6 @@ class VolumePacker implements LoggerAwareInterface
                     continue;
                 } else {
                     $this->logger->debug('no items fit, so starting next vertical layer');
-
-                    $layerWidth = max($layerWidth, $rowWidth);
-                    $layerLength += $rowLength;
-                    $this->packingWidthLeft = $rowWidth ? min(intval($layerWidth * 1.1), $this->boxWidth) : $this->boxWidth;
-                    $this->packingLengthLeft = $rowLength ? min(intval($layerLength * 1.1), $this->boxLength) : $this->boxLength;
-                    $this->packingDepthLeft -= $layerDepth;
-
-                    $this->z += $layerDepth;
-
                     $this->rebuildItemList($itemToPack);
 
                     return;
@@ -371,7 +354,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Swap back width/length of the packed items to match orientation of the box if needed
+     * Swap back width/length of the packed items to match orientation of the box if needed.
      */
     protected function rotateLayersNinetyDegrees(): void
     {
@@ -420,5 +403,20 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $packedItemList;
+    }
+
+    /**
+     * Return the current packed depth.
+     *
+     * @return int
+     */
+    protected function getCurrentPackedDepth(): int
+    {
+        $depth = 0;
+        foreach ($this->layers as $layer) {
+            $depth += $layer->getDepth();
+        }
+
+        return $depth;
     }
 }
