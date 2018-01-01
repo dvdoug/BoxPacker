@@ -1,21 +1,19 @@
 <?php
 
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
+
 namespace DVDoug\BoxPacker;
 
 /**
  * Class ItemTooLargeException
- * Exception used when an item is too large to pack
- *
- * @package DVDoug\BoxPacker
+ * Exception used when an item is too large to pack.
  */
 class ItemTooLargeException extends \RuntimeException
 {
-
     /** @var Item */
     public $item;
 
@@ -25,7 +23,8 @@ class ItemTooLargeException extends \RuntimeException
      * @param string $message
      * @param Item   $item
      */
-    public function __construct($message, Item $item) {
+    public function __construct($message, Item $item)
+    {
         $this->item = $item;
         parent::__construct($message);
     }
@@ -33,8 +32,8 @@ class ItemTooLargeException extends \RuntimeException
     /**
      * @return Item
      */
-    public function getItem() {
+    public function getItem()
+    {
         return $this->item;
     }
-
 }

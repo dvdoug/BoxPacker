@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -11,7 +11,6 @@ use DVDoug\BoxPacker\Item;
 
 class TestItem implements Item
 {
-
     /**
      * @var string
      */
@@ -110,5 +109,3 @@ class TestItem implements Item
         return $this->volume;
     }
 }
-
-
