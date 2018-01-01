@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -11,7 +11,6 @@ use DVDoug\BoxPacker\Box;
 
 class TestBox implements Box
 {
-
     /**
      * @var string
      */
@@ -66,14 +65,14 @@ class TestBox implements Box
      * TestBox constructor.
      *
      * @param string $reference
-     * @param int $outerWidth
-     * @param int $outerLength
-     * @param int $outerDepth
-     * @param int $emptyWeight
-     * @param int $innerWidth
-     * @param int $innerLength
-     * @param int $innerDepth
-     * @param int $maxWeight
+     * @param int    $outerWidth
+     * @param int    $outerLength
+     * @param int    $outerDepth
+     * @param int    $emptyWeight
+     * @param int    $innerWidth
+     * @param int    $innerLength
+     * @param int    $innerDepth
+     * @param int    $maxWeight
      */
     public function __construct(
         $reference,
@@ -178,4 +177,3 @@ class TestBox implements Box
         return $this->maxWeight;
     }
 }
-

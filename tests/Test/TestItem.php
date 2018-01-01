@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -11,7 +11,6 @@ use DVDoug\BoxPacker\Item;
 
 class TestItem implements Item
 {
-
     /**
      * @var string
      */
@@ -51,11 +50,11 @@ class TestItem implements Item
      * TestItem constructor.
      *
      * @param string $description
-     * @param int $width
-     * @param int $length
-     * @param int $depth
-     * @param int $weight
-     * @param int $keepFlat
+     * @param int    $width
+     * @param int    $length
+     * @param int    $depth
+     * @param int    $weight
+     * @param int    $keepFlat
      */
     public function __construct($description, $width, $length, $depth, $weight, $keepFlat)
     {
@@ -125,5 +124,3 @@ class TestItem implements Item
         return $this->keepFlat;
     }
 }
-
-

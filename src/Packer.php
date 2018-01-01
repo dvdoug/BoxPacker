@@ -1,9 +1,10 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
+
 namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
@@ -12,34 +13,37 @@ use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
 /**
- * Actual packer
+ * Actual packer.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class Packer implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
-     * Number of boxes at which balancing weight is deemed not worth it
+     * Number of boxes at which balancing weight is deemed not worth it.
+     *
      * @var int
      */
     protected $maxBoxesToBalanceWeight = 12;
 
     /**
-     * List of items to be packed
+     * List of items to be packed.
+     *
      * @var ItemList
      */
     protected $items;
 
     /**
-     * List of box sizes available to pack items into
+     * List of box sizes available to pack items into.
+     *
      * @var BoxList
      */
     protected $boxes;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -50,7 +54,8 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Add item to be packed
+     * Add item to be packed.
+     *
      * @param Item $item
      * @param int  $qty
      */
@@ -63,7 +68,8 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Set a list of items all at once
+     * Set a list of items all at once.
+     *
      * @param \Traversable|array $items
      */
     public function setItems($items)
@@ -79,7 +85,8 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Add box size
+     * Add box size.
+     *
      * @param Box $box
      */
     public function addBox(Box $box)
@@ -89,7 +96,8 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Add a pre-prepared set of boxes all at once
+     * Add a pre-prepared set of boxes all at once.
+     *
      * @param BoxList $boxList
      */
     public function setBoxes(BoxList $boxList)
@@ -98,7 +106,8 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Number of boxes at which balancing weight is deemed not worth the extra computation time
+     * Number of boxes at which balancing weight is deemed not worth the extra computation time.
+     *
      * @return int
      */
     public function getMaxBoxesToBalanceWeight()
@@ -107,7 +116,8 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Number of boxes at which balancing weight is deemed not worth the extra computation time
+     * Number of boxes at which balancing weight is deemed not worth the extra computation time.
+     *
      * @param int $maxBoxesToBalanceWeight
      */
     public function setMaxBoxesToBalanceWeight($maxBoxesToBalanceWeight)
@@ -116,7 +126,7 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
-     * Pack items into boxes
+     * Pack items into boxes.
      *
      * @return PackedBoxList
      */
@@ -132,24 +142,25 @@ class Packer implements LoggerAwareInterface
         }
 
         $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
+
         return $packedBoxes;
     }
 
     /**
-     * Pack items into boxes using the principle of largest volume item first
+     * Pack items into boxes using the principle of largest volume item first.
      *
      * @throws ItemTooLargeException
+     *
      * @return PackedBoxList
      */
     public function doVolumePacking()
     {
-
-        $packedBoxes = new PackedBoxList;
+        $packedBoxes = new PackedBoxList();
 
         //Keep going until everything packed
         while ($this->items->count()) {
             $boxesToEvaluate = clone $this->boxes;
-            $packedBoxesIteration = new PackedBoxList;
+            $packedBoxesIteration = new PackedBoxList();
 
             //Loop through boxes starting with smallest, see what happens
             while (!$boxesToEvaluate->isEmpty()) {
@@ -170,7 +181,7 @@ class Packer implements LoggerAwareInterface
 
             //Check iteration was productive
             if ($packedBoxesIteration->isEmpty()) {
-                throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box', $this->items->top());
+                throw new ItemTooLargeException('Item '.$this->items->top()->getDescription().' is too large to fit into any box', $this->items->top());
             }
 
             //Find best box of iteration, and remove packed items from unpacked list
@@ -191,7 +202,6 @@ class Packer implements LoggerAwareInterface
             }
             $this->items = $unpackedItemList;
             $packedBoxes->insert($bestBox);
-
         }
 
         return $packedBoxes;

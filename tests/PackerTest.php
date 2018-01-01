@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -15,7 +15,6 @@ class PackerTest extends TestCase
 {
     public function testPackThreeItemsFitEasilyInSmallerOfTwoBoxes()
     {
-
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
@@ -39,7 +38,6 @@ class PackerTest extends TestCase
 
     public function testPackThreeItemsFitEasilyInLargerOfTwoBoxes()
     {
-
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
@@ -63,7 +61,6 @@ class PackerTest extends TestCase
 
     public function testPackFiveItemsTwoLargeOneSmallBox()
     {
-
         $box1 = new TestBox('Le petite box', 600, 600, 10, 10, 596, 596, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 50, 100, 2960, 2960, 40, 10000);
 
@@ -104,7 +101,6 @@ class PackerTest extends TestCase
 
     public function testPackFiveItemsTwoLargeOneSmallBoxButThreeAfterRepack()
     {
-
         $box1 = new TestBox('Le petite box', 600, 600, 10, 10, 596, 596, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 50, 100, 2960, 2960, 40, 10000);
 
@@ -148,7 +144,6 @@ class PackerTest extends TestCase
      */
     public function testPackThreeItemsOneDoesntFitInAnyBox()
     {
-
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
@@ -170,7 +165,6 @@ class PackerTest extends TestCase
      */
     public function testPackWithoutBox()
     {
-
         $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, true);
         $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, true);
         $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, true);
@@ -184,7 +178,6 @@ class PackerTest extends TestCase
 
     public function testIssue1()
     {
-
         $packer = new Packer();
         $packer->addBox(new TestBox('Le petite box', 292, 336, 60, 10, 292, 336, 60, 9000));
         $packer->addBox(new TestBox('Le grande box', 421, 548, 335, 100, 421, 548, 335, 10000));
@@ -197,7 +190,6 @@ class PackerTest extends TestCase
 
     public function testIssue3()
     {
-
         $packer = new Packer();
         $packer->addBox(new TestBox('OW Box 1', 51, 33, 33, 0.6, 51, 33, 33, 0.6));
         $packer->addBox(new TestBox('OW Box 2', 50, 40, 40, 0.95, 50, 40, 40, 0.95));
@@ -209,7 +201,6 @@ class PackerTest extends TestCase
 
     public function testIssue6()
     {
-
         $packer = new Packer();
         $packer->addBox(new TestBox('Package 22', 675, 360, 210, 2, 670, 355, 204, 1000));
         $packer->addBox(new TestBox('Package 2', 330, 130, 102, 2, 335, 135, 107, 1000));
@@ -219,7 +210,6 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
-
     }
 
     public function testIssue9()
@@ -361,11 +351,11 @@ class PackerTest extends TestCase
     public function testIssue52B()
     {
         $packer = new Packer();
-        $packer->addBox(new TestBox('Box',370,375,60,140,364,374,40,3000));
-        $packer->addItem(new TestItem('Item 1',220,310,12,679, true));
-        $packer->addItem(new TestItem('Item 2',210,297,11,648, true));
-        $packer->addItem(new TestItem('Item 3',210,297,5,187, true));
-        $packer->addItem(new TestItem('Item 4',148,210,32,880, true));
+        $packer->addBox(new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000));
+        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true));
+        $packer->addItem(new TestItem('Item 2', 210, 297, 11, 648, true));
+        $packer->addItem(new TestItem('Item 3', 210, 297, 5, 187, true));
+        $packer->addItem(new TestItem('Item 4', 148, 210, 32, 880, true));
         $packedBoxes = $packer->pack();
 
         self::assertEquals(1, $packedBoxes->count());
@@ -377,10 +367,10 @@ class PackerTest extends TestCase
     public function testIssue52C()
     {
         $packer = new Packer();
-        $packer->addBox(new TestBox('Box',230,300,240,160,230,300,240,15000));
-        $packer->addItem(new TestItem('Item 1',210,297,4,213, true));
-        $packer->addItem(new TestItem('Item 2',80,285,70,199, true));
-        $packer->addItem(new TestItem('Item 3',80,285,70,199, true));
+        $packer->addBox(new TestBox('Box', 230, 300, 240, 160, 230, 300, 240, 15000));
+        $packer->addItem(new TestItem('Item 1', 210, 297, 4, 213, true));
+        $packer->addItem(new TestItem('Item 2', 80, 285, 70, 199, true));
+        $packer->addItem(new TestItem('Item 3', 80, 285, 70, 199, true));
         $packedBoxes = $packer->pack();
 
         self::assertEquals(2, $packedBoxes->count());
@@ -511,29 +501,28 @@ class PackerTest extends TestCase
             $packedItemCount3D += $packedBox->getItems()->count();
         }
 
-
         self::assertEquals($expectedBoxes2D, $packedBoxes2D->count());
         self::assertEquals($expectedItemCount, $packedItemCount2D);
-        self::assertEquals($expectedWeightVariance2D, (int)$packedBoxes2D->getWeightVariance());
+        self::assertEquals($expectedWeightVariance2D, (int) $packedBoxes2D->getWeightVariance());
 
         self::assertEquals($expectedBoxes3D, $packedBoxes3D->count());
         self::assertEquals($expectedItemCount, $packedItemCount3D);
-        self::assertEquals($expectedWeightVariance3D, (int)$packedBoxes3D->getWeightVariance());
+        self::assertEquals($expectedWeightVariance3D, (int) $packedBoxes3D->getWeightVariance());
     }
 
     public function getSamples()
     {
         $expected = ['2D' => [], '3D' => []];
 
-        $expected2DData = fopen(__DIR__ . '/data/expected.csv', 'r');
+        $expected2DData = fopen(__DIR__.'/data/expected.csv', 'r');
         while ($data = fgetcsv($expected2DData)) {
-            $expected['2D'][$data[0]] = array('boxes' => $data[1], 'weightVariance' => $data[2]);
-            $expected['3D'][$data[0]] = array('boxes' => $data[3], 'weightVariance' => $data[4]);
+            $expected['2D'][$data[0]] = ['boxes' => $data[1], 'weightVariance' => $data[2]];
+            $expected['3D'][$data[0]] = ['boxes' => $data[3], 'weightVariance' => $data[4]];
         }
         fclose($expected2DData);
 
         $boxes = [];
-        $boxData = fopen(__DIR__ . '/data/boxes.csv', 'r');
+        $boxData = fopen(__DIR__.'/data/boxes.csv', 'r');
         while ($data = fgetcsv($boxData)) {
             $boxes[] = new TestBox(
                 $data[0],
@@ -550,42 +539,40 @@ class PackerTest extends TestCase
         fclose($boxData);
 
         $tests = [];
-        $itemData = fopen(__DIR__ . '/data/items.csv', 'r');
+        $itemData = fopen(__DIR__.'/data/items.csv', 'r');
         while ($data = fgetcsv($itemData)) {
-
             if (isset($tests[$data[0]])) {
-                $tests[$data[0]]['items'][] = array(
-                    'qty' => $data[1],
-                    'name' => $data[2],
-                    'width' => $data[3],
+                $tests[$data[0]]['items'][] = [
+                    'qty'    => $data[1],
+                    'name'   => $data[2],
+                    'width'  => $data[3],
                     'length' => $data[4],
-                    'depth' => $data[5],
-                    'weight' => $data[6]
-                );
+                    'depth'  => $data[5],
+                    'weight' => $data[6],
+                ];
             } else {
-                $tests[$data[0]] = array(
-                    'test' => $data[0],
+                $tests[$data[0]] = [
+                    'test'  => $data[0],
                     'boxes' => $boxes,
-                    'items' => array(
-                        array(
-                            'qty' => $data[1],
-                            'name' => $data[2],
-                            'width' => $data[3],
+                    'items' => [
+                        [
+                            'qty'    => $data[1],
+                            'name'   => $data[2],
+                            'width'  => $data[3],
                             'length' => $data[4],
-                            'depth' => $data[5],
-                            'weight' => $data[6]
-                        )
-                    ),
-                    'expected2D' => $expected['2D'][$data[0]]['boxes'],
-                    'expected3D' => $expected['3D'][$data[0]]['boxes'],
+                            'depth'  => $data[5],
+                            'weight' => $data[6],
+                        ],
+                    ],
+                    'expected2D'       => $expected['2D'][$data[0]]['boxes'],
+                    'expected3D'       => $expected['3D'][$data[0]]['boxes'],
                     'weightVariance2D' => $expected['2D'][$data[0]]['weightVariance'],
-                    'weightVariance3D' => $expected['3D'][$data[0]]['weightVariance']
-                );
+                    'weightVariance3D' => $expected['3D'][$data[0]]['weightVariance'],
+                ];
             }
         }
         fclose($itemData);
 
         return $tests;
     }
-
 }

@@ -1,81 +1,92 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
+
 namespace DVDoug\BoxPacker;
 
 /**
- * A "box" with items
+ * A "box" with items.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedBox
 {
-
     /**
-     * Box used
+     * Box used.
+     *
      * @var Box
      */
     protected $box;
 
     /**
-     * Items in the box
+     * Items in the box.
+     *
      * @var ItemList
      */
     protected $items;
 
     /**
-     * Total weight of box
+     * Total weight of box.
+     *
      * @var int
      */
     protected $weight;
 
     /**
-     * Remaining width inside box for another item
+     * Remaining width inside box for another item.
+     *
      * @var int
      */
     protected $remainingWidth;
 
     /**
-     * Remaining length inside box for another item
+     * Remaining length inside box for another item.
+     *
      * @var int
      */
     protected $remainingLength;
 
     /**
-     * Remaining depth inside box for another item
+     * Remaining depth inside box for another item.
+     *
      * @var int
      */
     protected $remainingDepth;
 
     /**
-     * Remaining weight inside box for another item
+     * Remaining weight inside box for another item.
+     *
      * @var int
      */
     protected $remainingWeight;
 
     /**
-     * Used width inside box for packing items
+     * Used width inside box for packing items.
+     *
      * @var int
      */
     protected $usedWidth;
 
     /**
-     * Used length inside box for packing items
+     * Used length inside box for packing items.
+     *
      * @var int
      */
     protected $usedLength;
 
     /**
-     * Used depth inside box for packing items
+     * Used depth inside box for packing items.
+     *
      * @var int
      */
     protected $usedDepth;
 
     /**
-     * Get box used
+     * Get box used.
+     *
      * @return Box
      */
     public function getBox()
@@ -84,7 +95,8 @@ class PackedBox
     }
 
     /**
-     * Get items packed
+     * Get items packed.
+     *
      * @return ItemList
      */
     public function getItems()
@@ -93,7 +105,8 @@ class PackedBox
     }
 
     /**
-     * Get packed weight
+     * Get packed weight.
+     *
      * @return int weight in grams
      */
     public function getWeight()
@@ -107,11 +120,13 @@ class PackedBox
         foreach ($items as $item) {
             $this->weight += $item->getWeight();
         }
+
         return $this->weight;
     }
 
     /**
-     * Get remaining width inside box for another item
+     * Get remaining width inside box for another item.
+     *
      * @return int
      */
     public function getRemainingWidth()
@@ -120,7 +135,8 @@ class PackedBox
     }
 
     /**
-     * Get remaining length inside box for another item
+     * Get remaining length inside box for another item.
+     *
      * @return int
      */
     public function getRemainingLength()
@@ -129,7 +145,8 @@ class PackedBox
     }
 
     /**
-     * Get remaining depth inside box for another item
+     * Get remaining depth inside box for another item.
+     *
      * @return int
      */
     public function getRemainingDepth()
@@ -138,7 +155,8 @@ class PackedBox
     }
 
     /**
-     * Used width inside box for packing items
+     * Used width inside box for packing items.
+     *
      * @return int
      */
     public function getUsedWidth()
@@ -147,7 +165,8 @@ class PackedBox
     }
 
     /**
-     * Used length inside box for packing items
+     * Used length inside box for packing items.
+     *
      * @return int
      */
     public function getUsedLength()
@@ -156,7 +175,8 @@ class PackedBox
     }
 
     /**
-     * Used depth inside box for packing items
+     * Used depth inside box for packing items.
+     *
      * @return int
      */
     public function getUsedDepth()
@@ -165,7 +185,8 @@ class PackedBox
     }
 
     /**
-     * Get remaining weight inside box for another item
+     * Get remaining weight inside box for another item.
+     *
      * @return int
      */
     public function getRemainingWeight()
@@ -174,7 +195,8 @@ class PackedBox
     }
 
     /**
-     * Get volume utilisation of the packed box
+     * Get volume utilisation of the packed box.
+     *
      * @return float
      */
     public function getVolumeUtilisation()
@@ -189,9 +211,9 @@ class PackedBox
         return round($itemVolume / $this->box->getInnerVolume() * 100, 1);
     }
 
-
     /**
-     * Legacy constructor
+     * Legacy constructor.
+     *
      * @deprecated
      *
      * @param Box      $box
@@ -214,8 +236,7 @@ class PackedBox
         $usedWidth,
         $usedLength,
         $usedDepth
-    )
-    {
+    ) {
         $this->box = $box;
         $this->items = $itemList;
         $this->remainingWidth = $remainingWidth;
@@ -228,7 +249,8 @@ class PackedBox
     }
 
     /**
-     * The constructor from v3
+     * The constructor from v3.
+     *
      * @param Box            $box
      * @param PackedItemList $packedItems
      */
