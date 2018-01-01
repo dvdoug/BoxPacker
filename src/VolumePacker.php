@@ -186,6 +186,7 @@ class VolumePacker implements LoggerAwareInterface
                 } else {
                     $this->logger->debug('no items fit, so starting next vertical layer');
                     $this->rebuildItemList($itemToPack);
+
                     return;
                 }
             }
@@ -358,7 +359,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Swap back width/length of the packed items to match orientation of the box if needed
+     * Swap back width/length of the packed items to match orientation of the box if needed.
      */
     protected function rotateLayersNinetyDegrees(): void
     {
@@ -420,6 +421,7 @@ class VolumePacker implements LoggerAwareInterface
         foreach ($this->layers as $layer) {
             $depth += $layer->getDepth();
         }
+
         return $depth;
     }
 }
