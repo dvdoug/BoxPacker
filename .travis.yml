@@ -50,8 +50,8 @@ before_script:
 script:
   - |
     if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /var/source/vendor/bin/phpunit;
-      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /var/source/vendor/bin/behat;
+      docker run -v $(pwd):/var/source -w /var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /var/source/vendor/bin/phpunit;
+      docker run -v $(pwd):/var/source -w /var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /var/source/vendor/bin/behat;
     else
       php vendor/bin/phpunit;
       php vendor/bin/behat --strict;
