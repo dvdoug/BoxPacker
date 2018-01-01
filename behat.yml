@@ -1,0 +1,20 @@
+default:
+  extensions:
+    LeanPHP\Behat\CodeCoverage\Extension:
+      auth:       ~
+      drivers:
+        - local
+      filter:
+        forceCoversAnnotation:                false
+        mapTestClassNameToCoveredClassName:   false
+        whitelist:
+          addUncoveredFilesFromWhitelist:     true
+          processUncoveredFilesFromWhitelist: true
+          include:
+            directories:
+              'src':
+                prefix: ''
+      report:
+        format:   clover
+        options:
+          target: build/behat.clover

@@ -14,7 +14,7 @@ you to pass in these objects directly too.
 
 To accommodate the wide variety of possible object types, the library defines two interfaces ``BoxPacker\Item`` and
 ``BoxPacker\Box`` which define methods for retrieving the required dimensional data - e.g. ``getWidth()``. There's a good chance
-you may already have these defined.
+you may already have at least some of these defined.
 
 If you do happen to have methods defined with those names already, **and they are incompatible with the interface expectations**,
 then this will be only case where some kind of wrapper object would be needed.

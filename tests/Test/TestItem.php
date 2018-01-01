@@ -45,10 +45,10 @@ class TestItem implements Item
      * TestItem constructor.
      *
      * @param string $description
-     * @param int    $width
-     * @param int    $length
-     * @param int    $depth
-     * @param int    $weight
+     * @param int $width
+     * @param int $length
+     * @param int $depth
+     * @param int $weight
      */
     public function __construct($description, $width, $length, $depth, $weight)
     {

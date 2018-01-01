@@ -17,9 +17,10 @@ BoxPacker is compatible with all versions of PHP 5.4+ (including PHP 7 and HHVM)
 
 Versioning
 ----------
-BoxPacker follows `Semantic Versioning`_
+BoxPacker follows `Semantic Versioning`_. For details about differences between releases please see `What's new`_
 
 
 .. _Composer: https://getcomposer.org
 .. _GitHub: https://github.com/dvdoug/BoxPacker/releases
 .. _Semantic Versioning: http://semver.org/
+.. _What's new: whatsnew.html
