@@ -1,6 +1,26 @@
 checks:
-    php: true
+  php: true
 
-tools:
-    external_code_coverage:
-        timeout: 3600 # Timeout in seconds.
+filter:
+  excluded_paths:
+    - 'features/'
+    - 'tests/'
+
+build:
+  environment:
+    # Languages
+    php:
+      version: "7.1"
+
+  tests:
+    override:
+      -
+        command: 'vendor/bin/phpunit --coverage-clover=build/phpunit.clover --exclude-group efficiency'
+        coverage:
+            file: 'build/phpunit.clover'
+            format: 'clover'
+      -
+        command: 'vendor/bin/behat'
+        coverage:
+            file: 'build/behat.clover'
+            format: 'clover'

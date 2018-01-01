@@ -27,53 +27,86 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Get the best orientation for an item.
      *
-     * @param Box             $box
-     * @param Item            $item
-     * @param PackedItem|null $prevItem
-     * @param bool            $isLastItem
-     * @param int             $widthLeft
-     * @param int             $lengthLeft
-     * @param int             $depthLeft
+     * @param Box                 $box
+     * @param Item                $item
+     * @param OrientatedItem|null $prevItem
+     * @param Item|null           $nextItem
+     * @param bool                $isLastItem
+     * @param int                 $widthLeft
+     * @param int                 $lengthLeft
+     * @param int                 $depthLeft
      *
-     * @return OrientatedItem|false
+     * @return OrientatedItem|null
      */
-    public function getBestOrientation(Box $box, Item $item, PackedItem $prevItem = null, $isLastItem, $widthLeft, $lengthLeft, $depthLeft)
-    {
+    public function getBestOrientation(
+        Box $box,
+        Item $item,
+        $prevItem,
+        $nextItem,
+        $isLastItem,
+        $widthLeft,
+        $lengthLeft,
+        $depthLeft
+    ) {
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft);
         $usableOrientations = $this->getUsableOrientations($possibleOrientations, $box, $item, $isLastItem);
 
-        $orientationFits = [];
-        /** @var OrientatedItem $orientation */
-        foreach ($usableOrientations as $o => $orientation) {
-            $orientationFit = min($widthLeft - $orientation->getWidth(), $lengthLeft - $orientation->getLength());
-            $orientationFits[$o] = $orientationFit;
+        if (empty($usableOrientations)) {
+            return null;
         }
 
-        if (!empty($orientationFits)) {
-            asort($orientationFits);
-            reset($orientationFits);
-            $bestFit = $usableOrientations[key($orientationFits)];
-            $this->logger->debug('Selected best fit orientation', ['orientation' => $bestFit]);
+        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItem) {
+            $orientationAWidthLeft = $widthLeft - $a->getWidth();
+            $orientationALengthLeft = $lengthLeft - $a->getLength();
+            $orientationBWidthLeft = $widthLeft - $b->getWidth();
+            $orientationBLengthLeft = $lengthLeft - $b->getLength();
 
-            return $bestFit;
-        } else {
-            return false;
-        }
+            $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
+            $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
+
+            if ($orientationAMinGap === 0) { // prefer A if it leaves no gap
+                return -1;
+            } elseif ($orientationBMinGap === 0) { // prefer B if it leaves no gap
+                return 1;
+            } else { // prefer leaving room for next item in current row
+                if ($nextItem) {
+                    $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $orientationALengthLeft, $depthLeft));
+                    $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $orientationBLengthLeft, $depthLeft));
+                    if ($nextItem && $nextItemFitA && !$nextItemFitB) {
+                        return -1;
+                    } elseif ($nextItem && $nextItemFitB && !$nextItemFitA) {
+                        return 1;
+                    }
+                }
+                // otherwise prefer leaving minimum possible gap
+                return min($orientationAWidthLeft, $orientationALengthLeft) - min($orientationBWidthLeft, $orientationBLengthLeft);
+            }
+        });
+
+        $bestFit = reset($usableOrientations);
+        $this->logger->debug('Selected best fit orientation', ['orientation' => $bestFit]);
+
+        return $bestFit;
     }
 
     /**
      * Find all possible orientations for an item.
      *
-     * @param Item            $item
-     * @param PackedItem|null $prevItem
-     * @param int             $widthLeft
-     * @param int             $lengthLeft
-     * @param int             $depthLeft
+     * @param Item                $item
+     * @param OrientatedItem|null $prevItem
+     * @param int                 $widthLeft
+     * @param int                 $lengthLeft
+     * @param int                 $depthLeft
      *
      * @return OrientatedItem[]
      */
-    public function getPossibleOrientations(Item $item, PackedItem $prevItem = null, $widthLeft, $lengthLeft, $depthLeft)
-    {
+    public function getPossibleOrientations(
+        Item $item,
+        $prevItem,
+        $widthLeft,
+        $lengthLeft,
+        $depthLeft
+    ) {
         $orientations = [];
 
         //Special case items that are the same as what we just packed - keep orientation

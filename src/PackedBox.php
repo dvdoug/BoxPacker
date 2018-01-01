@@ -195,6 +195,14 @@ class PackedBox
     }
 
     /**
+     * @return int
+     */
+    public function getInnerVolume()
+    {
+        return $this->box->getInnerWidth() * $this->box->getInnerLength() * $this->box->getInnerDepth();
+    }
+
+    /**
      * Get volume utilisation of the packed box.
      *
      * @return float
