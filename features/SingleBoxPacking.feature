@@ -71,12 +71,6 @@ Feature: BoxPacker
     Then the packed box should have 1 items of type "Item A"
     And the packed box should have 2 items of type "Item B"
 
-  Scenario: Packing an item which requires 3D rotation to fit
-    Given the box "Box", which has external dimensions 100mm w × 100mm l × 300mm d × 10g and internal dimensions 100mm w × 100mm l × 300mm d and has a max weight of 1500g
-    When I add 1 x "Item A" with dimensions 150mm w × 50mm l × 50mm d × 20g
-    And I do a volume-only packing
-    Then the packed box should have 1 items of type "Item A"
-
   Scenario: Not 3D rotating unnecessarily (issue #53)
     Given the box "Box", which has external dimensions 500mm w × 1000mm l × 500mm d × 0g and internal dimensions 500mm w × 1000mm l × 500mm d and has a max weight of 0g
     When I add 1 x "Item A" with dimensions 500mm w × 500mm l × 500mm d × 0g
