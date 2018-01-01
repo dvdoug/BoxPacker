@@ -27,11 +27,11 @@ class PackedBoxListTest extends TestCase
 
         $packedItemListA = new ItemList();
         $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
 
         $packedItemListB = new ItemList();
         $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
@@ -51,11 +51,11 @@ class PackedBoxListTest extends TestCase
 
         $packedItemListA = new ItemList();
         $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
 
         $packedItemListB = new ItemList();
         $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insertFromArray([$packedBoxA, $packedBoxB]);
@@ -74,11 +74,11 @@ class PackedBoxListTest extends TestCase
 
         $packedItemListA = new ItemList();
         $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
 
         $packedItemListB = new ItemList();
         $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
@@ -98,7 +98,7 @@ class PackedBoxListTest extends TestCase
         $packedItemList = new ItemList();
         $packedItemList->insert($item);
 
-        $packedBox = new PackedBox($box, $packedItemList, 0, 0, 0,0 ,0, 0, 0);
+        $packedBox = new PackedBox($box, $packedItemList, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);
@@ -117,11 +117,11 @@ class PackedBoxListTest extends TestCase
 
         $packedItemListA = new ItemList();
         $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
 
         $packedItemListB = new ItemList();
         $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
@@ -141,11 +141,11 @@ class PackedBoxListTest extends TestCase
 
         $packedItemListA = new ItemList();
         $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
 
         $packedItemListB = new ItemList();
         $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0,0 ,0, 0, 0);
+        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);

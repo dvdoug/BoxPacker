@@ -50,7 +50,7 @@ class PackedBoxTest extends TestCase
         $boxItems = new ItemList();
         $boxItems->insert($item);
 
-        $packedBox = new PackedBox($box, $boxItems, 0, 0, 0,0,0, 0, 0);
+        $packedBox = new PackedBox($box, $boxItems, 0, 0, 0, 0, 0, 0, 0);
 
         self::assertEquals(20, $packedBox->getVolumeUtilisation());
     }
