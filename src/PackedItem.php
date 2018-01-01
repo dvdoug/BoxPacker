@@ -1,19 +1,19 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
+
 namespace DVDoug\BoxPacker;
 
 /**
- * A packed item
+ * A packed item.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedItem
 {
-
     /**
      * @var int
      */
@@ -127,7 +127,6 @@ class PackedItem
         return $this->depth;
     }
 
-
     /**
      * @param OrientatedItem $orientatedItem
      * @param int            $x
@@ -149,4 +148,3 @@ class PackedItem
         );
     }
 }
-

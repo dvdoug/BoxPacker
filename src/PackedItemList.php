@@ -1,19 +1,19 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
+
 namespace DVDoug\BoxPacker;
 
 /**
- * List of packed items, ordered by volume
+ * List of packed items, ordered by volume.
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedItemList extends \SplMaxHeap
 {
-
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      *
@@ -36,7 +36,8 @@ class PackedItemList extends \SplMaxHeap
     }
 
     /**
-     * Get copy of this list as a standard PHP array
+     * Get copy of this list as a standard PHP array.
+     *
      * @return PackedItem[]
      */
     public function asArray()
@@ -45,11 +46,13 @@ class PackedItemList extends \SplMaxHeap
         foreach (clone $this as $item) {
             $return[] = $item;
         }
+
         return $return;
     }
 
     /**
-     * Get copy of this list as a standard PHP array
+     * Get copy of this list as a standard PHP array.
+     *
      * @return Item[]
      */
     public function asItemArray()
@@ -58,19 +61,22 @@ class PackedItemList extends \SplMaxHeap
         foreach (clone $this as $item) {
             $return[] = $item->getItem();
         }
+
         return $return;
     }
 
     /**
-     * Get copy of this list as a standard PHP array
+     * Get copy of this list as a standard PHP array.
+     *
      * @return ItemList
      */
     public function asItemList()
     {
-        $return = new ItemList;
+        $return = new ItemList();
         foreach (clone $this as $packedItem) {
             $return->insert($packedItem->getItem());
         }
+
         return $return;
     }
 }

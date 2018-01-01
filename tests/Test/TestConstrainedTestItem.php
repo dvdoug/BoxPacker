@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -28,7 +28,7 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
     {
         $alreadyPackedType = array_filter(
             $alreadyPackedItems->asArray(),
-            function(TestItem $item) {
+            function (TestItem $item) {
                 return $item->getDescription() === $this->getDescription();
             }
         );
@@ -36,4 +36,3 @@ class TestConstrainedTestItem extends TestItem implements ConstrainedItem
         return count($alreadyPackedType) + 1 <= static::$limit;
     }
 }
-
