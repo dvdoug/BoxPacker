@@ -4,7 +4,7 @@
 ### Added
  - Declare PackedBoxList as implementing `Countable`
 ### Changed
- - Improved item orientation selection for better backing
+ - Improved item orientation selection for better packing
 
 ## [3.0.0] - 2017-10-23
 ### Added
@@ -19,10 +19,8 @@
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
 
 ## [2.4.3] - 2018-01-01
-### Added
- - Declare PackedBoxList as implementing `Countable`
 ### Changed
- - Improved item orientation selection for better backing
+ - Improved item orientation selection for better packing
 
 ## [2.4.2] - 2017-10-23
 ### Changed
@@ -91,10 +89,8 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
 
 ## [1.6.3] - 2018-01-01
-### Added
- - Declare PackedBoxList as implementing `Countable`
 ### Changed
- - Improved item orientation selection for better backing
+ - Improved item orientation selection for better packing
 
 ## [1.6.2] - 2017-10-23
 ### Changed
