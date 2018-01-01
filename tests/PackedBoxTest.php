@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class PackedBoxTest extends TestCase
 {
-    function testGetters()
+    public function testGetters()
     {
         $box = new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000);
         $item = new TestItem('Item', 230, 330, 6, 320);
@@ -29,7 +29,7 @@ class PackedBoxTest extends TestCase
         self::assertEquals(4, $packedBox->getRemainingWeight());
     }
 
-    function testVolumeUtilisation()
+    public function testVolumeUtilisation()
     {
         $box = new TestBox('Box', 10, 10, 10, 10, 10, 10, 10, 10);
         $item = new TestItem('Item', 5, 10, 10, 10);

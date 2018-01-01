@@ -1,7 +1,7 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
 
@@ -12,15 +12,13 @@ use PHPUnit\Framework\TestCase;
 
 class BoxListTest extends TestCase
 {
-
-    function testCompare()
+    public function testCompare()
     {
-
         $box1 = new TestBox('Small', 21, 21, 3, 1, 20, 20, 2, 100);
         $box2 = new TestBox('Large', 201, 201, 21, 1, 200, 200, 20, 1000);
         $box3 = new TestBox('Medium', 101, 101, 11, 5, 100, 100, 10, 500);
 
-        $list = new BoxList;
+        $list = new BoxList();
         $list->insert($box1);
         $list->insert($box2);
         $list->insert($box3);
@@ -29,15 +27,15 @@ class BoxListTest extends TestCase
         while (!$list->isEmpty()) {
             $sorted[] = $list->extract();
         }
-        self::assertEquals(array($box1, $box3, $box2), $sorted);
+        self::assertEquals([$box1, $box3, $box2], $sorted);
     }
 
-    function testIssue14A()
+    public function testIssue14A()
     {
         $box1 = new TestBox('Small', 21, 21, 3, 1, 20, 20, 2, 100);
         $box2 = new TestBox('Large', 1301, 1301, 1301, 1, 1300, 1300, 1300, 1000);
         $box3 = new TestBox('Medium', 101, 101, 11, 5, 100, 100, 10, 500);
-        $list = new BoxList;
+        $list = new BoxList();
         $list->insert($box1);
         $list->insert($box2);
         $list->insert($box3);
@@ -45,15 +43,15 @@ class BoxListTest extends TestCase
         while (!$list->isEmpty()) {
             $sorted[] = $list->extract();
         }
-        self::assertEquals(array($box1, $box3, $box2), $sorted);
+        self::assertEquals([$box1, $box3, $box2], $sorted);
     }
 
-    function testIssue14B()
+    public function testIssue14B()
     {
         $box1 = new TestBox('Small', 21, 21, 3, 1, 20, 20, 2, 100);
         $box2 = new TestBox('Large', 1301, 1301, 1301, 1, 1300, 1300, 1300, 1000);
         $box3 = new TestBox('Medium', 101, 101, 11, 5, 100, 100, 10, 500);
-        $list = new BoxList;
+        $list = new BoxList();
         $list->insert($box3);
         $list->insert($box2);
         $list->insert($box1);
@@ -61,8 +59,8 @@ class BoxListTest extends TestCase
         while (!$list->isEmpty()) {
             $sorted[] = $list->extract();
         }
-        self::assertEquals(array($box1, $box3, $box2), $sorted);
-        $list = new BoxList;
+        self::assertEquals([$box1, $box3, $box2], $sorted);
+        $list = new BoxList();
         $list->insert($box2);
         $list->insert($box1);
         $list->insert($box3);
@@ -70,6 +68,6 @@ class BoxListTest extends TestCase
         while (!$list->isEmpty()) {
             $sorted[] = $list->extract();
         }
-        self::assertEquals(array($box1, $box3, $box2), $sorted);
+        self::assertEquals([$box1, $box3, $box2], $sorted);
     }
 }

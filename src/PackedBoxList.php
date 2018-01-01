@@ -1,27 +1,29 @@
 <?php
 /**
- * Box packing (3D bin packing, knapsack problem)
- * @package BoxPacker
+ * Box packing (3D bin packing, knapsack problem).
+ *
  * @author Doug Wright
  */
+
 namespace DVDoug\BoxPacker;
 
 /**
- * List of possible packed box choices, ordered by utilisation (item count, volume)
+ * List of possible packed box choices, ordered by utilisation (item count, volume).
+ *
  * @author Doug Wright
- * @package BoxPacker
  */
 class PackedBoxList extends \SplMinHeap
 {
-
     /**
-     * Average (mean) weight of boxes
+     * Average (mean) weight of boxes.
+     *
      * @var float
      */
     protected $meanWeight;
 
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
+     *
      * @see \SplMinHeap::compare()
      *
      * @param PackedBox $boxA
@@ -38,11 +40,12 @@ class PackedBoxList extends \SplMinHeap
         if ($choice === 0) {
             $choice = $boxA->getWeight() - $boxB->getWeight();
         }
+
         return $choice;
     }
 
     /**
-     * Reversed version of compare
+     * Reversed version of compare.
      *
      * @param PackedBox $boxA
      * @param PackedBox $boxB
@@ -58,16 +61,17 @@ class PackedBoxList extends \SplMinHeap
         if ($choice === 0) {
             $choice = $boxB->getWeight() - $boxA->getWeight();
         }
+
         return $choice;
     }
 
     /**
-     * Calculate the average (mean) weight of the boxes
+     * Calculate the average (mean) weight of the boxes.
+     *
      * @return float
      */
     public function getMeanWeight()
     {
-
         if (!is_null($this->meanWeight)) {
             return $this->meanWeight;
         }
@@ -77,11 +81,11 @@ class PackedBoxList extends \SplMinHeap
         }
 
         return $this->meanWeight /= $this->count();
-
     }
 
     /**
-     * Calculate the variance in weight between these boxes
+     * Calculate the variance in weight between these boxes.
+     *
      * @return float
      */
     public function getWeightVariance()
@@ -94,11 +98,11 @@ class PackedBoxList extends \SplMinHeap
         }
 
         return $weightVariance / $this->count();
-
     }
 
     /**
-     * Get volume utilisation of the set of packed boxes
+     * Get volume utilisation of the set of packed boxes.
+     *
      * @return float
      */
     public function getVolumeUtilisation()
@@ -120,7 +124,8 @@ class PackedBoxList extends \SplMinHeap
     }
 
     /**
-     * Do a bulk insert
+     * Do a bulk insert.
+     *
      * @param array $boxes
      */
     public function insertFromArray(array $boxes)
