@@ -73,9 +73,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 if ($nextItem) {
                     $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $orientationALengthLeft, $depthLeft));
                     $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $orientationBLengthLeft, $depthLeft));
-                    if ($nextItem && $nextItemFitA && !$nextItemFitB) {
+                    if ($nextItemFitA && !$nextItemFitB) {
                         return -1;
-                    } elseif ($nextItem && $nextItemFitB && !$nextItemFitA) {
+                    } elseif ($nextItemFitB && !$nextItemFitA) {
                         return 1;
                     }
                 }
