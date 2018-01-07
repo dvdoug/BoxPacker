@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
-use DVDoug\BoxPacker\Test\TestConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +17,6 @@ use PHPUnit\Framework\TestCase;
  */
 class WeightRedistributorTest extends TestCase
 {
-
     /**
      * Test that a native 3+1 is repacked into 2+2.
      */
