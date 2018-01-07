@@ -185,6 +185,7 @@ class Packer implements LoggerAwareInterface
             //Find best box of iteration, and remove packed items from unpacked list
             $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
             $unPackedItems = iterator_to_array($this->items, false);
+
             foreach ($bestBox->getItems() as $packedItem) {
                 foreach ($unPackedItems as $unpackedKey => $unpackedItem) {
                     if ($packedItem->getItem() === $unpackedItem) {
@@ -193,11 +194,9 @@ class Packer implements LoggerAwareInterface
                     }
                 }
             }
-            $unpackedItemList = new ItemList();
-            foreach ($unPackedItems as $unpackedItem) {
-                $unpackedItemList->insert($unpackedItem);
-            }
-            $this->items = $unpackedItemList;
+            $this->items = new ItemList();
+            $this->items->insertFromArray($unPackedItems);
+
             $packedBoxes->insert($bestBox);
         }
 

@@ -43,6 +43,20 @@ class ItemList implements Countable, IteratorAggregate
     }
 
     /**
+     * Do a bulk insert.
+     *
+     * @internal
+     *
+     * @param Item[] $items
+     */
+    public function insertFromArray(array $items): void
+    {
+        foreach ($items as $item) {
+            $this->insert($item);
+        }
+    }
+
+    /**
      * @internal
      *
      * @return Item

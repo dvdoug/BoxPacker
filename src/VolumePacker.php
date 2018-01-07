@@ -46,7 +46,7 @@ class VolumePacker implements LoggerAwareInterface
     protected $items;
 
     /**
-     * List of items to be packed.
+     * List of items temporarily skipped to be packed.
      *
      * @var ItemList
      */
