@@ -234,9 +234,9 @@ class VolumePacker implements LoggerAwareInterface
 
         $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
 
-        $orientatedItemFactory = new OrientatedItemFactory();
+        $orientatedItemFactory = new OrientatedItemFactory($itemToPack, $this->box);
         $orientatedItemFactory->setLogger($this->logger);
-        $orientatedItem = $orientatedItemFactory->getBestOrientation($this->box, $itemToPack, $prevOrientatedItem, $nextItem, $isLastItem, $maxWidth, $maxLength, $maxDepth);
+        $orientatedItem = $orientatedItemFactory->getBestOrientation($prevOrientatedItem, $nextItem, $isLastItem, $maxWidth, $maxLength, $maxDepth);
 
         return $orientatedItem;
     }
@@ -330,10 +330,10 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function checkDimensionalConstraints(Item $itemToPack): bool
     {
-        $orientatedItemFactory = new OrientatedItemFactory();
+        $orientatedItemFactory = new OrientatedItemFactory($itemToPack, $this->box);
         $orientatedItemFactory->setLogger($this->logger);
 
-        return (bool) $orientatedItemFactory->getPossibleOrientationsInEmptyBox($itemToPack, $this->box);
+        return (bool) $orientatedItemFactory->getPossibleOrientationsInEmptyBox();
     }
 
     /**
