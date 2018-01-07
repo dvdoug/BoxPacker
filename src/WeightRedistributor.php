@@ -70,7 +70,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
                     $iterationSuccessful = $this->equaliseWeight($boxA, $boxB, $targetWeight);
                     if ($iterationSuccessful) {
-                        $boxes = array_filter($boxes, function(?PackedBox $box) { //remove any now-empty boxes from the list
+                        $boxes = array_filter($boxes, function (?PackedBox $box) { //remove any now-empty boxes from the list
                             return $box instanceof PackedBox;
                         });
                         break 2;
