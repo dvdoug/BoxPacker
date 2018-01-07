@@ -211,7 +211,7 @@ class Packer implements LoggerAwareInterface
         }
 
         usort($packedBoxes, [$this, 'compare']);
-        
+
         return array_shift($packedBoxes);
     }
 
