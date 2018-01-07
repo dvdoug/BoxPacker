@@ -55,7 +55,7 @@ class WeightRedistributor implements LoggerAwareInterface
         /** @var PackedBox[] $boxes */
         $boxes = iterator_to_array($originalBoxes);
 
-        usort($boxes, function(PackedBox $boxA, PackedBox $boxB) {
+        usort($boxes, function (PackedBox $boxA, PackedBox $boxB) {
             return $boxB->getWeight() <=> $boxA->getWeight();
         });
 
@@ -65,7 +65,6 @@ class WeightRedistributor implements LoggerAwareInterface
 
                 foreach ($boxes as $a => &$boxA) {
                     foreach ($boxes as $b => &$boxB) {
-
                         if ($b <= $a) {
                             continue; //same box, or already seen in the loop
                         }
@@ -104,7 +103,7 @@ class WeightRedistributor implements LoggerAwareInterface
      *
      * @param PackedBox $boxA
      * @param PackedBox $boxB
-     * @param float $targetWeight
+     * @param float     $targetWeight
      *
      * @return bool was the weight rebalanced?
      */
@@ -123,8 +122,7 @@ class WeightRedistributor implements LoggerAwareInterface
         $overWeightBoxItems = $overWeightBox->getItems()->asItemArray();
         $underWeightBoxItems = $underWeightBox->getItems()->asItemArray();
 
-        foreach($overWeightBoxItems as $key => $overWeightItem) {
-
+        foreach ($overWeightBoxItems as $key => $overWeightItem) {
             if ($overWeightItem->getWeight() + $boxB->getWeight() >= $targetWeight) {
                 continue; // moving this item would harm more than help
             }
@@ -139,6 +137,7 @@ class WeightRedistributor implements LoggerAwareInterface
             if (count($overWeightBoxItems) === 1) { //sometimes a repack can be efficient enough to eliminate a box
                 $boxB = $newLighterBoxes->top();
                 $boxA = null;
+
                 return true;
             } else {
                 unset($overWeightBoxItems[$key]);
@@ -153,14 +152,13 @@ class WeightRedistributor implements LoggerAwareInterface
                     $anyIterationSuccessful = true;
                 }
             }
-
         }
 
         return $anyIterationSuccessful;
     }
 
     /**
-     * Do a volume repack of a set of items
+     * Do a volume repack of a set of items.
      *
      * @param iterable $items
      *
@@ -171,13 +169,14 @@ class WeightRedistributor implements LoggerAwareInterface
         $packer = new Packer();
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
         $packer->setItems($items);
+
         return $packer->doVolumePacking();
     }
 
     /**
      * Not every attempted repack is actually helpful - sometimes moving an item between two otherwise identical
      * boxes, or sometimes the box used for the now lighter set of items actually weighs more when empty causing
-     * an increase in total weight
+     * an increase in total weight.
      *
      * @param PackedBox $oldBoxA
      * @param PackedBox $oldBoxB
