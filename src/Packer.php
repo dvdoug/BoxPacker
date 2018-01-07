@@ -177,11 +177,6 @@ class Packer implements LoggerAwareInterface
                 }
             }
 
-            //Check iteration was productive
-            if (!$packedBoxesIteration) {
-                throw new ItemTooLargeException('Item '.$this->items->top()->getDescription().' is too large to fit into any box', $this->items->top());
-            }
-
             //Find best box of iteration, and remove packed items from unpacked list
             $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
             $unPackedItems = iterator_to_array($this->items, false);
@@ -210,8 +205,12 @@ class Packer implements LoggerAwareInterface
      */
     private function findBestBoxFromIteration($packedBoxes): PackedBox
     {
-        usort($packedBoxes, [$this, 'compare']);
+        //Check iteration was productive
+        if (count($packedBoxes) === 0) {
+            throw new ItemTooLargeException('Item '.$this->items->top()->getDescription().' is too large to fit into any box', $this->items->top());
+        }
 
+        usort($packedBoxes, [$this, 'compare']);
         return array_shift($packedBoxes);
     }
 
