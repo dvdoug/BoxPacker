@@ -149,4 +149,22 @@ class PackerTest extends TestCase
         self::assertEquals(297, $packedBoxes[0]->getUsedLength());
         self::assertEquals(74, $packedBoxes[0]->getUsedDepth());
     }
+
+    /**
+     * Test case where last item algorithm picks a slightly inefficient box.
+     */
+    public function testIssue117(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box A', 36, 8, 3, 0, 36, 8, 3, 2));
+        $packer->addBox(new TestBox('Box B', 36, 8, 8, 0, 36, 8, 8, 2));
+        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1, false));
+        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1, false));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertEquals(1, count($packedBoxes));
+        self::assertEquals('Box A', $packedBoxes[0]->getBox()->getReference());
+    }
 }
