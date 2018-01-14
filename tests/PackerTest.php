@@ -151,7 +151,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Test case where last item algorithm picks a slightly inefficient box
+     * Test case where last item algorithm picks a slightly inefficient box.
      */
     public function testIssue117(): void
     {
