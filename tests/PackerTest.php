@@ -151,6 +151,22 @@ class PackerTest extends TestCase
     }
 
     /**
+     * Test case where last item algorithm picks a slightly inefficient box.
+     */
+    public function testIssue117(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box A', 36, 8, 3, 0, 36, 8, 3, 2));
+        $packer->addBox(new TestBox('Box B', 36, 8, 8, 0, 36, 8, 8, 2));
+        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1, false));
+        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1, false));
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+        self::assertCount(1, $packedBoxes);
+        self::assertEquals('Box A', $packedBoxes[0]->getBox()->getReference());
+    }
+
+    /**
      * Where 2 perfectly filled boxes are a choice, need to ensure we pick the larger one or there is a cascading
      * failure of many small boxes instead of a few larger ones.
      */
