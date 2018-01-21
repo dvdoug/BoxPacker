@@ -46,7 +46,6 @@ class InfalliblePacker extends Packer
     {
         $itemList = clone $this->items;
 
-        $packedBoxList = new PackedBoxList();
         do {
             try {
                 return parent::pack();
@@ -57,6 +56,6 @@ class InfalliblePacker extends Packer
             }
         } while (true);
 
-        return $packedBoxList;
+        return new PackedBoxList();
     }
 }
