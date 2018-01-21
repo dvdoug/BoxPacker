@@ -57,6 +57,21 @@ class ItemList implements Countable, IteratorAggregate
     }
 
     /**
+     * Remove item from list.
+     *
+     * @param Item $item
+     */
+    public function remove(Item $item)
+    {
+        foreach ($this->list as $key => $itemToCheck) {
+            if ($itemToCheck === $item) {
+                unset($this->list[$key]);
+                break;
+            }
+        }
+    }
+
+    /**
      * @internal
      *
      * @return Item
