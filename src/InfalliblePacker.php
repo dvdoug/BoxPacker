@@ -30,7 +30,7 @@ class InfalliblePacker extends Packer
     }
 
     /**
-     * Return the items that couldn't be packed
+     * Return the items that couldn't be packed.
      *
      * @return ItemList
      */
@@ -40,7 +40,7 @@ class InfalliblePacker extends Packer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function pack(): PackedBoxList
     {
@@ -50,13 +50,13 @@ class InfalliblePacker extends Packer
         do {
             try {
                 return parent::pack();
-            }
-            catch (ItemTooLargeException $e) {
+            } catch (ItemTooLargeException $e) {
                 $this->unpackedItems->insert($e->getItem());
                 $itemList->remove($e->getItem());
                 $this->setItems($itemList);
             }
         } while (true);
+
         return $packedBoxList;
     }
 }

@@ -125,7 +125,7 @@ class PackerContext implements Context
     public function iDoAPacking()
     {
         /** @var Packer $packer */
-        $packer = new $this->packerClass;
+        $packer = new $this->packerClass();
         $packer->setBoxes($this->boxList);
         $packer->setItems($this->itemList);
         $this->packedBoxList = $packer->pack();
