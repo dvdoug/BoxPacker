@@ -37,7 +37,9 @@ For some applications the ability/requirement to do their own handling of this c
 problematic, e.g. if some items being too large and requiring special handling is a normal situation for that particular business.
 
 BoxPacker also supports this workflow with the ``InfalliblePacker``. This class extends the base ``Packer`` and automatically
-handles any ``ItemTooLargeException``s. It can be used like this:
+handles any ``ItemTooLargeExceptions``. It can be used like this:
+
+.. code-block:: php
 
     <?php
         use DVDoug\BoxPacker\InfalliblePacker;
