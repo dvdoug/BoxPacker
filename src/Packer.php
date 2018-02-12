@@ -217,8 +217,12 @@ class Packer implements LoggerAwareInterface
     private static function compare(PackedBox $boxA, PackedBox $boxB): int
     {
         $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();
+
         if ($choice === 0) {
-            $choice = $boxA->getInnerVolume() <=> $boxB->getInnerVolume();
+            $choice = $boxB->getVolumeUtilisation() <=> $boxA->getVolumeUtilisation();
+        }
+        if ($choice === 0) {
+            $choice = $boxB->getUsedVolume() <=> $boxA->getUsedVolume();
         }
         if ($choice === 0) {
             $choice = $boxA->getWeight() <=> $boxB->getWeight();
