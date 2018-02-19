@@ -1,8 +1,16 @@
 # Changelog
 
+## [3.1.0] - 2018-02-19
+### Added
+ - Optional 'Infallible' mode of packing to not throw an exception on error (e.g. item too large) but to continue packing the other items
+### Changed
+ - Improved stability algorithm
+ - Improved box selection for certain cases
+ - Some internal refactoring
+
 ## [3.0.1] - 2018-01-01
 ### Added
- - Declare PackedBoxList as implementing `Countable`
+ - Declare ``PackedBoxList`` as implementing `Countable`
 ### Changed
  - Improved item orientation selection for better packing
 
@@ -196,8 +204,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.1.0...master
 
+[3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
 [2.4.3]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...2.4.3

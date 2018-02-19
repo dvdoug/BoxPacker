@@ -2,7 +2,8 @@ Too-large items
 ===============
 
 As a library, by default BoxPacker makes the design choice that any errors or exceptions thrown during operation are
-best handled by you and your own code as the appropriate way to to handle them will vary from application to application.
+best handled by you and your own code as the appropriate way to to handle a failure will vary from application to application.
+There is no attempt made to handle/recover from them internally.
 
 This includes the case where there are no boxes large enough to pack a particular item. The normal operation of the Packer
 class is to throw an ``ItemTooLargeException``. If your application has well-defined logging and monitoring it may be
