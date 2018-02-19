@@ -46,7 +46,7 @@ class InfalliblePacker extends Packer
     {
         $itemList = clone $this->items;
 
-        while(true) {
+        while (true) {
             try {
                 return parent::pack();
             } catch (ItemTooLargeException $e) {
