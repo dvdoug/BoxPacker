@@ -34,18 +34,22 @@ class PackedBoxList extends \SplMinHeap
     public function compare($boxA, $boxB)
     {
         $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
-        if ($choice === 0) {
-            $choice = $boxB->getBox()->getInnerVolume() - $boxA->getBox()->getInnerVolume();
+        if ($choice == 0) {
+            $choice = $boxA->getVolumeUtilisation() - $boxB->getVolumeUtilisation();
         }
-        if ($choice === 0) {
+        if ($choice == 0) {
+            $choice = $boxA->getUsedVolume() - $boxB->getUsedVolume();
+        }
+        if ($choice == 0) {
             $choice = $boxA->getWeight() - $boxB->getWeight();
         }
-
         return $choice;
     }
 
     /**
      * Reversed version of compare.
+     *
+     * @deprecated
      *
      * @param PackedBox $boxA
      * @param PackedBox $boxB
@@ -114,7 +118,7 @@ class PackedBoxList extends \SplMinHeap
         foreach (clone $this as $box) {
             $boxVolume += $box->getBox()->getInnerVolume();
 
-            /** @var PackedItem $item */
+            /** @var Item $item */
             foreach (clone $box->getItems() as $item) {
                 $itemVolume += $item->getVolume();
             }

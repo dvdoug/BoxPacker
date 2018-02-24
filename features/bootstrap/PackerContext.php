@@ -16,22 +16,25 @@ use PHPUnit\Framework\Assert;
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context
+class PackerContext implements Context
 {
     /** @var Box */
-    private $box;
+    protected $box;
 
     /** @var BoxList */
-    private $boxList;
+    protected $boxList;
 
     /** @var ItemList */
-    private $itemList;
+    protected $itemList;
 
     /** @var PackedBox */
-    private $packedBox;
+    protected $packedBox;
 
     /** @var PackedBoxList */
-    private $packedBoxList;
+    protected $packedBoxList;
+
+    /** @var string */
+    protected $packerClass = 'DVDoug\BoxPacker\Packer';
 
     /**
      * Initializes context.
@@ -121,7 +124,8 @@ class FeatureContext implements Context
      */
     public function iDoAPacking()
     {
-        $packer = new Packer();
+        /** @var Packer $packer */
+        $packer = new $this->packerClass();
         $packer->setBoxes($this->boxList);
         $packer->setItems($this->itemList);
         $this->packedBoxList = $packer->pack();

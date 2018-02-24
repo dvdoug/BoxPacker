@@ -1,7 +1,13 @@
 default:
+  suites:
+    packer:
+      paths:
+        - '%paths.base%/features/common'
+      contexts: [ PackerContext ]
+
   extensions:
     LeanPHP\Behat\CodeCoverage\Extension:
-      auth:       ~
+      auth: ~
       drivers:
         - local
       filter:
@@ -15,6 +21,6 @@ default:
               'src':
                 prefix: ''
       report:
-        format:   clover
+        format: clover
         options:
           target: build/behat.clover

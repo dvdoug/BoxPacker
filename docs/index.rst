@@ -11,7 +11,6 @@ License
 -------
 BoxPacker is licensed under the `MIT license`_.
 
-.. _NP-hard problem: http://en.wikipedia.org/wiki/Bin_packing_problem
 .. _MIT license: https://github.com/dvdoug/BoxPacker/blob/master/license.txt
 
 

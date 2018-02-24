@@ -22,15 +22,15 @@ class PackedBoxTest extends TestCase
     public function testGetters()
     {
         $box = new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000);
-        $item = new TestItem('Item', 230, 330, 6, 320, true);
+        $item = new OrientatedItem(new TestItem('Item', 230, 330, 6, 320, true), 230, 330, 6);
 
-        $packedItemList = new ItemList();
-        $packedItemList->insert($item);
+        $packedItemList = new PackedItemList();
+        $packedItemList->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
 
-        $packedBox = new PackedBox($box, $packedItemList, 134, 44, 34, 2540, 0, 0, 0);
+        $packedBox = PackedBox::fromPackedItemList($box, $packedItemList);
 
         self::assertEquals($box, $packedBox->getBox());
-        self::assertEquals($packedItemList, $packedBox->getItems());
+        self::assertEquals($packedItemList->asItemList(), $packedBox->getItems());
         self::assertEquals(460, $packedBox->getWeight());
         self::assertEquals(134, $packedBox->getRemainingWidth());
         self::assertEquals(44, $packedBox->getRemainingLength());
@@ -45,13 +45,15 @@ class PackedBoxTest extends TestCase
     public function testVolumeUtilisation()
     {
         $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
-        $item = new TestItem('Item', 4, 10, 10, 10, true);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, true), 4, 10, 10);
 
-        $boxItems = new ItemList();
-        $boxItems->insert($item);
+        $boxItems = new PackedItemList();
+        $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
 
-        $packedBox = new PackedBox($box, $boxItems, 0, 0, 0, 0, 0, 0, 0);
+        $packedBox = PackedBox::fromPackedItemList($box, $boxItems);
 
+        self::assertEquals(400, $packedBox->getUsedVolume());
+        self::assertEquals(1600, $packedBox->getUnusedVolume());
         self::assertEquals(20, $packedBox->getVolumeUtilisation());
     }
 
@@ -61,20 +63,20 @@ class PackedBoxTest extends TestCase
     public function testWeightCalcCaching()
     {
         $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
-        $item = new TestItem('Item', 4, 10, 10, 10, true);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, true), 4, 10, 10);
 
-        $boxItems = new ItemList();
-        $boxItems->insert($item);
+        $boxItems = new PackedItemList();
+        $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
 
-        $packedBox = new PackedBox($box, $boxItems, 0, 0, 0, 0, 0, 0, 0);
+        $packedBox = PackedBox::fromPackedItemList($box, $boxItems);
 
-        self::assertEquals(20, $packedBox->getWeight());
+        self::assertEquals(10, $packedBox->getItemWeight());
 
         //inspect cache, then poke at the value and see if it's returned correctly
-        $cachedValue = new \ReflectionProperty($packedBox, 'weight');
+        $cachedValue = new \ReflectionProperty($packedBox, 'itemWeight');
         $cachedValue->setAccessible(true);
         $cachedValue->getValue($packedBox);
-        self::assertEquals(20, $cachedValue->getValue($packedBox));
+        self::assertEquals(10, $cachedValue->getValue($packedBox));
 
         $cachedValue->setValue($packedBox, 30);
         self::assertEquals(30, $cachedValue->getValue($packedBox));
