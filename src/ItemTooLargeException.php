@@ -8,11 +8,13 @@
 
 namespace DVDoug\BoxPacker;
 
+use RuntimeException;
+
 /**
  * Class ItemTooLargeException
  * Exception used when an item is too large to pack.
  */
-class ItemTooLargeException extends \RuntimeException
+class ItemTooLargeException extends RuntimeException
 {
     /** @var Item */
     public $item;
