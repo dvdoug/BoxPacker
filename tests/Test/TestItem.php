@@ -54,9 +54,15 @@ class TestItem implements Item
      * @param int    $length
      * @param int    $depth
      * @param int    $weight
-     * @param int    $keepFlat
+     * @param bool   $keepFlat
      */
-    public function __construct($description, $width, $length, $depth, $weight, $keepFlat)
+    public function __construct(
+        $description,
+        $width,
+        $length,
+        $depth,
+        $weight,
+        $keepFlat)
     {
         $this->description = $description;
         $this->width = $width;
@@ -117,7 +123,7 @@ class TestItem implements Item
     }
 
     /**
-     * @return int
+     * @return bool
      */
     public function getKeepFlat()
     {

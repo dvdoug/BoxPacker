@@ -24,3 +24,4 @@ build:
         coverage:
             file: 'build/behat.clover'
             format: 'clover'
+      - php-scrutinizer-run

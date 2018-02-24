@@ -25,13 +25,16 @@ class PackedBoxListTest extends TestCase
         $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
         $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
-        $packedItemListA = new ItemList();
-        $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
+        $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
 
-        $packedItemListB = new ItemList();
-        $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemListA = new PackedItemList();
+        $packedItemListA->insert($packedItemA);
+        $packedBoxA = PackedBox::fromPackedItemList($box, $packedItemListA);
+
+        $packedItemListB = new PackedItemList();
+        $packedItemListB->insert($packedItemB);
+        $packedBoxB = PackedBox::fromPackedItemList($box, $packedItemListB);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
@@ -49,13 +52,16 @@ class PackedBoxListTest extends TestCase
         $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
         $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
-        $packedItemListA = new ItemList();
-        $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
+        $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
 
-        $packedItemListB = new ItemList();
-        $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemListA = new PackedItemList();
+        $packedItemListA->insert($packedItemA);
+        $packedBoxA = PackedBox::fromPackedItemList($box, $packedItemListA);
+
+        $packedItemListB = new PackedItemList();
+        $packedItemListB->insert($packedItemB);
+        $packedBoxB = PackedBox::fromPackedItemList($box, $packedItemListB);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insertFromArray([$packedBoxA, $packedBoxB]);
@@ -72,19 +78,22 @@ class PackedBoxListTest extends TestCase
         $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
         $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
-        $packedItemListA = new ItemList();
-        $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
+        $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
 
-        $packedItemListB = new ItemList();
-        $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemListA = new PackedItemList();
+        $packedItemListA->insert($packedItemA);
+        $packedBoxA = PackedBox::fromPackedItemList($box, $packedItemListA);
+
+        $packedItemListB = new PackedItemList();
+        $packedItemListB->insert($packedItemB);
+        $packedBoxB = PackedBox::fromPackedItemList($box, $packedItemListB);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
         $packedBoxList->insert($packedBoxB);
 
-        self::assertEquals($packedBoxB, $packedBoxList->top());
+        self::assertInstanceOf('DVDoug\BoxPacker\PackedBox', $packedBoxList->top());
     }
 
     /**
@@ -95,10 +104,12 @@ class PackedBoxListTest extends TestCase
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
         $item = new TestItem('Item', 5, 10, 10, 10, true);
 
-        $packedItemList = new ItemList();
-        $packedItemList->insert($item);
+        $packedItem = new PackedItem($item, 0, 0, 0, 5, 10, 10);
 
-        $packedBox = new PackedBox($box, $packedItemList, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemList = new PackedItemList();
+        $packedItemList->insert($packedItem);
+
+        $packedBox = PackedBox::fromPackedItemList($box, $packedItemList);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);
@@ -115,13 +126,16 @@ class PackedBoxListTest extends TestCase
         $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
         $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
-        $packedItemListA = new ItemList();
-        $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
+        $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
 
-        $packedItemListB = new ItemList();
-        $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemListA = new PackedItemList();
+        $packedItemListA->insert($packedItemA);
+        $packedBoxA = PackedBox::fromPackedItemList($box, $packedItemListA);
+
+        $packedItemListB = new PackedItemList();
+        $packedItemListB->insert($packedItemB);
+        $packedBoxB = PackedBox::fromPackedItemList($box, $packedItemListB);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
@@ -139,13 +153,16 @@ class PackedBoxListTest extends TestCase
         $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
         $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
-        $packedItemListA = new ItemList();
-        $packedItemListA->insert($itemA);
-        $packedBoxA = new PackedBox($box, $packedItemListA, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
+        $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
 
-        $packedItemListB = new ItemList();
-        $packedItemListB->insert($itemB);
-        $packedBoxB = new PackedBox($box, $packedItemListB, 0, 0, 0, 0, 0, 0, 0);
+        $packedItemListA = new PackedItemList();
+        $packedItemListA->insert($packedItemA);
+        $packedBoxA = PackedBox::fromPackedItemList($box, $packedItemListA);
+
+        $packedItemListB = new PackedItemList();
+        $packedItemListB->insert($packedItemB);
+        $packedBoxB = PackedBox::fromPackedItemList($box, $packedItemListB);
 
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBoxA);
