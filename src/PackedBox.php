@@ -36,6 +36,13 @@ class PackedBox
     protected $weight;
 
     /**
+     * Total weight of items in the box.
+     *
+     * @var int
+     */
+    protected $itemWeight;
+
+    /**
      * Remaining width inside box for another item.
      *
      * @var int
@@ -111,17 +118,24 @@ class PackedBox
      */
     public function getWeight()
     {
-        if (!is_null($this->weight)) {
-            return $this->weight;
+        return $this->box->getEmptyWeight() + $this->getItemWeight();
+    }
+    /**
+     * Get packed weight of the items only.
+     *
+     * @return int weight in grams
+     */
+    public function getItemWeight()
+    {
+        if (!is_null($this->itemWeight)) {
+            return $this->itemWeight;
         }
-
-        $this->weight = $this->box->getEmptyWeight();
-        $items = clone $this->items;
-        foreach ($items as $item) {
-            $this->weight += $item->getWeight();
+        $this->itemWeight = 0;
+        /** @var Item $item */
+        foreach (clone $this->items as $item) {
+            $this->itemWeight += $item->getWeight();
         }
-
-        return $this->weight;
+        return $this->itemWeight;
     }
 
     /**
@@ -203,6 +217,31 @@ class PackedBox
     }
 
     /**
+     * Get used volume of the packed box.
+     *
+     * @return int
+     */
+    public function getUsedVolume()
+    {
+        $volume = 0;
+        /** @var PackedItem $item */
+        foreach (clone $this->items as $item) {
+            $volume += ($item->getWidth() * $item->getLength() * $item->getDepth());
+        }
+        return $volume;
+    }
+
+    /**
+     * Get unused volume of the packed box.
+     *
+     * @return int
+     */
+    public function getUnusedVolume()
+    {
+        return $this->getInnerVolume() - $this->getUsedVolume();
+    }
+
+    /**
      * Get volume utilisation of the packed box.
      *
      * @return float
@@ -261,6 +300,8 @@ class PackedBox
      *
      * @param Box            $box
      * @param PackedItemList $packedItems
+     *
+     * @return self
      */
     public static function fromPackedItemList(Box $box, PackedItemList $packedItems)
     {

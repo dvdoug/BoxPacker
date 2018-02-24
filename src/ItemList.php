@@ -42,7 +42,7 @@ class ItemList extends \SplMaxHeap
     /**
      * Get copy of this list as a standard PHP array.
      *
-     * @return array
+     * @return Item[]
      */
     public function asArray()
     {

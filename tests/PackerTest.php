@@ -142,14 +142,35 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
+        self::assertEquals(1, count($packedBoxes));
+
+        self::assertEquals(210, $packedBoxes[0]->getUsedWidth());
+        self::assertEquals(297, $packedBoxes[0]->getUsedLength());
+        self::assertEquals(74, $packedBoxes[0]->getUsedDepth());
+    }
+
+    /**
+     * Where 2 perfectly filled boxes are a choice, need to ensure we pick the larger one or there is a cascading
+     * failure of many small boxes instead of a few larger ones
+     */
+    public function testIssue38()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box1', 2, 2, 2, 0, 2, 2, 2, 1000));
+        $packer->addBox(new TestBox('Box2', 4, 4, 4, 0, 4, 4, 4, 1000));
+        $packer->addItem(new TestItem('Item 1', 1, 1, 1, 100, false));
+        $packer->addItem(new TestItem('Item 2', 1, 1, 1, 100, false));
+        $packer->addItem(new TestItem('Item 3', 1, 1, 1, 100, false));
+        $packer->addItem(new TestItem('Item 4', 1, 1, 1, 100, false));
+        $packer->addItem(new TestItem('Item 5', 2, 2, 2, 100, false));
+        $packer->addItem(new TestItem('Item 6', 2, 2, 2, 100, false));
+        $packer->addItem(new TestItem('Item 7', 2, 2, 2, 100, false));
+        $packer->addItem(new TestItem('Item 8', 2, 2, 2, 100, false));
+        $packer->addItem(new TestItem('Item 9', 4, 4, 4, 100, false));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
         self::assertEquals(2, count($packedBoxes));
-
-        self::assertEquals(160, $packedBoxes[0]->getUsedWidth());
-        self::assertEquals(285, $packedBoxes[0]->getUsedLength());
-        self::assertEquals(70, $packedBoxes[0]->getUsedDepth());
-
-        self::assertEquals(210, $packedBoxes[1]->getUsedWidth());
-        self::assertEquals(297, $packedBoxes[1]->getUsedLength());
-        self::assertEquals(4, $packedBoxes[1]->getUsedDepth());
     }
 }
