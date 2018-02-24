@@ -120,6 +120,7 @@ class PackedBox
     {
         return $this->box->getEmptyWeight() + $this->getItemWeight();
     }
+
     /**
      * Get packed weight of the items only.
      *
@@ -135,6 +136,7 @@ class PackedBox
         foreach (clone $this->items as $item) {
             $this->itemWeight += $item->getWeight();
         }
+
         return $this->itemWeight;
     }
 
@@ -228,6 +230,7 @@ class PackedBox
         foreach (clone $this->items as $item) {
             $volume += ($item->getWidth() * $item->getLength() * $item->getDepth());
         }
+
         return $volume;
     }
 
