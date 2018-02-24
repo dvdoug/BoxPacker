@@ -43,6 +43,7 @@ class PackedBoxList extends \SplMinHeap
         if ($choice == 0) {
             $choice = $boxA->getWeight() - $boxB->getWeight();
         }
+
         return $choice;
     }
 
