@@ -151,7 +151,7 @@ class PackerTest extends TestCase
 
     /**
      * Where 2 perfectly filled boxes are a choice, need to ensure we pick the larger one or there is a cascading
-     * failure of many small boxes instead of a few larger ones
+     * failure of many small boxes instead of a few larger ones.
      */
     public function testIssue38()
     {
