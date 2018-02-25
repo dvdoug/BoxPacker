@@ -26,6 +26,12 @@
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
 
+## [2.4.4] - 2018-02-25
+### Changed
+ - Improved stability algorithm
+ - Improved box selection for certain cases
+ - Some internal refactoring
+
 ## [2.4.3] - 2018-01-01
 ### Changed
  - Improved item orientation selection for better packing
@@ -96,6 +102,12 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
 ### Removed
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
 
+## [1.6.4] - 2018-02-25
+### Changed
+ - Improved stability algorithm
+ - Improved box selection for certain cases
+ - Some internal refactoring
+
 ## [1.6.3] - 2018-01-01
 ### Changed
  - Improved item orientation selection for better packing
@@ -105,7 +117,6 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
  - Previously 2 distinct item types could be mixed when sorting items for packing if they had identical physical dimensions. Now if all dimensions are identical, items are sorted by description so that they are kept together
 
 ## [1.6.1] - 2017-09-04
-
 ### Fixed
  - Used/remaining space calculations were sometimes offset by 90 degrees leading to confusing numbers
 
@@ -208,7 +219,8 @@ Initial release
 
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
-[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
+[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.4...3.0.0
+[2.4.4]: https://github.com/dvdoug/BoxPacker/compare/2.4.3...2.4.4
 [2.4.3]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...2.4.3
 [2.4.2]: https://github.com/dvdoug/BoxPacker/compare/2.4.1...2.4.2
 [2.4.1]: https://github.com/dvdoug/BoxPacker/compare/2.4.0...2.4.1
@@ -221,7 +233,8 @@ Initial release
 [2.1.0]: https://github.com/dvdoug/BoxPacker/compare/2.0.2...2.1.0
 [2.0.2]: https://github.com/dvdoug/BoxPacker/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/dvdoug/BoxPacker/compare/2.0...2.0.1
-[2.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...2.0
+[2.0]: https://github.com/dvdoug/BoxPacker/compare/1.6.4...2.0
+[1.6.4]: https://github.com/dvdoug/BoxPacker/compare/1.6.3...1.6.4
 [1.6.3]: https://github.com/dvdoug/BoxPacker/compare/1.6.2...1.6.3
 [1.6.2]: https://github.com/dvdoug/BoxPacker/compare/1.6.1...1.6.2
 [1.6.1]: https://github.com/dvdoug/BoxPacker/compare/1.6.0...1.6.1
