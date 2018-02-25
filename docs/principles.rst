@@ -16,8 +16,6 @@ At a high level, the algorithm works like this:
  * Pack largest (by volume) items first
  * Pack vertically up the side of the box
  * Pack side-by-side where item under consideration fits alongside the previous item
- * Only very small overhangs are allowed (10%) to prevent items bending in transit
- * The available width/height for each layer will therefore decrease as the stack of items gets taller
  * If more than 1 box is needed to accommodate all of the items, then aim for boxes of roughly equal weight
    (e.g. 3 medium size/weight boxes are better than 1 small light box and 2 that are large and heavy)
 

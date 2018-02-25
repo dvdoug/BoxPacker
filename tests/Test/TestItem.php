@@ -50,8 +50,13 @@ class TestItem implements Item
      * @param int    $depth
      * @param int    $weight
      */
-    public function __construct($description, $width, $length, $depth, $weight)
-    {
+    public function __construct(
+        $description,
+        $width,
+        $length,
+        $depth,
+        $weight
+    ) {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;
