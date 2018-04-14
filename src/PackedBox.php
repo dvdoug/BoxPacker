@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
+
 use function is_null;
 use function max;
 use function round;

@@ -15,6 +15,7 @@ use Traversable;
 use function array_shift;
 use function reset;
 use function usort;
+
 /**
  * List of items to be packed, ordered by volume.
  *

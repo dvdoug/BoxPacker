@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
+
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;

@@ -12,8 +12,8 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use function array_filter;
 use function count;
-use function reset;
 use function min;
+use function reset;
 use function usort;
 
 /**
