@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function min;
+
 /**
  * An item to be packed.
  *

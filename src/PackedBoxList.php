@@ -12,6 +12,10 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use function count;
+use function reset;
+use function round;
+use function usort;
 
 /**
  * List of packed boxes.

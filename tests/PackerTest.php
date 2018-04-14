@@ -11,6 +11,8 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
+use function count;
+use function iterator_to_array;
 
 /**
  * @covers \DVDoug\BoxPacker\Packer
