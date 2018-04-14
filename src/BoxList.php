@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
+use function usort;
 
 /**
  * List of boxes available to put items into, ordered by volume.

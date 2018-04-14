@@ -12,6 +12,11 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use function array_filter;
+use function array_merge;
+use function count;
+use function iterator_to_array;
+use function usort;
 
 /**
  * Actual packer.

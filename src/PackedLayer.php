@@ -7,6 +7,8 @@
 declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
+use function max;
+use function min;
 
 /**
  * A packed layer.

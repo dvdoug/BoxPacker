@@ -11,6 +11,9 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
+use function fclose;
+use function fgetcsv;
+use function fopen;
 
 /**
  * @coversNothing

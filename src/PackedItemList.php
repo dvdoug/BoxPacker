@@ -12,6 +12,9 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use function array_map;
+use function count;
+use function usort;
 
 /**
  * List of packed items, ordered by volume.

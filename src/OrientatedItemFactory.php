@@ -10,6 +10,11 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use function array_filter;
+use function count;
+use function reset;
+use function min;
+use function usort;
 
 /**
  * Figure out orientations for an item and a given set of dimensions.

@@ -12,6 +12,8 @@ use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedItem;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\PackedItemList;
+use function count;
+use function iterator_to_array;
 
 class TestConstrainedTestItem extends TestItem implements ConstrainedItem
 {

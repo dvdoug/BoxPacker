@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use PHPUnit\Framework\TestCase;
+use function iterator_to_array;
 
 /**
  * @covers \DVDoug\BoxPacker\BoxList
