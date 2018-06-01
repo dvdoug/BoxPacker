@@ -18,7 +18,7 @@
         "behat/behat": "^3.4",
         "leanphp/behat-code-coverage": "^3.0",
         "monolog/monolog": "^1.0",
-        "phpunit/phpunit": "^6.4"
+        "phpunit/phpunit": "^7.2"
     },
     "autoload": {
         "psr-4": {
