@@ -23,11 +23,11 @@ cache:
 install:
   - |
     if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker pull hhvm/hhvm:latest;
-      docker run hhvm/hhvm:latest hhvm --version;
-      docker run --name hhvmapt hhvm/hhvm:latest bash -c "apt update -y; apt install -y dialog apt-utils wget curl git";
+      docker pull hhvm/hhvm:3.24-lts-latest;
+      docker run hhvm/hhvm:3.24-lts-latest hhvm --version;
+      docker run --name hhvmapt hhvm/hhvm:3.24-lts-latest bash -c "apt update -y; apt install -y dialog apt-utils wget curl git";
       docker commit hhvmapt dvdoug/hhvm:apt;
-      docker run --name hhvmcomposer dvdoug/hhvm:apt bash -c "/usr/bin/curl https://getcomposer.org/installer | hhvm -d hhvm.php7.all=1 --php -- /dev/stdin --install-dir=/usr/local/bin --filename=composer";
+      docker run --name hhvmcomposer dvdoug/hhvm:apt bash -c "/usr/bin/curl https://getcomposer.org/installer | hhvm --php -- /dev/stdin --install-dir=/usr/local/bin --filename=composer";
       docker commit hhvmcomposer dvdoug/hhvm:composer;
     else
       phpenv config-rm xdebug.ini || true;
@@ -35,7 +35,7 @@ install:
 
   - |
     if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /usr/local/bin/composer update --working-dir /var/source;
+      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm /usr/local/bin/composer update --working-dir /var/source;
     elif [ "$lowest" = "1" ]; then
       composer update --prefer-lowest --prefer-stable;
     else
@@ -51,7 +51,7 @@ before_script:
 script:
   - |
     if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker run -v $(pwd):/var/source -w /var/source dvdoug/hhvm:composer hhvm -d hhvm.php7.all=1 /var/source/vendor/bin/phpunit;
+      docker run -v $(pwd):/var/source -w /var/source dvdoug/hhvm:composer hhvm /var/source/vendor/bin/phpunit;
     else
       php vendor/bin/phpunit;
       php vendor/bin/behat --strict;
