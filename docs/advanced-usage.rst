@@ -48,7 +48,7 @@ Example
         foreach ($packedBoxes as $packedBox) {
             $packedItems = $packedBox->getItems();
             foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object
-                echo $packedItem->getItem->getDescription() .  ' was packed at co-ordinate ' ;
+                echo $packedItem->getItem()->getDescription() .  ' was packed at co-ordinate ' ;
                 echo '(' . $packedItem->getX() . ', ' . $packedItem->getY() . ', ' . $packedItem->getZ() . ') with ';
                 echo 'l' . $packedItem->getLength() . ', w' . $packedItem->getWidth() . ', d' . $packedItem->getDepth();
                 echo PHP_EOL;

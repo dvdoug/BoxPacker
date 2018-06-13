@@ -33,7 +33,7 @@ After
     <?php
         $packedItems = $packedBox->getItems();
         foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object
-            echo $packedItem->getItem->getDescription() . PHP_EOL;
+            echo $packedItem->getItem()->getDescription() . PHP_EOL;
         }
 
 If you use ``BoxPacker\ConstrainedItem``, you'll need to make the same change there too.

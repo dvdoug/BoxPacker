@@ -60,7 +60,7 @@ Packing a set of items into a given set of box types
             echo "The items in this box are:" . PHP_EOL;
             $packedItems = $packedBox->getItems();
             foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object, in this case TestItem
-                echo $packedItem->getItem->getDescription() . PHP_EOL;
+                echo $packedItem->getItem()->getDescription() . PHP_EOL;
             }
         }
 
