@@ -44,13 +44,15 @@ class TestItem implements Item
     private $keepFlat;
 
     /**
-     * Test objects that recurse
+     * Test objects that recurse.
+     *
      * @var stdClass
      */
     private $a;
 
     /**
-     * Test objects that recurse
+     * Test objects that recurse.
+     *
      * @var stdClass
      */
     private $b;
