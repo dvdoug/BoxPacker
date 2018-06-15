@@ -8,6 +8,7 @@
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Item;
+use stdClass;
 
 class TestItem implements Item
 {
@@ -41,6 +42,18 @@ class TestItem implements Item
      */
     private $volume;
 
+
+    /* Test objects that recurse
+     * @var stdClass
+     */
+    private $a;
+
+    /**
+     * Test objects that recurse
+     * @var stdClass
+     */
+    private $b;
+
     /**
      * TestItem constructor.
      *
@@ -64,6 +77,11 @@ class TestItem implements Item
         $this->weight = $weight;
 
         $this->volume = $this->width * $this->length * $this->depth;
+        $this->a = new stdClass();
+        $this->b = new stdClass();
+
+        $this->a->b = $this->b;
+        $this->b->a = $this->a;
     }
 
     /**
