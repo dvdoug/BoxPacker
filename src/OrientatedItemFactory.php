@@ -222,9 +222,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * Compare two items to see if they have same dimensions
+     * Compare two items to see if they have same dimensions.
+     *
      * @param Item $itemA
      * @param Item $itemB
+     *
      * @return bool
      */
     protected function isSameDimensions(Item $itemA, Item $itemB)
