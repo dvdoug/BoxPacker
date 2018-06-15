@@ -14,6 +14,7 @@ use function array_filter;
 use function count;
 use function min;
 use function reset;
+use function sort;
 use function usort;
 
 /**
@@ -124,8 +125,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $orientations = [];
 
         //Special case items that are the same as what we just packed - keep orientation
-        /* @noinspection PhpNonStrictObjectEqualityInspection */
-        if ($prevItem && $prevItem->getItem() == $item) {
+        if ($prevItem && $this->isSameDimensions($prevItem->getItem(), $item)) {
             $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
         } else {
 
@@ -237,5 +237,21 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return $orientation->isStable();
             }
         );
+    }
+
+    /**
+     * Compare two items to see if they have same dimensions
+     * @param Item $itemA
+     * @param Item $itemB
+     * @return bool
+     */
+    protected function isSameDimensions(Item $itemA, Item $itemB): bool
+    {
+        $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
+        $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
+        sort($itemADimensions);
+        sort($itemBDimensions);
+
+        return $itemADimensions === $itemBDimensions;
     }
 }

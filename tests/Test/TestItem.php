@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Item;
+use stdClass;
 
 class TestItem implements Item
 {
@@ -43,6 +44,18 @@ class TestItem implements Item
     private $keepFlat;
 
     /**
+     * Test objects that recurse
+     * @var stdClass
+     */
+    private $a;
+
+    /**
+     * Test objects that recurse
+     * @var stdClass
+     */
+    private $b;
+
+    /**
      * TestItem constructor.
      *
      * @param string $description
@@ -66,6 +79,12 @@ class TestItem implements Item
         $this->depth = $depth;
         $this->weight = $weight;
         $this->keepFlat = $keepFlat;
+
+        $this->a = new stdClass();
+        $this->b = new stdClass();
+
+        $this->a->b = $this->b;
+        $this->b->a = $this->a;
     }
 
     /**
