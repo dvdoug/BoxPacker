@@ -94,13 +94,14 @@ class OrientatedItem
     }
 
     /**
-     * Is this orientation stable (low centre of gravity)
+     * Is this item stable (low centre of gravity), calculated as if the tipping point is >15 degrees.
+     *
      * N.B. Assumes equal weight distribution.
      *
      * @return bool
      */
     public function isStable(): bool
     {
-        return $this->getDepth() <= min($this->getLength(), $this->getWidth());
+        return atan(min($this->getLength(), $this->getWidth()) / $this->getDepth()) > 0.261; //radians
     }
 }
