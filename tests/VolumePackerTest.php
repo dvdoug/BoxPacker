@@ -156,4 +156,34 @@ class VolumePackerTest extends TestCase
 
         self::assertEquals(9, count($packedBox->getItems()));
     }
+
+    /**
+     * Test stability of items is calculated appropriately
+     */
+    public function testIssue148()
+    {
+        $box = new TestBox('Box',27, 37, 22, 100, 25, 36, 21, 15000);
+        $item = new TestItem('Item', 6, 12, 20, 100, false);
+        $itemList = new ItemList();
+        for ($i = 0; $i < 12; $i++) {
+            $itemList->insert($item);
+        }
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertEquals(12, count($packedBox->getItems()));
+
+        $box = new TestBox('Box1',27, 37, 22, 100, 25, 36, 21, 15000);
+        $item = new TestItem('Item', 6, 12, 20, 100, true);
+        $itemList = new ItemList();
+        for ($i = 0; $i < 12; $i++) {
+            $itemList->insert($item);
+        }
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertEquals(12, count($packedBox->getItems()));
+    }
 }
