@@ -94,6 +94,16 @@ class OrientatedItem
     }
 
     /**
+     * Calculate the surface footprint of the current orientation
+     *
+     * @return int
+     */
+    public function getSurfaceFootprint(): int
+    {
+        return $this->width * $this->length;
+    }
+
+    /**
      * Is this item stable (low centre of gravity), calculated as if the tipping point is >15 degrees.
      *
      * N.B. Assumes equal weight distribution.

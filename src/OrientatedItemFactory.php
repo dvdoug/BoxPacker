@@ -93,8 +93,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
                         return 1;
                     }
                 }
-                // otherwise prefer leaving minimum possible gap
-                return min($orientationAWidthLeft, $orientationALengthLeft) <=> min($orientationBWidthLeft, $orientationBLengthLeft);
+                // otherwise prefer leaving minimum possible gap, or the greatest footprint
+                return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
             }
         });
 
