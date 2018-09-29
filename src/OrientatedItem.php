@@ -90,9 +90,8 @@ class OrientatedItem
         return $this->depth;
     }
 
-
     /**
-     * Calculate the surface footprint of the current orientation
+     * Calculate the surface footprint of the current orientation.
      *
      * @return int
      */
