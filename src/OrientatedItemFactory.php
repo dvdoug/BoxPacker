@@ -79,9 +79,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
 
-            if ($orientationAMinGap === 0 && $orientationBMinGap !== 0) { // prefer A if it leaves no gap
+            if ($orientationAMinGap === 0) { // prefer A if it leaves no gap
                 return -1;
-            } elseif ($orientationBMinGap === 0 && $orientationAMinGap !== 0) { // prefer B if it leaves no gap
+            } elseif ($orientationBMinGap === 0) { // prefer B if it leaves no gap
                 return 1;
             } else { // prefer leaving room for next item in current row
                 if ($nextItem) {
