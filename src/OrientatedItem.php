@@ -94,7 +94,7 @@ class OrientatedItem
     }
 
     /**
-     * Calculate the surface footprint of the current orientation
+     * Calculate the surface footprint of the current orientation.
      *
      * @return int
      */
