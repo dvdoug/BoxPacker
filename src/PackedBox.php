@@ -200,7 +200,7 @@ class PackedBox
 
         /** @var PackedItem $item */
         foreach ($this->items as $item) {
-            $volume += ($item->getWidth() * $item->getLength() * $item->getDepth());
+            $volume += $item->getVolume();
         }
 
         return $volume;
