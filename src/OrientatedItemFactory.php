@@ -21,6 +21,7 @@ use function usort;
  * Figure out orientations for an item and a given set of dimensions.
  *
  * @author Doug Wright
+ * @internal
  */
 class OrientatedItemFactory implements LoggerAwareInterface
 {
