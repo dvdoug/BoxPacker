@@ -90,8 +90,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
             // prefer leaving room for next item in current row
             if ($nextItem) {
-                $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $orientationALengthLeft, $depthLeft));
-                $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $orientationBLengthLeft, $depthLeft));
+                $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $lengthLeft, $depthLeft));
+                $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $lengthLeft, $depthLeft));
                 if ($nextItemFitA && !$nextItemFitB) {
                     return -1;
                 }
