@@ -15,6 +15,7 @@ use function min;
  * A packed layer.
  *
  * @author Doug Wright
+ *
  * @internal
  */
 class PackedLayer

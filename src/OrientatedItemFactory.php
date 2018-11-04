@@ -21,6 +21,7 @@ use function usort;
  * Figure out orientations for an item and a given set of dimensions.
  *
  * @author Doug Wright
+ *
  * @internal
  */
 class OrientatedItemFactory implements LoggerAwareInterface
@@ -43,13 +44,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Get the best orientation for an item.
      *
-     * @param Item $item
+     * @param Item                $item
      * @param OrientatedItem|null $prevItem
-     * @param ItemList $nextItems
-     * @param bool $isLastItem
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
+     * @param ItemList            $nextItems
+     * @param bool                $isLastItem
+     * @param int                 $widthLeft
+     * @param int                 $lengthLeft
+     * @param int                 $depthLeft
      *
      * @return OrientatedItem|null
      */
@@ -161,6 +162,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     /**
      * @param Item $item
+     *
      * @return OrientatedItem[]
      */
     public function getPossibleOrientationsInEmptyBox(Item $item): array
@@ -196,9 +198,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @param Item $item
+     * @param Item             $item
      * @param OrientatedItem[] $possibleOrientations
-     * @param bool $isLastItem
+     * @param bool             $isLastItem
      *
      * @return OrientatedItem[]
      */
@@ -240,6 +242,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * Return the orientations for this item if it were to be placed into the box with nothing else.
      *
      * @param Item $item
+     *
      * @return array
      */
     protected function getStableOrientationsInEmptyBox(Item $item): array
@@ -279,10 +282,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * purely on fit.
      *
      * @param OrientatedItem $prevItem
-     * @param ItemList $nextItems
-     * @param int $originalWidthLeft
-     * @param int $originalLengthLeft
-     * @param int $depthLeft
+     * @param ItemList       $nextItems
+     * @param int            $originalWidthLeft
+     * @param int            $originalLengthLeft
+     * @param int            $depthLeft
+     *
      * @return int
      */
     protected function calculateAdditionalItemsPackedWithThisOrientation(
@@ -291,8 +295,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $originalWidthLeft,
         int $originalLengthLeft,
         int $depthLeft
-    ): int
-    {
+    ): int {
         $packedCount = 0;
 
         // first try packing into current row
