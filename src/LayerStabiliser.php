@@ -17,6 +17,7 @@ use function usort;
  * Applies load stability to generated result.
  *
  * @author Doug Wright
+ * @internal
  */
 class LayerStabiliser implements LoggerAwareInterface
 {
