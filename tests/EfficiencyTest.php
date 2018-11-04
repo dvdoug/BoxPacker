@@ -84,12 +84,12 @@ class EfficiencyTest extends TestCase
             $packedItemCount3D += $packedBox->getItems()->count();
         }
 
-        self::assertEquals($expectedBoxes2D, $packedBoxes2D->count());
+        self::assertCount($expectedBoxes2D, $packedBoxes2D);
         self::assertEquals($expectedItemCount, $packedItemCount2D);
         self::assertEquals($expectedVolumeUtilisation2D, $packedBoxes2D->getVolumeUtilisation());
         self::assertEquals($expectedWeightVariance2D, $packedBoxes2D->getWeightVariance());
 
-        self::assertEquals($expectedBoxes3D, $packedBoxes3D->count());
+        self::assertCount($expectedBoxes3D, $packedBoxes3D);
         self::assertEquals($expectedItemCount, $packedItemCount3D);
         self::assertEquals($expectedVolumeUtilisation3D, $packedBoxes3D->getVolumeUtilisation());
         self::assertEquals($expectedWeightVariance3D, $packedBoxes3D->getWeightVariance());

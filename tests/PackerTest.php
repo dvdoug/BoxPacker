@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
-use function count;
 use function iterator_to_array;
 
 /**
@@ -80,8 +79,8 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(2, $packedBoxes[0]->getItems()->count());
-        self::assertEquals(2, $packedBoxes[1]->getItems()->count());
+        self::assertCount(2, $packedBoxes[0]->getItems());
+        self::assertCount(2, $packedBoxes[1]->getItems());
 
         // same items, but with redistribution turned off - expecting 3+1 based on pure fit
         $packer = new Packer();
@@ -92,8 +91,8 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(3, $packedBoxes[0]->getItems()->count());
-        self::assertEquals(1, $packedBoxes[1]->getItems()->count());
+        self::assertCount(3, $packedBoxes[0]->getItems());
+        self::assertCount(1, $packedBoxes[1]->getItems());
     }
 
     /**
@@ -106,7 +105,7 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item', 15, 13, 8, 407, true), 2);
         $packedBoxes = $packer->pack();
 
-        self::assertEquals(1, $packedBoxes->count());
+        self::assertCount(1, $packedBoxes);
         self::assertEquals(26, $packedBoxes->top()->getUsedWidth());
         self::assertEquals(15, $packedBoxes->top()->getUsedLength());
         self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
@@ -125,7 +124,7 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item 4', 148, 210, 32, 880, true));
         $packedBoxes = $packer->pack();
 
-        self::assertEquals(1, $packedBoxes->count());
+        self::assertCount(1, $packedBoxes);
         self::assertEquals(310, $packedBoxes->top()->getUsedWidth());
         self::assertEquals(368, $packedBoxes->top()->getUsedLength());
         self::assertEquals(32, $packedBoxes->top()->getUsedDepth());
@@ -145,8 +144,7 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(1, count($packedBoxes));
-
+        self::assertCount(1, $packedBoxes);
         self::assertEquals(210, $packedBoxes[0]->getUsedWidth());
         self::assertEquals(297, $packedBoxes[0]->getUsedLength());
         self::assertEquals(74, $packedBoxes[0]->getUsedDepth());
@@ -174,6 +172,6 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertEquals(2, count($packedBoxes));
+        self::assertCount(2, $packedBoxes);
     }
 }
