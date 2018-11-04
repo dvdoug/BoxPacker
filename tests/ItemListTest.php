@@ -10,7 +10,6 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
-use function count;
 use function iterator_to_array;
 
 /**
@@ -67,19 +66,19 @@ class ItemListTest extends TestCase
     public function testCount(): void
     {
         $itemList = new ItemList();
-        self::assertEquals(0, count($itemList));
+        self::assertCount(0, $itemList);
 
         $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
         $itemList->insert($item1);
-        self::assertEquals(1, count($itemList));
+        self::assertCount(1, $itemList);
 
         $item2 = new TestItem('Item B', 20, 20, 2, 100, true);
         $itemList->insert($item2);
-        self::assertEquals(2, count($itemList));
+        self::assertCount(2, $itemList);
 
         $item3 = new TestItem('Item C', 20, 20, 2, 100, true);
         $itemList->insert($item3);
-        self::assertEquals(3, count($itemList));
+        self::assertCount(3, $itemList);
     }
 
     /**
@@ -92,7 +91,7 @@ class ItemListTest extends TestCase
         $itemList->insert($item1);
 
         self::assertEquals($item1, $itemList->top());
-        self::assertEquals(1, count($itemList));
+        self::assertCount(1, $itemList);
     }
 
     /**
@@ -105,6 +104,6 @@ class ItemListTest extends TestCase
         $itemList->insert($item1);
 
         self::assertEquals($item1, $itemList->extract());
-        self::assertEquals(0, count($itemList));
+        self::assertCount(0, $itemList);
     }
 }
