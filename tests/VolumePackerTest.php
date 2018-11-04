@@ -162,7 +162,7 @@ class VolumePackerTest extends TestCase
     /**
      * Test stability of items is calculated appropriately.
      */
-    public function testIssue148()
+    public function testIssue148(): void
     {
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
         $item = new TestItem('Item', 6, 12, 20, 100, false);
