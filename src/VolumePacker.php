@@ -92,7 +92,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger = new NullLogger();
 
         // we may have just rotated the box for packing purposes, record if we did
-        if ($this->box->getInnerWidth() != $this->boxWidth || $this->box->getInnerLength() != $this->boxLength) {
+        if ($this->box->getInnerWidth() !== $this->boxWidth || $this->box->getInnerLength() !== $this->boxLength) {
             $this->boxRotated = true;
         }
     }
