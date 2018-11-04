@@ -81,21 +81,24 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
             if ($orientationAMinGap === 0) { // prefer A if it leaves no gap
                 return -1;
-            } elseif ($orientationBMinGap === 0) { // prefer B if it leaves no gap
-                return 1;
-            } else { // prefer leaving room for next item in current row
-                if ($nextItem) {
-                    $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $orientationALengthLeft, $depthLeft));
-                    $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $orientationBLengthLeft, $depthLeft));
-                    if ($nextItemFitA && !$nextItemFitB) {
-                        return -1;
-                    } elseif ($nextItemFitB && !$nextItemFitA) {
-                        return 1;
-                    }
-                }
-                // otherwise prefer leaving minimum possible gap, or the greatest footprint
-                return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
             }
+            if ($orientationBMinGap === 0) { // prefer B if it leaves no gap
+                return 1;
+            }
+
+            // prefer leaving room for next item in current row
+            if ($nextItem) {
+                $nextItemFitA = count($this->getPossibleOrientations($nextItem, $a, $orientationAWidthLeft, $orientationALengthLeft, $depthLeft));
+                $nextItemFitB = count($this->getPossibleOrientations($nextItem, $b, $orientationBWidthLeft, $orientationBLengthLeft, $depthLeft));
+                if ($nextItemFitA && !$nextItemFitB) {
+                    return -1;
+                }
+                if ($nextItemFitB && !$nextItemFitA) {
+                    return 1;
+                }
+            }
+            // otherwise prefer leaving minimum possible gap, or the greatest footprint
+            return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
         });
 
         $bestFit = reset($usableOrientations);
