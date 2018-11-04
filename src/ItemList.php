@@ -13,6 +13,7 @@ use Countable;
 use IteratorAggregate;
 use Traversable;
 use function array_shift;
+use function count;
 use function reset;
 use function usort;
 
