@@ -37,6 +37,9 @@ class OrientatedItem
      */
     protected $depth;
 
+    /** @var float */
+    protected $tippingPoint;
+
     /**
      * Constructor.
      *
@@ -51,6 +54,7 @@ class OrientatedItem
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
+        $this->tippingPoint = atan(min($this->length, $this->width) / $this->depth);
     }
 
     /**
@@ -94,13 +98,21 @@ class OrientatedItem
     }
 
     /**
-     * Calculate the surface footprint of the current orientation
+     * Calculate the surface footprint of the current orientation.
      *
      * @return int
      */
     public function getSurfaceFootprint(): int
     {
         return $this->width * $this->length;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTippingPoint(): float
+    {
+        return $this->tippingPoint;
     }
 
     /**
@@ -112,6 +124,6 @@ class OrientatedItem
      */
     public function isStable(): bool
     {
-        return atan(min($this->getLength(), $this->getWidth()) / $this->getDepth()) > 0.261; //radians
+        return $this->tippingPoint > 0.261;
     }
 }
