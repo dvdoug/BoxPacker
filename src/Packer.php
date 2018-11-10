@@ -61,7 +61,7 @@ class Packer implements LoggerAwareInterface
      */
     public function addItem(Item $item, $qty = 1)
     {
-        for ($i = 0; $i < $qty; $i++) {
+        for ($i = 0; $i < $qty; ++$i) {
             $this->items->insert($item);
         }
         $this->logger->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}");

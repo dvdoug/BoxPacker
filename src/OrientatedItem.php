@@ -34,6 +34,9 @@ class OrientatedItem
      */
     protected $depth;
 
+    /** @var float */
+    protected $tippingPoint;
+
     /**
      * Constructor.
      *
@@ -48,6 +51,7 @@ class OrientatedItem
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
+        $this->tippingPoint = atan(min($this->length, $this->width) / $this->depth);
     }
 
     /**
@@ -101,6 +105,14 @@ class OrientatedItem
     }
 
     /**
+     * @return float
+     */
+    public function getTippingPoint()
+    {
+        return $this->tippingPoint;
+    }
+
+    /**
      * Is this item stable (low centre of gravity), calculated as if the tipping point is >15 degrees.
      *
      * N.B. Assumes equal weight distribution.
@@ -109,6 +121,6 @@ class OrientatedItem
      */
     public function isStable()
     {
-        return atan(min($this->getLength(), $this->getWidth()) / $this->getDepth()) > 0.261; //radians
+        return $this->tippingPoint > 0.261;
     }
 }

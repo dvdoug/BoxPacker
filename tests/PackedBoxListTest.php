@@ -40,7 +40,7 @@ class PackedBoxListTest extends TestCase
         $packedBoxList->insert($packedBoxA);
         $packedBoxList->insert($packedBoxB);
 
-        self::assertEquals(2, $packedBoxList->count());
+        self::assertCount(2, $packedBoxList);
     }
 
     /**
@@ -66,7 +66,7 @@ class PackedBoxListTest extends TestCase
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insertFromArray([$packedBoxA, $packedBoxB]);
 
-        self::assertEquals(2, $packedBoxList->count());
+        self::assertCount(2, $packedBoxList);
     }
 
     /**
