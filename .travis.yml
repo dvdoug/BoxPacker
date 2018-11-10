@@ -15,6 +15,7 @@ matrix:
     - php: 7.0
     - php: 7.1
     - php: 7.2
+    - php: 7.3
 
 cache:
   directories:
@@ -51,9 +52,8 @@ before_script:
 script:
   - |
     if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then
-      docker run -v $(pwd):/var/source dvdoug/hhvm:composer hhvm /var/source/vendor/bin/phpunit /var/source/tests;
-    elif [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
-      phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests;
+      docker run -v $(pwd):/var/source -w /var/source dvdoug/hhvm:composer hhvm /var/source/vendor/bin/phpunit;
     else
       php vendor/bin/phpunit;
+      php vendor/bin/behat --strict;
     fi;

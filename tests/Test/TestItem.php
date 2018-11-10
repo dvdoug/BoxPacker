@@ -68,8 +68,8 @@ class TestItem implements Item
         $width,
         $length,
         $depth,
-        $weight
-    ) {
+        $weight)
+    {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;

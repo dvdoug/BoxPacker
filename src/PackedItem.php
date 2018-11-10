@@ -128,6 +128,14 @@ class PackedItem
     }
 
     /**
+     * @return int
+     */
+    public function getVolume()
+    {
+        return $this->width * $this->length * $this->depth;
+    }
+
+    /**
      * @param OrientatedItem $orientatedItem
      * @param int            $x
      * @param int            $y

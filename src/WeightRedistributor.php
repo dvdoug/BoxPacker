@@ -16,6 +16,7 @@ use Psr\Log\NullLogger;
  * Actual packer.
  *
  * @author Doug Wright
+ * @internal
  */
 class WeightRedistributor implements LoggerAwareInterface
 {

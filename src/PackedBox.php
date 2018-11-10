@@ -228,7 +228,7 @@ class PackedBox
         $volume = 0;
         /** @var PackedItem $item */
         foreach (clone $this->items as $item) {
-            $volume += ($item->getWidth() * $item->getLength() * $item->getDepth());
+            $volume += $item->getVolume();
         }
 
         return $volume;

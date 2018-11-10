@@ -13,6 +13,8 @@ use DVDoug\BoxPacker\Test\TestItem;
 use DVDoug\BoxPacker\VolumePacker;
 use PHPUnit\Framework\Assert;
 
+chdir(__DIR__ . '/../..');
+
 /**
  * Defines application features from the specific context.
  */
