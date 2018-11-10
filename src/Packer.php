@@ -124,7 +124,7 @@ class Packer implements LoggerAwareInterface
      *
      * @param int $maxBoxesToBalanceWeight
      */
-    public function setMaxBoxesToBalanceWeight(int $maxBoxesToBalanceWeight)
+    public function setMaxBoxesToBalanceWeight(int $maxBoxesToBalanceWeight): void
     {
         $this->maxBoxesToBalanceWeight = $maxBoxesToBalanceWeight;
     }
