@@ -12,6 +12,11 @@ php:
   - nightly
 
 matrix:
+  include:
+    - php: 7.1
+      env: lowest=1
+    - php: 7.2
+      env: csfixer=1
   allow_failures:
     - php: nightly
 
@@ -22,9 +27,22 @@ cache:
 
 install:
   - phpenv config-rm xdebug.ini || true;
-  - composer update;
+  - |
+    if [ "$csfixer" != "1" ]; then
+      composer remove --dev friendsofphp/php-cs-fixer;
+    fi;
+  - |
+    if [ "$lowest" = "1" ]; then
+      composer update --prefer-lowest --prefer-stable;
+    else
+      composer update;
+    fi;
 
 script:
+  - |
+    if [ "$csfixer" = "1" ]; then
+      vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --diff-format=udiff --allow-risky=yes;
+    fi;
   - |
     if [ "${TEST_SUITE}" = "unit" ]; then
       php vendor/bin/phpunit --exclude-group efficiency;

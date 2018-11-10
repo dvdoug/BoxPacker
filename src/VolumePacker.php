@@ -225,11 +225,11 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger->debug(
             "evaluating item {$itemToPack->getDescription()} for fit",
             [
-                'item'  => $itemToPack,
+                'item' => $itemToPack,
                 'space' => [
-                    'maxWidth'    => $maxWidth,
-                    'maxLength'   => $maxLength,
-                    'maxDepth'    => $maxDepth,
+                    'maxWidth' => $maxWidth,
+                    'maxLength' => $maxLength,
+                    'maxDepth' => $maxDepth,
                 ],
             ]
         );

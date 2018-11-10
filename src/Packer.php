@@ -65,7 +65,7 @@ class Packer implements LoggerAwareInterface
      */
     public function addItem(Item $item, int $qty = 1): void
     {
-        for ($i = 0; $i < $qty; $i++) {
+        for ($i = 0; $i < $qty; ++$i) {
             $this->items->insert($item);
         }
         $this->logger->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}");
@@ -203,7 +203,7 @@ class Packer implements LoggerAwareInterface
     {
         //Check iteration was productive
         if (count($packedBoxes) === 0) {
-            throw new ItemTooLargeException('Item '.$this->items->top()->getDescription().' is too large to fit into any box', $this->items->top());
+            throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box', $this->items->top());
         }
 
         usort($packedBoxes, [$this, 'compare']);

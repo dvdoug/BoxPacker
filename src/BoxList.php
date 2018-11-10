@@ -50,7 +50,7 @@ class BoxList implements IteratorAggregate
     /**
      * @param Box $item
      */
-    public function insert(Box $item)
+    public function insert(Box $item): void
     {
         $this->list[] = $item;
     }

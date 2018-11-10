@@ -43,13 +43,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Get the best orientation for an item.
      *
-     * @param Item $item
+     * @param Item                $item
      * @param OrientatedItem|null $prevItem
-     * @param ItemList $nextItems
-     * @param bool $isLastItem
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
+     * @param ItemList            $nextItems
+     * @param bool                $isLastItem
+     * @param int                 $widthLeft
+     * @param int                 $lengthLeft
+     * @param int                 $depthLeft
      *
      * @return OrientatedItem|null
      */
@@ -139,7 +139,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if ($prevItem && $this->isSameDimensions($prevItem->getItem(), $item)) {
             $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
         } else {
-
             //simple 2D rotation
             $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
             $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
@@ -160,23 +159,23 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @param Item $item
+     * @param  Item             $item
      * @return OrientatedItem[]
      */
     public function getPossibleOrientationsInEmptyBox(Item $item): array
     {
-        $cacheKey = $item->getWidth().
-            '|'.
-            $item->getLength().
-            '|'.
-            $item->getDepth().
-            '|'.
-            ($item->getKeepFlat() ? '2D' : '3D').
-            '|'.
-            $this->box->getInnerWidth().
-            '|'.
-            $this->box->getInnerLength().
-            '|'.
+        $cacheKey = $item->getWidth() .
+            '|' .
+            $item->getLength() .
+            '|' .
+            $item->getDepth() .
+            '|' .
+            ($item->getKeepFlat() ? '2D' : '3D') .
+            '|' .
+            $this->box->getInnerWidth() .
+            '|' .
+            $this->box->getInnerLength() .
+            '|' .
             $this->box->getInnerDepth();
 
         if (isset(static::$emptyBoxCache[$cacheKey])) {
@@ -196,9 +195,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @param Item $item
+     * @param Item             $item
      * @param OrientatedItem[] $possibleOrientations
-     * @param bool $isLastItem
+     * @param bool             $isLastItem
      *
      * @return OrientatedItem[]
      */
@@ -239,7 +238,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
      *
-     * @param Item $item
+     * @param  Item  $item
      * @return array
      */
     protected function getStableOrientationsInEmptyBox(Item $item): array
@@ -278,11 +277,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * Not an actual packing, that has additional logic regarding constraints and stackability, this focuses
      * purely on fit.
      *
-     * @param OrientatedItem $prevItem
-     * @param ItemList $nextItems
-     * @param int $originalWidthLeft
-     * @param int $originalLengthLeft
-     * @param int $depthLeft
+     * @param  OrientatedItem $prevItem
+     * @param  ItemList       $nextItems
+     * @param  int            $originalWidthLeft
+     * @param  int            $originalLengthLeft
+     * @param  int            $depthLeft
      * @return int
      */
     protected function calculateAdditionalItemsPackedWithThisOrientation(
@@ -291,8 +290,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $originalWidthLeft,
         int $originalLengthLeft,
         int $depthLeft
-    ): int
-    {
+    ): int {
         $packedCount = 0;
 
         // first try packing into current row
@@ -304,7 +302,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $itemToPack = $currentRowWorkingSetItems->extract();
             $orientatedItem = $this->getBestOrientation($itemToPack, $prevItem, $currentRowWorkingSetItems, !count($currentRowWorkingSetItems), $widthLeft, $lengthLeft, $depthLeft);
             if ($orientatedItem instanceof OrientatedItem) {
-                $packedCount++;
+                ++$packedCount;
                 $widthLeft -= $orientatedItem->getWidth();
                 $prevItem = $orientatedItem;
             } else {
@@ -319,7 +317,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $itemToPack = $nextRowWorkingSetItems->extract();
             $orientatedItem = $this->getBestOrientation($itemToPack, $prevItem, $nextRowWorkingSetItems, !count($nextRowWorkingSetItems), $widthLeft, $lengthLeft, $depthLeft);
             if ($orientatedItem instanceof OrientatedItem) {
-                $packedCount++;
+                ++$packedCount;
                 $widthLeft -= $orientatedItem->getWidth();
                 $prevItem = $orientatedItem;
             }

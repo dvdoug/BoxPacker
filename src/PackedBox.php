@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function is_null;
 use function max;
 use function round;
 
@@ -77,7 +76,7 @@ class PackedBox
      */
     public function getItemWeight(): int
     {
-        if (!is_null($this->itemWeight)) {
+        if ($this->itemWeight !== null) {
             return $this->itemWeight;
         }
 

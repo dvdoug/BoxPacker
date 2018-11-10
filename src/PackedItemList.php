@@ -40,7 +40,7 @@ class PackedItemList implements Countable, IteratorAggregate
     /**
      * @param PackedItem $item
      */
-    public function insert(PackedItem $item)
+    public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
     }

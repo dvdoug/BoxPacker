@@ -41,7 +41,7 @@ class ItemList implements Countable, IteratorAggregate
     /**
      * @param Item $item
      */
-    public function insert(Item $item)
+    public function insert(Item $item): void
     {
         $this->list[] = $item;
     }
@@ -65,7 +65,7 @@ class ItemList implements Countable, IteratorAggregate
      *
      * @param Item $item
      */
-    public function remove(Item $item)
+    public function remove(Item $item): void
     {
         foreach ($this->list as $key => $itemToCheck) {
             if ($itemToCheck === $item) {

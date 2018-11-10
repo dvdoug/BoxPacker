@@ -16,9 +16,10 @@
     },
     "require-dev": {
         "behat/behat": "^3.4",
+        "friendsofphp/php-cs-fixer": "^2.13",
         "leanphp/behat-code-coverage": "^3.0",
         "monolog/monolog": "^1.0",
-        "phpunit/phpunit": "^6.4||^7.0"
+        "phpunit/phpunit": "^7.2"
     },
     "autoload": {
         "psr-4": {

@@ -127,7 +127,7 @@ class PackedItem
     {
         return $this->depth;
     }
-    
+
     /**
      * @return int
      */
