@@ -171,7 +171,7 @@ class VolumePacker implements LoggerAwareInterface
                 } elseif (count($this->items) > 0) { // skip for now, move on to the next item
                     $this->logger->debug("doesn't fit, skipping for now");
                     $this->skippedItems->insert($itemToPack);
-                } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength())) {
+                } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
                     $this->logger->debug('No more fit in width wise, resetting for new row');
                     $widthLeft += $rowWidth;
                     $lengthLeft -= $rowLength;
