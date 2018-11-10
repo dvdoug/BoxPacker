@@ -296,26 +296,28 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $packedCount = 0;
 
         // first try packing into current row
-        $workingSetItems = clone $nextItems;
+        $currentRowWorkingSetItems = clone $nextItems;
+        $nextRowWorkingSetItems = new ItemList();
         $widthLeft = $originalWidthLeft - $prevItem->getWidth();
         $lengthLeft = $originalLengthLeft;
-        while (count($workingSetItems) > 0 && $widthLeft > 0) {
-            $itemToPack = $workingSetItems->extract();
-            $orientatedItem = $this->getBestOrientation($itemToPack, $prevItem, $workingSetItems, !count($workingSetItems), $widthLeft, $lengthLeft, $depthLeft);
+        while (count($currentRowWorkingSetItems) > 0 && $widthLeft > 0) {
+            $itemToPack = $currentRowWorkingSetItems->extract();
+            $orientatedItem = $this->getBestOrientation($itemToPack, $prevItem, $currentRowWorkingSetItems, !count($currentRowWorkingSetItems), $widthLeft, $lengthLeft, $depthLeft);
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedCount++;
                 $widthLeft -= $orientatedItem->getWidth();
                 $prevItem = $orientatedItem;
+            } else {
+                $nextRowWorkingSetItems->insert($itemToPack);
             }
         }
 
         // then see what happens if we try in the next row
-        $workingSetItems = clone $nextItems;
         $widthLeft = $originalWidthLeft;
         $lengthLeft = $originalLengthLeft - $prevItem->getLength();
-        while (count($workingSetItems) > 0 && $widthLeft > 0) {
-            $itemToPack = $workingSetItems->extract();
-            $orientatedItem = $this->getBestOrientation($itemToPack, $prevItem, $workingSetItems, !count($workingSetItems), $widthLeft, $lengthLeft, $depthLeft);
+        while (count($nextRowWorkingSetItems) > 0 && $widthLeft > 0) {
+            $itemToPack = $nextRowWorkingSetItems->extract();
+            $orientatedItem = $this->getBestOrientation($itemToPack, $prevItem, $nextRowWorkingSetItems, !count($nextRowWorkingSetItems), $widthLeft, $lengthLeft, $depthLeft);
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedCount++;
                 $widthLeft -= $orientatedItem->getWidth();
