@@ -37,7 +37,6 @@ class OrientatedItem
      */
     protected $depth;
 
-
     /**
      * @var float[]
      */
@@ -114,7 +113,7 @@ class OrientatedItem
      */
     public function getTippingPoint(): float
     {
-        $cacheKey = $this->width .  '|' . $this->length . '|' . $this->depth;
+        $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
 
         if (isset(static::$tippingPointCache[$cacheKey])) {
             $tippingPoint = static::$tippingPointCache[$cacheKey];
