@@ -160,28 +160,26 @@ class VolumePacker implements LoggerAwareInterface
 
                 $prevItem = $packedItem;
                 $this->rebuildItemList();
+            } elseif (count($layer->getItems()) === 0) { // zero items on layer
+                $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
+                continue;
+            } elseif (count($this->items) > 0) { // skip for now, move on to the next item
+                $this->logger->debug("doesn't fit, skipping for now");
+                $this->skippedItems->insert($itemToPack);
+            } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
+                $this->logger->debug('No more fit in width wise, resetting for new row');
+                $widthLeft += $rowWidth;
+                $lengthLeft -= $rowLength;
+                $y += $rowLength;
+                $x = $rowWidth = $rowLength = 0;
+                $this->rebuildItemList($itemToPack);
+                $prevItem = null;
+                continue;
             } else {
-                if (count($layer->getItems()) === 0) { // zero items on layer
-                    $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
-                    continue;
-                } elseif (count($this->items) > 0) { // skip for now, move on to the next item
-                    $this->logger->debug("doesn't fit, skipping for now");
-                    $this->skippedItems->insert($itemToPack);
-                } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
-                    $this->logger->debug('No more fit in width wise, resetting for new row');
-                    $widthLeft += $rowWidth;
-                    $lengthLeft -= $rowLength;
-                    $y += $rowLength;
-                    $x = $rowWidth = $rowLength = 0;
-                    $this->rebuildItemList($itemToPack);
-                    $prevItem = null;
-                    continue;
-                } else {
-                    $this->logger->debug('no items fit, so starting next vertical layer');
-                    $this->rebuildItemList($itemToPack);
+                $this->logger->debug('no items fit, so starting next vertical layer');
+                $this->rebuildItemList($itemToPack);
 
-                    return;
-                }
+                return;
             }
         }
     }
