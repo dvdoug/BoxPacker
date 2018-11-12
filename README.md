@@ -18,7 +18,7 @@ See [documentation](http://boxpacker.readthedocs.io/en/1.x-dev/) for more detail
 Requirements
 ------------
 
-* PHP version 5.4 or higher (including PHP7 and HHVM)
+* PHP version 5.4 or higher
 
 License
 -------
