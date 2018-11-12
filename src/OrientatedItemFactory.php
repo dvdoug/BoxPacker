@@ -277,7 +277,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $packedCount = 0;
 
         // first try packing into current row
-        $currentRowWorkingSetItems = clone $nextItems;
+        $currentRowWorkingSetItems = $nextItems->topN(8); // cap lookahead as this gets recursive and slow
         $nextRowWorkingSetItems = new ItemList();
         $widthLeft = $originalWidthLeft - $prevItem->getWidth();
         $lengthLeft = $originalLengthLeft;
