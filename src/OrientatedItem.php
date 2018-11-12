@@ -37,8 +37,11 @@ class OrientatedItem
      */
     protected $depth;
 
-    /** @var float */
-    protected $tippingPoint;
+
+    /**
+     * @var float[]
+     */
+    protected static $tippingPointCache = [];
 
     /**
      * Constructor.
@@ -54,7 +57,6 @@ class OrientatedItem
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
-        $this->tippingPoint = atan(min($this->length, $this->width) / $this->depth);
     }
 
     /**
@@ -112,7 +114,16 @@ class OrientatedItem
      */
     public function getTippingPoint(): float
     {
-        return $this->tippingPoint;
+        $cacheKey = $this->width .  '|' . $this->length . '|' . $this->depth;
+
+        if (isset(static::$tippingPointCache[$cacheKey])) {
+            $tippingPoint = static::$tippingPointCache[$cacheKey];
+        } else {
+            $tippingPoint = atan(min($this->length, $this->width) / $this->depth);
+            static::$tippingPointCache[$cacheKey] = $tippingPoint;
+        }
+
+        return $tippingPoint;
     }
 
     /**
@@ -124,6 +135,6 @@ class OrientatedItem
      */
     public function isStable(): bool
     {
-        return $this->tippingPoint > 0.261;
+        return $this->getTippingPoint() > 0.261;
     }
 }
