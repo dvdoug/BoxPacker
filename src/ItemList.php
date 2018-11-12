@@ -14,6 +14,7 @@ use IteratorAggregate;
 use Traversable;
 use function array_pop;
 use function array_reverse;
+use function array_slice;
 use function count;
 use function end;
 use function usort;
@@ -105,6 +106,25 @@ class ItemList implements Countable, IteratorAggregate
         $temp = $this->list;
 
         return end($temp);
+    }
+
+    /**
+     * @internal
+     *
+     * @param  int      $n
+     * @return ItemList
+     */
+    public function topN(int $n): self
+    {
+        if (!$this->isSorted) {
+            usort($this->list, [$this, 'compare']);
+            $this->isSorted = true;
+        }
+
+        $topNList = new self();
+        $topNList->insertFromArray(array_slice($this->list, 0, $n));
+
+        return $topNList;
     }
 
     /**
