@@ -12,9 +12,10 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
-use function array_shift;
+use function array_pop;
+use function array_reverse;
 use function count;
-use function reset;
+use function end;
 use function usort;
 
 /**
@@ -87,7 +88,7 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
 
-        return array_shift($this->list);
+        return array_pop($this->list);
     }
 
     /**
@@ -103,7 +104,7 @@ class ItemList implements Countable, IteratorAggregate
         }
         $temp = $this->list;
 
-        return reset($temp);
+        return end($temp);
     }
 
     /**
@@ -116,7 +117,7 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
 
-        return new ArrayIterator($this->list);
+        return new ArrayIterator(array_reverse($this->list));
     }
 
     /**
@@ -139,14 +140,15 @@ class ItemList implements Countable, IteratorAggregate
     {
         $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
         $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
-        $volumeDecider = $itemBVolume <=> $itemAVolume;
-        $weightDecider = $itemB->getWeight() - $itemA->getWeight();
+        $volumeDecider = $itemAVolume <=> $itemBVolume;
+        $weightDecider = $itemA->getWeight() - $itemB->getWeight();
         if ($volumeDecider !== 0) {
             return $volumeDecider;
-        } elseif ($weightDecider !== 0) {
-            return $weightDecider;
-        } else {
-            return $itemA->getDescription() <=> $itemB->getDescription();
         }
+        if ($weightDecider !== 0) {
+            return $weightDecider;
+        }
+
+        return $itemB->getDescription() <=> $itemA->getDescription();
     }
 }
