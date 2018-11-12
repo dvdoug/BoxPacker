@@ -53,4 +53,23 @@ class ItemList extends \SplMaxHeap
 
         return $return;
     }
+
+    /**
+     * @internal
+     *
+     * @param  int      $n
+     * @return ItemList
+     */
+    public function topN($n)
+    {
+        $workingList = clone $this;
+        $topNList = new self();
+        $i = 0;
+        while(!$workingList->isEmpty() && $i < $n) {
+            $topNList->insert($workingList->extract());
+        }
+
+        return $topNList;
+    }
+
 }
