@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.1.4] - 2018-11-12
+## [3.2.0] - 2018-11-12
 ### Added
  - Added `getVolume()` helper method to `PackedItem` [Cosmologist]
 ### Changed
@@ -261,9 +261,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.1.4...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.2.0...master
 
-[3.1.4]: https://github.com/dvdoug/BoxPacker/compare/3.1.3...3.1.4
+[3.2.0]: https://github.com/dvdoug/BoxPacker/compare/3.1.3...3.2.0
 [3.1.3]: https://github.com/dvdoug/BoxPacker/compare/3.1.2...3.1.3
 [3.1.2]: https://github.com/dvdoug/BoxPacker/compare/3.1.1...3.1.2
 [3.1.1]: https://github.com/dvdoug/BoxPacker/compare/3.1.0...3.1.1
