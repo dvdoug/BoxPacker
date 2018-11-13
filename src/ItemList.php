@@ -122,7 +122,7 @@ class ItemList implements Countable, IteratorAggregate
         }
 
         $topNList = new self();
-        $topNList->insertFromArray(array_slice($this->list, 0, $n));
+        $topNList->insertFromArray(array_slice($this->list, -$n, $n));
 
         return $topNList;
     }
