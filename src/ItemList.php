@@ -67,6 +67,7 @@ class ItemList extends \SplMaxHeap
         $i = 0;
         while(!$workingList->isEmpty() && $i < $n) {
             $topNList->insert($workingList->extract());
+            $i++;
         }
 
         return $topNList;
