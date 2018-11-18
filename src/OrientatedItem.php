@@ -118,7 +118,7 @@ class OrientatedItem
         if (isset(static::$tippingPointCache[$cacheKey])) {
             $tippingPoint = static::$tippingPointCache[$cacheKey];
         } else {
-            $tippingPoint = atan(min($this->length, $this->width) / $this->depth);
+            $tippingPoint = atan(min($this->length, $this->width) / ($this->depth ?: 1));
             static::$tippingPointCache[$cacheKey] = $tippingPoint;
         }
 
