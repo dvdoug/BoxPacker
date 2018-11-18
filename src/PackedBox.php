@@ -7,6 +7,8 @@
 
 namespace DVDoug\BoxPacker;
 
+use RuntimeException;
+
 /**
  * A "box" with items.
  *
@@ -90,6 +92,11 @@ class PackedBox
      * @var int
      */
     protected $usedDepth;
+
+    /**
+     * @var PackedItemList
+     */
+    protected $packedItemList;
 
     /**
      * Get box used.
@@ -262,6 +269,25 @@ class PackedBox
     }
 
     /**
+     * @return PackedItemList
+     */
+    public function getPackedItems()
+    {
+        if (!$this->packedItemList instanceof PackedItemList) {
+            throw new RuntimeException('No PackedItemList was set. Are you using the old constructor?');
+        }
+        return $this->packedItemList;
+    }
+
+    /**
+     * @param PackedItemList $packedItemList
+     */
+    public function setPackedItems(PackedItemList $packedItemList)
+    {
+        $this->packedItemList = $packedItemList;
+    }
+
+    /**
      * Legacy constructor.
      *
      * @deprecated
@@ -328,6 +354,7 @@ class PackedBox
             $maxLength,
             $maxDepth
         );
+        $packedBox->setPackedItems($packedItems);
 
         return $packedBox;
     }
