@@ -1,6 +1,5 @@
 group: travis_latest
 language: php
-sudo: false
 
 env:
   - TEST_SUITE=unit
