@@ -55,6 +55,8 @@
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
 
 ## [2.5.0] - 2018-11-20
+### Added
+ - Backported positional data support from v3 via new `getPackedItems()` method on `PackedBox`
 ### Fixed
  - Fixed divide by zero warning when attempting to pack an item with 0 depth
 
