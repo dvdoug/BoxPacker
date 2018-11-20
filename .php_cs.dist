@@ -18,7 +18,6 @@ return PhpCsFixer\Config::create()
         'yoda_style' => false,
     ))
     ->setRiskyAllowed(true)
-    ->setUsingCache(false)
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(__DIR__ . '/src')
