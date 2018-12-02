@@ -8,9 +8,13 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
+use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
+use DVDoug\BoxPacker\Test\PositionallyConstrainedNoStackingTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
-use DVDoug\BoxPacker\Test\TestConstrainedTestItem;
+use DVDoug\BoxPacker\Test\ConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;
+use DVDoug\BoxPacker\Test\PositionallyConstrainedByCountTestItem;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -66,7 +70,7 @@ class VolumePackerTest extends TestCase
     /**
      * Test that constraint handling works correctly.
      */
-    public function testConstraints(): void
+    public function testLegacyConstraints(): void
     {
         // first a regular item
         $packer = new Packer();
@@ -77,14 +81,61 @@ class VolumePackerTest extends TestCase
         self::assertCount(1, $packedBoxes);
 
         // same dimensions but now constrained by type
-        TestConstrainedTestItem::$limit = 2;
+        ConstrainedTestItem::$limit = 2;
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
-        $packer->addItem(new TestConstrainedTestItem('Item', 1, 1, 1, 0, false), 8);
+        $packer->addItem(new ConstrainedTestItem('Item', 1, 1, 1, 0, false), 8);
         $packedBoxes = $packer->pack();
 
         self::assertCount(4, $packedBoxes);
+    }
+
+    /**
+     * Test that constraint handling works correctly.
+     */
+    public function testNewConstraintMatchesLegacy(): void
+    {
+        // first a regular item
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 0, false), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+
+        // same dimensions but now constrained by type
+        ConstrainedPlacementByCountTestItem::$limit = 2;
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
+        $packer->addItem(new ConstrainedPlacementByCountTestItem('Item', 1, 1, 1, 0, false), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(4, $packedBoxes);
+    }
+
+    /**
+     * Test that constraint handling works correctly.
+     */
+    public function testNewConstraint(): void
+    {
+        // first a regular item
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 4, 1, 2, 0, 4, 1, 2, 0));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 0, false), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+
+        // same dimensions but now constrained to not have stacking
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 4, 1, 2, 0, 4, 1, 2, 0));
+        $packer->addItem(new ConstrainedPlacementNoStackingTestItem('Item', 1, 1, 1, 0, false), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(2, $packedBoxes);
     }
 
     /**

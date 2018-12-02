@@ -15,7 +15,7 @@ use DVDoug\BoxPacker\PackedItemList;
 use function count;
 use function iterator_to_array;
 
-class TestConstrainedTestItem extends TestItem implements ConstrainedItem
+class ConstrainedTestItem extends TestItem implements ConstrainedItem
 {
     /**
      * @var int

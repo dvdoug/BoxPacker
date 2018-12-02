@@ -12,6 +12,7 @@ namespace DVDoug\BoxPacker;
  * An item to be packed where additional constraints need to be considered. Only implement this interface if you actually
  * need this additional functionality as it will slow down the packing algorithm.
  *
+ * @deprecated use ConstrainedPlacementItem instead which has additional flexibility
  * @author Doug Wright
  */
 interface ConstrainedItem extends Item
