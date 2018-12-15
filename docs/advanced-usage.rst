@@ -10,8 +10,8 @@ alternative/additional sizes of box.
 
 At a high level, the ``getVolumeUtilisation()`` method exists which calculates how full the box is as a percentage of volume.
 
-Lower-level methods are also available for examining this data in detail either using ``getUsed[Width|Length|Depth()``
-(a hypothetical box placed around the items) or ``getRemaining[Width|Length|Depth()`` (the difference between the dimensions of
+Lower-level methods are also available for examining this data in detail either using ``getUsed[Width|Length|Depth()]``
+(a hypothetical box placed around the items) or ``getRemaining[Width|Length|Depth()]`` (the difference between the dimensions of
 the actual box and the hypothetical box).
 
 .. note::
