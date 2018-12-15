@@ -104,7 +104,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     public function pack(): PackedBox
     {
-        $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}");
+        $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
         while (count($this->items) > 0) {
             $layerStartDepth = $this->getCurrentPackedDepth();

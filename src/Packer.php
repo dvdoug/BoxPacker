@@ -68,7 +68,7 @@ class Packer implements LoggerAwareInterface
         for ($i = 0; $i < $qty; ++$i) {
             $this->items->insert($item);
         }
-        $this->logger->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}");
+        $this->logger->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}", ['item' => $item]);
     }
 
     /**
@@ -96,7 +96,7 @@ class Packer implements LoggerAwareInterface
     public function addBox(Box $box): void
     {
         $this->boxes->insert($box);
-        $this->logger->log(LogLevel::INFO, "added box {$box->getReference()}");
+        $this->logger->log(LogLevel::INFO, "added box {$box->getReference()}", ['box' => $box]);
     }
 
     /**
@@ -145,7 +145,7 @@ class Packer implements LoggerAwareInterface
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
 
-        $this->logger->log(LogLevel::INFO, "packing completed, {$packedBoxes->count()} boxes");
+        $this->logger->log(LogLevel::INFO, "[PACKING COMPLETED], {$packedBoxes->count()} boxes");
 
         return $packedBoxes;
     }

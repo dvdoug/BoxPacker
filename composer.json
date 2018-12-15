@@ -12,7 +12,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.1",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "behat/behat": "^3.4",

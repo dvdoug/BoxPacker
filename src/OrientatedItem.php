@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use JsonSerializable;
 use function min;
 
 /**
@@ -15,7 +16,7 @@ use function min;
  *
  * @author Doug Wright
  */
-class OrientatedItem
+class OrientatedItem implements JsonSerializable
 {
     /**
      * @var Item
@@ -135,5 +136,18 @@ class OrientatedItem
     public function isStable(): bool
     {
         return $this->getTippingPoint() > 0.261;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'item' => $this->item,
+            'width' => $this->width,
+            'length' => $this->length,
+            'depth' => $this->depth,
+        ];
     }
 }
