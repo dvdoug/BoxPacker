@@ -231,4 +231,36 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(2, $packedBox->getItems());
     }
+
+    /**
+     * From issue #161.
+     */
+    public function testIssue161(): void
+    {
+        $box = new TestBox('Box', 240, 150, 180, 0, 240, 150, 180, 10000);
+        $item1 = new TestItem('Item 1', 70, 70, 95, 0, false);
+        $item2 = new TestItem('Item 2', 95, 75, 95, 0, true);
+
+        $itemList = new ItemList();
+        for ($i = 0; $i < 6; ++$i) {
+            $itemList->insert($item1);
+        }
+        for ($i = 0; $i < 3; ++$i) {
+            $itemList->insert($item2);
+        }
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+        self::assertCount(9, $packedBox->getItems());
+
+        $itemList = new ItemList();
+        for ($i = 0; $i < 6; ++$i) {
+            $itemList->insert($item1);
+        }
+        for ($i = 0; $i < 2; ++$i) {
+            $itemList->insert($item2);
+        }
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+        self::assertCount(8, $packedBox->getItems());
+    }
 }
