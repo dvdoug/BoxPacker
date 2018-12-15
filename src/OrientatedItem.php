@@ -150,4 +150,12 @@ class OrientatedItem implements JsonSerializable
             'depth' => $this->depth,
         ];
     }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->width . '|' . $this->length . '|' . $this->depth;
+    }
 }

@@ -152,6 +152,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
             }
         }
 
+        $orientations = array_unique($orientations);
+
         //remove any that simply don't fit
         return array_filter($orientations, function (OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
             return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
@@ -322,6 +324,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 $prevItem = $orientatedItem;
             }
         }
+
+        $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
 
         return $packedCount; // this isn't scientific, but is a reasonable proxy for success from an actual forward packing
     }
