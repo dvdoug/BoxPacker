@@ -111,7 +111,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 20, 69, 20, 0, true);
         $itemList = new ItemList();
-        for ($i = 0; $i < 23; $i++) {
+        for ($i = 0; $i < 23; ++$i) {
             $itemList->insert($item);
         }
 
@@ -129,7 +129,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 69, 20, 20, 0, true);
         $itemList = new ItemList();
-        for ($i = 0; $i < 23; $i++) {
+        for ($i = 0; $i < 23; ++$i) {
             $itemList->insert($item);
         }
 
@@ -148,7 +148,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 1000);
         $item = new TestItem('30x10x30item', 30, 10, 30, 0, true);
         $itemList = new ItemList();
-        for ($i = 0; $i < 9; $i++) {
+        for ($i = 0; $i < 9; ++$i) {
             $itemList->insert($item);
         }
 
@@ -166,7 +166,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
         $item = new TestItem('Item', 6, 12, 20, 100, false);
         $itemList = new ItemList();
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $itemList->insert($item);
         }
 
@@ -178,7 +178,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
         $item = new TestItem('Item', 6, 12, 20, 100, true);
         $itemList = new ItemList();
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $itemList->insert($item);
         }
 
@@ -196,7 +196,8 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 250, 1360, 260, 0, 250, 1360, 260, 30000);
         $itemList = new ItemList();
         $item = new TestItem('Item', 90, 200, 200, 150, true);
-        for ($i = 0; $i < 14; $i++) {
+
+        for ($i = 0; $i < 14; ++$i) {
             $itemList->insert($item);
         }
         $packer = new VolumePacker($box, $itemList);
@@ -204,7 +205,6 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(14, $packedBox->getItems());
     }
-
 
     /**
      * From issue #147.
