@@ -46,7 +46,7 @@ Example
 
         // assuming packing already took place
         foreach ($packedBoxes as $packedBox) {
-            $packedItems = $packedBox->getItems();
+            $packedItems = $packedBox->getPackedItems();
             foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object
                 echo $packedItem->getItem()->getDescription() .  ' was packed at co-ordinate ' ;
                 echo '(' . $packedItem->getX() . ', ' . $packedItem->getY() . ', ' . $packedItem->getZ() . ') with ';

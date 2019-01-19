@@ -58,7 +58,7 @@ Packing a set of items into a given set of box types
             echo "The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL;
 
             echo "The items in this box are:" . PHP_EOL;
-            $packedItems = $packedBox->getItems();
+            $packedItems = $packedBox->getPackedItems();
             foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object, in this case TestItem
                 echo $packedItem->getItem()->getDescription() . PHP_EOL;
             }
