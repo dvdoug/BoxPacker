@@ -190,4 +190,22 @@ class PackerTest extends TestCase
 
         self::assertCount(2, $packedBoxes);
     }
+
+
+    /**
+     * From issue #168.
+     */
+    public function testIssue168(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Small', 85, 190, 230, 30, 85, 190, 230, 10000));
+        $packer->addBox(new TestBox('Medium', 220, 160, 160, 50, 220, 160, 160, 10000));
+        $packer->addItem(new TestItem('Item', 55, 85, 122, 350, false));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(1, $packedBoxes);
+        self::assertEquals('Small', $packedBoxes[0]->getBox()->getReference());
+    }
 }
