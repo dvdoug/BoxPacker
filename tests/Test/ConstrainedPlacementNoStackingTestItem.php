@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker\Test;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\PackedItemList;
-use function count;
 use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use function iterator_to_array;
 

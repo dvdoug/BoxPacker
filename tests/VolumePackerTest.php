@@ -10,11 +10,9 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
-use DVDoug\BoxPacker\Test\PositionallyConstrainedNoStackingTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\ConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;
-use DVDoug\BoxPacker\Test\PositionallyConstrainedByCountTestItem;
 use PHPUnit\Framework\TestCase;
 
 /**

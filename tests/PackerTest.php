@@ -191,7 +191,6 @@ class PackerTest extends TestCase
         self::assertCount(2, $packedBoxes);
     }
 
-
     /**
      * From issue #168.
      */
