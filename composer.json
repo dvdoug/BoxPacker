@@ -22,6 +22,17 @@
         "monolog/monolog": "^1.0",
         "phpunit/phpunit": "^7.2"
     },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "bin-compat" : "full",
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.1"
+        }
+    },
     "autoload": {
         "psr-4": {
             "DVDoug\\BoxPacker\\": "src/",
