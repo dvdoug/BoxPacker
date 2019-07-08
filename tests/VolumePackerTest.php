@@ -208,6 +208,36 @@ class VolumePackerTest extends TestCase
     }
 
     /**
+     * From issue #124.
+     */
+    public function testUnpackedSpaceInsideLayersIsFilled(): void
+    {
+        $this->markTestSkipped(); // until bug is fixed
+
+        $box = new TestBox('Box', 4, 14, 11, 0, 4, 14, 11, 100);
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 8, 8, 2, 1, false));
+        $itemList->insert(new TestItem('Item 2', 4, 4, 4, 1, false));
+        $itemList->insert(new TestItem('Item 3', 4, 4, 4, 1, false));
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertCount(3, $packedBox->getItems());
+
+        $box = new TestBox('Box', 14, 11, 4, 0, 14, 11, 4, 100);
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 8, 8, 2, 1, false));
+        $itemList->insert(new TestItem('Item 2', 4, 4, 4, 1, false));
+        $itemList->insert(new TestItem('Item 3', 4, 4, 4, 1, false));
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertCount(3, $packedBox->getItems());
+    }
+
+    /**
      * Test stability of items is calculated appropriately.
      */
     public function testIssue148(): void
