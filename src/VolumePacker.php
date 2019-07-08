@@ -75,6 +75,13 @@ class VolumePacker implements LoggerAwareInterface
     protected $layers = [];
 
     /**
+     * Whether the packer is in look-ahead mode (i.e. working ahead of the main packing).
+     *
+     * @var bool
+     */
+    protected $lookAheadMode = false;
+
+    /**
      * Constructor.
      *
      * @param Box      $box
@@ -98,6 +105,15 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
+     * @internal
+     * @param bool $lookAhead
+     */
+    public function setLookAheadMode(bool $lookAhead): void
+    {
+        $this->lookAheadMode = $lookAhead;
+    }
+
+    /**
      * Pack as many items as possible into specific given box.
      *
      * @return PackedBox packed box
@@ -115,7 +131,9 @@ class VolumePacker implements LoggerAwareInterface
             $this->rotateLayersNinetyDegrees();
         }
 
-        $this->stabiliseLayers();
+        if (!$this->lookAheadMode) {
+            $this->stabiliseLayers();
+        }
 
         $this->logger->debug('done with this box');
 
