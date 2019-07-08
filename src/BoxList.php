@@ -66,6 +66,17 @@ class BoxList implements IteratorAggregate
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
 
-        return $boxAVolume <=> $boxBVolume;
+        $volumeDecider = $boxAVolume <=> $boxBVolume; // try smallest box first
+        $emptyWeightDecider = $boxB->getEmptyWeight() <=> $boxA->getEmptyWeight(); // with smallest empty weight
+
+        if ($volumeDecider !== 0) {
+            return $volumeDecider;
+        }
+        if ($emptyWeightDecider !== 0) {
+            return $emptyWeightDecider;
+        }
+
+        // maximum weight capacity as fallback decider
+        return ($boxA->getMaxWeight() - $boxA->getEmptyWeight()) <=> ($boxB->getMaxWeight() - $boxB->getEmptyWeight());
     }
 }

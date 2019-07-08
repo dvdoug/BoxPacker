@@ -77,4 +77,22 @@ class BoxListTest extends TestCase
         $sorted = iterator_to_array($list, false);
         self::assertEquals([$box1, $box3, $box2], $sorted);
     }
+
+    /**
+     * Test that sorting of boxes with identical dimensions works as expected i.e. order by maximum weight capacity.
+     */
+    public function testIssue163(): void
+    {
+        $box2 = new TestBox('Box2', 202, 152, 32, 10, 200, 150, 30, 100);
+        $box3 = new TestBox('Box3', 202, 152, 32, 10, 200, 150, 30, 250);
+        $box1 = new TestBox('Box1', 202, 152, 32, 10, 200, 150, 30, 50);
+
+        $list = new BoxList();
+        $list->insert($box1);
+        $list->insert($box2);
+        $list->insert($box3);
+
+        $sorted = iterator_to_array($list, false);
+        self::assertEquals([$box1, $box2, $box3], $sorted);
+    }
 }
