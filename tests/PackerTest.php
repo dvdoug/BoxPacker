@@ -4,7 +4,6 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
@@ -149,6 +148,22 @@ class PackerTest extends TestCase
     }
 
     /**
+     * Test case where last item algorithm picks a slightly inefficient box.
+     */
+    public function testIssue117()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box A', 36, 8, 3, 0, 36, 8, 3, 2));
+        $packer->addBox(new TestBox('Box B', 36, 8, 8, 0, 36, 8, 8, 2));
+        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1, false));
+        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1, false));
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+        self::assertCount(1, $packedBoxes);
+        self::assertEquals('Box A', $packedBoxes[0]->getBox()->getReference());
+    }
+
+    /**
      * Where 2 perfectly filled boxes are a choice, need to ensure we pick the larger one or there is a cascading
      * failure of many small boxes instead of a few larger ones.
      */
@@ -166,6 +181,38 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item 7', 2, 2, 2, 100, false));
         $packer->addItem(new TestItem('Item 8', 2, 2, 2, 100, false));
         $packer->addItem(new TestItem('Item 9', 4, 4, 4, 100, false));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(2, $packedBoxes);
+    }
+
+    /**
+     * From issue #168.
+     */
+    public function testIssue168()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Small', 85, 190, 230, 30, 85, 190, 230, 10000));
+        $packer->addBox(new TestBox('Medium', 220, 160, 160, 50, 220, 160, 160, 10000));
+        $packer->addItem(new TestItem('Item', 55, 85, 122, 350, false));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(1, $packedBoxes);
+        self::assertEquals('Small', $packedBoxes[0]->getBox()->getReference());
+    }
+
+    /**
+     * From issue #170.
+     */
+    public function testIssue170()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 170, 120, 120, 2000, 170, 120, 120, 60000));
+        $packer->addItem(new TestItem('Item', 70, 130, 2, 657, false), 100);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);

@@ -12,13 +12,25 @@
     "license": "MIT",
     "require": {
         "php": ">=5.4.0",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "behat/behat": "^3.4",
         "leanphp/behat-code-coverage": "^3.0",
         "monolog/monolog": "^1.0",
         "phpunit/phpunit": "^4.8.35||^5.0||^6.0||^7.0"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "bin-compat" : "full",
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "5.4"
+        }
     },
     "autoload": {
         "psr-4": {

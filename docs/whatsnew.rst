@@ -11,7 +11,7 @@ Version 2
 
 3D rotation when packing
 ^^^^^^^^^^^^^^^^^^^^^^^^
-Version 2 of BoxPacker introduces a key feature for many usecases, which is support for full 3D rotations of items. Version 1
+Version 2 of BoxPacker introduces a key feature for many use-cases, which is support for full 3D rotations of items. Version 1
 was limited to rotating items in 2D only - effectively treating every item as "keep flat" or "ship this way up". Version 2
 adds an extra method onto the ``BoxPacker\Item`` interface to control on a per-item level whether the item can be turned onto
 it's side or not.
