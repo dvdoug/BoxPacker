@@ -28,10 +28,7 @@
         },
         "sort-packages": true,
         "bin-compat" : "full",
-        "optimize-autoloader": true,
-        "platform": {
-            "php": "7.1"
-        }
+        "optimize-autoloader": true
     },
     "autoload": {
         "psr-4": {
