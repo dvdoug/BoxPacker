@@ -8,7 +8,6 @@
 namespace DVDoug\BoxPacker;
 
 use JsonSerializable;
-use function min;
 
 /**
  * An item to be packed.

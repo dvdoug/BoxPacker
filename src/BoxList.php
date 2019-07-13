@@ -29,17 +29,30 @@ class BoxList extends \SplMinHeap
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
 
-        $volumeDecider = $boxBVolume - $boxAVolume; // try smallest box first
-        $emptyWeightDecider = $boxA->getEmptyWeight() - $boxB->getEmptyWeight(); // with smallest empty weight
+        // try smallest box first
+        if ($boxBVolume > $boxAVolume) {
+            return 1;
+        }
+        if ($boxAVolume > $boxBVolume) {
+            return -1;
+        }
 
-        if ($volumeDecider !== 0) {
-            return $volumeDecider;
-         }
-        if ($emptyWeightDecider !== 0) {
-            return $emptyWeightDecider;
+        // smallest empty weight
+        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
+            return 1;
+        }
+        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
+            return -1;
         }
 
         // maximum weight capacity as fallback decider
-        return ($boxB->getMaxWeight() - $boxB->getEmptyWeight()) - ($boxA->getMaxWeight() - $boxA->getEmptyWeight());
+        if ($boxB->getMaxWeight() > $boxA->getMaxWeight()) {
+            return 1;
+        }
+        if ($boxA->getMaxWeight() > $boxB->getMaxWeight()) {
+            return -1;
+        }
+
+        return 0;
     }
 }

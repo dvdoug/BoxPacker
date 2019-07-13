@@ -10,7 +10,6 @@ namespace DVDoug\BoxPacker;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
-use function usort;
 
 /**
  * Applies load stability to generated result.
