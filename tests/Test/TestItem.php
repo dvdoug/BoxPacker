@@ -8,9 +8,10 @@
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Item;
+use JsonSerializable;
 use stdClass;
 
-class TestItem implements Item
+class TestItem implements Item, JsonSerializable
 {
     /**
      * @var string
@@ -130,5 +131,19 @@ class TestItem implements Item
     public function getVolume()
     {
         return $this->volume;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'description' => $this->description,
+            'width' => $this->width,
+            'length' => $this->length,
+            'depth' => $this->depth,
+            'weight' => $this->weight
+        ];
     }
 }

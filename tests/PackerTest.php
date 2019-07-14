@@ -4,7 +4,6 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
@@ -72,7 +71,7 @@ class PackerTest extends TestCase
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1), 4);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -83,7 +82,7 @@ class PackerTest extends TestCase
         // same items, but with redistribution turned off - expecting 3+1 based on pure fit
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1), 4);
         $packer->setMaxBoxesToBalanceWeight(1);
 
         /** @var PackedBox[] $packedBoxes */
@@ -100,7 +99,7 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 100, 50, 50, 0, 100, 50, 50, 5000));
-        $packer->addItem(new TestItem('Item', 15, 13, 8, 407, true), 2);
+        $packer->addItem(new TestItem('Item', 15, 13, 8, 407), 2);
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -116,10 +115,10 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000));
-        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true));
-        $packer->addItem(new TestItem('Item 2', 210, 297, 11, 648, true));
-        $packer->addItem(new TestItem('Item 3', 210, 297, 5, 187, true));
-        $packer->addItem(new TestItem('Item 4', 148, 210, 32, 880, true));
+        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679));
+        $packer->addItem(new TestItem('Item 2', 210, 297, 11, 648));
+        $packer->addItem(new TestItem('Item 3', 210, 297, 5, 187));
+        $packer->addItem(new TestItem('Item 4', 148, 210, 32, 880));
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -135,9 +134,9 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 230, 300, 240, 160, 230, 300, 240, 15000));
-        $packer->addItem(new TestItem('Item 1', 210, 297, 4, 213, true));
-        $packer->addItem(new TestItem('Item 2', 80, 285, 70, 199, true));
-        $packer->addItem(new TestItem('Item 3', 80, 285, 70, 199, true));
+        $packer->addItem(new TestItem('Item 1', 210, 297, 4, 213));
+        $packer->addItem(new TestItem('Item 2', 80, 285, 70, 199));
+        $packer->addItem(new TestItem('Item 3', 80, 285, 70, 199));
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -149,6 +148,22 @@ class PackerTest extends TestCase
     }
 
     /**
+     * Test case where last item algorithm picks a slightly inefficient box.
+     */
+    public function testIssue117()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box A', 36, 8, 3, 0, 36, 8, 3, 2));
+        $packer->addBox(new TestBox('Box B', 36, 8, 8, 0, 36, 8, 8, 2));
+        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1));
+        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1));
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+        self::assertCount(1, $packedBoxes);
+        self::assertEquals('Box A', $packedBoxes[0]->getBox()->getReference());
+    }
+
+    /**
      * Where 2 perfectly filled boxes are a choice, need to ensure we pick the larger one or there is a cascading
      * failure of many small boxes instead of a few larger ones.
      */
@@ -157,15 +172,47 @@ class PackerTest extends TestCase
         $packer = new Packer();
         $packer->addBox(new TestBox('Box1', 2, 2, 2, 0, 2, 2, 2, 1000));
         $packer->addBox(new TestBox('Box2', 4, 4, 4, 0, 4, 4, 4, 1000));
-        $packer->addItem(new TestItem('Item 1', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 2', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 3', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 4', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 5', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 6', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 7', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 8', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 9', 4, 4, 4, 100, false));
+        $packer->addItem(new TestItem('Item 1', 1, 1, 1, 100));
+        $packer->addItem(new TestItem('Item 2', 1, 1, 1, 100));
+        $packer->addItem(new TestItem('Item 3', 1, 1, 1, 100));
+        $packer->addItem(new TestItem('Item 4', 1, 1, 1, 100));
+        $packer->addItem(new TestItem('Item 5', 2, 2, 2, 100));
+        $packer->addItem(new TestItem('Item 6', 2, 2, 2, 100));
+        $packer->addItem(new TestItem('Item 7', 2, 2, 2, 100));
+        $packer->addItem(new TestItem('Item 8', 2, 2, 2, 100));
+        $packer->addItem(new TestItem('Item 9', 4, 4, 4, 100));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(2, $packedBoxes);
+    }
+
+    /**
+     * From issue #168.
+     */
+    public function testIssue168()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Small', 85, 190, 230, 30, 85, 190, 230, 10000));
+        $packer->addBox(new TestBox('Medium', 220, 160, 160, 50, 220, 160, 160, 10000));
+        $packer->addItem(new TestItem('Item', 55, 85, 122, 350));
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(1, $packedBoxes);
+        self::assertEquals('Small', $packedBoxes[0]->getBox()->getReference());
+    }
+
+    /**
+     * From issue #170.
+     */
+    public function testIssue170()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 170, 120, 120, 2000, 170, 120, 120, 60000));
+        $packer->addItem(new TestItem('Item', 70, 130, 2, 657), 100);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);

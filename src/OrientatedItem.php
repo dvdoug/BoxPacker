@@ -7,12 +7,14 @@
 
 namespace DVDoug\BoxPacker;
 
+use JsonSerializable;
+
 /**
  * An item to be packed.
  *
  * @author Doug Wright
  */
-class OrientatedItem
+class OrientatedItem implements JsonSerializable
 {
     /**
      * @var Item
@@ -33,7 +35,6 @@ class OrientatedItem
      * @var int
      */
     protected $depth;
-
 
     /**
      * @var float[]
@@ -111,7 +112,7 @@ class OrientatedItem
      */
     public function getTippingPoint()
     {
-        $cacheKey = $this->width .  '|' . $this->length . '|' . $this->depth;
+        $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
 
         if (isset(static::$tippingPointCache[$cacheKey])) {
             $tippingPoint = static::$tippingPointCache[$cacheKey];
@@ -133,5 +134,26 @@ class OrientatedItem
     public function isStable()
     {
         return $this->getTippingPoint() > 0.261;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'item' => $this->item,
+            'width' => $this->width,
+            'length' => $this->length,
+            'depth' => $this->depth,
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->width . '|' . $this->length . '|' . $this->depth;
     }
 }

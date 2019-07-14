@@ -1,24 +1,41 @@
 group: travis_latest
 language: php
 
+env:
+  - TEST_SUITE=unit
+  - TEST_SUITE=functional
+  - TEST_SUITE=efficiency
+php:
+  - 7.3
+  - 7.2
+  - 7.1
+  - 7.0
+  - 5.6
+  - 5.5
+  - 5.4
+  - nightly
+
 matrix:
   include:
     - php: 5.4
       env: lowest=1
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
-    - php: 7.1
-    - php: 7.2
-    - php: 7.3
+  allow_failures:
+    - php: nightly
 
 cache:
   directories:
-    - $HOME/.cache/composer/files
+    - $HOME/.composer/cache
+    - $HOME/.cache/composer
 
 install:
   - phpenv config-rm xdebug.ini || true;
-
+  - composer validate --strict;
+  - |
+    sed -i 's/"bin-compat" : "full"/"bin-compat" : "auto"/g' composer.json;
+  - |
+    if [ "$csfixer" != "1" ]; then
+      composer remove --dev friendsofphp/php-cs-fixer;
+    fi;
   - |
     if [ "$lowest" = "1" ]; then
       composer update --prefer-lowest --prefer-stable;
@@ -26,12 +43,19 @@ install:
       composer update;
     fi;
 
-before_script:
-  - |
-    if [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "5.5" ] && [ "$TRAVIS_PHP_VERSION" != "5.6" ]; then
-      echo "memory_limit = 3072M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini;
-    fi;
-
 script:
-  - php vendor/bin/phpunit;
-  - php vendor/bin/behat --strict;
+  - |
+    if [ "$csfixer" = "1" ]; then
+      vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --diff-format=udiff --allow-risky=yes;
+    fi;
+  - |
+    if [ "${TEST_SUITE}" = "unit" ]; then
+      php vendor/bin/phpunit --exclude-group efficiency;
+    elif [ "${TEST_SUITE}" = "efficiency" ]; then
+      php vendor/bin/phpunit --group efficiency;
+    elif [ "${TEST_SUITE}" = "functional" ]; then
+      php vendor/bin/behat --strict;
+    else
+      php vendor/bin/behat --strict;
+      php vendor/bin/phpunit;
+    fi;

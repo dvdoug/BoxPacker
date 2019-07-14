@@ -4,11 +4,12 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
+use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
-use DVDoug\BoxPacker\Test\TestConstrainedTestItem;
+use DVDoug\BoxPacker\Test\ConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
@@ -24,11 +25,11 @@ class VolumePackerTest extends TestCase
     {
         $box = new TestBox('Bundle', 75, 15, 15, 0, 75, 15, 15, 30);
         $itemList = new ItemList();
-        $itemList->insert(new TestItem('Item 1', 14, 12, 2, 2, true));
-        $itemList->insert(new TestItem('Item 2', 14, 12, 2, 2, true));
-        $itemList->insert(new TestItem('Item 3', 14, 12, 2, 2, true));
-        $itemList->insert(new TestItem('Item 4', 14, 12, 2, 2, true));
-        $itemList->insert(new TestItem('Item 5', 14, 12, 2, 2, true));
+        $itemList->insert(new TestItem('Item 1', 14, 12, 2, 2));
+        $itemList->insert(new TestItem('Item 2', 14, 12, 2, 2));
+        $itemList->insert(new TestItem('Item 3', 14, 12, 2, 2));
+        $itemList->insert(new TestItem('Item 4', 14, 12, 2, 2));
+        $itemList->insert(new TestItem('Item 5', 14, 12, 2, 2));
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
@@ -45,9 +46,9 @@ class VolumePackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 23, 27, 14, 0, 23, 27, 14, 30));
-        $packer->addItem(new TestItem('Item 1', 11, 22, 2, 1, true), 3);
-        $packer->addItem(new TestItem('Item 2', 11, 22, 2, 1, true), 4);
-        $packer->addItem(new TestItem('Item 3', 6, 17, 2, 1, true), 3);
+        $packer->addItem(new TestItem('Item 1', 11, 22, 2, 1), 3);
+        $packer->addItem(new TestItem('Item 2', 11, 22, 2, 1), 4);
+        $packer->addItem(new TestItem('Item 3', 6, 17, 2, 1), 3);
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -65,25 +66,72 @@ class VolumePackerTest extends TestCase
     /**
      * Test that constraint handling works correctly.
      */
-    public function testConstraints()
+    public function testLegacyConstraints()
     {
         // first a regular item
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 0, false), 8);
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 0), 8);
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
 
         // same dimensions but now constrained by type
-        TestConstrainedTestItem::$limit = 2;
+        ConstrainedTestItem::$limit = 2;
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
-        $packer->addItem(new TestConstrainedTestItem('Item', 1, 1, 1, 0, false), 8);
+        $packer->addItem(new ConstrainedTestItem('Item', 1, 1, 1, 0), 8);
         $packedBoxes = $packer->pack();
 
         self::assertCount(4, $packedBoxes);
+    }
+
+    /**
+     * Test that constraint handling works correctly.
+     */
+    public function testNewConstraintMatchesLegacy()
+    {
+        // first a regular item
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 0), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+
+        // same dimensions but now constrained by type
+        ConstrainedPlacementByCountTestItem::$limit = 2;
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
+        $packer->addItem(new ConstrainedPlacementByCountTestItem('Item', 1, 1, 1, 0), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(4, $packedBoxes);
+    }
+
+    /**
+     * Test that constraint handling works correctly.
+     */
+    public function testNewConstraint()
+    {
+        // first a regular item
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 4, 1, 2, 0, 4, 1, 2, 0));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 0), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+
+        // same dimensions but now constrained to not have stacking
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 4, 1, 2, 0, 4, 1, 2, 0));
+        $packer->addItem(new ConstrainedPlacementNoStackingTestItem('Item', 1, 1, 1, 0), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(2, $packedBoxes);
     }
 
     /**
@@ -93,10 +141,10 @@ class VolumePackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('29x1x23Box', 29, 1, 23, 0, 29, 1, 23, 100));
-        $packer->addItem(new TestItem('13x1x10Item', 13, 1, 10, 1, true));
-        $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1, true));
-        $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1, true));
-        $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1, true));
+        $packer->addItem(new TestItem('13x1x10Item', 13, 1, 10, 1));
+        $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1));
+        $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1));
+        $packer->addItem(new TestItem('9x1x6Item', 9, 1, 6, 1));
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -110,7 +158,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 20, 69, 20, 0);
         $itemList = new ItemList();
-        for ($i = 0; $i < 23; $i++) {
+        for ($i = 0; $i < 23; ++$i) {
             $itemList->insert($item);
         }
 
@@ -128,7 +176,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 69, 20, 20, 0);
         $itemList = new ItemList();
-        for ($i = 0; $i < 23; $i++) {
+        for ($i = 0; $i < 23; ++$i) {
             $itemList->insert($item);
         }
 
@@ -147,7 +195,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 1000);
         $item = new TestItem('30x10x30item', 30, 10, 30, 0);
         $itemList = new ItemList();
-        for ($i = 0; $i < 9; $i++) {
+        for ($i = 0; $i < 9; ++$i) {
             $itemList->insert($item);
         }
 
@@ -158,14 +206,44 @@ class VolumePackerTest extends TestCase
     }
 
     /**
+     * From issue #124.
+     */
+    public function testUnpackedSpaceInsideLayersIsFilled()
+    {
+        $this->markTestSkipped(); // until bug is fixed
+
+        $box = new TestBox('Box', 4, 14, 11, 0, 4, 14, 11, 100);
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 8, 8, 2, 1));
+        $itemList->insert(new TestItem('Item 2', 4, 4, 4, 1));
+        $itemList->insert(new TestItem('Item 3', 4, 4, 4, 1));
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertCount(3, $packedBox->getItems());
+
+        $box = new TestBox('Box', 14, 11, 4, 0, 14, 11, 4, 100);
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 8, 8, 2, 1));
+        $itemList->insert(new TestItem('Item 2', 4, 4, 4, 1));
+        $itemList->insert(new TestItem('Item 3', 4, 4, 4, 1));
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertCount(3, $packedBox->getItems());
+    }
+
+    /**
      * Test stability of items is calculated appropriately.
      */
     public function testIssue148()
     {
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
-        $item = new TestItem('Item', 6, 12, 20, 100, false);
+        $item = new TestItem('Item', 6, 12, 20, 100);
         $itemList = new ItemList();
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $itemList->insert($item);
         }
 
@@ -175,9 +253,9 @@ class VolumePackerTest extends TestCase
         self::assertCount(12, $packedBox->getItems());
 
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
-        $item = new TestItem('Item', 6, 12, 20, 100, true);
+        $item = new TestItem('Item', 6, 12, 20, 100);
         $itemList = new ItemList();
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $itemList->insert($item);
         }
 
@@ -195,12 +273,37 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 250, 1360, 260, 0, 250, 1360, 260, 30000);
         $itemList = new ItemList();
         $item = new TestItem('Item', 90, 200, 200, 150);
-        for ($i = 0; $i < 14; $i++) {
+
+        for ($i = 0; $i < 14; ++$i) {
             $itemList->insert($item);
         }
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
 
         self::assertCount(14, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #164.
+     */
+    public function testIssue164()
+    {
+        $box = new TestBox('Box', 820, 820, 830, 0, 820, 820, 830, 10000);
+
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 110, 110, 50, 100));
+        $itemList->insert(new TestItem('Item 2', 100, 300, 30, 100));
+        $itemList->insert(new TestItem('Item 3', 100, 150, 50, 100));
+        $itemList->insert(new TestItem('Item 4', 100, 200, 80, 110));
+        $itemList->insert(new TestItem('Item 5', 80, 150, 80, 50));
+        $itemList->insert(new TestItem('Item 6', 80, 150, 80, 50));
+        $itemList->insert(new TestItem('Item 7', 80, 150, 80, 50));
+        $itemList->insert(new TestItem('Item 8', 270, 70, 60, 350));
+        $itemList->insert(new TestItem('Item 9', 150, 150, 80, 180));
+        $itemList->insert(new TestItem('Item 10', 80, 150, 80, 50));
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+        self::assertCount(10, $packedBox->getItems());
     }
 }

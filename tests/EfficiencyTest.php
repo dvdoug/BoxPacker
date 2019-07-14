@@ -4,7 +4,6 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
@@ -59,7 +58,7 @@ class EfficiencyTest extends TestCase
             $packedItemCount2D += $packedBox->getItems()->count();
         }
 
-        self::assertEquals($expectedBoxes2D, $packedBoxes2D->count());
+        self::assertCount($expectedBoxes2D, $packedBoxes2D);
         self::assertEquals($expectedItemCount, $packedItemCount2D);
         self::assertEquals($expectedVolumeUtilisation2D, $packedBoxes2D->getVolumeUtilisation());
         self::assertEquals($expectedWeightVariance2D, $packedBoxes2D->getWeightVariance());
@@ -69,7 +68,7 @@ class EfficiencyTest extends TestCase
     {
         $expected = ['2D' => [], '3D' => []];
 
-        $expected2DData = fopen(__DIR__.'/data/expected.csv', 'r');
+        $expected2DData = fopen(__DIR__ . '/data/expected.csv', 'rb');
         while ($data = fgetcsv($expected2DData)) {
             $expected['2D'][$data[0]] = ['boxes' => $data[1], 'weightVariance' => $data[2], 'utilisation' => $data[3]];
             $expected['3D'][$data[0]] = ['boxes' => $data[4], 'weightVariance' => $data[5], 'utilisation' => $data[6]];
@@ -77,7 +76,7 @@ class EfficiencyTest extends TestCase
         fclose($expected2DData);
 
         $boxes = [];
-        $boxData = fopen(__DIR__.'/data/boxes.csv', 'r');
+        $boxData = fopen(__DIR__ . '/data/boxes.csv', 'rb');
         while ($data = fgetcsv($boxData)) {
             $boxes[] = new TestBox(
                 $data[0],
@@ -94,35 +93,35 @@ class EfficiencyTest extends TestCase
         fclose($boxData);
 
         $tests = [];
-        $itemData = fopen(__DIR__.'/data/items.csv', 'r');
+        $itemData = fopen(__DIR__ . '/data/items.csv', 'rb');
         while ($data = fgetcsv($itemData)) {
             if (isset($tests[$data[0]])) {
                 $tests[$data[0]]['items'][] = [
-                    'qty'    => $data[1],
-                    'name'   => $data[2],
-                    'width'  => $data[3],
+                    'qty' => $data[1],
+                    'name' => $data[2],
+                    'width' => $data[3],
                     'length' => $data[4],
-                    'depth'  => $data[5],
+                    'depth' => $data[5],
                     'weight' => $data[6],
                 ];
             } else {
                 $tests[$data[0]] = [
-                    'test'  => $data[0],
+                    'test' => $data[0],
                     'boxes' => $boxes,
                     'items' => [
                         [
-                            'qty'    => $data[1],
-                            'name'   => $data[2],
-                            'width'  => $data[3],
+                            'qty' => $data[1],
+                            'name' => $data[2],
+                            'width' => $data[3],
                             'length' => $data[4],
-                            'depth'  => $data[5],
+                            'depth' => $data[5],
                             'weight' => $data[6],
                         ],
                     ],
-                    'expected2D'          => (int)$expected['2D'][$data[0]]['boxes'],
-                    'expected3D'          => (int)$expected['3D'][$data[0]]['boxes'],
-                    'weightVariance2D'    => $expected['2D'][$data[0]]['weightVariance'],
-                    'weightVariance3D'    => $expected['3D'][$data[0]]['weightVariance'],
+                    'expected2D' => (int) $expected['2D'][$data[0]]['boxes'],
+                    'expected3D' => (int) $expected['3D'][$data[0]]['boxes'],
+                    'weightVariance2D' => $expected['2D'][$data[0]]['weightVariance'],
+                    'weightVariance3D' => $expected['3D'][$data[0]]['weightVariance'],
                     'volumeUtilisation2D' => $expected['2D'][$data[0]]['utilisation'],
                     'volumeUtilisation3D' => $expected['3D'][$data[0]]['utilisation'],
                 ];

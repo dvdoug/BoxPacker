@@ -8,8 +8,9 @@
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
+use JsonSerializable;
 
-class TestBox implements Box
+class TestBox implements Box, JsonSerializable
 {
     /**
      * @var string
@@ -175,5 +176,20 @@ class TestBox implements Box
     public function getMaxWeight()
     {
         return $this->maxWeight;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'reference' => $this->reference,
+            'innerWidth' => $this->innerWidth,
+            'innerLength' => $this->innerLength,
+            'innerDepth' => $this->innerDepth,
+            'emptyWeight' => $this->emptyWeight,
+            'maxWeight' => $this->maxWeight,
+        ];
     }
 }

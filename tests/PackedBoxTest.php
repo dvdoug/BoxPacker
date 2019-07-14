@@ -37,6 +37,7 @@ class PackedBoxTest extends TestCase
         self::assertEquals(34, $packedBox->getRemainingDepth());
         self::assertEquals(2540, $packedBox->getRemainingWeight());
         self::assertEquals(5445440, $packedBox->getInnerVolume());
+        self::assertEquals($packedItemList, $packedBox->getPackedItems());
     }
 
     /**

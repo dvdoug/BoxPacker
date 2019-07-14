@@ -73,4 +73,26 @@ class ItemList extends \SplMaxHeap
         return $topNList;
     }
 
+    /**
+     * Remove item from list.
+     *
+     * @param Item $item
+     */
+    public function remove(Item $item)
+    {
+        $workingSet = [];
+        while (!$this->isEmpty()) {
+            $workingSet[] = $this->extract();
+        }
+
+        $removed = false; // there can be multiple identical items, ensure that only 1 is removed
+        foreach ($workingSet as $workingSetItem) {
+            if (!$removed && $workingSetItem === $item) {
+                $removed = true;
+            } else {
+                $this->insert($workingSetItem);
+            }
+        }
+
+    }
 }

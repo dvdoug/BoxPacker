@@ -26,12 +26,33 @@ class BoxList extends \SplMinHeap
      */
     public function compare($boxA, $boxB)
     {
-        if ($boxB->getInnerVolume() > $boxA->getInnerVolume()) {
+        $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
+        $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
+
+        // try smallest box first
+        if ($boxBVolume > $boxAVolume) {
             return 1;
-        } elseif ($boxB->getInnerVolume() < $boxA->getInnerVolume()) {
-            return -1;
-        } else {
-            return 0;
         }
+        if ($boxAVolume > $boxBVolume) {
+            return -1;
+        }
+
+        // smallest empty weight
+        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
+            return 1;
+        }
+        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
+            return -1;
+        }
+
+        // maximum weight capacity as fallback decider
+        if ($boxB->getMaxWeight() > $boxA->getMaxWeight()) {
+            return 1;
+        }
+        if ($boxA->getMaxWeight() > $boxB->getMaxWeight()) {
+            return -1;
+        }
+
+        return 0;
     }
 }

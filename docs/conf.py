@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'BoxPacker'
-copyright = u'2018, Doug Wright'
+copyright = u'2019, Doug Wright'
 author = u'Doug Wright'
 
 # The version info for the project you're documenting, acts as replacement for
