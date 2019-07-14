@@ -103,8 +103,14 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 // if not an easy either/or, do a partial lookahead
                 $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
                 $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                if ($additionalPackedA !== $additionalPackedB) {
-                    return $additionalPackedB - $additionalPackedA;
+                if ($additionalPackedA > $additionalPackedB) {
+                    return -1;
+                }
+                if ($additionalPackedA < $additionalPackedB) {
+                    return 1;
+                }
+                if ($additionalPackedA === 0) {
+                    return PHP_MAJOR_VERSION > 5 ? -1 : 1;
                 }
             }
             // otherwise prefer leaving minimum possible gap, or the greatest footprint
