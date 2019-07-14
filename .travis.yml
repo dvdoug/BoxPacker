@@ -55,4 +55,7 @@ script:
       php vendor/bin/phpunit --group efficiency;
     elif [ "${TEST_SUITE}" = "functional" ]; then
       php vendor/bin/behat --strict;
+    else
+      php vendor/bin/behat --strict;
+      php vendor/bin/phpunit;
     fi;
