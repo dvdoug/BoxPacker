@@ -1,4 +1,4 @@
-group: travis_latest
+dist: trusty
 language: php
 
 env:
