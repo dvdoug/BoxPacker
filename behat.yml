@@ -11,7 +11,7 @@ default:
       contexts: [ InfalliblePackerContext ]
 
   extensions:
-    LeanPHP\Behat\CodeCoverage\Extension:
+    DVDoug\Behat\CodeCoverage\Extension:
       auth: ~
       drivers:
         - local
