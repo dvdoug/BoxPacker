@@ -20,7 +20,7 @@
         "friendsofphp/php-cs-fixer": "^2.13",
         "dvdoug/behat-code-coverage": "^4.0",
         "monolog/monolog": "^1.0",
-        "phpunit/phpunit": "^7.0||^8.0"
+        "phpunit/phpunit": "^7.2||^8.0"
     },
     "config": {
         "preferred-install": {
