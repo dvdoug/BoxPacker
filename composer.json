@@ -17,9 +17,9 @@
     },
     "require-dev": {
         "behat/behat": "^3.4",
-        "leanphp/behat-code-coverage": "^3.0",
+        "dvdoug/behat-code-coverage": "^3.0||^4.0",
         "monolog/monolog": "^1.0",
-        "phpunit/phpunit": "^4.8.35||^5.0||^6.0||^7.0"
+        "phpunit/phpunit": "^4.8.35||^5.0||^6.0||^7.0||^8.0"
     },
     "config": {
         "preferred-install": {
