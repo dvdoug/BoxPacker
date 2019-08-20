@@ -367,6 +367,9 @@ class VolumePackerTest extends TestCase
         self::assertCount(10, $packedBox->getItems());
     }
 
+    /**
+     * From issue #174.
+     */
     public function testIssue174(): void
     {
         $box = new TestBox('Box', 0, 0, 0, 10, 5000, 5000, 5000, 10000);
@@ -384,5 +387,45 @@ class VolumePackerTest extends TestCase
         $packedBox = $volumePacker->pack();
 
         self::assertCount(7, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #172.
+     */
+    public function testIssue172A(): void
+    {
+        $box = new TestBox('Box', 800, 1200, 1300, 0, 800, 1200, 1300, 500000);
+
+        $items = new ItemList();
+        for ($i = 0; $i < 10000; $i++) {
+            $items->insert(new TestItem('Larger', 150, 110, 5, 56, false));
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(8928, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #172.
+     */
+    public function testIssue172B(): void
+    {
+        $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
+
+        $items = new ItemList();
+        for ($i = 0; $i < 10; $i++) {
+            $items->insert(new TestItem('Larger', 10, 5, 8, 0, false));
+        }
+
+        for ($i = 0; $i < 5; $i++) {
+            $items->insert(new TestItem('Smaller', 5, 5, 3, 0, false));
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(15, $packedBox->getItems());
     }
 }
