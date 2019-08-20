@@ -16,6 +16,7 @@ build:
     override:
       -
         command: 'vendor/bin/phpunit --coverage-clover=build/phpunit.clover --exclude-group efficiency'
+        idle_timeout: 3600
         coverage:
             file: 'build/phpunit.clover'
             format: 'clover'
