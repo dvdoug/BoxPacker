@@ -159,9 +159,7 @@ class ItemList implements Countable, IteratorAggregate
      */
     private function compare(Item $itemA, Item $itemB): int
     {
-        $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
-        $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
-        $volumeDecider = $itemAVolume <=> $itemBVolume;
+        $volumeDecider = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth() <=> $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
         if ($volumeDecider !== 0) {
             return $volumeDecider;
         }
