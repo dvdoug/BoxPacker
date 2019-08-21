@@ -123,6 +123,7 @@ class ItemList implements Countable, IteratorAggregate
 
         $topNList = new self();
         $topNList->insertFromArray(array_slice($this->list, -$n, $n));
+        $topNList->isSorted = true;
 
         return $topNList;
     }
@@ -161,10 +162,10 @@ class ItemList implements Countable, IteratorAggregate
         $itemAVolume = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth();
         $itemBVolume = $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
         $volumeDecider = $itemAVolume <=> $itemBVolume;
-        $weightDecider = $itemA->getWeight() - $itemB->getWeight();
         if ($volumeDecider !== 0) {
             return $volumeDecider;
         }
+        $weightDecider = $itemA->getWeight() - $itemB->getWeight();
         if ($weightDecider !== 0) {
             return $weightDecider;
         }
