@@ -58,7 +58,7 @@ class ItemList implements Countable, IteratorAggregate
     public function insertFromArray(array $items): void
     {
         foreach ($items as $item) {
-            $this->insert($item);
+            $this->list[] = $item;
         }
     }
 
