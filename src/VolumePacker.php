@@ -162,7 +162,7 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, $this->hasItemsLeftToPack(), $widthLeft, $lengthLeft, $depthLeft, $rowLength, $x, $y, $startDepth);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, !$this->hasItemsLeftToPack(), $widthLeft, $lengthLeft, $depthLeft, $rowLength, $x, $y, $startDepth);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $startDepth);
@@ -402,7 +402,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function hasItemsLeftToPack(): bool
     {
-        return count($this->skippedItems) + count($this->items) === 0;
+        return count($this->skippedItems) + count($this->items) > 0;
     }
 
     /**
