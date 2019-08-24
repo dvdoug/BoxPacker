@@ -49,20 +49,6 @@ class ItemList implements Countable, IteratorAggregate
     }
 
     /**
-     * Do a bulk insert.
-     *
-     * @internal
-     *
-     * @param Item[] $items
-     */
-    public function insertFromArray(array $items): void
-    {
-        foreach ($items as $item) {
-            $this->list[] = $item;
-        }
-    }
-
-    /**
      * Remove item from list.
      *
      * @param Item $item
@@ -122,7 +108,7 @@ class ItemList implements Countable, IteratorAggregate
         }
 
         $topNList = new self();
-        $topNList->insertFromArray(array_slice($this->list, -$n, $n));
+        $topNList->list = array_slice($this->list, -$n, $n);
         $topNList->isSorted = true;
 
         return $topNList;
