@@ -81,3 +81,21 @@ Does a set of items fit into a particular box
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack(); //$packedBox->getItems() contains the items that fit
+
+
+.. code-block:: php
+
+    <?php
+        $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+
+        /*
+         *  You can also supply an (optionally pre-sorted) array of items. By default the library will sort the items
+         *  passed to it via a heuristic to achieve optimal packing density. If you need to control the order of items,
+         *  or have application-specific knowledge that sorting will not help (e.g. all items have the same dimensions)
+         *  you can tell the library to skip this step.
+         */
+
+        $itemList = ItemList::fromArray($anArrayOfItems, true); // set the optional 2nd param to true if presorted
+
+        $volumePacker = new VolumePacker($box, $itemList);
+        $packedBox = $volumePacker->pack(); //$packedBox->getItems() contains the items that fit
