@@ -395,7 +395,7 @@ class VolumePackerTest extends TestCase
     public function testIssue172A(): void
     {
         $box = new TestBox('Box', 800, 1200, 1300, 0, 800, 1200, 1300, 500000);
-        $items = array_fill(0, 9000, new TestItem('Larger', 150, 110, 5, 56, false));
+        $items = array_fill(0, 8928, new TestItem('Larger', 150, 110, 5, 56, false));
 
         $volumePacker = new VolumePacker($box, ItemList::fromArray($items, true));
         $packedBox = $volumePacker->pack();
