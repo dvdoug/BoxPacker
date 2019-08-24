@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 use function array_filter;
 use function count;
 use function min;
@@ -38,6 +39,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     public function __construct(Box $box)
     {
         $this->box = $box;
+        $this->logger = new NullLogger();
     }
 
     /**

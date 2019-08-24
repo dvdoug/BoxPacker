@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use function count;
 use function max;
@@ -22,7 +23,12 @@ use function min;
  */
 class VolumePacker implements LoggerAwareInterface
 {
-    use LoggerAwareTrait;
+    /**
+     * The logger instance.
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Box to pack items into.
@@ -82,6 +88,11 @@ class VolumePacker implements LoggerAwareInterface
     protected $lookAheadMode = false;
 
     /**
+     * @var OrientatedItemFactory
+     */
+    private $orientatedItemFactory;
+
+    /**
      * Constructor.
      *
      * @param Box      $box
@@ -101,6 +112,19 @@ class VolumePacker implements LoggerAwareInterface
         if ($this->box->getInnerWidth() !== $this->boxWidth || $this->box->getInnerLength() !== $this->boxLength) {
             $this->boxRotated = true;
         }
+
+        $this->orientatedItemFactory = new OrientatedItemFactory($this->box);
+    }
+
+    /**
+     * Sets a logger.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+        $this->orientatedItemFactory->setLogger($logger);
     }
 
     /**
@@ -262,9 +286,7 @@ class VolumePacker implements LoggerAwareInterface
         $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
         $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList() : new PackedItemList(); // don't calculate it if not going to be used
 
-        $orientatedItemFactory = new OrientatedItemFactory($this->box);
-        $orientatedItemFactory->setLogger($this->logger);
-        $orientatedItemDecision = $orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
+        $orientatedItemDecision = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
 
         return $orientatedItemDecision;
     }
@@ -363,10 +385,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function checkDimensionalConstraints(Item $itemToPack): bool
     {
-        $orientatedItemFactory = new OrientatedItemFactory($this->box);
-        $orientatedItemFactory->setLogger($this->logger);
-
-        return (bool) $orientatedItemFactory->getPossibleOrientationsInEmptyBox($itemToPack);
+        return (bool) $this->orientatedItemFactory->getPossibleOrientationsInEmptyBox($itemToPack);
     }
 
     /**
