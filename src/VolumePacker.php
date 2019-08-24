@@ -203,7 +203,9 @@ class VolumePacker implements LoggerAwareInterface
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
-                $this->rebuildItemList();
+                if (count($this->items) === 0) {
+                    $this->rebuildItemList();
+                }
             } elseif (count($layer->getItems()) === 0) { // zero items on layer
                 $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
@@ -224,7 +226,6 @@ class VolumePacker implements LoggerAwareInterface
                 $this->logger->debug('no items fit, so starting next vertical layer');
                 $this->skippedItems[] = $itemToPack;
                 $this->rebuildItemList();
-
                 return;
             }
         }
@@ -366,10 +367,12 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function rebuildItemList(): void
     {
-        if (count($this->items) === 0) {
-            $this->items = ItemList::fromArray($this->skippedItems, true);
-            $this->skippedItems = [];
+        $this->items = ItemList::fromArray(array_merge($this->skippedItems, iterator_to_array($this->items)), true);
+        /*while(count($this->items) > 0) {
+            $newList->insert($this->items->extract());
         }
+        $this->items = $newList;*/
+        $this->skippedItems = [];
     }
 
     /**
