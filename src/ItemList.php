@@ -41,6 +41,22 @@ class ItemList implements Countable, IteratorAggregate
     private $isSorted = false;
 
     /**
+     * Do a bulk create.
+     *
+     * @param  Item[]   $items
+     * @param  bool     $preSorted
+     * @return ItemList
+     */
+    public static function fromArray(array $items, bool $preSorted): self
+    {
+        $list = new static();
+        $list->list = array_reverse($items); // internal sort is largest at the end
+        $list->isSorted = $preSorted;
+
+        return $list;
+    }
+
+    /**
      * @param Item $item
      */
     public function insert(Item $item): void

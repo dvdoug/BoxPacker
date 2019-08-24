@@ -51,9 +51,9 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * List of items temporarily skipped to be packed.
      *
-     * @var ItemList
+     * @var array
      */
-    protected $skippedItems;
+    protected $skippedItems = [];
 
     /**
      * Remaining weight capacity of the box.
@@ -95,7 +95,6 @@ class VolumePacker implements LoggerAwareInterface
         $this->boxWidth = max($this->box->getInnerWidth(), $this->box->getInnerLength());
         $this->boxLength = min($this->box->getInnerWidth(), $this->box->getInnerLength());
         $this->remainingWeight = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
-        $this->skippedItems = new ItemList();
         $this->logger = new NullLogger();
 
         // we may have just rotated the box for packing purposes, record if we did
@@ -187,19 +186,21 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             } elseif ($widthLeft > 0 && count($this->items) > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
-                $this->skippedItems->insert($itemToPack);
+                $this->skippedItems[] = $itemToPack;
             } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $widthLeft += $rowWidth;
                 $lengthLeft -= $rowLength;
                 $y += $rowLength;
                 $x = $rowWidth = $rowLength = 0;
-                $this->rebuildItemList($itemToPack);
+                $this->skippedItems[] = $itemToPack;
+                $this->rebuildItemList();
                 $prevItem = null;
                 continue;
             } else {
                 $this->logger->debug('no items fit, so starting next vertical layer');
-                $this->rebuildItemList($itemToPack);
+                $this->skippedItems[] = $itemToPack;
+                $this->rebuildItemList();
 
                 return;
             }
@@ -370,18 +371,12 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Reintegrate skipped items into main list.
-     *
-     * @param Item|null $currentItem item from current iteration
      */
-    protected function rebuildItemList(?Item $currentItem = null): void
+    protected function rebuildItemList(): void
     {
         if (count($this->items) === 0) {
-            $this->items = $this->skippedItems;
-            $this->skippedItems = new ItemList();
-        }
-
-        if ($currentItem instanceof Item) {
-            $this->items->insert($currentItem);
+            $this->items = ItemList::fromArray($this->skippedItems, true);
+            $this->skippedItems = [];
         }
     }
 
