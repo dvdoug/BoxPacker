@@ -182,7 +182,6 @@ class VolumePacker implements LoggerAwareInterface
 
             //skip items that are simply too heavy or too large
             if (!$this->checkNonDimensionalConstraints($itemToPack)) {
-                $this->rebuildItemList();
                 continue;
             }
 
