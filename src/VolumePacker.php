@@ -181,7 +181,7 @@ class VolumePacker implements LoggerAwareInterface
             $itemToPack = $this->items->extract();
 
             //skip items that are simply too heavy or too large
-            if (!$this->checkConstraints($itemToPack)) {
+            if (!$this->checkNonDimensionalConstraints($itemToPack)) {
                 $this->rebuildItemList();
                 continue;
             }
@@ -344,20 +344,6 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Check item generally fits into box.
-     *
-     * @param Item $itemToPack
-     *
-     * @return bool
-     */
-    protected function checkConstraints(
-        Item $itemToPack
-    ): bool {
-        return $this->checkNonDimensionalConstraints($itemToPack) &&
-               $this->checkDimensionalConstraints($itemToPack);
-    }
-
-    /**
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
      *
@@ -374,18 +360,6 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $weightOK;
-    }
-
-    /**
-     * Check the item physically fits in the box (at all).
-     *
-     * @param Item $itemToPack
-     *
-     * @return bool
-     */
-    protected function checkDimensionalConstraints(Item $itemToPack): bool
-    {
-        return (bool) $this->orientatedItemFactory->getPossibleOrientationsInEmptyBox($itemToPack);
     }
 
     /**
