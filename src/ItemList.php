@@ -12,11 +12,11 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use function array_key_last;
 use function array_pop;
 use function array_reverse;
 use function array_slice;
 use function count;
-use function end;
 use function usort;
 
 /**
@@ -105,9 +105,8 @@ class ItemList implements Countable, IteratorAggregate
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
         }
-        $temp = $this->list;
 
-        return end($temp);
+        return $this->list[array_key_last($this->list)];
     }
 
     /**
