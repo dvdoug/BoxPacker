@@ -368,10 +368,6 @@ class VolumePacker implements LoggerAwareInterface
     protected function rebuildItemList(): void
     {
         $this->items = ItemList::fromArray(array_merge($this->skippedItems, iterator_to_array($this->items)), true);
-        /*while(count($this->items) > 0) {
-            $newList->insert($this->items->extract());
-        }
-        $this->items = $newList;*/
         $this->skippedItems = [];
     }
 
