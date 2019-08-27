@@ -39,9 +39,9 @@ class OrientatedItem implements JsonSerializable
     protected $depth;
 
     /**
-     * @var float[]
+     * @var bool[]
      */
-    protected static $tippingPointCache = [];
+    protected static $stabilityCache = [];
 
     /**
      * Constructor.
@@ -110,23 +110,6 @@ class OrientatedItem implements JsonSerializable
     }
 
     /**
-     * @return float
-     */
-    public function getTippingPoint(): float
-    {
-        $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
-
-        if (isset(static::$tippingPointCache[$cacheKey])) {
-            $tippingPoint = static::$tippingPointCache[$cacheKey];
-        } else {
-            $tippingPoint = atan(min($this->length, $this->width) / ($this->depth ?: 1));
-            static::$tippingPointCache[$cacheKey] = $tippingPoint;
-        }
-
-        return $tippingPoint;
-    }
-
-    /**
      * Is this item stable (low centre of gravity), calculated as if the tipping point is >15 degrees.
      *
      * N.B. Assumes equal weight distribution.
@@ -135,7 +118,8 @@ class OrientatedItem implements JsonSerializable
      */
     public function isStable(): bool
     {
-        return $this->getTippingPoint() > 0.261;
+        $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
+        return static::$stabilityCache[$cacheKey] ?? (static::$stabilityCache[$cacheKey] = atan(min($this->length, $this->width) / ($this->depth ?: 1)) > 0.261);
     }
 
     /**
