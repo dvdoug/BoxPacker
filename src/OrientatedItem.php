@@ -39,6 +39,11 @@ class OrientatedItem implements JsonSerializable
     protected $depth;
 
     /**
+     * @var int
+     */
+    protected $surfaceFootprint;
+
+    /**
      * @var bool[]
      */
     protected static $stabilityCache = [];
@@ -57,6 +62,7 @@ class OrientatedItem implements JsonSerializable
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
+        $this->surfaceFootprint = $width * $length;
     }
 
     /**
@@ -106,7 +112,7 @@ class OrientatedItem implements JsonSerializable
      */
     public function getSurfaceFootprint(): int
     {
-        return $this->width * $this->length;
+        return $this->surfaceFootprint;
     }
 
     /**
