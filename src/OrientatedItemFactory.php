@@ -165,7 +165,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         //Special case items that are the same as what we just packed - keep orientation
-        if ($isSame) {
+        if ($isSame && $prevItem) {
             $orientationsDimensions[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
         } else {
             //simple 2D rotation
