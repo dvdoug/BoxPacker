@@ -125,6 +125,7 @@ class OrientatedItem implements JsonSerializable
     public function isStable(): bool
     {
         $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
+
         return static::$stabilityCache[$cacheKey] ?? (static::$stabilityCache[$cacheKey] = atan(min($this->length, $this->width) / ($this->depth ?: 1)) > 0.261);
     }
 

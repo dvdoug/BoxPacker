@@ -189,7 +189,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         foreach ($orientationsDimensions as $dimensions) {
             $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
-        };
+        }
 
         if ($item instanceof ConstrainedPlacementItem) {
             $box = $this->box;
