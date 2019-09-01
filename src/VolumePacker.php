@@ -211,6 +211,10 @@ class VolumePacker implements LoggerAwareInterface
             } elseif ($widthLeft > 0 && count($this->items) > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
                 $this->skippedItems[] = $itemToPack;
+                // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
+                while ($this->items->count() > 2 && $this->orientatedItemFactory->isSameDimensions($itemToPack, $this->items->top())) {
+                    $this->skippedItems[] = $this->items->extract();
+                }
             } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $widthLeft += $rowWidth;

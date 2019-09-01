@@ -311,7 +311,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      *
      * @return bool
      */
-    protected function isSameDimensions(Item $itemA, Item $itemB): bool
+    public function isSameDimensions(Item $itemA, Item $itemB): bool
     {
         $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
         $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
