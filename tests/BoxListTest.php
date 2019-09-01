@@ -83,16 +83,18 @@ class BoxListTest extends TestCase
      */
     public function testIssue163(): void
     {
-        $box2 = new TestBox('Box2', 202, 152, 32, 10, 200, 150, 30, 100);
-        $box3 = new TestBox('Box3', 202, 152, 32, 10, 200, 150, 30, 250);
+        $box2 = new TestBox('Box3', 202, 152, 32, 10, 200, 150, 30, 100);
+        $box4 = new TestBox('Box2', 202, 152, 32, 5, 200, 150, 30, 100);
+        $box3 = new TestBox('Box4', 202, 152, 32, 10, 200, 150, 30, 250);
         $box1 = new TestBox('Box1', 202, 152, 32, 10, 200, 150, 30, 50);
 
         $list = new BoxList();
-        $list->insert($box1);
-        $list->insert($box2);
         $list->insert($box3);
+        $list->insert($box2);
+        $list->insert($box4);
+        $list->insert($box1);
 
         $sorted = iterator_to_array($list, false);
-        self::assertEquals([$box1, $box2, $box3], $sorted);
+        self::assertEquals([$box1, $box2, $box3, $box4], $sorted);
     }
 }
