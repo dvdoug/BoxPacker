@@ -15,9 +15,6 @@ use DVDoug\BoxPacker\Test\ConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \DVDoug\BoxPacker\VolumePacker
- */
 class VolumePackerTest extends TestCase
 {
     /**

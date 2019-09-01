@@ -13,9 +13,6 @@ use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 use function iterator_to_array;
 
-/**
- * @covers \DVDoug\BoxPacker\Packer
- */
 class PackerTest extends TestCase
 {
     public function testPackThreeItemsOneDoesntFitInAnyBox(): void
