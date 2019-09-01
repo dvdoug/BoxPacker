@@ -122,7 +122,7 @@ class WeightRedistributor implements LoggerAwareInterface
             }
 
             $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]));
-            if (count($newLighterBoxes) !== 1) {
+            if ($newLighterBoxes->count() !== 1) {
                 continue; //only want to move this item if it still fits in a single box
             }
 

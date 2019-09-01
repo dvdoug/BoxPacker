@@ -144,7 +144,7 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
-        while (count($this->items) > 0) {
+        while ($this->items->count() > 0) {
             $layerStartDepth = $this->getCurrentPackedDepth();
             $this->packLayer($layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
         }
@@ -176,7 +176,7 @@ class VolumePacker implements LoggerAwareInterface
         $prevItem = null;
         $x = $y = $rowWidth = $rowLength = $layerDepth = 0;
 
-        while (count($this->items) > 0) {
+        while ($this->items->count() > 0) {
             $itemToPack = $this->items->extract();
 
             //skip items that are simply too heavy or too large
@@ -202,13 +202,13 @@ class VolumePacker implements LoggerAwareInterface
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
-                if (count($this->items) === 0) {
+                if ($this->items->count() === 0) {
                     $this->rebuildItemList();
                 }
             } elseif (count($layer->getItems()) === 0) { // zero items on layer
                 $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
-            } elseif ($widthLeft > 0 && count($this->items) > 0) { // skip for now, move on to the next item
+            } elseif ($widthLeft > 0 && $this->items->count() > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
                 $this->skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
@@ -321,7 +321,7 @@ class VolumePacker implements LoggerAwareInterface
         int $z,
         int $rowLength
     ): void {
-        while (count($this->items) > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
+        while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
             $stackedItem = $this->getOrientationForItem(
                 $this->items->top(),
                 $prevItem,
@@ -397,7 +397,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function hasItemsLeftToPack(): bool
     {
-        return count($this->skippedItems) + count($this->items) > 0;
+        return count($this->skippedItems) + $this->items->count() > 0;
     }
 
     /**
