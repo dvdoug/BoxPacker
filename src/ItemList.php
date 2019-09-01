@@ -107,8 +107,9 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
 
-        if (PHP_VERSION_ID < 70300) {
+        if (\PHP_VERSION_ID < 70300) {
             $temp = $this->list;
+
             return end($temp);
         }
 
