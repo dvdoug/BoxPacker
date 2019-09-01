@@ -199,7 +199,7 @@ class Packer implements LoggerAwareInterface
      *
      * @return PackedBox
      */
-    protected function findBestBoxFromIteration($packedBoxes): PackedBox
+    protected function findBestBoxFromIteration(array $packedBoxes): PackedBox
     {
         //Check iteration was productive
         if (count($packedBoxes) === 0) {
