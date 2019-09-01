@@ -17,6 +17,7 @@ use function array_pop;
 use function array_reverse;
 use function array_slice;
 use function count;
+use function end;
 use function usort;
 
 /**
@@ -104,6 +105,11 @@ class ItemList implements Countable, IteratorAggregate
         if (!$this->isSorted) {
             usort($this->list, [$this, 'compare']);
             $this->isSorted = true;
+        }
+
+        if (PHP_VERSION_ID < 70300) {
+            $temp = $this->list;
+            return end($temp);
         }
 
         return $this->list[array_key_last($this->list)];

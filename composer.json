@@ -13,8 +13,7 @@
     "require": {
         "php": "^7.1",
         "ext-json": "*",
-        "psr/log": "^1.0",
-        "symfony/polyfill-php73": "^1.9"
+        "psr/log": "^1.0"
     },
     "require-dev": {
         "behat/behat": "^3.5",
