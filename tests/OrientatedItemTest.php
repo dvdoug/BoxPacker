@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class OrientatedItemTest extends TestCase
 {
-   public function testSerialize(): void
+    public function testSerialize(): void
     {
         $item = new OrientatedItem(new TestItem('Test', 1, 2, 3, 4, false), 1, 2, 3);
 
@@ -27,6 +27,5 @@ class OrientatedItemTest extends TestCase
         self::assertArrayHasKey('depth', $serializedDataKeys);
 
         self::assertSame('1|2|3', (string) $item);
-
     }
 }

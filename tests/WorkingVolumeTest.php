@@ -47,6 +47,5 @@ class WorkingVolumeTest extends TestCase
         self::assertArrayHasKey('length', $serializedDataKeys);
         self::assertArrayHasKey('depth', $serializedDataKeys);
         self::assertArrayHasKey('maxWeight', $serializedDataKeys);
-
     }
 }
