@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.4.0] - 2019-09-09
+### Added
+ - Added ability to specify that items are pre-sorted when creating an `ItemList` from an array
+### Changed
+ - Significant speed improvements when dealing with a large number of items
+
 ## [3.3.0] - 2019-07-14
 ### Added
  - Added `ConstrainedPlacementItem` as a more powerful version of `ConstrainedItem`
@@ -317,8 +323,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.3.0...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.4.0...master
 
+[3.4.0]: https://github.com/dvdoug/BoxPacker/compare/3.3.0...3.4.0
 [3.3.0]: https://github.com/dvdoug/BoxPacker/compare/3.2.2...3.3.0
 [3.2.2]: https://github.com/dvdoug/BoxPacker/compare/3.2.1...3.2.2
 [3.2.1]: https://github.com/dvdoug/BoxPacker/compare/3.2.0...3.2.1
