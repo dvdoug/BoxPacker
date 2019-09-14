@@ -4,7 +4,6 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 use JsonSerializable;
@@ -37,9 +36,14 @@ class OrientatedItem implements JsonSerializable
     protected $depth;
 
     /**
-     * @var float[]
+     * @var int
      */
-    protected static $tippingPointCache = [];
+    protected $surfaceFootprint;
+
+    /**
+     * @var bool[]
+     */
+    protected static $stabilityCache = [];
 
     /**
      * Constructor.
@@ -55,6 +59,7 @@ class OrientatedItem implements JsonSerializable
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
+        $this->surfaceFootprint = $width * $length;
     }
 
     /**
@@ -104,24 +109,7 @@ class OrientatedItem implements JsonSerializable
      */
     public function getSurfaceFootprint()
     {
-        return $this->width * $this->length;
-    }
-
-    /**
-     * @return float
-     */
-    public function getTippingPoint()
-    {
-        $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
-
-        if (isset(static::$tippingPointCache[$cacheKey])) {
-            $tippingPoint = static::$tippingPointCache[$cacheKey];
-        } else {
-            $tippingPoint = atan(min($this->length, $this->width) / ($this->depth ?: 1));
-            static::$tippingPointCache[$cacheKey] = $tippingPoint;
-        }
-
-        return $tippingPoint;
+        return $this->surfaceFootprint;
     }
 
     /**
@@ -133,7 +121,13 @@ class OrientatedItem implements JsonSerializable
      */
     public function isStable()
     {
-        return $this->getTippingPoint() > 0.261;
+        $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
+
+        if (!isset(static::$stabilityCache[$cacheKey])) {
+            static::$stabilityCache[$cacheKey] = (atan(min($this->length, $this->width) / ($this->depth ?: 1)) > 0.261);
+        }
+
+         return static::$stabilityCache[$cacheKey];
     }
 
     /**

@@ -8,6 +8,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 
 /**
  * Figure out orientations for an item and a given set of dimensions.
@@ -30,6 +31,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     public function __construct(Box $box)
     {
         $this->box = $box;
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -149,35 +151,47 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $z,
         PackedItemList $prevPackedItemList
     ) {
-        $orientations = [];
+        $orientations = $orientationsDimensions = [];
+
+        $isSame = false;
+        if ($prevItem) {
+            $itemADimensions = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+            $itemBDimensions = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
+            sort($itemADimensions);
+            sort($itemBDimensions);
+            $isSame = ($itemADimensions === $itemBDimensions);
+        }
 
         //Special case items that are the same as what we just packed - keep orientation
-        if ($prevItem && $this->isSameDimensions($prevItem->getItem(), $item)) {
-            $orientations[] = new OrientatedItem($item, $prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth());
+        if ($isSame && $prevItem) {
+            $orientationsDimensions[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
         } else {
             //simple 2D rotation
-            $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getLength(), $item->getDepth());
-            $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getWidth(), $item->getDepth());
+            $orientationsDimensions[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+            $orientationsDimensions[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
 
             //add 3D rotation if we're allowed
             if (!$item->getKeepFlat()) {
-                $orientations[] = new OrientatedItem($item, $item->getWidth(), $item->getDepth(), $item->getLength());
-                $orientations[] = new OrientatedItem($item, $item->getLength(), $item->getDepth(), $item->getWidth());
-                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getWidth(), $item->getLength());
-                $orientations[] = new OrientatedItem($item, $item->getDepth(), $item->getLength(), $item->getWidth());
+                $orientationsDimensions[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
+                $orientationsDimensions[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
+                $orientationsDimensions[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];
+                $orientationsDimensions[] = [$item->getDepth(), $item->getLength(), $item->getWidth()];
             }
         }
 
-        $orientations = array_unique($orientations);
-
         //remove any that simply don't fit
-        $orientations = array_filter($orientations, function (OrientatedItem $i) use ($widthLeft, $lengthLeft, $depthLeft) {
-            return $i->getWidth() <= $widthLeft && $i->getLength() <= $lengthLeft && $i->getDepth() <= $depthLeft;
+        $orientationsDimensions = array_unique($orientationsDimensions, SORT_REGULAR);
+        $orientationsDimensions = array_filter($orientationsDimensions, static function (array $i) use ($widthLeft, $lengthLeft, $depthLeft) {
+            return $i[0] <= $widthLeft && $i[1] <= $lengthLeft && $i[2] <= $depthLeft;
         });
+
+        foreach ($orientationsDimensions as $dimensions) {
+            $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
+        }
 
         if ($item instanceof ConstrainedPlacementItem) {
             $box = $this->box;
-            $orientations = array_filter($orientations, function (OrientatedItem $i) use ($box, $x, $y, $z, $prevPackedItemList) {
+            $orientations = array_filter($orientations, static function (OrientatedItem $i) use ($box, $x, $y, $z, $prevPackedItemList) {
                 /** @var ConstrainedPlacementItem $constrainedItem */
                 $constrainedItem = $i->getItem();
 
@@ -295,7 +309,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      *
      * @return bool
      */
-    protected function isSameDimensions(Item $itemA, Item $itemB)
+    public function isSameDimensions(Item $itemA, Item $itemB)
     {
         $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
         $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
