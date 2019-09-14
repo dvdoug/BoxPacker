@@ -40,6 +40,12 @@ class BoxList extends \SplMinHeap
         }
 
         // maximum weight capacity as fallback decider
-        return ($boxB->getMaxWeight() - $boxB->getEmptyWeight()) - ($boxA->getMaxWeight() - $boxA->getEmptyWeight());
+        $maxWeightDecider = ($boxB->getMaxWeight() - $boxB->getEmptyWeight()) - ($boxA->getMaxWeight() - $boxA->getEmptyWeight());
+
+        if ($maxWeightDecider === 0) {
+            return PHP_MAJOR_VERSION > 5 ? -1 : 1;
+        }
+
+        return $maxWeightDecider;
     }
 }
