@@ -10,12 +10,13 @@ build:
   environment:
     # Languages
     php:
-      version: "7.1"
+      version: "7.3"
 
   tests:
     override:
       -
         command: 'vendor/bin/phpunit --coverage-clover=build/phpunit.clover --exclude-group efficiency'
+        idle_timeout: 3600
         coverage:
             file: 'build/phpunit.clover'
             format: 'clover'
