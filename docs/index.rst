@@ -14,8 +14,8 @@ BoxPacker is licensed under the `MIT license`_.
 
 .. warning::
 
-    You are reading the documentation for BoxPacker v1. Although still supported with occasional backports from newer versions,
-    all users are recommended to upgrade to v2/v3 which removes the "always keep flat" limitation on items.
+    You are reading the documentation for BoxPacker v1 which is no longer maintained.
+    All users are recommended to upgrade to v2/v3 which removes the "always keep flat" limitation on items.
 
 .. _MIT license: https://github.com/dvdoug/BoxPacker/blob/master/license.txt
 
