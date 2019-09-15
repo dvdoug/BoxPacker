@@ -40,6 +40,21 @@ class ItemList extends \SplMaxHeap
     }
 
     /**
+     * Do a bulk create.
+     *
+     * @param  Item[]   $items
+     * @return ItemList
+     */
+    public static function fromArray(array $items)
+    {
+        $list = new static();
+        foreach ($items as $item) {
+            $list->insert($item);
+        }
+        return $list;
+    }
+
+    /**
      * Get copy of this list as a standard PHP array.
      *
      * @return Item[]

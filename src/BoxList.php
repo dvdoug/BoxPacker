@@ -38,19 +38,19 @@ class BoxList extends \SplMinHeap
         }
 
         // smallest empty weight
-        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
+        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
             return 1;
         }
-        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
+        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
             return -1;
         }
 
         // maximum weight capacity as fallback decider
-        if ($boxB->getMaxWeight() > $boxA->getMaxWeight()) {
-            return 1;
-        }
-        if ($boxA->getMaxWeight() > $boxB->getMaxWeight()) {
+        if (($boxA->getMaxWeight() - $boxA->getEmptyWeight()) > ($boxB->getMaxWeight() - $boxB->getEmptyWeight())) {
             return -1;
+        }
+        if (($boxB->getMaxWeight() - $boxB->getEmptyWeight()) > ($boxA->getMaxWeight() - $boxA->getEmptyWeight())) {
+            return 1;
         }
 
         return 0;

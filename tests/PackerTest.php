@@ -10,9 +10,6 @@ use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \DVDoug\BoxPacker\Packer
- */
 class PackerTest extends TestCase
 {
     /**
@@ -20,6 +17,9 @@ class PackerTest extends TestCase
      */
     public function testPackThreeItemsOneDoesntFitInAnyBox()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('\DVDoug\BoxPacker\ItemTooLargeException');
+        }
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
@@ -41,6 +41,9 @@ class PackerTest extends TestCase
      */
     public function testPackWithoutBox()
     {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('\DVDoug\BoxPacker\ItemTooLargeException');
+        }
         $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000);
         $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000);
         $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000);

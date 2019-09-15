@@ -13,9 +13,6 @@ use DVDoug\BoxPacker\Test\ConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \DVDoug\BoxPacker\VolumePacker
- */
 class VolumePackerTest extends TestCase
 {
     /**
@@ -305,5 +302,63 @@ class VolumePackerTest extends TestCase
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
         self::assertCount(10, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #174.
+     */
+    public function testIssue174()
+    {
+        $box = new TestBox('Box', 0, 0, 0, 10, 5000, 5000, 5000, 10000);
+        $items = new ItemList();
+
+        $items->insert(new TestItem('Item 0', 1000, 1650, 850, 500));
+        $items->insert(new TestItem('Item 1', 960, 1640, 800, 500));
+        $items->insert(new TestItem('Item 2', 950, 1650, 800, 500));
+        $items->insert(new TestItem('Item 3', 1000, 2050, 800, 500));
+        $items->insert(new TestItem('Item 4', 1000, 2100, 850, 500));
+        $items->insert(new TestItem('Item 5', 950, 2050, 800, 500));
+        $items->insert(new TestItem('Item 6', 940, 970, 800, 500));
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(7, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #172.
+     */
+    public function testIssue172A()
+    {
+        $box = new TestBox('Box', 800, 1200, 1300, 0, 800, 1200, 1300, 500000);
+        $items = array_fill(0, 8928, new TestItem('Larger', 150, 110, 5, 56));
+
+        $volumePacker = new VolumePacker($box, ItemList::fromArray($items));
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(8928, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #172.
+     */
+    public function testIssue172B()
+    {
+        $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
+
+        $items = new ItemList();
+        for ($i = 0; $i < 10; ++$i) {
+            $items->insert(new TestItem('Larger', 10, 5, 8, 0));
+        }
+
+        for ($i = 0; $i < 5; ++$i) {
+            $items->insert(new TestItem('Smaller', 5, 5, 3, 0));
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(15, $packedBox->getItems());
     }
 }

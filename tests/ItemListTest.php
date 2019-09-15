@@ -92,6 +92,29 @@ class ItemListTest extends TestCase
     }
 
     /**
+     * Test that we can retrieve an accurate count of items in the list.
+     */
+    public function testTopN()
+    {
+        $itemList = new ItemList();
+
+        $item1 = new TestItem('Item A', 20, 20, 2, 100);
+        $itemList->insert($item1);
+
+        $item2 = new TestItem('Item B', 20, 20, 2, 100);
+        $itemList->insert($item2);
+
+        $item3 = new TestItem('Item C', 20, 20, 2, 100);
+        $itemList->insert($item3);
+
+        $top2 = $itemList->topN(2);
+
+        self::assertCount(2, $top2);
+        self::assertSame($item1, $top2->extract());
+        self::assertSame($item2, $top2->extract());
+    }
+
+    /**
      * Test we can retrieve the "top" (next) item in the list.
      */
     public function testExtract()
