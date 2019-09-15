@@ -29,23 +29,30 @@ class BoxList extends \SplMinHeap
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
 
-        $volumeDecider = $boxBVolume - $boxAVolume; // try smallest box first
-        $emptyWeightDecider = $boxA->getEmptyWeight() - $boxB->getEmptyWeight(); // with smallest empty weight
-
-        if ($volumeDecider !== 0) {
-            return $volumeDecider;
+        // try smallest box first
+        if ($boxBVolume > $boxAVolume) {
+            return 1;
         }
-        if ($emptyWeightDecider !== 0) {
-            return $emptyWeightDecider;
+        if ($boxAVolume > $boxBVolume) {
+            return -1;
+        }
+
+        // smallest empty weight
+        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
+            return 1;
+        }
+        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
+            return -1;
         }
 
         // maximum weight capacity as fallback decider
-        $maxWeightDecider = ($boxB->getMaxWeight() - $boxB->getEmptyWeight()) - ($boxA->getMaxWeight() - $boxA->getEmptyWeight());
-
-        if ($maxWeightDecider === 0) {
-            return PHP_MAJOR_VERSION > 5 ? -1 : 1;
+        if (($boxA->getMaxWeight() - $boxA->getEmptyWeight()) > ($boxB->getMaxWeight() - $boxB->getEmptyWeight())) {
+            return -1;
+        }
+        if (($boxB->getMaxWeight() - $boxB->getEmptyWeight()) > ($boxA->getMaxWeight() - $boxA->getEmptyWeight())) {
+            return 1;
         }
 
-        return $maxWeightDecider;
+        return 0;
     }
 }
