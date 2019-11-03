@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function array_map;
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use Traversable;
-use function array_map;
-use function count;
 use function usort;
 
 /**
@@ -37,17 +37,11 @@ class PackedItemList implements Countable, IteratorAggregate
      */
     private $isSorted = false;
 
-    /**
-     * @param PackedItem $item
-     */
     public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
     }
 
-    /**
-     * @return Traversable
-     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
@@ -60,8 +54,6 @@ class PackedItemList implements Countable, IteratorAggregate
 
     /**
      * Number of items in list.
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -82,12 +74,6 @@ class PackedItemList implements Countable, IteratorAggregate
         }, $this->list);
     }
 
-    /**
-     * @param PackedItem $itemA
-     * @param PackedItem $itemB
-     *
-     * @return int
-     */
     private function compare(PackedItem $itemA, PackedItem $itemB): int
     {
         $itemAVolume = $itemA->getItem()->getWidth() * $itemA->getItem()->getLength() * $itemA->getItem()->getDepth();

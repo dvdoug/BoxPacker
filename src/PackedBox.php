@@ -41,8 +41,6 @@ class PackedBox
 
     /**
      * Get box used.
-     *
-     * @return Box
      */
     public function getBox(): Box
     {
@@ -51,8 +49,6 @@ class PackedBox
 
     /**
      * Get items packed.
-     *
-     * @return PackedItemList
      */
     public function getItems(): PackedItemList
     {
@@ -91,8 +87,6 @@ class PackedBox
 
     /**
      * Get remaining width inside box for another item.
-     *
-     * @return int
      */
     public function getRemainingWidth(): int
     {
@@ -101,8 +95,6 @@ class PackedBox
 
     /**
      * Get remaining length inside box for another item.
-     *
-     * @return int
      */
     public function getRemainingLength(): int
     {
@@ -111,8 +103,6 @@ class PackedBox
 
     /**
      * Get remaining depth inside box for another item.
-     *
-     * @return int
      */
     public function getRemainingDepth(): int
     {
@@ -121,8 +111,6 @@ class PackedBox
 
     /**
      * Used width inside box for packing items.
-     *
-     * @return int
      */
     public function getUsedWidth(): int
     {
@@ -138,8 +126,6 @@ class PackedBox
 
     /**
      * Used length inside box for packing items.
-     *
-     * @return int
      */
     public function getUsedLength(): int
     {
@@ -155,8 +141,6 @@ class PackedBox
 
     /**
      * Used depth inside box for packing items.
-     *
-     * @return int
      */
     public function getUsedDepth(): int
     {
@@ -172,17 +156,12 @@ class PackedBox
 
     /**
      * Get remaining weight inside box for another item.
-     *
-     * @return int
      */
     public function getRemainingWeight(): int
     {
         return $this->box->getMaxWeight() - $this->getWeight();
     }
 
-    /**
-     * @return int
-     */
     public function getInnerVolume(): int
     {
         return $this->box->getInnerWidth() * $this->box->getInnerLength() * $this->box->getInnerDepth();
@@ -190,8 +169,6 @@ class PackedBox
 
     /**
      * Get used volume of the packed box.
-     *
-     * @return int
      */
     public function getUsedVolume(): int
     {
@@ -207,8 +184,6 @@ class PackedBox
 
     /**
      * Get unused volume of the packed box.
-     *
-     * @return int
      */
     public function getUnusedVolume(): int
     {
@@ -217,8 +192,6 @@ class PackedBox
 
     /**
      * Get volume utilisation of the packed box.
-     *
-     * @return float
      */
     public function getVolumeUtilisation(): float
     {
@@ -227,9 +200,6 @@ class PackedBox
 
     /**
      * Constructor.
-     *
-     * @param Box            $box
-     * @param PackedItemList $packedItemList
      */
     public function __construct(Box $box, PackedItemList $packedItemList)
     {

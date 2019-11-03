@@ -18,16 +18,6 @@ interface ConstrainedPlacementItem extends Item
 {
     /**
      * Hook for user implementation of item-specific constraints, e.g. max <x> batteries per box.
-     *
-     * @param  Box            $box
-     * @param  PackedItemList $alreadyPackedItems
-     * @param  int            $proposedX
-     * @param  int            $proposedY
-     * @param  int            $proposedZ
-     * @param  int            $width
-     * @param  int            $length
-     * @param  int            $depth
-     * @return bool
      */
     public function canBePacked(
         Box $box,

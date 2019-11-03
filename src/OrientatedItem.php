@@ -50,11 +50,6 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Constructor.
-     *
-     * @param Item $item
-     * @param int  $width
-     * @param int  $length
-     * @param int  $depth
      */
     public function __construct(Item $item, int $width, int $length, int $depth)
     {
@@ -67,8 +62,6 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Item.
-     *
-     * @return Item
      */
     public function getItem(): Item
     {
@@ -77,8 +70,6 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Item width in mm in it's packed orientation.
-     *
-     * @return int
      */
     public function getWidth(): int
     {
@@ -87,8 +78,6 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Item length in mm in it's packed orientation.
-     *
-     * @return int
      */
     public function getLength(): int
     {
@@ -97,8 +86,6 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Item depth in mm in it's packed orientation.
-     *
-     * @return int
      */
     public function getDepth(): int
     {
@@ -107,8 +94,6 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Calculate the surface footprint of the current orientation.
-     *
-     * @return int
      */
     public function getSurfaceFootprint(): int
     {
@@ -119,8 +104,6 @@ class OrientatedItem implements JsonSerializable
      * Is this item stable (low centre of gravity), calculated as if the tipping point is >15 degrees.
      *
      * N.B. Assumes equal weight distribution.
-     *
-     * @return bool
      */
     public function isStable(): bool
     {
@@ -142,9 +125,6 @@ class OrientatedItem implements JsonSerializable
         ];
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->width . '|' . $this->length . '|' . $this->depth;

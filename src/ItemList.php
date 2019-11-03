@@ -8,16 +8,16 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
-use Traversable;
 use function array_key_last;
 use function array_pop;
 use function array_reverse;
 use function array_slice;
+use ArrayIterator;
 use function count;
+use Countable;
 use function end;
+use IteratorAggregate;
+use Traversable;
 use function usort;
 
 /**
@@ -45,7 +45,6 @@ class ItemList implements Countable, IteratorAggregate
      * Do a bulk create.
      *
      * @param  Item[]   $items
-     * @param  bool     $preSorted
      * @return ItemList
      */
     public static function fromArray(array $items, bool $preSorted = false): self
@@ -57,9 +56,6 @@ class ItemList implements Countable, IteratorAggregate
         return $list;
     }
 
-    /**
-     * @param Item $item
-     */
     public function insert(Item $item): void
     {
         $this->list[] = $item;
@@ -67,8 +63,6 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * Remove item from list.
-     *
-     * @param Item $item
      */
     public function remove(Item $item): void
     {
@@ -82,8 +76,6 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * @internal
-     *
-     * @return Item
      */
     public function extract(): Item
     {
@@ -97,8 +89,6 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * @internal
-     *
-     * @return Item
      */
     public function top(): Item
     {
@@ -117,7 +107,6 @@ class ItemList implements Countable, IteratorAggregate
     /**
      * @internal
      *
-     * @param  int      $n
      * @return ItemList
      */
     public function topN(int $n): self
@@ -134,9 +123,6 @@ class ItemList implements Countable, IteratorAggregate
         return $topNList;
     }
 
-    /**
-     * @return Traversable
-     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
@@ -149,20 +135,12 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * Number of items in list.
-     *
-     * @return int
      */
     public function count(): int
     {
         return count($this->list);
     }
 
-    /**
-     * @param Item $itemA
-     * @param Item $itemB
-     *
-     * @return int
-     */
     private function compare(Item $itemA, Item $itemB): int
     {
         $volumeDecider = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth() <=> $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();

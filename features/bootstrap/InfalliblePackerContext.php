@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use DVDoug\BoxPacker\InfalliblePacker;
 use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\ItemList;
@@ -19,7 +21,7 @@ class InfalliblePackerContext extends PackerContext
     /**
      * @When I do an infallible packing
      */
-    public function iDoAnInfalliblePacking()
+    public function iDoAnInfalliblePacking(): void
     {
         $packer = new InfalliblePacker();
         $packer->setBoxes($this->boxList);
@@ -34,13 +36,13 @@ class InfalliblePackerContext extends PackerContext
     public function theUnpackedItemListShouldHaveItems(
         $qty,
         $itemType
-    ) {
+    ): void {
         $foundItems = 0;
 
         /** @var Item $unpackedItem */
         foreach ($this->unpackedItemList as $unpackedItem) {
             if ($unpackedItem->getDescription() === $itemType) {
-                $foundItems++;
+                ++$foundItems;
             }
         }
 

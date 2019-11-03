@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use function count;
 use function max;
 use function min;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Actual packer.
@@ -93,9 +93,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Constructor.
-     *
-     * @param Box      $box
-     * @param ItemList $items
      */
     public function __construct(Box $box, ItemList $items)
     {
@@ -117,8 +114,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Sets a logger.
-     *
-     * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger): void
     {
@@ -128,7 +123,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * @internal
-     * @param bool $lookAhead
      */
     public function setLookAheadMode(bool $lookAhead): void
     {
@@ -164,11 +158,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Pack items into an individual vertical layer.
-     *
-     * @param int $startDepth
-     * @param int $widthLeft
-     * @param int $lengthLeft
-     * @param int $depthLeft
      */
     protected function packLayer(int $startDepth, int $widthLeft, int $lengthLeft, int $depthLeft): void
     {
@@ -247,21 +236,6 @@ class VolumePacker implements LoggerAwareInterface
         $this->layers = $stabiliser->stabilise($this->layers);
     }
 
-    /**
-     * @param Item            $itemToPack
-     * @param PackedItem|null $prevItem
-     * @param ItemList        $nextItems
-     * @param bool            $isLastItem
-     * @param int             $maxWidth
-     * @param int             $maxLength
-     * @param int             $maxDepth
-     * @param int             $rowLength
-     * @param int             $x
-     * @param int             $y
-     * @param int             $z
-     *
-     * @return OrientatedItem|null
-     */
     protected function getOrientationForItem(
         Item $itemToPack,
         ?PackedItem $prevItem,
@@ -298,16 +272,6 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Figure out if we can stack the next item vertically on top of this rather than side by side
      * Used when we've packed a tall item, and have just put a shorter one next to it.
-     *
-     * @param PackedLayer     $layer
-     * @param PackedItem|null $prevItem
-     * @param ItemList        $nextItems
-     * @param int             $maxWidth
-     * @param int             $maxLength
-     * @param int             $maxDepth
-     * @param int             $x
-     * @param int             $y
-     * @param int             $z
      */
     protected function tryAndStackItemsIntoSpace(
         PackedLayer $layer,
@@ -350,10 +314,6 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
-     *
-     * @param Item $itemToPack
-     *
-     * @return bool
      */
     protected function checkNonDimensionalConstraints(Item $itemToPack): bool
     {
@@ -392,8 +352,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Are there items left to pack?
-     *
-     * @return bool
      */
     protected function hasItemsLeftToPack(): bool
     {
@@ -402,8 +360,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Generate a single list of items packed.
-     *
-     * @return PackedItemList
      */
     protected function getPackedItemList(): PackedItemList
     {
@@ -419,8 +375,6 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Return the current packed depth.
-     *
-     * @return int
      */
     protected function getCurrentPackedDepth(): int
     {

@@ -28,8 +28,6 @@ class PackedLayer
 
     /**
      * Add a packed item to this layer.
-     *
-     * @param PackedItem $packedItem
      */
     public function insert(PackedItem $packedItem): void
     {

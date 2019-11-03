@@ -60,13 +60,6 @@ class TestItem implements Item, JsonSerializable
 
     /**
      * TestItem constructor.
-     *
-     * @param string $description
-     * @param int    $width
-     * @param int    $length
-     * @param int    $depth
-     * @param int    $weight
-     * @param bool   $keepFlat
      */
     public function __construct(
         string $description,
@@ -90,49 +83,31 @@ class TestItem implements Item, JsonSerializable
         $this->b->a = $this->a;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @return int
-     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @return int
-     */
     public function getLength(): int
     {
         return $this->length;
     }
 
-    /**
-     * @return int
-     */
     public function getDepth(): int
     {
         return $this->depth;
     }
 
-    /**
-     * @return int
-     */
     public function getWeight(): int
     {
         return $this->weight;
     }
 
-    /**
-     * @return bool
-     */
     public function getKeepFlat(): bool
     {
         return $this->keepFlat;

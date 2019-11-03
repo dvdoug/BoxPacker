@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function array_shift;
+use function count;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
-use function array_shift;
-use function count;
 use function usort;
 
 /**
@@ -59,9 +59,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Add item to be packed.
-     *
-     * @param Item $item
-     * @param int  $qty
      */
     public function addItem(Item $item, int $qty = 1): void
     {
@@ -73,8 +70,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Set a list of items all at once.
-     *
-     * @param iterable $items
      */
     public function setItems(iterable $items): void
     {
@@ -90,8 +85,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Add box size.
-     *
-     * @param Box $box
      */
     public function addBox(Box $box): void
     {
@@ -101,8 +94,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Add a pre-prepared set of boxes all at once.
-     *
-     * @param BoxList $boxList
      */
     public function setBoxes(BoxList $boxList): void
     {
@@ -111,8 +102,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Number of boxes at which balancing weight is deemed not worth the extra computation time.
-     *
-     * @return int
      */
     public function getMaxBoxesToBalanceWeight(): int
     {
@@ -121,8 +110,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Number of boxes at which balancing weight is deemed not worth the extra computation time.
-     *
-     * @param int $maxBoxesToBalanceWeight
      */
     public function setMaxBoxesToBalanceWeight(int $maxBoxesToBalanceWeight): void
     {
@@ -131,8 +118,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Pack items into boxes.
-     *
-     * @return PackedBoxList
      */
     public function pack(): PackedBoxList
     {
@@ -154,8 +139,6 @@ class Packer implements LoggerAwareInterface
      * Pack items into boxes using the principle of largest volume item first.
      *
      * @throws ItemTooLargeException
-     *
-     * @return PackedBoxList
      */
     public function doVolumePacking(): PackedBoxList
     {
@@ -196,8 +179,6 @@ class Packer implements LoggerAwareInterface
 
     /**
      * @param PackedBox[] $packedBoxes
-     *
-     * @return PackedBox
      */
     protected function findBestBoxFromIteration(array $packedBoxes): PackedBox
     {
@@ -211,12 +192,6 @@ class Packer implements LoggerAwareInterface
         return array_shift($packedBoxes);
     }
 
-    /**
-     * @param PackedBox $boxA
-     * @param PackedBox $boxB
-     *
-     * @return int
-     */
     private static function compare(PackedBox $boxA, PackedBox $boxB): int
     {
         $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();

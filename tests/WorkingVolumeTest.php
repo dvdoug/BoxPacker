@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use PHPUnit\Framework\TestCase;
 use function json_decode;
 use function json_encode;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \DVDoug\BoxPacker\WorkingVolume

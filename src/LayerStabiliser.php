@@ -60,12 +60,6 @@ class LayerStabiliser implements LoggerAwareInterface
         return $stabilisedLayers;
     }
 
-    /**
-     * @param PackedLayer $layerA
-     * @param PackedLayer $layerB
-     *
-     * @return int
-     */
     private function compare(PackedLayer $layerA, PackedLayer $layerB): int
     {
         return ($layerB->getFootprint() <=> $layerA->getFootprint()) ?: ($layerB->getDepth() <=> $layerA->getDepth());

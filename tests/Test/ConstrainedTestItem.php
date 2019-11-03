@@ -8,11 +8,11 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Test;
 
+use function count;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedItem;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\PackedItemList;
-use function count;
 use function iterator_to_array;
 
 class ConstrainedTestItem extends TestItem implements ConstrainedItem
@@ -22,12 +22,6 @@ class ConstrainedTestItem extends TestItem implements ConstrainedItem
      */
     public static $limit = 3;
 
-    /**
-     * @param PackedItemList $alreadyPackedItems
-     * @param Box            $box
-     *
-     * @return bool
-     */
     public function canBePackedInBox(PackedItemList $alreadyPackedItems, Box $box): bool
     {
         $alreadyPackedType = array_filter(

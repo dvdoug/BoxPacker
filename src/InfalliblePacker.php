@@ -31,8 +31,6 @@ class InfalliblePacker extends Packer
 
     /**
      * Return the items that couldn't be packed.
-     *
-     * @return ItemList
      */
     public function getUnpackedItems(): ItemList
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Behat\Behat\Context\Context;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\BoxList;
@@ -64,7 +66,7 @@ class PackerContext implements Context
         $innerLength,
         $innerDepth,
         $maxWeight
-    ) {
+    ): void {
         $box = new TestBox($boxType, $outerWidth, $outerLength, $outerDepth, $emptyWeight, $innerWidth, $innerLength, $innerDepth, $maxWeight);
         $this->boxList->insert($box);
     }
@@ -82,7 +84,7 @@ class PackerContext implements Context
         $innerLength,
         $innerDepth,
         $maxWeight
-    ) {
+    ): void {
         $box = new TestBox($boxType, $outerWidth, $outerLength, $outerDepth, $emptyWeight, $innerWidth, $innerLength, $innerDepth, $maxWeight);
         $this->box = $box;
     }
@@ -97,9 +99,9 @@ class PackerContext implements Context
         $length,
         $depth,
         $weight
-    ) {
+    ): void {
         $item = new TestItem($itemName, $width, $length, $depth, $weight, false);
-        for ($i = 0; $i < $qty; $i++) {
+        for ($i = 0; $i < $qty; ++$i) {
             $this->itemList->insert($item);
         }
     }
@@ -114,9 +116,9 @@ class PackerContext implements Context
         $length,
         $depth,
         $weight
-    ) {
+    ): void {
         $item = new TestItem($itemName, $width, $length, $depth, $weight, true);
-        for ($i = 0; $i < $qty; $i++) {
+        for ($i = 0; $i < $qty; ++$i) {
             $this->itemList->insert($item);
         }
     }
@@ -124,7 +126,7 @@ class PackerContext implements Context
     /**
      * @When I do a packing
      */
-    public function iDoAPacking()
+    public function iDoAPacking(): void
     {
         /** @var Packer $packer */
         $packer = new $this->packerClass();
@@ -136,7 +138,7 @@ class PackerContext implements Context
     /**
      * @When I do a volume-only packing
      */
-    public function iDoAVolumePacking()
+    public function iDoAVolumePacking(): void
     {
         $packer = new VolumePacker($this->box, $this->itemList);
         $this->packedBox = $packer->pack();
@@ -148,13 +150,13 @@ class PackerContext implements Context
     public function thereExistsBoxes(
         $qty,
         $boxType
-    ) {
+    ): void {
         $foundBoxes = 0;
 
         /** @var PackedBox $packedBox */
         foreach ($this->packedBoxList as $packedBox) {
             if ($packedBox->getBox()->getReference() === $boxType) {
-                $foundBoxes++;
+                ++$foundBoxes;
             }
         }
 
@@ -167,16 +169,24 @@ class PackerContext implements Context
     public function thePackedBoxShouldHaveItems(
         $qty,
         $itemType
-    ) {
+    ): void {
         $foundItems = 0;
 
         /** @var PackedItem $packedItem */
         foreach ($this->packedBox->getItems() as $packedItem) {
             if ($packedItem->getItem()->getDescription() === $itemType) {
-                $foundItems++;
+                ++$foundItems;
             }
         }
 
         Assert::assertEquals($qty, $foundItems);
+    }
+
+    /**
+     * @Transform /^(\d+)$/
+     */
+    public function castStringToNumber($string)
+    {
+        return (int) $string;
     }
 }

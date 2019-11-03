@@ -9,12 +9,12 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
-use Traversable;
-use function count;
 use function reset;
 use function round;
+use Traversable;
 use function usort;
 
 /**
@@ -38,9 +38,6 @@ class PackedBoxList implements IteratorAggregate, Countable
      */
     private $isSorted = false;
 
-    /**
-     * @return Traversable
-     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
@@ -53,17 +50,12 @@ class PackedBoxList implements IteratorAggregate, Countable
 
     /**
      * Number of items in list.
-     *
-     * @return int
      */
     public function count(): int
     {
         return count($this->list);
     }
 
-    /**
-     * @param PackedBox $item
-     */
     public function insert(PackedBox $item): void
     {
         $this->list[] = $item;
@@ -85,8 +77,6 @@ class PackedBoxList implements IteratorAggregate, Countable
 
     /**
      * @internal
-     *
-     * @return PackedBox
      */
     public function top(): PackedBox
     {
@@ -98,12 +88,6 @@ class PackedBoxList implements IteratorAggregate, Countable
         return reset($this->list);
     }
 
-    /**
-     * @param PackedBox $boxA
-     * @param PackedBox $boxB
-     *
-     * @return int
-     */
     private function compare(PackedBox $boxA, PackedBox $boxB): int
     {
         $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();
@@ -119,8 +103,6 @@ class PackedBoxList implements IteratorAggregate, Countable
 
     /**
      * Calculate the average (mean) weight of the boxes.
-     *
-     * @return float
      */
     public function getMeanWeight(): float
     {
@@ -136,8 +118,6 @@ class PackedBoxList implements IteratorAggregate, Countable
 
     /**
      * Calculate the variance in weight between these boxes.
-     *
-     * @return float
      */
     public function getWeightVariance(): float
     {
@@ -154,8 +134,6 @@ class PackedBoxList implements IteratorAggregate, Countable
 
     /**
      * Get volume utilisation of the set of packed boxes.
-     *
-     * @return float
      */
     public function getVolumeUtilisation(): float
     {

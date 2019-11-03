@@ -38,11 +38,6 @@ class WorkingVolume implements Box, JsonSerializable
 
     /**
      * Constructor.
-     *
-     * @param int $width
-     * @param int $length
-     * @param int $depth
-     * @param int $maxWeight
      */
     public function __construct(
         int $width,
@@ -56,73 +51,46 @@ class WorkingVolume implements Box, JsonSerializable
         $this->maxWeight = $maxWeight;
     }
 
-    /**
-     * @return string
-     */
     public function getReference(): string
     {
         return 'Working Volume';
     }
 
-    /**
-     * @return int
-     */
     public function getOuterWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @return int
-     */
     public function getOuterLength(): int
     {
         return $this->length;
     }
 
-    /**
-     * @return int
-     */
     public function getOuterDepth(): int
     {
         return $this->depth;
     }
 
-    /**
-     * @return int
-     */
     public function getEmptyWeight(): int
     {
         return 0;
     }
 
-    /**
-     * @return int
-     */
     public function getInnerWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @return int
-     */
     public function getInnerLength(): int
     {
         return $this->length;
     }
 
-    /**
-     * @return int
-     */
     public function getInnerDepth(): int
     {
         return $this->depth;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxWeight(): int
     {
         return $this->maxWeight;

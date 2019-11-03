@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\NullLogger;
 use function array_filter;
 use function count;
 use function min;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 use function reset;
 use function sort;
 use function usort;
@@ -44,21 +44,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     /**
      * Get the best orientation for an item.
-     *
-     * @param Item                $item
-     * @param OrientatedItem|null $prevItem
-     * @param ItemList            $nextItems
-     * @param bool                $isLastItem
-     * @param int                 $widthLeft
-     * @param int                 $lengthLeft
-     * @param int                 $depthLeft
-     * @param int                 $rowLength
-     * @param int                 $x
-     * @param int                 $y
-     * @param int                 $z
-     * @param PackedItemList      $prevPackedItemList
-     *
-     * @return OrientatedItem|null
      */
     public function getBestOrientation(
         Item $item,
@@ -130,16 +115,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Find all possible orientations for an item.
      *
-     * @param Item                $item
-     * @param OrientatedItem|null $prevItem
-     * @param int                 $widthLeft
-     * @param int                 $lengthLeft
-     * @param int                 $depthLeft
-     * @param int                 $x
-     * @param int                 $y
-     * @param int                 $z
-     * @param PackedItemList      $prevPackedItemList
-     *
      * @return OrientatedItem[]
      */
     public function getPossibleOrientations(
@@ -205,7 +180,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @param  Item             $item
      * @return OrientatedItem[]
      */
     public function getPossibleOrientationsInEmptyBox(Item $item): array
@@ -245,9 +219,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @param Item             $item
      * @param OrientatedItem[] $possibleOrientations
-     * @param bool             $isLastItem
      *
      * @return OrientatedItem[]
      */
@@ -287,9 +259,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
-     *
-     * @param  Item  $item
-     * @return array
      */
     protected function getStableOrientationsInEmptyBox(Item $item): array
     {
@@ -305,11 +274,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     /**
      * Compare two items to see if they have same dimensions.
-     *
-     * @param Item $itemA
-     * @param Item $itemB
-     *
-     * @return bool
      */
     public function isSameDimensions(Item $itemA, Item $itemB): bool
     {
@@ -326,14 +290,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
      *
      * Not an actual packing, that has additional logic regarding constraints and stackability, this focuses
      * purely on fit.
-     *
-     * @param  OrientatedItem $prevItem
-     * @param  ItemList       $nextItems
-     * @param  int            $originalWidthLeft
-     * @param  int            $originalLengthLeft
-     * @param  int            $depthLeft
-     * @param  int            $currentRowLengthBeforePacking
-     * @return int
      */
     protected function calculateAdditionalItemsPackedWithThisOrientation(
         OrientatedItem $prevItem,

@@ -34,9 +34,6 @@ class BoxList implements IteratorAggregate
      */
     private $isSorted = false;
 
-    /**
-     * @return Traversable
-     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
@@ -47,9 +44,6 @@ class BoxList implements IteratorAggregate
         return new ArrayIterator($this->list);
     }
 
-    /**
-     * @param Box $item
-     */
     public function insert(Box $item): void
     {
         $this->list[] = $item;
@@ -58,8 +52,6 @@ class BoxList implements IteratorAggregate
     /**
      * @param Box $boxA
      * @param Box $boxB
-     *
-     * @return int
      */
     public function compare($boxA, $boxB): int
     {

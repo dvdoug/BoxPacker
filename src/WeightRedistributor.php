@@ -8,14 +8,14 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
 use function array_filter;
 use function array_merge;
 use function count;
 use function iterator_to_array;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use function usort;
 
 /**
@@ -37,8 +37,6 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Constructor.
-     *
-     * @param BoxList $boxList
      */
     public function __construct(BoxList $boxList)
     {
@@ -48,10 +46,6 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Given a solution set of packed boxes, repack them to achieve optimum weight distribution.
-     *
-     * @param PackedBoxList $originalBoxes
-     *
-     * @return PackedBoxList
      */
     public function redistributeWeight(PackedBoxList $originalBoxes): PackedBoxList
     {
@@ -94,10 +88,6 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Attempt to equalise weight distribution between 2 boxes.
-     *
-     * @param PackedBox $boxA
-     * @param PackedBox $boxB
-     * @param float     $targetWeight
      *
      * @return bool was the weight rebalanced?
      */
@@ -153,10 +143,6 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Do a volume repack of a set of items.
-     *
-     * @param iterable $items
-     *
-     * @return PackedBoxList
      */
     private function doVolumeRepack(iterable $items): PackedBoxList
     {
@@ -171,13 +157,6 @@ class WeightRedistributor implements LoggerAwareInterface
      * Not every attempted repack is actually helpful - sometimes moving an item between two otherwise identical
      * boxes, or sometimes the box used for the now lighter set of items actually weighs more when empty causing
      * an increase in total weight.
-     *
-     * @param PackedBox $oldBoxA
-     * @param PackedBox $oldBoxB
-     * @param PackedBox $newBoxA
-     * @param PackedBox $newBoxB
-     *
-     * @return bool
      */
     private function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB): bool
     {

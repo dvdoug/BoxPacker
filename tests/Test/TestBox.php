@@ -60,16 +60,6 @@ class TestBox implements Box, JsonSerializable
 
     /**
      * TestBox constructor.
-     *
-     * @param string $reference
-     * @param int    $outerWidth
-     * @param int    $outerLength
-     * @param int    $outerDepth
-     * @param int    $emptyWeight
-     * @param int    $innerWidth
-     * @param int    $innerLength
-     * @param int    $innerDepth
-     * @param int    $maxWeight
      */
     public function __construct(
         string $reference,
@@ -93,73 +83,46 @@ class TestBox implements Box, JsonSerializable
         $this->maxWeight = $maxWeight;
     }
 
-    /**
-     * @return string
-     */
     public function getReference(): string
     {
         return $this->reference;
     }
 
-    /**
-     * @return int
-     */
     public function getOuterWidth(): int
     {
         return $this->outerWidth;
     }
 
-    /**
-     * @return int
-     */
     public function getOuterLength(): int
     {
         return $this->outerLength;
     }
 
-    /**
-     * @return int
-     */
     public function getOuterDepth(): int
     {
         return $this->outerDepth;
     }
 
-    /**
-     * @return int
-     */
     public function getEmptyWeight(): int
     {
         return $this->emptyWeight;
     }
 
-    /**
-     * @return int
-     */
     public function getInnerWidth(): int
     {
         return $this->innerWidth;
     }
 
-    /**
-     * @return int
-     */
     public function getInnerLength(): int
     {
         return $this->innerLength;
     }
 
-    /**
-     * @return int
-     */
     public function getInnerDepth(): int
     {
         return $this->innerDepth;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxWeight(): int
     {
         return $this->maxWeight;

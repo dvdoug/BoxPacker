@@ -22,9 +22,6 @@ class ItemTooLargeException extends RuntimeException
 
     /**
      * ItemTooLargeException constructor.
-     *
-     * @param string $message
-     * @param Item   $item
      */
     public function __construct(string $message, Item $item)
     {
@@ -32,9 +29,6 @@ class ItemTooLargeException extends RuntimeException
         parent::__construct($message);
     }
 
-    /**
-     * @return Item
-     */
     public function getItem(): Item
     {
         return $this->item;
