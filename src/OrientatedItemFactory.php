@@ -36,6 +36,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     protected static $emptyBoxCache = [];
 
+    /**
+     * @var int[]
+     */
+    protected static $lookaheadCache = [];
+
     public function __construct(Box $box)
     {
         $this->box = $box;
@@ -305,26 +310,56 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         $itemsToPack = $nextItems->topN(8); // cap lookahead as this gets recursive and slow
 
-        $tempBox = new WorkingVolume($originalWidthLeft - $prevItem->getWidth(), $currentRowLength, $depthLeft, PHP_INT_MAX);
-        $tempPacker = new VolumePacker($tempBox, clone $itemsToPack);
-        $tempPacker->setLookAheadMode(true);
-        $remainingRowPacked = $tempPacker->pack();
-        /** @var PackedItem $packedItem */
-        foreach ($remainingRowPacked->getItems() as $packedItem) {
-            $itemsToPack->remove($packedItem->getItem());
+        $cacheKey = $originalWidthLeft .
+            '|' .
+            $originalLengthLeft .
+            '|' .
+            $prevItem->getWidth() .
+            '|' .
+            $prevItem->getLength() .
+            '|' .
+            $currentRowLength .
+            '|'
+            . $depthLeft;
+
+        /** @var Item $itemToPack */
+        foreach ($itemsToPack as $itemToPack) {
+            $cacheKey .= '|' .
+                $itemToPack->getWidth() .
+                '|' .
+                $itemToPack->getLength() .
+                '|' .
+                $itemToPack->getDepth() .
+                '|' .
+                $itemToPack->getWeight() .
+                '|' .
+                ($itemToPack->getKeepFlat() ? '1' : '0');
         }
 
-        $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
-        $tempPacker = new VolumePacker($tempBox, clone $itemsToPack);
-        $tempPacker->setLookAheadMode(true);
-        $nextRowsPacked = $tempPacker->pack();
-        /** @var PackedItem $packedItem */
-        foreach ($nextRowsPacked->getItems() as $packedItem) {
-            $itemsToPack->remove($packedItem->getItem());
+        if (!isset(static::$lookaheadCache[$cacheKey])) {
+            $tempBox = new WorkingVolume($originalWidthLeft - $prevItem->getWidth(), $currentRowLength, $depthLeft, PHP_INT_MAX);
+            $tempPacker = new VolumePacker($tempBox, clone $itemsToPack);
+            $tempPacker->setLookAheadMode(true);
+            $remainingRowPacked = $tempPacker->pack();
+            /** @var PackedItem $packedItem */
+            foreach ($remainingRowPacked->getItems() as $packedItem) {
+                $itemsToPack->remove($packedItem->getItem());
+            }
+
+            $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
+            $tempPacker = new VolumePacker($tempBox, clone $itemsToPack);
+            $tempPacker->setLookAheadMode(true);
+            $nextRowsPacked = $tempPacker->pack();
+            /** @var PackedItem $packedItem */
+            foreach ($nextRowsPacked->getItems() as $packedItem) {
+                $itemsToPack->remove($packedItem->getItem());
+            }
+
+            $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
+
+            static::$lookaheadCache[$cacheKey] = $nextItems->count() - $itemsToPack->count();
         }
 
-        $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
-
-        return $nextItems->count() - $itemsToPack->count();
+        return static::$lookaheadCache[$cacheKey];
     }
 }
