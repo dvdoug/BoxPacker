@@ -75,6 +75,7 @@ class ItemList implements Countable, IteratorAggregate
         do {
             if (current($this->list) === $item) {
                 unset($this->list[key($this->list)]);
+
                 return;
             }
         } while (prev($this->list) !== false);

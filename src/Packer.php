@@ -144,6 +144,8 @@ class Packer implements LoggerAwareInterface
     {
         $packedBoxes = new PackedBoxList();
 
+        $this->sanityPrecheck();
+
         //Keep going until everything packed
         while ($this->items->count()) {
             $packedBoxesIteration = [];
@@ -190,6 +192,25 @@ class Packer implements LoggerAwareInterface
         usort($packedBoxes, [$this, 'compare']);
 
         return array_shift($packedBoxes);
+    }
+
+    private function sanityPrecheck(): void
+    {
+        /** @var Item $item */
+        foreach ($this->items as $item) {
+            $possibleFits = 0;
+
+            /** @var Box $box */
+            foreach ($this->boxes as $box) {
+                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight())) {
+                    $possibleFits += count((new OrientatedItemFactory($box))->getPossibleOrientationsInEmptyBox($item));
+                }
+            }
+
+            if ($possibleFits === 0) {
+                throw new ItemTooLargeException('Item ' . $item->getDescription() . ' is too large to fit into any box', $item);
+            }
+        }
     }
 
     private static function compare(PackedBox $boxA, PackedBox $boxB): int
