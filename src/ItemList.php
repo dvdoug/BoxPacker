@@ -79,7 +79,6 @@ class ItemList implements Countable, IteratorAggregate
                 return;
             }
         } while (prev($this->list) !== false);
-
     }
 
     /**
