@@ -66,12 +66,19 @@ class ItemList implements Countable, IteratorAggregate
      */
     public function remove(Item $item): void
     {
-        foreach ($this->list as $key => $itemToCheck) {
-            if ($itemToCheck === $item) {
-                unset($this->list[$key]);
-                break;
-            }
+        if (!$this->isSorted) {
+            usort($this->list, [$this, 'compare']);
+            $this->isSorted = true;
         }
+
+        end($this->list);
+        do {
+            if (current($this->list) === $item) {
+                unset($this->list[key($this->list)]);
+                return;
+            }
+        } while (prev($this->list) !== false);
+
     }
 
     /**
