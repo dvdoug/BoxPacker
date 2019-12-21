@@ -156,6 +156,8 @@ class Packer implements LoggerAwareInterface
     {
         $packedBoxes = new PackedBoxList();
 
+        $this->sanityPrecheck();
+
         //Keep going until everything packed
         while ($this->items->count()) {
             $boxesToEvaluate = clone $this->boxes;
@@ -204,5 +206,22 @@ class Packer implements LoggerAwareInterface
         }
 
         return $packedBoxes;
+    }
+
+    private function sanityPrecheck()
+    {
+        /** @var Item $item */
+        foreach (clone $this->items as $item) {
+            $possibleFits = 0;
+            /** @var Box $box */
+            foreach (clone $this->boxes as $box) {
+                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight())) {
+                    $possibleFits += count((new OrientatedItemFactory($box))->getPossibleOrientationsInEmptyBox($item));
+                }
+            }
+            if ($possibleFits === 0) {
+                throw new ItemTooLargeException('Item ' . $item->getDescription() . ' is too large to fit into any box', $item);
+            }
+        }
     }
 }
