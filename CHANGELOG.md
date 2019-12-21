@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.4.1] - 2019-12-21
+### Changed
+ - Speed improvements
+
 ## [3.4.0] - 2019-09-09
 ### Added
  - Added ability to specify that items are pre-sorted when creating an `ItemList` from an array
@@ -70,6 +74,10 @@
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
 
+## [2.6.2] - 2019-12-21
+### Changed
+ - Speed enhancements
+
 ## [2.6.1] - 2019-09-15
 ### Changed
  - Speed enhancements
@@ -122,7 +130,6 @@
  - Previously 2 distinct item types could be mixed when sorting items for packing if they had identical physical dimensions. Now if all dimensions are identical, items are sorted by description so that they are kept together
  
 ## [2.4.1] - 2017-09-04
-
 ### Fixed
  - Used/remaining space calculations were sometimes offset by 90 degrees leading to confusing numbers
 
@@ -182,6 +189,10 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
  - Various refactorings to split out large functions into more readable pieces
 ### Removed
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
+
+## [1.7.2] - 2019-12-21
+### Changed
+ - Speed enhancements
 
 ## [1.7.1] - 2019-09-15
 ### Changed
@@ -331,8 +342,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.4.0...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.4.1...master
 
+[3.4.1]: https://github.com/dvdoug/BoxPacker/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/dvdoug/BoxPacker/compare/3.3.0...3.4.0
 [3.3.0]: https://github.com/dvdoug/BoxPacker/compare/3.2.2...3.3.0
 [3.2.2]: https://github.com/dvdoug/BoxPacker/compare/3.2.1...3.2.2
@@ -343,7 +355,8 @@ Initial release
 [3.1.1]: https://github.com/dvdoug/BoxPacker/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
-[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.1...3.0.0
+[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.2...3.0.0
+[2.6.2]: https://github.com/dvdoug/BoxPacker/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/dvdoug/BoxPacker/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/dvdoug/BoxPacker/compare/2.5.0...2.6.0
 [2.5.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.8...2.5.0
@@ -364,7 +377,8 @@ Initial release
 [2.1.0]: https://github.com/dvdoug/BoxPacker/compare/2.0.2...2.1.0
 [2.0.2]: https://github.com/dvdoug/BoxPacker/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/dvdoug/BoxPacker/compare/2.0...2.0.1
-[2.0]: https://github.com/dvdoug/BoxPacker/compare/1.7.1...2.0
+[2.0]: https://github.com/dvdoug/BoxPacker/compare/1.7.2...2.0
+[1.7.2]: https://github.com/dvdoug/BoxPacker/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/dvdoug/BoxPacker/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/dvdoug/BoxPacker/compare/1.6.9...1.7.0
 [1.6.9]: https://github.com/dvdoug/BoxPacker/compare/1.6.8...1.6.9
