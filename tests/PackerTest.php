@@ -222,4 +222,26 @@ class PackerTest extends TestCase
 
         self::assertCount(2, $packedBoxes);
     }
+
+
+    /**
+     * From issue #182.
+     */
+    public function testIssue182A()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 410, 310, 310, 2000, 410, 310, 310, 60000));
+        $packer->addBox(new TestBox('Box', 410, 310, 260, 2000, 410, 310, 260, 60000));
+        $packer->addBox(new TestBox('Box', 410, 310, 205, 2000, 410, 310, 205, 60000));
+        $packer->addBox(new TestBox('Box', 310, 310, 210, 2000, 310, 310, 210, 60000));
+        $packer->addBox(new TestBox('Box', 310, 210, 210, 2000, 310, 210, 210, 60000));
+        $packer->addBox(new TestBox('Box', 310, 210, 155, 2000, 310, 210, 155, 60000));
+        $packer->addBox(new TestBox('Box', 210, 160, 105, 2000, 210, 160, 105, 60000));
+        $packer->addItem(new TestItem('Item', 150, 100, 100, 1, false), 200);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(9, $packedBoxes);
+    }
 }
