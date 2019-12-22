@@ -55,7 +55,7 @@ class WeightRedistributor implements LoggerAwareInterface
         /** @var PackedBox[] $boxes */
         $boxes = iterator_to_array($originalBoxes);
 
-        usort($boxes, function (PackedBox $boxA, PackedBox $boxB) {
+        usort($boxes, static function (PackedBox $boxA, PackedBox $boxB) {
             return $boxB->getWeight() <=> $boxA->getWeight();
         });
 
@@ -70,7 +70,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
                     $iterationSuccessful = $this->equaliseWeight($boxA, $boxB, $targetWeight);
                     if ($iterationSuccessful) {
-                        $boxes = array_filter($boxes, function (?PackedBox $box) { //remove any now-empty boxes from the list
+                        $boxes = array_filter($boxes, static function (?PackedBox $box) { //remove any now-empty boxes from the list
                             return $box instanceof PackedBox;
                         });
                         break 2;
