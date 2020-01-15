@@ -97,7 +97,7 @@ class VolumePacker implements LoggerAwareInterface
     public function __construct(Box $box, ItemList $items)
     {
         $this->box = $box;
-        $this->items = $items;
+        $this->items = clone $items;
 
         $this->boxWidth = max($this->box->getInnerWidth(), $this->box->getInnerLength());
         $this->boxLength = min($this->box->getInnerWidth(), $this->box->getInnerLength());
