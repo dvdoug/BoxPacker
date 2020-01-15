@@ -106,7 +106,6 @@ class WeightRedistributor implements LoggerAwareInterface
         $overWeightBoxItems = $overWeightBox->getItems()->asItemArray();
         $underWeightBoxItems = $underWeightBox->getItems()->asItemArray();
 
-
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
             if ($overWeightItem->getWeight() + $underWeightBox->getItemWeight() > $targetWeight) {
                 continue; // moving this item would harm more than help
