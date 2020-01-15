@@ -117,6 +117,21 @@ class PackedBoxList implements IteratorAggregate, Countable
     }
 
     /**
+     * Calculate the average (mean) weight of the boxes.
+     */
+    public function getMeanItemWeight(): float
+    {
+        $meanWeight = 0;
+
+        /** @var PackedBox $box */
+        foreach ($this->list as $box) {
+            $meanWeight += $box->getItemWeight();
+        }
+
+        return $meanWeight / count($this->list);
+    }
+
+    /**
      * Calculate the variance in weight between these boxes.
      */
     public function getWeightVariance(): float

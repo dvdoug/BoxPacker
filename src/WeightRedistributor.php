@@ -49,7 +49,7 @@ class WeightRedistributor implements LoggerAwareInterface
      */
     public function redistributeWeight(PackedBoxList $originalBoxes): PackedBoxList
     {
-        $targetWeight = $originalBoxes->getMeanWeight();
+        $targetWeight = $originalBoxes->getMeanItemWeight();
         $this->logger->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
         /** @var PackedBox[] $boxes */
@@ -106,8 +106,9 @@ class WeightRedistributor implements LoggerAwareInterface
         $overWeightBoxItems = $overWeightBox->getItems()->asItemArray();
         $underWeightBoxItems = $underWeightBox->getItems()->asItemArray();
 
+
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
-            if ($overWeightItem->getWeight() + $boxB->getWeight() > $targetWeight) {
+            if ($overWeightItem->getWeight() + $underWeightBox->getItemWeight() > $targetWeight) {
                 continue; // moving this item would harm more than help
             }
 
@@ -131,7 +132,7 @@ class WeightRedistributor implements LoggerAwareInterface
                 }
 
                 if ($this->didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
-                    $boxB = $newLighterBoxes->top();
+                    $underWeightBox = $boxB = $newLighterBoxes->top();
                     $boxA = $newHeavierBoxes->top();
                     $anyIterationSuccessful = true;
                 }
