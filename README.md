@@ -19,7 +19,7 @@ Requirements
 ------------
 
 * PHP version 7.1 or higher (from version 3)
-* PHP version 5.4 or higher (versions 1 and 2 - still maintained)
+* PHP version 5.4 or higher (version 2 - still maintained)
 
 License
 -------
