@@ -123,18 +123,18 @@ class WeightRedistributor implements LoggerAwareInterface
                 $boxA = null;
 
                 return true;
-            } else {
-                unset($overWeightBoxItems[$key]);
-                $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems);
-                if (count($newHeavierBoxes) !== 1) {
-                    continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
-                }
+            }
 
-                if ($this->didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
-                    $underWeightBox = $boxB = $newLighterBoxes->top();
-                    $boxA = $newHeavierBoxes->top();
-                    $anyIterationSuccessful = true;
-                }
+            unset($overWeightBoxItems[$key]);
+            $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems);
+            if (count($newHeavierBoxes) !== 1) {
+                continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
+            }
+
+            if ($this->didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
+                $underWeightBox = $boxB = $newLighterBoxes->top();
+                $boxA = $newHeavierBoxes->top();
+                $anyIterationSuccessful = true;
             }
         }
 
