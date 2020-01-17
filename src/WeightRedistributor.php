@@ -127,7 +127,7 @@ class WeightRedistributor implements LoggerAwareInterface
                 unset($overWeightBoxItems[$key]);
                 $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems);
                 if (count($newHeavierBoxes) !== 1) {
-                    continue;
+                    continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
                 }
 
                 if ($this->didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
