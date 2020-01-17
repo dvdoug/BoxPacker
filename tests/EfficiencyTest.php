@@ -75,12 +75,12 @@ class EfficiencyTest extends TestCase
         $packedBoxes3D = $packer3D->pack();
 
         $packedItemCount2D = 0;
-        foreach (clone $packedBoxes2D as $packedBox) {
+        foreach ($packedBoxes2D as $packedBox) {
             $packedItemCount2D += $packedBox->getItems()->count();
         }
 
         $packedItemCount3D = 0;
-        foreach (clone $packedBoxes3D as $packedBox) {
+        foreach ($packedBoxes3D as $packedBox) {
             $packedItemCount3D += $packedBox->getItems()->count();
         }
 
