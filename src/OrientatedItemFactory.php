@@ -91,8 +91,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
             // prefer leaving room for next item in current row
             if ($nextItems->count()) {
-                $nextItemFitA = count($this->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList));
-                $nextItemFitB = count($this->getPossibleOrientations($nextItems->top(), $b, $orientationBWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList));
+                $nextItemFitA = $this->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
+                $nextItemFitB = $this->getPossibleOrientations($nextItems->top(), $b, $orientationBWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
                 if ($nextItemFitA && !$nextItemFitB) {
                     return -1;
                 }
