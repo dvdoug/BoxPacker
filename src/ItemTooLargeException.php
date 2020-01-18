@@ -9,28 +9,10 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use RuntimeException;
-
 /**
  * Class ItemTooLargeException
- * Exception used when an item is too large to pack.
+ * Exception used when an item is too large to pack into any box.
  */
-class ItemTooLargeException extends RuntimeException
+class ItemTooLargeException extends NoBoxesAvailableException
 {
-    /** @var Item */
-    public $item;
-
-    /**
-     * ItemTooLargeException constructor.
-     */
-    public function __construct(string $message, Item $item)
-    {
-        $this->item = $item;
-        parent::__construct($message);
-    }
-
-    public function getItem(): Item
-    {
-        return $this->item;
-    }
 }

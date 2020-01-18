@@ -137,7 +137,7 @@ class Packer implements LoggerAwareInterface
     /**
      * Pack items into boxes using the principle of largest volume item first.
      *
-     * @throws ItemTooLargeException
+     * @throws NoBoxesAvailableException
      */
     public function doVolumePacking(): PackedBoxList
     {
@@ -183,6 +183,10 @@ class Packer implements LoggerAwareInterface
      */
     protected function findBestBoxFromIteration(array $packedBoxes): PackedBox
     {
+        if (count($packedBoxes) === 0) {
+            throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items->top());
+        }
+
         usort($packedBoxes, [$this, 'compare']);
 
         return $packedBoxes[0];
@@ -202,7 +206,7 @@ class Packer implements LoggerAwareInterface
             }
 
             if ($possibleFits === 0) {
-                throw new ItemTooLargeException('Item ' . $item->getDescription() . ' is too large to fit into any box', $item);
+                throw new ItemTooLargeException("Item '{$item->getDescription()}' is too large to fit into any box", $item);
             }
         }
     }
