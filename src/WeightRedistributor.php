@@ -36,11 +36,19 @@ class WeightRedistributor implements LoggerAwareInterface
     private $boxes;
 
     /**
+     * Quantities available of each box type.
+     *
+     * @var array
+     */
+    private $boxesQtyAvailable;
+
+    /**
      * Constructor.
      */
-    public function __construct(BoxList $boxList)
+    public function __construct(BoxList $boxList, array $boxQuantitiesAvailable)
     {
         $this->boxes = $boxList;
+        $this->boxesQtyAvailable = $boxQuantitiesAvailable;
         $this->logger = new NullLogger();
     }
 
@@ -111,7 +119,7 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; // moving this item would harm more than help
             }
 
-            $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]));
+            $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]), $underWeightBox->getBox());
             if ($newLighterBoxes->count() !== 1) {
                 continue; //only want to move this item if it still fits in a single box
             }
@@ -121,19 +129,26 @@ class WeightRedistributor implements LoggerAwareInterface
             if (count($overWeightBoxItems) === 1) { //sometimes a repack can be efficient enough to eliminate a box
                 $boxB = $newLighterBoxes->top();
                 $boxA = null;
+                --$this->boxesQtyAvailable[spl_object_id($boxB->getBox())];
+                ++$this->boxesQtyAvailable[spl_object_id($overWeightBox->getBox())];
 
                 return true;
             }
 
             unset($overWeightBoxItems[$key]);
-            $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems);
+            $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems, $overWeightBox->getBox());
             if (count($newHeavierBoxes) !== 1) {
                 continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
             }
 
             if (static::didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
+                ++$this->boxesQtyAvailable[spl_object_id($boxA->getBox())];
+                ++$this->boxesQtyAvailable[spl_object_id($boxB->getBox())];
+                --$this->boxesQtyAvailable[spl_object_id($newHeavierBoxes->top()->getBox())];
+                --$this->boxesQtyAvailable[spl_object_id($newLighterBoxes->top()->getBox())];
                 $underWeightBox = $boxB = $newLighterBoxes->top();
                 $boxA = $newHeavierBoxes->top();
+
                 $anyIterationSuccessful = true;
             }
         }
@@ -144,10 +159,14 @@ class WeightRedistributor implements LoggerAwareInterface
     /**
      * Do a volume repack of a set of items.
      */
-    private function doVolumeRepack(iterable $items): PackedBoxList
+    private function doVolumeRepack(iterable $items, Box $currentBox): PackedBoxList
     {
         $packer = new Packer();
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
+        foreach ($this->boxes as $box) {
+            $packer->setBoxQuantity($box, $this->boxesQtyAvailable[spl_object_id($box)]);
+        }
+        $packer->setBoxQuantity($currentBox, max(PHP_INT_MAX, $this->boxesQtyAvailable[spl_object_id($currentBox)] + 1));
         $packer->setItems($items);
 
         return $packer->doVolumePacking();

@@ -46,6 +46,13 @@ class Packer implements LoggerAwareInterface
     protected $boxes;
 
     /**
+     * Quantities available of each box type.
+     *
+     * @var array
+     */
+    protected $boxesQtyAvailable = [];
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -88,6 +95,7 @@ class Packer implements LoggerAwareInterface
     public function addBox(Box $box): void
     {
         $this->boxes->insert($box);
+        $this->setBoxQuantity($box, $box instanceof LimitedSupplyBox ? $box->getQuantityAvailable() : PHP_INT_MAX);
         $this->logger->log(LogLevel::INFO, "added box {$box->getReference()}", ['box' => $box]);
     }
 
@@ -97,6 +105,17 @@ class Packer implements LoggerAwareInterface
     public function setBoxes(BoxList $boxList): void
     {
         $this->boxes = $boxList;
+        foreach ($this->boxes as $box) {
+            $this->setBoxQuantity($box, $box instanceof LimitedSupplyBox ? $box->getQuantityAvailable() : PHP_INT_MAX);
+        }
+    }
+
+    /**
+     * Set the quantity of this box type available.
+     */
+    public function setBoxQuantity(Box $box, int $qty): void
+    {
+        $this->boxesQtyAvailable[spl_object_id($box)] = $qty;
     }
 
     /**
@@ -124,7 +143,7 @@ class Packer implements LoggerAwareInterface
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
         if ($packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
-            $redistributor = new WeightRedistributor($this->boxes);
+            $redistributor = new WeightRedistributor($this->boxes, $this->boxesQtyAvailable);
             $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
@@ -151,15 +170,17 @@ class Packer implements LoggerAwareInterface
 
             //Loop through boxes starting with smallest, see what happens
             foreach ($this->boxes as $box) {
-                $volumePacker = new VolumePacker($box, clone $this->items);
-                $volumePacker->setLogger($this->logger);
-                $packedBox = $volumePacker->pack();
-                if ($packedBox->getItems()->count()) {
-                    $packedBoxesIteration[] = $packedBox;
+                if ($this->boxesQtyAvailable[spl_object_id($box)] > 0) {
+                    $volumePacker = new VolumePacker($box, clone $this->items);
+                    $volumePacker->setLogger($this->logger);
+                    $packedBox = $volumePacker->pack();
+                    if ($packedBox->getItems()->count()) {
+                        $packedBoxesIteration[] = $packedBox;
 
-                    //Have we found a single box that contains everything?
-                    if ($packedBox->getItems()->count() === $this->items->count()) {
-                        break;
+                        //Have we found a single box that contains everything?
+                        if ($packedBox->getItems()->count() === $this->items->count()) {
+                            break;
+                        }
                     }
                 }
             }
@@ -173,6 +194,7 @@ class Packer implements LoggerAwareInterface
             }
 
             $packedBoxes->insert($bestBox);
+            --$this->boxesQtyAvailable[spl_object_id($bestBox->getBox())];
         }
 
         return $packedBoxes;

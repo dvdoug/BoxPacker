@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use function iterator_to_array;
@@ -236,5 +237,66 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(9, $packedBoxes);
+    }
+
+    /**
+     * Test that unlimited supply boxes are handled correctly.
+     */
+    public function testUnlimitedSupplyBox(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100));
+        $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
+
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(3, $packedBoxes);
+        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[2]->getBox()->getReference());
+    }
+
+    /**
+     * Test that limited supply boxes are handled correctly.
+     */
+    public function testLimitedSupplyBox(): void
+    {
+        // as above, but limit light box to quantity 2
+        $packer = new Packer();
+        $packer->addBox(new LimitedSupplyTestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100, 2));
+        $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
+
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(3, $packedBoxes);
+        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
+        self::assertEquals('Heavy box', $packedBoxes[2]->getBox()->getReference());
+    }
+
+    /**
+     * Test that limited supply boxes are handled correctly.
+     */
+    public function testNotEnoughLimitedSupplyBox(): void
+    {
+        // as above, but remove heavy box as an option
+        $this->expectException(NoBoxesAvailableException::class);
+        $packer = new Packer();
+        $packer->addBox(new LimitedSupplyTestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100, 2));
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(3, $packedBoxes);
+        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
+        self::assertEquals('Heavy box', $packedBoxes[2]->getBox()->getReference());
     }
 }
