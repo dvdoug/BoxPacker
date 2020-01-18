@@ -386,7 +386,6 @@ class VolumePacker implements LoggerAwareInterface
         return $depth;
     }
 
-
     /**
      * Compare two items to see if they have same dimensions.
      */

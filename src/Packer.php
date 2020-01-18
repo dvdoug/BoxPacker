@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function array_shift;
 use function count;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -191,7 +190,7 @@ class Packer implements LoggerAwareInterface
 
         usort($packedBoxes, [$this, 'compare']);
 
-        return array_shift($packedBoxes);
+        return $packedBoxes[0];
     }
 
     private function sanityPrecheck(): void
