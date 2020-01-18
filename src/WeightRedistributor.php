@@ -131,7 +131,7 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
             }
 
-            if ($this->didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
+            if (static::didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
                 $underWeightBox = $boxB = $newLighterBoxes->top();
                 $boxA = $newHeavierBoxes->top();
                 $anyIterationSuccessful = true;
@@ -158,7 +158,7 @@ class WeightRedistributor implements LoggerAwareInterface
      * boxes, or sometimes the box used for the now lighter set of items actually weighs more when empty causing
      * an increase in total weight.
      */
-    private function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB): bool
+    private static function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB): bool
     {
         $oldList = new PackedBoxList();
         $oldList->insertFromArray([$oldBoxA, $oldBoxB]);

@@ -53,7 +53,7 @@ class BoxList implements IteratorAggregate
      * @param Box $boxA
      * @param Box $boxB
      */
-    public function compare($boxA, $boxB): int
+    public static function compare($boxA, $boxB): int
     {
         $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();

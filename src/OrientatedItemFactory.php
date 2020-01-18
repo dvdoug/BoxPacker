@@ -278,19 +278,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * Compare two items to see if they have same dimensions.
-     */
-    public function isSameDimensions(Item $itemA, Item $itemB): bool
-    {
-        $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
-        $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
-        sort($itemADimensions);
-        sort($itemBDimensions);
-
-        return $itemADimensions === $itemBDimensions;
-    }
-
-    /**
      * Approximation of a forward-looking packing.
      *
      * Not an actual packing, that has additional logic regarding constraints and stackability, this focuses

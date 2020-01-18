@@ -201,7 +201,7 @@ class VolumePacker implements LoggerAwareInterface
                 $this->logger->debug("doesn't fit, skipping for now");
                 $this->skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
-                while ($this->items->count() > 2 && $this->orientatedItemFactory->isSameDimensions($itemToPack, $this->items->top())) {
+                while ($this->items->count() > 2 && static::isSameDimensions($itemToPack, $this->items->top())) {
                     $this->skippedItems[] = $this->items->extract();
                 }
             } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
@@ -384,5 +384,19 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $depth;
+    }
+
+
+    /**
+     * Compare two items to see if they have same dimensions.
+     */
+    protected static function isSameDimensions(Item $itemA, Item $itemB): bool
+    {
+        $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
+        $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
+        sort($itemADimensions);
+        sort($itemBDimensions);
+
+        return $itemADimensions === $itemBDimensions;
     }
 }
