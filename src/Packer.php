@@ -183,11 +183,6 @@ class Packer implements LoggerAwareInterface
      */
     protected function findBestBoxFromIteration(array $packedBoxes): PackedBox
     {
-        //Check iteration was productive
-        if (count($packedBoxes) === 0) {
-            throw new ItemTooLargeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box', $this->items->top());
-        }
-
         usort($packedBoxes, [$this, 'compare']);
 
         return $packedBoxes[0];
