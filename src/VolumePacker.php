@@ -317,13 +317,12 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function checkNonDimensionalConstraints(Item $itemToPack): bool
     {
-        $weightOK = $itemToPack->getWeight() <= $this->remainingWeight;
-
+        $customConstraintsOK = true;
         if ($itemToPack instanceof ConstrainedItem) {
-            return $weightOK && $itemToPack->canBePackedInBox($this->getPackedItemList(), $this->box);
+            $customConstraintsOK = $itemToPack->canBePackedInBox($this->getPackedItemList(), $this->box);
         }
 
-        return $weightOK;
+        return $customConstraintsOK && $itemToPack->getWeight() <= $this->remainingWeight;
     }
 
     /**
