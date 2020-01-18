@@ -16,6 +16,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use SplObjectStorage;
 use function usort;
 
 /**
@@ -38,14 +39,14 @@ class WeightRedistributor implements LoggerAwareInterface
     /**
      * Quantities available of each box type.
      *
-     * @var array
+     * @var SplObjectStorage
      */
     private $boxesQtyAvailable;
 
     /**
      * Constructor.
      */
-    public function __construct(BoxList $boxList, array $boxQuantitiesAvailable)
+    public function __construct(BoxList $boxList, SplObjectStorage $boxQuantitiesAvailable)
     {
         $this->boxes = $boxList;
         $this->boxesQtyAvailable = $boxQuantitiesAvailable;
@@ -129,8 +130,8 @@ class WeightRedistributor implements LoggerAwareInterface
             if (count($overWeightBoxItems) === 1) { //sometimes a repack can be efficient enough to eliminate a box
                 $boxB = $newLighterBoxes->top();
                 $boxA = null;
-                --$this->boxesQtyAvailable[spl_object_id($boxB->getBox())];
-                ++$this->boxesQtyAvailable[spl_object_id($overWeightBox->getBox())];
+                $this->boxesQtyAvailable[$boxB->getBox()] = $this->boxesQtyAvailable[$boxB->getBox()] - 1;
+                $this->boxesQtyAvailable[$overWeightBox->getBox()] = $this->boxesQtyAvailable[$overWeightBox->getBox()] + 1;
 
                 return true;
             }
@@ -142,10 +143,10 @@ class WeightRedistributor implements LoggerAwareInterface
             }
 
             if (static::didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
-                ++$this->boxesQtyAvailable[spl_object_id($boxA->getBox())];
-                ++$this->boxesQtyAvailable[spl_object_id($boxB->getBox())];
-                --$this->boxesQtyAvailable[spl_object_id($newHeavierBoxes->top()->getBox())];
-                --$this->boxesQtyAvailable[spl_object_id($newLighterBoxes->top()->getBox())];
+                $this->boxesQtyAvailable[$boxA->getBox()] = $this->boxesQtyAvailable[$boxA->getBox()] + 1;
+                $this->boxesQtyAvailable[$boxB->getBox()] = $this->boxesQtyAvailable[$boxB->getBox()] + 1;
+                $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] - 1;
+                $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] - 1;
                 $underWeightBox = $boxB = $newLighterBoxes->top();
                 $boxA = $newHeavierBoxes->top();
 
@@ -164,9 +165,9 @@ class WeightRedistributor implements LoggerAwareInterface
         $packer = new Packer();
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
         foreach ($this->boxes as $box) {
-            $packer->setBoxQuantity($box, $this->boxesQtyAvailable[spl_object_id($box)]);
+            $packer->setBoxQuantity($box, $this->boxesQtyAvailable[$box]);
         }
-        $packer->setBoxQuantity($currentBox, max(PHP_INT_MAX, $this->boxesQtyAvailable[spl_object_id($currentBox)] + 1));
+        $packer->setBoxQuantity($currentBox, max(PHP_INT_MAX, $this->boxesQtyAvailable[$currentBox] + 1));
         $packer->setItems($items);
 
         return $packer->doVolumePacking();
