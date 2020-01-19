@@ -452,6 +452,6 @@ class InfalliblePackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertCount(46, $packedBoxes);
+        self::assertCount(42, $packedBoxes);
     }
 }

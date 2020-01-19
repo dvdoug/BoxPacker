@@ -74,10 +74,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList) {
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
             $orientationALengthLeft = $lengthLeft - $a->getLength();
-            $orientationADepthLeft = $depthLeft - $a->getDepth();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
             $orientationBLengthLeft = $lengthLeft - $b->getLength();
-            $orientationBDepthLeft = $depthLeft - $b->getDepth();
 
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
@@ -108,7 +106,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 }
             }
             // otherwise prefer leaving minimum possible gap, or the greatest footprint
-            return $orientationADepthLeft <=> $orientationBDepthLeft ?: $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
+            return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
         });
 
         $bestFit = reset($usableOrientations);
