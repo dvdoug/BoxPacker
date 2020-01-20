@@ -45,9 +45,9 @@ Packing a set of items into a given set of box types
          * Add items to be packed - e.g. from shopping cart stored in user session. Again, the dimensional information
          * (and keep-flat requirement) would normally come from a DB
          */
-        $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200, true));
-        $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, true));
-        $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, false));
+        $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200, true), 1); // item, quantity
+        $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, true), 2);
+        $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, false), 1);
 
         $packedBoxes = $packer->pack();
 

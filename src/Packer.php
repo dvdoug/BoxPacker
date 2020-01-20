@@ -148,7 +148,7 @@ class Packer implements LoggerAwareInterface
     /**
      * Pack items into boxes using the principle of largest volume item first.
      *
-     * @throws ItemTooLargeException
+     * @throws NoBoxesAvailableException
      *
      * @return PackedBoxList
      */
@@ -160,18 +160,15 @@ class Packer implements LoggerAwareInterface
 
         //Keep going until everything packed
         while ($this->items->count()) {
-            $boxesToEvaluate = clone $this->boxes;
-            $packedBoxesIteration = new PackedBoxList();
+            $packedBoxesIteration = [];
 
             //Loop through boxes starting with smallest, see what happens
-            while (!$boxesToEvaluate->isEmpty()) {
-                $box = $boxesToEvaluate->extract();
-
+            foreach (clone $this->boxes as $box) {
                 $volumePacker = new VolumePacker($box, clone $this->items);
                 $volumePacker->setLogger($this->logger);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
-                    $packedBoxesIteration->insert($packedBox);
+                    $packedBoxesIteration[] = $packedBox;
 
                     //Have we found a single box that contains everything?
                     if ($packedBox->getItems()->count() === $this->items->count()) {
@@ -180,32 +177,32 @@ class Packer implements LoggerAwareInterface
                 }
             }
 
-            //Check iteration was productive
-            if ($packedBoxesIteration->isEmpty()) {
-                throw new ItemTooLargeException('Item '.$this->items->top()->getDescription().' is too large to fit into any box', $this->items->top());
+            //Find best box of iteration, and remove packed items from unpacked list
+            $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
+
+            /** @var Item $packedItem */
+            foreach (clone $bestBox->getItems() as $packedItem) {
+                $this->items->remove($packedItem);
             }
 
-            //Find best box of iteration, and remove packed items from unpacked list
-            /** @var PackedBox $bestBox */
-            $bestBox = $packedBoxesIteration->top();
-            $unPackedItems = $this->items->asArray();
-            foreach (clone $bestBox->getItems() as $packedItem) {
-                foreach ($unPackedItems as $unpackedKey => $unpackedItem) {
-                    if ($packedItem === $unpackedItem) {
-                        unset($unPackedItems[$unpackedKey]);
-                        break;
-                    }
-                }
-            }
-            $unpackedItemList = new ItemList();
-            foreach ($unPackedItems as $unpackedItem) {
-                $unpackedItemList->insert($unpackedItem);
-            }
-            $this->items = $unpackedItemList;
             $packedBoxes->insert($bestBox);
         }
 
         return $packedBoxes;
+    }
+
+    /**
+     * @param PackedBox[] $packedBoxes
+     */
+    protected function findBestBoxFromIteration(array $packedBoxes)
+    {
+        if (count($packedBoxes) === 0) {
+            throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items->top());
+        }
+
+        usort($packedBoxes, [$this, 'compare']);
+
+        return $packedBoxes[0];
     }
 
     private function sanityPrecheck()
@@ -219,9 +216,24 @@ class Packer implements LoggerAwareInterface
                     $possibleFits += count((new OrientatedItemFactory($box))->getPossibleOrientationsInEmptyBox($item));
                 }
             }
+
             if ($possibleFits === 0) {
-                throw new ItemTooLargeException('Item ' . $item->getDescription() . ' is too large to fit into any box', $item);
+                throw new ItemTooLargeException("Item '{$item->getDescription()}' is too large to fit into any box", $item);
             }
         }
+    }
+
+    private static function compare(PackedBox $boxA, PackedBox $boxB)
+    {
+        $choice = $boxB->getItems()->count() - $boxA->getItems()->count();
+
+        if ($choice == 0) {
+            $choice = $boxB->getVolumeUtilisation() - $boxA->getVolumeUtilisation();
+        }
+        if ($choice == 0) {
+            $choice = $boxB->getUsedVolume() - $boxA->getUsedVolume();
+        }
+
+        return $choice;
     }
 }

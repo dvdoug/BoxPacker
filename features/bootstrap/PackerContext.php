@@ -99,7 +99,7 @@ class PackerContext implements Context
         $weight
     ) {
         $item = new TestItem($itemName, $width, $length, $depth, $weight, false);
-        for ($i = 0; $i < $qty; $i++) {
+        for ($i = 0; $i < $qty; ++$i) {
             $this->itemList->insert($item);
         }
     }
@@ -116,7 +116,7 @@ class PackerContext implements Context
         $weight
     ) {
         $item = new TestItem($itemName, $width, $length, $depth, $weight, true);
-        for ($i = 0; $i < $qty; $i++) {
+        for ($i = 0; $i < $qty; ++$i) {
             $this->itemList->insert($item);
         }
     }
@@ -154,7 +154,7 @@ class PackerContext implements Context
         /** @var PackedBox $packedBox */
         foreach (clone $this->packedBoxList as $packedBox) {
             if ($packedBox->getBox()->getReference() === $boxType) {
-                $foundBoxes++;
+                ++$foundBoxes;
             }
         }
 
@@ -173,10 +173,18 @@ class PackerContext implements Context
         /** @var Item $packedItem */
         foreach (clone $this->packedBox->getItems() as $packedItem) {
             if ($packedItem->getDescription() === $itemType) {
-                $foundItems++;
+                ++$foundItems;
             }
         }
 
         Assert::assertEquals($qty, $foundItems);
+    }
+
+    /**
+     * @Transform /^(\d+)$/
+     */
+    public function castStringToNumber($string)
+    {
+        return (int) $string;
     }
 }

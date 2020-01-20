@@ -30,7 +30,6 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Constructor.
-     *
      * @param BoxList $boxList
      */
     public function __construct(BoxList $boxList)
@@ -48,7 +47,7 @@ class WeightRedistributor implements LoggerAwareInterface
      */
     public function redistributeWeight(PackedBoxList $originalBoxes)
     {
-        $targetWeight = $originalBoxes->getMeanWeight();
+        $targetWeight = $originalBoxes->getMeanItemWeight();
         $this->logger->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
         /** @var PackedBox[] $boxes */
@@ -69,7 +68,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
                     $iterationSuccessful = $this->equaliseWeight($boxA, $boxB, $targetWeight);
                     if ($iterationSuccessful) {
-                        $boxes = array_filter($boxes, function ($box) { //remove any now-empty boxes from the list
+                        $boxes = array_filter($boxes, static function ($box) { //remove any now-empty boxes from the list
                             return $box instanceof PackedBox;
                         });
                         break 2;
@@ -110,12 +109,12 @@ class WeightRedistributor implements LoggerAwareInterface
         $underWeightBoxItems = $underWeightBox->getItems()->asArray();
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
-            if ($overWeightItem->getWeight() + $boxB->getWeight() > $targetWeight) {
+            if ($overWeightItem->getWeight() + $underWeightBox->getItemWeight() > $targetWeight) {
                 continue; // moving this item would harm more than help
             }
 
             $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]));
-            if (count($newLighterBoxes) !== 1) {
+            if ($newLighterBoxes->count() !== 1) {
                 continue; //only want to move this item if it still fits in a single box
             }
 
@@ -126,18 +125,19 @@ class WeightRedistributor implements LoggerAwareInterface
                 $boxA = null;
 
                 return true;
-            } else {
-                unset($overWeightBoxItems[$key]);
-                $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems);
-                if (count($newHeavierBoxes) !== 1) {
-                    continue;
-                }
+            }
 
-                if ($this->didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
-                    $boxB = $newLighterBoxes->top();
-                    $boxA = $newHeavierBoxes->top();
-                    $anyIterationSuccessful = true;
-                }
+            unset($overWeightBoxItems[$key]);
+            $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems);
+            if (count($newHeavierBoxes) !== 1) {
+                continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
+            }
+
+            if (static::didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
+                $underWeightBox = $boxB = $newLighterBoxes->top();
+                $boxA = $newHeavierBoxes->top();
+
+                $anyIterationSuccessful = true;
             }
         }
 
@@ -172,7 +172,7 @@ class WeightRedistributor implements LoggerAwareInterface
      *
      * @return bool
      */
-    private function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB)
+    private static function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB)
     {
         $oldList = new PackedBoxList();
         $oldList->insertFromArray([$oldBoxA, $oldBoxB]);

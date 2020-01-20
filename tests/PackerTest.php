@@ -223,7 +223,6 @@ class PackerTest extends TestCase
         self::assertCount(2, $packedBoxes);
     }
 
-
     /**
      * From issue #182.
      */
@@ -237,11 +236,32 @@ class PackerTest extends TestCase
         $packer->addBox(new TestBox('Box', 310, 210, 210, 2000, 310, 210, 210, 60000));
         $packer->addBox(new TestBox('Box', 310, 210, 155, 2000, 310, 210, 155, 60000));
         $packer->addBox(new TestBox('Box', 210, 160, 105, 2000, 210, 160, 105, 60000));
+
         $packer->addItem(new TestItem('Item', 150, 100, 100, 1, false), 200);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(9, $packedBoxes);
+    }
+
+    /**
+     * Test that unlimited supply boxes are handled correctly.
+     */
+    public function testUnlimitedSupplyBox()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100));
+        $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
+
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(3, $packedBoxes);
+        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[2]->getBox()->getReference());
     }
 }

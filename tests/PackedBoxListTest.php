@@ -92,7 +92,7 @@ class PackedBoxListTest extends TestCase
         $packedBoxList->insert($packedBoxA);
         $packedBoxList->insert($packedBoxB);
 
-        self::assertInstanceOf('DVDoug\BoxPacker\PackedBox', $packedBoxList->top());
+        self::assertEquals($packedBoxA, $packedBoxList->top());
     }
 
     /**

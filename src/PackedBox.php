@@ -4,10 +4,7 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
-
-use RuntimeException;
 
 /**
  * A "box" with items.

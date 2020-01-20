@@ -4,11 +4,10 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 /**
- * List of possible packed box choices, ordered by utilisation (item count, volume).
+ * List of packed boxes.
  *
  * @author Doug Wright
  */
@@ -20,6 +19,13 @@ class PackedBoxList extends \SplMinHeap
      * @var float
      */
     protected $meanWeight;
+
+    /**
+     * Average (mean) item weight of boxes.
+     *
+     * @var float
+     */
+    protected $meanItemWeight;
 
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
@@ -35,16 +41,14 @@ class PackedBoxList extends \SplMinHeap
     {
         $choice = $boxA->getItems()->count() - $boxB->getItems()->count();
         if ($choice == 0) {
-            $choice = $boxA->getVolumeUtilisation() - $boxB->getVolumeUtilisation();
+            $choice = $boxA->getInnerVolume() - $boxB->getInnerVolume();
         }
         if ($choice == 0) {
-            $choice = $boxA->getUsedVolume() - $boxB->getUsedVolume();
-        }
-        if ($choice == 0) {
-            $choice = $boxA->getWeight() - $boxB->getWeight();
+            $choice = $boxB->getWeight() - $boxA->getWeight();
         }
 
         return $choice;
+
     }
 
     /**
@@ -86,6 +90,25 @@ class PackedBoxList extends \SplMinHeap
         }
 
         return $this->meanWeight /= $this->count();
+    }
+
+
+    /**
+     * Calculate the average (mean) weight of the boxes.
+     *
+     * @return float
+     */
+    public function getMeanItemWeight()
+    {
+        if (!is_null($this->meanItemWeight)) {
+            return $this->meanItemWeight;
+        }
+
+        foreach (clone $this as $box) {
+            $this->meanItemWeight += $box->getItemWeight();
+        }
+
+        return $this->meanItemWeight /= $this->count();
     }
 
     /**

@@ -38,10 +38,10 @@ class BoxList extends \SplMinHeap
         }
 
         // smallest empty weight
-        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
+        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
             return 1;
         }
-        if ($boxB->getEmptyWeight() > $boxA->getEmptyWeight()) {
+        if ($boxA->getEmptyWeight() > $boxB->getEmptyWeight()) {
             return -1;
         }
 

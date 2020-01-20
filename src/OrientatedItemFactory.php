@@ -33,7 +33,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     protected static $lookaheadCache = [];
 
-
     public function __construct(Box $box)
     {
         $this->box = $box;
@@ -82,10 +81,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList) {
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
             $orientationALengthLeft = $lengthLeft - $a->getLength();
-            $orientationADepthLeft = $depthLeft - $a->getDepth();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
             $orientationBLengthLeft = $lengthLeft - $b->getLength();
-            $orientationBDepthLeft = $depthLeft - $b->getDepth();
 
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
@@ -122,7 +119,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 }
             }
             // otherwise prefer leaving minimum possible gap, or the greatest footprint
-            return ($orientationADepthLeft - $orientationBDepthLeft) ?: ($orientationAMinGap - $orientationBMinGap) ?: ($a->getSurfaceFootprint() - $b->getSurfaceFootprint());
+            return ($orientationAMinGap - $orientationBMinGap) ?: ($a->getSurfaceFootprint() - $b->getSurfaceFootprint());
         });
 
         $bestFit = reset($usableOrientations);
@@ -198,10 +195,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if ($item instanceof ConstrainedPlacementItem) {
             $box = $this->box;
             $orientations = array_filter($orientations, static function (OrientatedItem $i) use ($box, $x, $y, $z, $prevPackedItemList) {
-                /** @var ConstrainedPlacementItem $constrainedItem */
-                $constrainedItem = $i->getItem();
-
-                return $constrainedItem->canBePacked($box, $prevPackedItemList, $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
+                return $i->getItem()->canBePacked($box, $prevPackedItemList, $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
             });
         }
 
@@ -305,24 +299,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return $orientation->isStable();
             }
         );
-    }
-
-    /**
-     * Compare two items to see if they have same dimensions.
-     *
-     * @param Item $itemA
-     * @param Item $itemB
-     *
-     * @return bool
-     */
-    public function isSameDimensions(Item $itemA, Item $itemB)
-    {
-        $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
-        $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
-        sort($itemADimensions);
-        sort($itemBDimensions);
-
-        return $itemADimensions === $itemBDimensions;
     }
 
     /**

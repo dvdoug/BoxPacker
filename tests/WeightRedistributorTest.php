@@ -4,9 +4,9 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
@@ -30,5 +30,67 @@ class WeightRedistributorTest extends TestCase
 
         self::assertCount(2, $packedBoxes[0]->getItems());
         self::assertCount(2, $packedBoxes[1]->getItems());
+    }
+
+    /**
+     * From issue #166.
+     */
+    public function testIssue166()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Pallet', 42, 42, 42, 0, 42, 42, 42, 1120));
+        $packer->addItem(new ConstrainedPlacementNoStackingTestItem('Item', 8, 7, 7, 36, false), 84);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(3, $packedBoxes);
+        self::assertCount(28, $packedBoxes[0]->getItems());
+        self::assertCount(28, $packedBoxes[1]->getItems());
+        self::assertCount(28, $packedBoxes[2]->getItems());
+    }
+
+    public function testWeightDistributionWorks()
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000));
+        $packer->addItem(new TestItem('Item 1', 230, 330, 6, 320, true), 2);
+        $packer->addItem(new TestItem('Item 2', 210, 297, 8, 300, true), 4);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertEquals(0, $packedBoxes->getWeightVariance());
+    }
+
+    /**
+     * Test a case where a weight balancing repack is actually 1 box less than before the repack.
+     * Not ideal that this happens, but while it does it can be used for code coverage.
+     */
+    public function testACaseWhereABoxIsEliminated()
+    {
+        // first no repack case
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('Option 1', 230, 300, 240, 160, 230, 300, 240, 15000));
+        $packer->addBox(new TestBox('Option 2', 370, 375, 60, 140, 364, 374, 40, 3000));
+
+        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true), 4);
+        $packer->addItem(new TestItem('Item 2', 210, 297, 5, 242, true), 4);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(3, $packedBoxes);
+
+        // and the repack case
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Option 1', 230, 300, 240, 160, 230, 300, 240, 15000));
+        $packer->addBox(new TestBox('Option 2', 370, 375, 60, 140, 364, 374, 40, 3000));
+
+        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true), 4);
+        $packer->addItem(new TestItem('Item 2', 210, 297, 5, 242, true), 4);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(2, $packedBoxes);
     }
 }

@@ -48,7 +48,8 @@ class TestItem implements Item, JsonSerializable
      */
     private $volume;
 
-    /* Test objects that recurse
+    /*
+     * Test objects that recurse.
      * @var stdClass
      */
     private $a;

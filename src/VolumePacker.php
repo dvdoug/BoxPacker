@@ -95,7 +95,7 @@ class VolumePacker implements LoggerAwareInterface
     public function __construct(Box $box, ItemList $items)
     {
         $this->box = $box;
-        $this->items = $items;
+        $this->items = clone $items;
 
         $this->boxWidth = max($this->box->getInnerWidth(), $this->box->getInnerLength());
         $this->boxLength = min($this->box->getInnerWidth(), $this->box->getInnerLength());
@@ -207,7 +207,7 @@ class VolumePacker implements LoggerAwareInterface
                 $this->logger->debug("doesn't fit, skipping for now");
                 $this->skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
-                while ($this->items->count() > 2 && $this->orientatedItemFactory->isSameDimensions($itemToPack, $this->items->top())) {
+                while ($this->items->count() > 2 && static::isSameDimensions($itemToPack, $this->items->top())) {
                     $this->skippedItems[] = $this->items->extract();
                 }
             } elseif ($x > 0 && $lengthLeft >= min($itemToPack->getWidth(), $itemToPack->getLength(), $itemToPack->getDepth())) {
@@ -352,13 +352,12 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected function checkNonDimensionalConstraints(Item $itemToPack)
     {
-        $weightOK = $itemToPack->getWeight() <= $this->remainingWeight;
-
+        $customConstraintsOK = true;
         if ($itemToPack instanceof ConstrainedItem) {
-            return $weightOK && $itemToPack->canBePackedInBox($this->getPackedItemList()->asItemList(), $this->box);
+            $customConstraintsOK = $itemToPack->canBePackedInBox($this->getPackedItemList()->asItemList(), $this->box);
         }
 
-        return $weightOK;
+        return $customConstraintsOK && $itemToPack->getWeight() <= $this->remainingWeight;
     }
 
     /**
@@ -441,5 +440,18 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $depth;
+    }
+
+    /**
+     * Compare two items to see if they have same dimensions.
+     */
+    protected static function isSameDimensions(Item $itemA, Item $itemB)
+    {
+        $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
+        $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
+        sort($itemADimensions);
+        sort($itemBDimensions);
+
+        return $itemADimensions === $itemBDimensions;
     }
 }
