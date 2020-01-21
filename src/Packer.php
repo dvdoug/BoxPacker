@@ -233,6 +233,9 @@ class Packer implements LoggerAwareInterface
         if ($choice == 0) {
             $choice = $boxB->getUsedVolume() - $boxA->getUsedVolume();
         }
+        if ($choice == 0) {
+            $choice = PHP_MAJOR_VERSION > 5 ? -1 : 1;
+        }
 
         return $choice;
     }
