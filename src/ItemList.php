@@ -96,17 +96,18 @@ class ItemList extends \SplMaxHeap
     public function remove(Item $item)
     {
         $workingSet = [];
-        while (!$this->isEmpty()) {
-            $workingSet[] = $this->extract();
+
+        foreach ($this as $that) {
+            if ($that === $item) {
+                $this->extract();
+                break;
+            } else {
+                $workingSet[] = $that;
+            }
         }
 
-        $removed = false; // there can be multiple identical items, ensure that only 1 is removed
         foreach ($workingSet as $workingSetItem) {
-            if (!$removed && $workingSetItem === $item) {
-                $removed = true;
-            } else {
-                $this->insert($workingSetItem);
-            }
+            $this->insert($workingSetItem);
         }
 
     }
