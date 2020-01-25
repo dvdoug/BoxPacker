@@ -108,6 +108,7 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         $this->orientatedItemFactory = new OrientatedItemFactory($this->box);
+        $this->orientatedItemFactory->setLogger($this->logger);
     }
 
     /**
@@ -152,7 +153,7 @@ class VolumePacker implements LoggerAwareInterface
             $this->stabiliseLayers();
         }
 
-        $this->logger->debug('done with this box');
+        $this->logger->debug('done with this box ' . $this->box->getReference());
 
         return PackedBox::fromPackedItemList($this->box, $this->getPackedItemList());
     }
@@ -239,6 +240,7 @@ class VolumePacker implements LoggerAwareInterface
     public function stabiliseLayers()
     {
         $stabiliser = new LayerStabiliser();
+        $stabiliser->setLogger($this->logger);
         $this->layers = $stabiliser->stabilise($this->layers);
     }
 
