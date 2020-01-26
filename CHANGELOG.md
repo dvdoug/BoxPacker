@@ -375,7 +375,7 @@ Initial release
 [3.1.1]: https://github.com/dvdoug/BoxPacker/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
-[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.3...3.0.0
+[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
 [2.6.3]: https://github.com/dvdoug/BoxPacker/compare/2.6.2...2.6.3
 [2.6.2]: https://github.com/dvdoug/BoxPacker/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/dvdoug/BoxPacker/compare/2.6.0...2.6.1
@@ -398,7 +398,7 @@ Initial release
 [2.1.0]: https://github.com/dvdoug/BoxPacker/compare/2.0.2...2.1.0
 [2.0.2]: https://github.com/dvdoug/BoxPacker/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/dvdoug/BoxPacker/compare/2.0...2.0.1
-[2.0]: https://github.com/dvdoug/BoxPacker/compare/1.7.2...2.0
+[2.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...2.0
 [1.7.2]: https://github.com/dvdoug/BoxPacker/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/dvdoug/BoxPacker/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/dvdoug/BoxPacker/compare/1.6.9...1.7.0
