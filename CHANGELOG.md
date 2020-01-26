@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.5.0] - 2020-01-26
+### Added
+ - Added a new interface `LimitedSupplyBox extends Box` for situations where there are restrictions on the number of a box type available for packing `Item`s into. The interface contains 1 additional method `getQuantityAvailable()`.
+ - Added new exception `NoBoxesAvailableException` which is thrown when an item cannot be packed due to suitable boxes not being available (e.g. when the new functionality is used and the quantity available is insufficient). The existing `ItemTooLargeException` which is thrown when an item is too large to fit into any of the supplied box types at all (regardless of quantity) still exists, and now extends from `NoBoxesAvailableException` as a special case
+### Changed
+ - Improved efficiency in packing and weight distribution
+ - The `ItemList` passed to `VolumePacker`'s constructor is now cloned before usage, leaving the passed-in object unaffected. Previously this was used as a working dataset. The new behaviour aligns with the existing behaviour of `Packer` 
+### Fixed
+ - Fixed issue where internal sort consistency wasn't always correct
+ - Some debug-level logging wasn't logging correctly
+
 ## [3.4.1] - 2019-12-21
 ### Changed
  - Speed improvements
@@ -73,6 +84,14 @@
  - Minimum PHP version is now 7.1
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
+
+## [2.6.3] - 2020-01-26
+### Changed
+ - Improved efficiency in packing and weight distribution
+ - The `ItemList` passed to `VolumePacker`'s constructor is now cloned before usage, leaving the passed-in object unaffected. Previously this was used as a working dataset. The new behaviour aligns with the existing behaviour of `Packer` 
+### Fixed
+ - Fixed issue where internal sort consistency wasn't always correct
+ - Some debug-level logging wasn't logging correctly
 
 ## [2.6.2] - 2019-12-21
 ### Changed
@@ -342,8 +361,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.4.1...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.5.0...master
 
+[3.5.0]: https://github.com/dvdoug/BoxPacker/compare/3.4.1...3.5.0
 [3.4.1]: https://github.com/dvdoug/BoxPacker/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/dvdoug/BoxPacker/compare/3.3.0...3.4.0
 [3.3.0]: https://github.com/dvdoug/BoxPacker/compare/3.2.2...3.3.0
@@ -355,7 +375,8 @@ Initial release
 [3.1.1]: https://github.com/dvdoug/BoxPacker/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
-[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.2...3.0.0
+[3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.3...3.0.0
+[2.6.3]: https://github.com/dvdoug/BoxPacker/compare/2.6.2...2.6.3
 [2.6.2]: https://github.com/dvdoug/BoxPacker/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/dvdoug/BoxPacker/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/dvdoug/BoxPacker/compare/2.5.0...2.6.0
