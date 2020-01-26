@@ -80,6 +80,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
 
+            if ($orientationAMinGap === 0 && $orientationBMinGap === 0) {
+                return $a->getDepth() <=> $b->getDepth();
+            }
             if ($orientationAMinGap === 0) { // prefer A if it leaves no gap
                 return -1;
             }
