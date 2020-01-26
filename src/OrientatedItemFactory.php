@@ -286,8 +286,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $depthLeft,
         int $currentRowLengthBeforePacking
     ): int {
-        $packedCount = 0;
-
         $currentRowLength = max($prevItem->getLength(), $currentRowLengthBeforePacking);
 
         $itemsToPack = $nextItems->topN(8); // cap lookahead as this gets recursive and slow
@@ -337,9 +335,10 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 $itemsToPack->remove($packedItem->getItem());
             }
 
+            $packedCount = $nextItems->count() - $itemsToPack->count();
             $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
 
-            static::$lookaheadCache[$cacheKey] = $nextItems->count() - $itemsToPack->count();
+            static::$lookaheadCache[$cacheKey] = $packedCount;
         }
 
         return static::$lookaheadCache[$cacheKey];
