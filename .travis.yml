@@ -39,6 +39,7 @@ install:
     else
       composer update;
     fi;
+  - phpenv config-add travis-php.ini;
 
 script:
   - |
