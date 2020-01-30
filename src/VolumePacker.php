@@ -392,6 +392,9 @@ class VolumePacker implements LoggerAwareInterface
      */
     protected static function isSameDimensions(Item $itemA, Item $itemB): bool
     {
+        if ($itemA === $itemB) {
+            return true;
+        }
         $itemADimensions = [$itemA->getWidth(), $itemA->getLength(), $itemA->getDepth()];
         $itemBDimensions = [$itemB->getWidth(), $itemB->getLength(), $itemB->getDepth()];
         sort($itemADimensions);
