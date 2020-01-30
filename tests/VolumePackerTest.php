@@ -408,12 +408,14 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
 
         $items = new ItemList();
+        $item = new TestItem('Larger', 10, 5, 8, 0, false);
         for ($i = 0; $i < 10; ++$i) {
-            $items->insert(new TestItem('Larger', 10, 5, 8, 0, false));
+            $items->insert($item);
         }
 
         for ($i = 0; $i < 5; ++$i) {
-            $items->insert(new TestItem('Smaller', 5, 5, 3, 0, false));
+            $item = new TestItem('Smaller', 5, 5, 3, 0, false);
+            $items->insert($item);
         }
 
         $volumePacker = new VolumePacker($box, $items);
@@ -430,8 +432,9 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
 
         $items = new ItemList();
+        $item = new TestItem('Item', 10, 5, 8, 0, false);
         for ($i = 0; $i < 10; ++$i) {
-            $items->insert(new TestItem('Item', 10, 5, 8, 0, false));
+            $items->insert($item);
         }
 
         $volumePacker = new VolumePacker($box, $items);
