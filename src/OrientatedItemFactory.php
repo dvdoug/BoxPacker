@@ -162,11 +162,15 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         $isSame = false;
         if ($prevItem) {
-            $itemADimensions = [$item->getWidth(), $item->getLength(), $item->getDepth()];
-            $itemBDimensions = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
-            sort($itemADimensions);
-            sort($itemBDimensions);
-            $isSame = ($itemADimensions === $itemBDimensions);
+            if ($item === $prevItem->getItem()) {
+                $isSame = true;
+            } else {
+                $itemADimensions = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+                $itemBDimensions = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
+                sort($itemADimensions);
+                sort($itemBDimensions);
+                $isSame = ($itemADimensions === $itemBDimensions);
+            }
         }
 
         //Special case items that are the same as what we just packed - keep orientation
