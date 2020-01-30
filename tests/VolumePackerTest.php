@@ -442,4 +442,26 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(10, $items);
     }
+
+
+    /**
+     * From issue #190.
+     */
+    public function testOrientationDecisions(): void
+    {
+        $this->markTestSkipped(); // until bug is fixed
+
+        $box = new TestBox('Box', 250, 250, 200, 0, 250, 250, 200, 10000);
+
+        $items = new ItemList();
+        $item = new TestItem('Item', 200, 50, 60, 200, false);
+        for ($i = 0; $i < 20; ++$i) {
+            $items->insert($item);
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(20, $packedBox->getItems());
+    }
 }
