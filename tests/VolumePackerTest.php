@@ -443,7 +443,6 @@ class VolumePackerTest extends TestCase
         self::assertCount(10, $items);
     }
 
-
     /**
      * From issue #190.
      */
