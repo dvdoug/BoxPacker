@@ -53,7 +53,7 @@ class WeightRedistributor implements LoggerAwareInterface
         /** @var PackedBox[] $boxes */
         $boxes = iterator_to_array($originalBoxes);
 
-        usort($boxes, function (PackedBox $boxA, PackedBox $boxB) {
+        usort($boxes, static function (PackedBox $boxA, PackedBox $boxB) {
             return $boxB->getWeight() - $boxA->getWeight();
         });
 
@@ -109,7 +109,7 @@ class WeightRedistributor implements LoggerAwareInterface
         $underWeightBoxItems = $underWeightBox->getItems()->asArray();
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
-            if ($overWeightItem->getWeight() + $underWeightBox->getItemWeight() > $targetWeight) {
+            if (!static::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
                 continue; // moving this item would harm more than help
             }
 
@@ -133,12 +133,10 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
             }
 
-            if (static::didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
-                $underWeightBox = $boxB = $newLighterBoxes->top();
-                $boxA = $newHeavierBoxes->top();
+            $underWeightBox = $boxB = $newLighterBoxes->top();
+            $boxA = $newHeavierBoxes->top();
 
-                $anyIterationSuccessful = true;
-            }
+            $anyIterationSuccessful = true;
         }
 
         return $anyIterationSuccessful;
@@ -164,22 +162,24 @@ class WeightRedistributor implements LoggerAwareInterface
      * Not every attempted repack is actually helpful - sometimes moving an item between two otherwise identical
      * boxes, or sometimes the box used for the now lighter set of items actually weighs more when empty causing
      * an increase in total weight.
-     *
-     * @param PackedBox $oldBoxA
-     * @param PackedBox $oldBoxB
-     * @param PackedBox $newBoxA
-     * @param PackedBox $newBoxB
-     *
-     * @return bool
      */
-    private static function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB)
+    private static function wouldRepackActuallyHelp(array $overWeightBoxItems, Item $overWeightItem, array $underWeightBoxItems, $targetWeight)
     {
-        $oldList = new PackedBoxList();
-        $oldList->insertFromArray([$oldBoxA, $oldBoxB]);
+        $overWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $overWeightBoxItems));
+        $underWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $underWeightBoxItems));
 
-        $newList = new PackedBoxList();
-        $newList->insertFromArray([$newBoxA, $newBoxB]);
+        if ($overWeightItem->getWeight() + $underWeightItemsWeight > $targetWeight) {
+            return false;
+        }
 
-        return $newList->getWeightVariance() < $oldList->getWeightVariance();
+        $oldVariance = static::calculateVariance($overWeightItemsWeight, $underWeightItemsWeight);
+        $newVariance = static::calculateVariance($overWeightItemsWeight - $overWeightItem->getWeight(), $underWeightItemsWeight + $overWeightItem->getWeight());
+
+        return $newVariance < $oldVariance;
+    }
+
+    private static function calculateVariance($boxAWeight, $boxBWeight)
+    {
+        return pow($boxAWeight - (($boxAWeight + $boxBWeight) / 2), 2); //don't need to calculate B and ÷ 2, for a 2-item population the difference from mean is the same for each box
     }
 }
