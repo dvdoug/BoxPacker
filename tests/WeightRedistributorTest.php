@@ -64,36 +64,4 @@ class WeightRedistributorTest extends TestCase
 
         self::assertEquals(0, $packedBoxes->getWeightVariance());
     }
-
-    /**
-     * Test a case where a weight balancing repack is actually 1 box less than before the repack.
-     * Not ideal that this happens, but while it does it can be used for code coverage.
-     */
-    public function testACaseWhereABoxIsEliminated(): void
-    {
-        // first no repack case
-        $packer = new Packer();
-        $packer->setMaxBoxesToBalanceWeight(0);
-        $packer->addBox(new TestBox('Option 1', 230, 300, 240, 160, 230, 300, 240, 15000));
-        $packer->addBox(new TestBox('Option 2', 370, 375, 60, 140, 364, 374, 40, 3000));
-
-        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true), 4);
-        $packer->addItem(new TestItem('Item 2', 210, 297, 5, 242, true), 4);
-
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(3, $packedBoxes);
-
-        // and the repack case
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Option 1', 230, 300, 240, 160, 230, 300, 240, 15000));
-        $packer->addBox(new TestBox('Option 2', 370, 375, 60, 140, 364, 374, 40, 3000));
-
-        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true), 4);
-        $packer->addItem(new TestItem('Item 2', 210, 297, 5, 242, true), 4);
-
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(2, $packedBoxes);
-    }
 }

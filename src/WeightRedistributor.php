@@ -116,7 +116,7 @@ class WeightRedistributor implements LoggerAwareInterface
         $underWeightBoxItems = $underWeightBox->getItems()->asItemArray();
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
-            if ($overWeightItem->getWeight() + $underWeightBox->getItemWeight() > $targetWeight) {
+            if (!static::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
                 continue; // moving this item would harm more than help
             }
 
@@ -142,16 +142,14 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
             }
 
-            if (static::didRepackActuallyHelp($boxA, $boxB, $newHeavierBoxes->top(), $newLighterBoxes->top())) {
-                $this->boxesQtyAvailable[$boxA->getBox()] = $this->boxesQtyAvailable[$boxA->getBox()] + 1;
-                $this->boxesQtyAvailable[$boxB->getBox()] = $this->boxesQtyAvailable[$boxB->getBox()] + 1;
-                $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] - 1;
-                $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] - 1;
-                $underWeightBox = $boxB = $newLighterBoxes->top();
-                $boxA = $newHeavierBoxes->top();
+            $this->boxesQtyAvailable[$boxA->getBox()] = $this->boxesQtyAvailable[$boxA->getBox()] + 1;
+            $this->boxesQtyAvailable[$boxB->getBox()] = $this->boxesQtyAvailable[$boxB->getBox()] + 1;
+            $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] - 1;
+            $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] - 1;
+            $underWeightBox = $boxB = $newLighterBoxes->top();
+            $boxA = $newHeavierBoxes->top();
 
-                $anyIterationSuccessful = true;
-            }
+            $anyIterationSuccessful = true;
         }
 
         return $anyIterationSuccessful;
@@ -178,14 +176,23 @@ class WeightRedistributor implements LoggerAwareInterface
      * boxes, or sometimes the box used for the now lighter set of items actually weighs more when empty causing
      * an increase in total weight.
      */
-    private static function didRepackActuallyHelp(PackedBox $oldBoxA, PackedBox $oldBoxB, PackedBox $newBoxA, PackedBox $newBoxB): bool
+    private static function wouldRepackActuallyHelp(array $overWeightBoxItems, Item $overWeightItem, array $underWeightBoxItems, float $targetWeight): bool
     {
-        $oldList = new PackedBoxList();
-        $oldList->insertFromArray([$oldBoxA, $oldBoxB]);
+        $overWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $overWeightBoxItems));
+        $underWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $underWeightBoxItems));
 
-        $newList = new PackedBoxList();
-        $newList->insertFromArray([$newBoxA, $newBoxB]);
+        if ($overWeightItem->getWeight() + $underWeightItemsWeight > $targetWeight) {
+            return false;
+        }
 
-        return $newList->getWeightVariance() < $oldList->getWeightVariance();
+        $oldVariance = static::calculateVariance($overWeightItemsWeight, $underWeightItemsWeight);
+        $newVariance = static::calculateVariance($overWeightItemsWeight - $overWeightItem->getWeight(), $underWeightItemsWeight + $overWeightItem->getWeight());
+
+        return $newVariance < $oldVariance;
+    }
+
+    private static function calculateVariance(int $boxAWeight, int $boxBWeight)
+    {
+        return ($boxAWeight - (($boxAWeight + $boxBWeight) / 2)) ** 2; //don't need to calculate B and ÷ 2, for a 2-item population the difference from mean is the same for each box
     }
 }

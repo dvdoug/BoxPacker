@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.5.2] - 2020-02-02
+### Changed
+ - Further optimisation when packing a large number of items
+
 ## [3.5.1] - 2020-01-30
 ### Changed
  - Optimisation when packing a large number of identical items
@@ -88,6 +92,10 @@
  - Minimum PHP version is now 7.1
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
+
+## [2.6.5] - 2020-02-02
+### Changed
+ - Further optimisation when packing a large number of items
 
 ## [2.6.4] - 2020-01-30
 ### Changed
@@ -369,8 +377,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.5.1...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.5.2...master
 
+[3.5.2]: https://github.com/dvdoug/BoxPacker/compare/3.5.1...3.5.2
 [3.5.1]: https://github.com/dvdoug/BoxPacker/compare/3.5.0...3.5.1
 [3.5.0]: https://github.com/dvdoug/BoxPacker/compare/3.4.1...3.5.0
 [3.4.1]: https://github.com/dvdoug/BoxPacker/compare/3.4.0...3.4.1
@@ -385,6 +394,7 @@ Initial release
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
+[2.6.5]: https://github.com/dvdoug/BoxPacker/compare/2.6.4...2.6.5
 [2.6.4]: https://github.com/dvdoug/BoxPacker/compare/2.6.3...2.6.4
 [2.6.3]: https://github.com/dvdoug/BoxPacker/compare/2.6.2...2.6.3
 [2.6.2]: https://github.com/dvdoug/BoxPacker/compare/2.6.1...2.6.2
