@@ -19,7 +19,7 @@
     "require-dev": {
         "behat/behat": "^3.4",
         "dvdoug/behat-code-coverage": "^3.0||^4.0",
-        "monolog/monolog": "^1.0||^2.0",
+        "monolog/monolog": "^1.25||^2.0",
         "phpunit/phpunit": "^4.8.36||^5.7.27||^6.5.14||^7.5.20||^8.5.2"
     },
     "config": {
