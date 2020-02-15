@@ -36,9 +36,9 @@ install:
     sed -i 's/"bin-compat" : "full"/"bin-compat" : "auto"/g' composer.json;
   - |
     if [ "$lowest" = "1" ]; then
-      composer update --prefer-lowest --prefer-stable;
+      COMPOSER_MEMORY_LIMIT=-1 composer update --prefer-lowest --prefer-stable;
     else
-      composer update;
+      COMPOSER_MEMORY_LIMIT=-1 composer update;
     fi;
 
 script:
