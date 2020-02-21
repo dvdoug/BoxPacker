@@ -129,7 +129,6 @@ Example - don't allow batteries to be stacked
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
-
             /**
              * Batteries cannot be stacked on top of each other.
              *
@@ -171,6 +170,43 @@ Example - don't allow batteries to be stacked
                 }
 
                 return true;
+            }
+        }
+
+Example - don't allow any rotation at all (e.g. 2D sprites)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: php
+
+    <?php
+        use DVDoug\BoxPacker\ConstrainedPlacementItem;
+
+        class CannotBeRotatedItem implements ConstrainedPlacementItem
+        {
+            /**
+             * Items cannot be rotated.
+             *
+             * @param  Box            $box
+             * @param  PackedItemList $alreadyPackedItems
+             * @param  int            $proposedX
+             * @param  int            $proposedY
+             * @param  int            $proposedZ
+             * @param  int            $width
+             * @param  int            $length
+             * @param  int            $depth
+             * @return bool
+             */
+            public function canBePacked(
+                Box $box,
+                PackedItemList $alreadyPackedItems,
+                int $proposedX,
+                int $proposedY,
+                int $proposedZ,
+                int $width,
+                int $length,
+                int $depth
+            ) {
+                return $width === $this->getWidth() && $length === $this->getLength() && $depth === $this->getDepth();
             }
         }
 

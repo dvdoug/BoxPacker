@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\CannotBeRotatedTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedTestItem;
@@ -462,5 +463,39 @@ class VolumePackerTest extends TestCase
         $packedBox = $volumePacker->pack();
 
         self::assertCount(20, $packedBox->getItems());
+    }
+
+    /**
+     * Non rotatable items.
+     */
+    public function testNonRotatableItems(): void
+    {
+        //Rotatable case
+        $box = new TestBox('Box', 100, 50, 1, 0, 100, 50, 1, 1);
+
+        $items = new ItemList();
+        $item = new TestItem('Item', 50, 100, 1, 0, false);
+        for ($i = 0; $i < 1; ++$i) {
+            $items->insert($item);
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(1, $packedBox->getItems());
+
+        //Non-rotatable
+        $box = new TestBox('Box', 100, 50, 1, 0, 100, 50, 1, 1);
+
+        $items = new ItemList();
+        $item = new CannotBeRotatedTestItem('Item', 50, 100, 1, 0, false);
+        for ($i = 0; $i < 1; ++$i) {
+            $items->insert($item);
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(0, $packedBox->getItems());
     }
 }
