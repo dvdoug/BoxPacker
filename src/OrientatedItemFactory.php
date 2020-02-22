@@ -232,7 +232,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     protected function getUsableOrientations(
         Item $item,
-        $possibleOrientations,
+        array $possibleOrientations,
         bool $isLastItem
     ): array {
         $orientationsToUse = $stableOrientations = $unstableOrientations = [];
