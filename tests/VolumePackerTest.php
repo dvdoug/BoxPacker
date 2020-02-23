@@ -455,7 +455,6 @@ class VolumePackerTest extends TestCase
         for ($i = 0; $i < 20; ++$i) {
             $items->insert($item);
         }
-        $this->markTestSkipped(); // until bug is fixed
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();

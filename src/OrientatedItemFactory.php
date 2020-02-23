@@ -72,22 +72,39 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList) {
+
+            //Prefer exact fits in width/length/depth order
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
-            $orientationALengthLeft = $lengthLeft - $a->getLength();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
+            if ($orientationAWidthLeft === 0 && $orientationBWidthLeft > 0) {
+                return -1;
+            }
+            if ($orientationAWidthLeft > 0 && $orientationBWidthLeft === 0) {
+                return 1;
+            }
+
+            $orientationALengthLeft = $lengthLeft - $a->getLength();
             $orientationBLengthLeft = $lengthLeft - $b->getLength();
+            if ($orientationALengthLeft === 0 && $orientationBLengthLeft > 0) {
+                return -1;
+            }
+            if ($orientationALengthLeft > 0 && $orientationBLengthLeft === 0) {
+                return 1;
+            }
+
+            $orientationADepthLeft = $depthLeft - $a->getDepth();
+            $orientationBDepthLeft = $depthLeft - $b->getDepth();
+            if ($orientationADepthLeft === 0 && $orientationBDepthLeft > 0) {
+                return -1;
+            }
+            if ($orientationADepthLeft > 0 && $orientationBDepthLeft === 0) {
+                return 1;
+            }
 
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
-
             if ($orientationAMinGap === 0 && $orientationBMinGap === 0) {
-                return $a->getDepth() <=> $b->getDepth();
-            }
-            if ($orientationAMinGap === 0) { // prefer A if it leaves no gap
-                return -1;
-            }
-            if ($orientationBMinGap === 0) { // prefer B if it leaves no gap
-                return 1;
+                return $b->getDepth() <=> $a->getDepth();
             }
 
             // prefer leaving room for next item in current row
@@ -239,7 +256,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         // Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
         foreach ($possibleOrientations as $orientation) {
-            if ($orientation->isStable()) {
+            if ($orientation->isStable() || $this->box->getInnerDepth() === $orientation->getDepth()) {
                 $stableOrientations[] = $orientation;
             } else {
                 $unstableOrientations[] = $orientation;
