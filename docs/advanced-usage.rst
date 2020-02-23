@@ -35,7 +35,14 @@ Example - warning on a massively oversized box
 Positional information
 ----------------------
 It is also possible to see the precise positional and dimensional information of each item as packed. This is exposed as x,y,z
-co-ordinates from origin, alongside length/width/depth in the packed orientation.
+co-ordinates from origin, alongside width/length/depth in the packed orientation.::
+
+           z    y
+           |   /
+           |  /
+           | /
+           |/
+           0------x
 
 Example
 ^^^^^^^
