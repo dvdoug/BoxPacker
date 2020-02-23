@@ -449,12 +449,22 @@ class VolumePackerTest extends TestCase
      */
     public function testOrientationDecisions(): void
     {
+        $box = new TestBox('Box', 25, 25, 20, 0, 25, 25, 20, 1000);
+        $items = new ItemList();
+        $item = new TestItem('Item', 5, 6, 20, 20, true);
+        for ($i = 0; $i < 20; ++$i) {
+            $items->insert($item);
+        }
         $this->markTestSkipped(); // until bug is fixed
 
-        $box = new TestBox('Box', 250, 250, 200, 0, 250, 250, 200, 10000);
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
 
+        self::assertCount(20, $packedBox->getItems());
+
+        $box = new TestBox('Box', 25, 25, 20, 0, 25, 25, 20, 1000);
         $items = new ItemList();
-        $item = new TestItem('Item', 200, 50, 60, 200, false);
+        $item = new TestItem('Item', 20, 5, 6, 20, false);
         for ($i = 0; $i < 20; ++$i) {
             $items->insert($item);
         }
