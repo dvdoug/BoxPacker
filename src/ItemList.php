@@ -59,6 +59,7 @@ class ItemList implements Countable, IteratorAggregate
     public function insert(Item $item): void
     {
         $this->list[] = $item;
+        $this->isSorted = false;
     }
 
     /**
