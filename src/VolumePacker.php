@@ -198,7 +198,7 @@ class VolumePacker implements LoggerAwareInterface
             } elseif (count($layer->getItems()) === 0) { // zero items on layer
                 $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
-            } elseif ($widthLeft > 0 && $this->items->count() > 0) { // skip for now, move on to the next item
+            } elseif ($this->items->count() > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
                 $this->skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
