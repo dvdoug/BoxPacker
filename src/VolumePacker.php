@@ -186,9 +186,22 @@ class VolumePacker implements LoggerAwareInterface
                 $rowLength = max($rowLength, $orientatedItem->getLength());
                 $layerDepth = max($layerDepth, $orientatedItem->getDepth());
 
-                //allow items to be stacked in place within the same footprint up to current layer depth
+                //Figure out if we can stack the next item vertically on top of this rather than side by side
+                //e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = $layerDepth - $orientatedItem->getDepth();
-                $this->tryAndStackItemsIntoSpace($layer, $prevItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $startDepth + $orientatedItem->getDepth(), $rowLength);
+                $stackedZ = $startDepth + $orientatedItem->getDepth();
+                while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
+                    $stackedItem = $this->getOrientationForItem($this->items->top(), $prevItem, $this->items, $this->items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
+                    if ($stackedItem) {
+                        $this->remainingWeight -= $this->items->top()->getWeight();
+                        $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
+                        $this->items->extract();
+                        $stackableDepth -= $stackedItem->getDepth();
+                        $stackedZ += $stackedItem->getDepth();
+                    } else {
+                        break;
+                    }
+                }
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
@@ -267,47 +280,6 @@ class VolumePacker implements LoggerAwareInterface
         $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList() : new PackedItemList(); // don't calculate it if not going to be used
 
         return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
-    }
-
-    /**
-     * Figure out if we can stack the next item vertically on top of this rather than side by side
-     * Used when we've packed a tall item, and have just put a shorter one next to it.
-     */
-    protected function tryAndStackItemsIntoSpace(
-        PackedLayer $layer,
-        ?PackedItem $prevItem,
-        int $maxWidth,
-        int $maxLength,
-        int $maxDepth,
-        int $x,
-        int $y,
-        int $z,
-        int $rowLength
-    ): void {
-        while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
-            $stackedItem = $this->getOrientationForItem(
-                $this->items->top(),
-                $prevItem,
-                $this->items,
-                $this->items->count() === 1,
-                $maxWidth,
-                $maxLength,
-                $maxDepth,
-                $rowLength,
-                $x,
-                $y,
-                $z
-            );
-            if ($stackedItem) {
-                $this->remainingWeight -= $this->items->top()->getWeight();
-                $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $z));
-                $this->items->extract();
-                $maxDepth -= $stackedItem->getDepth();
-                $z += $stackedItem->getDepth();
-            } else {
-                break;
-            }
-        }
     }
 
     /**
