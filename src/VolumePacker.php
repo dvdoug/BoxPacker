@@ -188,7 +188,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 //allow items to be stacked in place within the same footprint up to current layer depth
                 $stackableDepth = $layerDepth - $orientatedItem->getDepth();
-                $this->tryAndStackItemsIntoSpace($layer, $prevItem, $this->items, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $startDepth + $orientatedItem->getDepth(), $rowLength);
+                $this->tryAndStackItemsIntoSpace($layer, $prevItem, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $x, $y, $startDepth + $orientatedItem->getDepth(), $rowLength);
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
@@ -278,7 +278,6 @@ class VolumePacker implements LoggerAwareInterface
     protected function tryAndStackItemsIntoSpace(
         PackedLayer $layer,
         ?PackedItem $prevItem,
-        ItemList $nextItems,
         int $maxWidth,
         int $maxLength,
         int $maxDepth,
@@ -291,7 +290,7 @@ class VolumePacker implements LoggerAwareInterface
             $stackedItem = $this->getOrientationForItem(
                 $this->items->top(),
                 $prevItem,
-                $nextItems,
+                $this->items,
                 $this->items->count() === 1,
                 $maxWidth,
                 $maxLength,
