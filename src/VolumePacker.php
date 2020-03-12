@@ -156,7 +156,7 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->layers[] = $layer = new PackedLayer();
         $prevItem = null;
-        $x = $y = $rowLength = $layerDepth = 0;
+        $x = $y = $rowLength = 0;
 
         while ($this->items->count() > 0) {
             $itemToPack = $this->items->extract();
@@ -173,11 +173,10 @@ class VolumePacker implements LoggerAwareInterface
                 $layer->insert($packedItem);
 
                 $rowLength = max($rowLength, $orientatedItem->getLength());
-                $layerDepth = max($layerDepth, $orientatedItem->getDepth());
 
                 //Figure out if we can stack the next item vertically on top of this rather than side by side
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $stackableDepth = $layerDepth - $orientatedItem->getDepth();
+                $stackableDepth = $layer->getDepth() - $orientatedItem->getDepth();
                 $stackedZ = $startDepth + $orientatedItem->getDepth();
                 while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
                     $stackedItem = $this->getOrientationForItem($this->items->top(), $prevItem, $this->items, $this->items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
