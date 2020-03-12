@@ -152,11 +152,12 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    protected function packLayer(int $startDepth, int $widthLeft, int $lengthLeft, int $depthLeft): void
+    protected function packLayer(int $startDepth, int $layerWidth, int $lengthLeft, int $depthLeft): void
     {
         $this->layers[] = $layer = new PackedLayer();
         $prevItem = null;
-        $x = $y = $rowWidth = $rowLength = $layerDepth = 0;
+        $x = $y = $rowLength = $layerDepth = 0;
+        $widthLeft = $layerWidth;
 
         while ($this->items->count() > 0) {
             $itemToPack = $this->items->extract();
@@ -173,7 +174,6 @@ class VolumePacker implements LoggerAwareInterface
                 $layer->insert($packedItem);
                 $widthLeft -= $orientatedItem->getWidth();
 
-                $rowWidth += $orientatedItem->getWidth();
                 $rowLength = max($rowLength, $orientatedItem->getLength());
                 $layerDepth = max($layerDepth, $orientatedItem->getDepth());
 
@@ -210,10 +210,10 @@ class VolumePacker implements LoggerAwareInterface
                 }
             } elseif ($x > 0) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
-                $widthLeft += $rowWidth;
+                $widthLeft = $layerWidth;
                 $lengthLeft -= $rowLength;
                 $y += $rowLength;
-                $x = $rowWidth = $rowLength = 0;
+                $x = $rowLength = 0;
                 $this->skippedItems[] = $itemToPack;
                 $this->rebuildItemList();
                 $prevItem = null;
