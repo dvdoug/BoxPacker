@@ -157,7 +157,6 @@ class VolumePacker implements LoggerAwareInterface
         $this->layers[] = $layer = new PackedLayer();
         $prevItem = null;
         $x = $y = $rowLength = $layerDepth = 0;
-        $widthLeft = $layerWidth;
 
         while ($this->items->count() > 0) {
             $itemToPack = $this->items->extract();
@@ -167,12 +166,11 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, !$this->hasItemsLeftToPack(), $widthLeft, $lengthLeft, $depthLeft, $rowLength, $x, $y, $startDepth);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, !$this->hasItemsLeftToPack(), $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $startDepth);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $startDepth);
                 $layer->insert($packedItem);
-                $widthLeft -= $orientatedItem->getWidth();
 
                 $rowLength = max($rowLength, $orientatedItem->getLength());
                 $layerDepth = max($layerDepth, $orientatedItem->getDepth());
@@ -210,7 +208,6 @@ class VolumePacker implements LoggerAwareInterface
                 }
             } elseif ($x > 0) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
-                $widthLeft = $layerWidth;
                 $lengthLeft -= $rowLength;
                 $y += $rowLength;
                 $x = $rowLength = 0;
