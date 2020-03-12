@@ -22,6 +22,16 @@ class PackedLayer
     /**
      * @var int
      */
+    private $startDepth = PHP_INT_MAX;
+
+    /**
+     * @var int
+     */
+    private $endDepth = 0;
+
+    /**
+     * @var int
+     */
     private $weight = 0;
 
     /**
@@ -38,6 +48,8 @@ class PackedLayer
     {
         $this->items[] = $packedItem;
         $this->weight += $packedItem->getItem()->getWeight();
+        $this->startDepth = min($this->startDepth, $packedItem->getZ());
+        $this->endDepth = max($this->endDepth, $packedItem->getZ() + $packedItem->getDepth());
     }
 
     /**
@@ -75,13 +87,7 @@ class PackedLayer
      */
     public function getStartDepth(): int
     {
-        $startDepth = PHP_INT_MAX;
-
-        foreach ($this->items as $item) {
-            $startDepth = min($startDepth, $item->getZ());
-        }
-
-        return $startDepth;
+        return $this->startDepth;
     }
 
     /**
@@ -91,13 +97,7 @@ class PackedLayer
      */
     public function getDepth(): int
     {
-        $layerDepth = 0;
-
-        foreach ($this->items as $item) {
-            $layerDepth = max($layerDepth, $item->getZ() + $item->getDepth());
-        }
-
-        return $layerDepth - $this->getStartDepth();
+        return $this->endDepth - $this->getStartDepth();
     }
 
     /**
