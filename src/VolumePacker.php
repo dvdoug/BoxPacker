@@ -61,13 +61,6 @@ class VolumePacker implements LoggerAwareInterface
     protected $skippedItems = [];
 
     /**
-     * Remaining weight capacity of the box.
-     *
-     * @var int
-     */
-    protected $remainingWeight;
-
-    /**
      * Whether the box was rotated for packing.
      *
      * @var bool
@@ -101,7 +94,6 @@ class VolumePacker implements LoggerAwareInterface
 
         $this->boxWidth = max($this->box->getInnerWidth(), $this->box->getInnerLength());
         $this->boxLength = min($this->box->getInnerWidth(), $this->box->getInnerLength());
-        $this->remainingWeight = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
         $this->logger = new NullLogger();
 
         // we may have just rotated the box for packing purposes, record if we did
@@ -179,7 +171,6 @@ class VolumePacker implements LoggerAwareInterface
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $startDepth);
                 $layer->insert($packedItem);
-                $this->remainingWeight -= $orientatedItem->getItem()->getWeight();
                 $widthLeft -= $orientatedItem->getWidth();
 
                 $rowWidth += $orientatedItem->getWidth();
@@ -193,7 +184,6 @@ class VolumePacker implements LoggerAwareInterface
                 while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
                     $stackedItem = $this->getOrientationForItem($this->items->top(), $prevItem, $this->items, $this->items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
                     if ($stackedItem) {
-                        $this->remainingWeight -= $this->items->top()->getWeight();
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                         $this->items->extract();
                         $stackableDepth -= $stackedItem->getDepth();
@@ -293,7 +283,7 @@ class VolumePacker implements LoggerAwareInterface
             $customConstraintsOK = $itemToPack->canBePackedInBox($this->getPackedItemList(), $this->box);
         }
 
-        return $customConstraintsOK && $itemToPack->getWeight() <= $this->remainingWeight;
+        return $customConstraintsOK && $itemToPack->getWeight() <= $this->getRemainingWeightAllowed();
     }
 
     /**
@@ -354,6 +344,16 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $depth;
+    }
+
+    private function getRemainingWeightAllowed(): int
+    {
+        $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
+        foreach ($this->layers as $layer) {
+            $remainingWeightAllowed -= $layer->getWeight();
+        }
+
+        return $remainingWeightAllowed;
     }
 
     /**

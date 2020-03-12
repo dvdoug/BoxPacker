@@ -20,6 +20,11 @@ use function min;
 class PackedLayer
 {
     /**
+     * @var int
+     */
+    private $weight = 0;
+
+    /**
      * Items packed into this layer.
      *
      * @var PackedItem[]
@@ -32,6 +37,7 @@ class PackedLayer
     public function insert(PackedItem $packedItem): void
     {
         $this->items[] = $packedItem;
+        $this->weight += $packedItem->getItem()->getWeight();
     }
 
     /**
@@ -92,5 +98,15 @@ class PackedLayer
         }
 
         return $layerDepth - $this->getStartDepth();
+    }
+
+    /**
+     * Calculate weight of this layer.
+     *
+     * @return int weight in grams
+     */
+    public function getWeight(): int
+    {
+        return $this->weight;
     }
 }
