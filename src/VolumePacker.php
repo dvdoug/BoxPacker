@@ -54,13 +54,6 @@ class VolumePacker implements LoggerAwareInterface
     protected $items;
 
     /**
-     * List of items temporarily skipped to be packed.
-     *
-     * @var array
-     */
-    protected $skippedItems = [];
-
-    /**
      * Whether the box was rotated for packing.
      *
      * @var bool
@@ -157,6 +150,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->layers[] = $layer = new PackedLayer();
         $prevItem = null;
         $x = $y = $rowLength = 0;
+        $skippedItems = [];
 
         while ($this->items->count() > 0) {
             $itemToPack = $this->items->extract();
@@ -166,7 +160,7 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, count($this->skippedItems) + $this->items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, count($skippedItems) + $this->items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -193,31 +187,33 @@ class VolumePacker implements LoggerAwareInterface
 
                 $prevItem = $packedItem;
                 if ($this->items->count() === 0) {
-                    $this->rebuildItemList();
+                    $this->items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($this->items)), true);
+                    $skippedItems = [];
                 }
             } elseif (count($layer->getItems()) === 0) { // zero items on layer
                 $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
             } elseif ($this->items->count() > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
-                $this->skippedItems[] = $itemToPack;
+                $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
                 while ($this->items->count() > 2 && static::isSameDimensions($itemToPack, $this->items->top())) {
-                    $this->skippedItems[] = $this->items->extract();
+                    $skippedItems[] = $this->items->extract();
                 }
             } elseif ($x > 0) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $lengthLeft -= $rowLength;
                 $y += $rowLength;
                 $x = $rowLength = 0;
-                $this->skippedItems[] = $itemToPack;
-                $this->rebuildItemList();
+                $skippedItems[] = $itemToPack;
+                $this->items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($this->items)), true);
+                $skippedItems = [];
                 $prevItem = null;
                 continue;
             } else {
                 $this->logger->debug('no items fit, so starting next vertical layer');
-                $this->skippedItems[] = $itemToPack;
-                $this->rebuildItemList();
+                $skippedItems[] = $itemToPack;
+                $this->items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($this->items)), true);
 
                 return;
             }
@@ -280,15 +276,6 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $customConstraintsOK && $itemToPack->getWeight() <= $this->getRemainingWeightAllowed();
-    }
-
-    /**
-     * Reintegrate skipped items into main list.
-     */
-    protected function rebuildItemList(): void
-    {
-        $this->items = ItemList::fromArray(array_merge($this->skippedItems, iterator_to_array($this->items)), true);
-        $this->skippedItems = [];
     }
 
     /**
