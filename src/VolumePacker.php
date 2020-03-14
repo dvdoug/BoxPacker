@@ -126,7 +126,7 @@ class VolumePacker implements LoggerAwareInterface
 
         while ($this->items->count() > 0) {
             $layerStartDepth = $this->getCurrentPackedDepth();
-            $this->packLayer($layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
+            $this->items = $this->packLayer($this->items, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
         }
 
         if ($this->boxRotated) {
@@ -145,22 +145,22 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    protected function packLayer(int $z, int $layerWidth, int $lengthLeft, int $depthLeft): void
+    protected function packLayer(ItemList $items, int $z, int $layerWidth, int $lengthLeft, int $depthLeft): ItemList
     {
         $this->layers[] = $layer = new PackedLayer();
         $prevItem = null;
         $x = $y = $rowLength = 0;
         $skippedItems = [];
 
-        while ($this->items->count() > 0) {
-            $itemToPack = $this->items->extract();
+        while ($items->count() > 0) {
+            $itemToPack = $items->extract();
 
             //skip items that are simply too heavy or too large
             if (!$this->checkNonDimensionalConstraints($itemToPack)) {
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, count($skippedItems) + $this->items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $items, count($skippedItems) + $items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -172,11 +172,11 @@ class VolumePacker implements LoggerAwareInterface
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = $layer->getDepth() - $orientatedItem->getDepth();
                 $stackedZ = $z + $orientatedItem->getDepth();
-                while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
-                    $stackedItem = $this->getOrientationForItem($this->items->top(), $prevItem, $this->items, $this->items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
+                while ($items->count() > 0 && $this->checkNonDimensionalConstraints($items->top())) {
+                    $stackedItem = $this->getOrientationForItem($items->top(), $prevItem, $items, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
                     if ($stackedItem) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
-                        $this->items->extract();
+                        $items->extract();
                         $stackableDepth -= $stackedItem->getDepth();
                         $stackedZ += $stackedItem->getDepth();
                     } else {
@@ -186,19 +186,19 @@ class VolumePacker implements LoggerAwareInterface
                 $x += $orientatedItem->getWidth();
 
                 $prevItem = $packedItem;
-                if ($this->items->count() === 0) {
-                    $this->items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($this->items)), true);
+                if ($items->count() === 0) {
+                    $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
             } elseif (count($layer->getItems()) === 0) { // zero items on layer
                 $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
-            } elseif ($this->items->count() > 0) { // skip for now, move on to the next item
+            } elseif ($items->count() > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
                 $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
-                while ($this->items->count() > 2 && static::isSameDimensions($itemToPack, $this->items->top())) {
-                    $skippedItems[] = $this->items->extract();
+                while ($items->count() > 2 && static::isSameDimensions($itemToPack, $items->top())) {
+                    $skippedItems[] = $items->extract();
                 }
             } elseif ($x > 0) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
@@ -206,18 +206,19 @@ class VolumePacker implements LoggerAwareInterface
                 $y += $rowLength;
                 $x = $rowLength = 0;
                 $skippedItems[] = $itemToPack;
-                $this->items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($this->items)), true);
+                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                 $skippedItems = [];
                 $prevItem = null;
                 continue;
             } else {
                 $this->logger->debug('no items fit, so starting next vertical layer');
                 $skippedItems[] = $itemToPack;
-                $this->items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($this->items)), true);
 
-                return;
+                return ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
             }
         }
+
+        return $items;
     }
 
     /**
