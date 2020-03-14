@@ -126,7 +126,7 @@ class VolumePacker implements LoggerAwareInterface
 
         while ($this->items->count() > 0) {
             $layerStartDepth = $this->getCurrentPackedDepth();
-            $this->items = $this->packLayer($this->items, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
+            $this->items = $this->packLayer($this->items, $this->layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
         }
 
         if ($this->boxRotated) {
@@ -139,15 +139,15 @@ class VolumePacker implements LoggerAwareInterface
 
         $this->logger->debug('done with this box ' . $this->box->getReference());
 
-        return new PackedBox($this->box, $this->getPackedItemList());
+        return new PackedBox($this->box, $this->getPackedItemList($this->layers));
     }
 
     /**
      * Pack items into an individual vertical layer.
      */
-    protected function packLayer(ItemList $items, int $z, int $layerWidth, int $lengthLeft, int $depthLeft): ItemList
+    protected function packLayer(ItemList $items, array &$layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft): ItemList
     {
-        $this->layers[] = $layer = new PackedLayer();
+        $layers[] = $layer = new PackedLayer();
         $prevItem = null;
         $x = $y = $rowLength = 0;
         $skippedItems = [];
@@ -156,11 +156,11 @@ class VolumePacker implements LoggerAwareInterface
             $itemToPack = $items->extract();
 
             //skip items that are simply too heavy or too large
-            if (!$this->checkNonDimensionalConstraints($itemToPack)) {
+            if (!$this->checkNonDimensionalConstraints($itemToPack, $layers)) {
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $items, count($skippedItems) + $items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $items, $layers, count($skippedItems) + $items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -172,8 +172,8 @@ class VolumePacker implements LoggerAwareInterface
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = $layer->getDepth() - $orientatedItem->getDepth();
                 $stackedZ = $z + $orientatedItem->getDepth();
-                while ($items->count() > 0 && $this->checkNonDimensionalConstraints($items->top())) {
-                    $stackedItem = $this->getOrientationForItem($items->top(), $prevItem, $items, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
+                while ($items->count() > 0 && $this->checkNonDimensionalConstraints($items->top(), $layers)) {
+                    $stackedItem = $this->getOrientationForItem($items->top(), $prevItem, $items, $layers, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
                     if ($stackedItem) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                         $items->extract();
@@ -238,6 +238,7 @@ class VolumePacker implements LoggerAwareInterface
         Item $itemToPack,
         ?PackedItem $prevItem,
         ItemList $nextItems,
+        array $layers,
         bool $isLastItem,
         int $maxWidth,
         int $maxLength,
@@ -260,7 +261,7 @@ class VolumePacker implements LoggerAwareInterface
         );
 
         $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
-        $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList() : new PackedItemList(); // don't calculate it if not going to be used
+        $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
 
         return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
     }
@@ -269,14 +270,14 @@ class VolumePacker implements LoggerAwareInterface
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
      */
-    protected function checkNonDimensionalConstraints(Item $itemToPack): bool
+    protected function checkNonDimensionalConstraints(Item $itemToPack, array $layers): bool
     {
         $customConstraintsOK = true;
         if ($itemToPack instanceof ConstrainedItem) {
-            $customConstraintsOK = $itemToPack->canBePackedInBox($this->getPackedItemList(), $this->box);
+            $customConstraintsOK = $itemToPack->canBePackedInBox($this->getPackedItemList($layers), $this->box);
         }
 
-        return $customConstraintsOK && $itemToPack->getWeight() <= $this->getRemainingWeightAllowed();
+        return $customConstraintsOK && $itemToPack->getWeight() <= $this->getRemainingWeightAllowed($layers);
     }
 
     /**
@@ -297,10 +298,10 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Generate a single list of items packed.
      */
-    protected function getPackedItemList(): PackedItemList
+    protected function getPackedItemList(array $layers): PackedItemList
     {
         $packedItemList = new PackedItemList();
-        foreach ($this->layers as $layer) {
+        foreach ($layers as $layer) {
             foreach ($layer->getItems() as $packedItem) {
                 $packedItemList->insert($packedItem);
             }
@@ -322,10 +323,10 @@ class VolumePacker implements LoggerAwareInterface
         return $depth;
     }
 
-    private function getRemainingWeightAllowed(): int
+    private function getRemainingWeightAllowed(array $layers): int
     {
         $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
-        foreach ($this->layers as $layer) {
+        foreach ($layers as $layer) {
             $remainingWeightAllowed -= $layer->getWeight();
         }
 
