@@ -152,7 +152,7 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    protected function packLayer(int $startDepth, int $layerWidth, int $lengthLeft, int $depthLeft): void
+    protected function packLayer(int $z, int $layerWidth, int $lengthLeft, int $depthLeft): void
     {
         $this->layers[] = $layer = new PackedLayer();
         $prevItem = null;
@@ -166,10 +166,10 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, count($this->skippedItems) + $this->items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $startDepth);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $this->items, count($this->skippedItems) + $this->items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
 
             if ($orientatedItem instanceof OrientatedItem) {
-                $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $startDepth);
+                $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
                 $layer->insert($packedItem);
 
                 $rowLength = max($rowLength, $orientatedItem->getLength());
@@ -177,7 +177,7 @@ class VolumePacker implements LoggerAwareInterface
                 //Figure out if we can stack the next item vertically on top of this rather than side by side
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = $layer->getDepth() - $orientatedItem->getDepth();
-                $stackedZ = $startDepth + $orientatedItem->getDepth();
+                $stackedZ = $z + $orientatedItem->getDepth();
                 while ($this->items->count() > 0 && $this->checkNonDimensionalConstraints($this->items->top())) {
                     $stackedItem = $this->getOrientationForItem($this->items->top(), $prevItem, $this->items, $this->items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
                     if ($stackedItem) {
