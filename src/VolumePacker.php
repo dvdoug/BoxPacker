@@ -98,6 +98,7 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         $this->hasConstrainedItems = $items->hasConstrainedItems();
+
         $this->orientatedItemFactory = new OrientatedItemFactory($this->box);
         $this->orientatedItemFactory->setLogger($this->logger);
     }
@@ -130,7 +131,17 @@ class VolumePacker implements LoggerAwareInterface
 
         while ($this->items->count() > 0) {
             $layerStartDepth = $this->getCurrentPackedDepth();
-            $this->items = $this->packLayer($this->items, $this->layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth);
+
+            //do a preliminary layer to get the depth used
+            $preliminaryLayers = $this->layers;
+            $preliminaryItems = $this->packLayer(clone $this->items, $preliminaryLayers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
+
+            if ($preliminaryItems->count() === 0) { // preliminary === final
+                $this->layers = $preliminaryLayers;
+                $this->items = $preliminaryItems;
+            } else {
+                $this->items = $this->packLayer($this->items, $this->layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, end($preliminaryLayers)->getDepth());
+            }
         }
 
         if ($this->boxRotated) {
@@ -149,7 +160,7 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    protected function packLayer(ItemList $items, array &$layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft): ItemList
+    protected function packLayer(ItemList $items, array &$layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): ItemList
     {
         $layers[] = $layer = new PackedLayer();
         $prevItem = null;
@@ -174,7 +185,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 //Figure out if we can stack the next item vertically on top of this rather than side by side
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $stackableDepth = $layer->getDepth() - $orientatedItem->getDepth();
+                $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $orientatedItem->getDepth();
                 $stackedZ = $z + $orientatedItem->getDepth();
                 while ($items->count() > 0 && $this->checkNonDimensionalConstraints($items->top(), $layers)) {
                     $stackedItem = $this->getOrientationForItem($items->top(), $prevItem, $items, $layers, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
