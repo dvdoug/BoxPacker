@@ -42,6 +42,13 @@ class ItemList implements Countable, IteratorAggregate
     private $isSorted = false;
 
     /**
+     * Does this list contain constrained items?
+     *
+     * @var bool
+     */
+    private $hasConstrainedItems;
+
+    /**
      * Do a bulk create.
      *
      * @param  Item[]   $items
@@ -60,6 +67,7 @@ class ItemList implements Countable, IteratorAggregate
     {
         $this->list[] = $item;
         $this->isSorted = false;
+        $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
     }
 
     /**
@@ -147,6 +155,24 @@ class ItemList implements Countable, IteratorAggregate
     public function count(): int
     {
         return count($this->list);
+    }
+
+    /**
+     * Does this list contain items with constrained placement criteria.
+     */
+    public function hasConstrainedItems(): bool
+    {
+        if (!isset($this->hasConstrainedItems)) {
+            $this->hasConstrainedItems = false;
+            foreach ($this->list as $item) {
+                if ($item instanceof ConstrainedPlacementItem) {
+                    $this->hasConstrainedItems = true;
+                    break;
+                }
+            }
+        }
+
+        return $this->hasConstrainedItems;
     }
 
     private static function compare(Item $itemA, Item $itemB): int

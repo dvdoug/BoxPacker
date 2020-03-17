@@ -77,6 +77,9 @@ class VolumePacker implements LoggerAwareInterface
      */
     private $orientatedItemFactory;
 
+    /** @var bool */
+    private $hasConstrainedItems;
+
     /**
      * Constructor.
      */
@@ -94,6 +97,7 @@ class VolumePacker implements LoggerAwareInterface
             $this->boxRotated = true;
         }
 
+        $this->hasConstrainedItems = $items->hasConstrainedItems();
         $this->orientatedItemFactory = new OrientatedItemFactory($this->box);
         $this->orientatedItemFactory->setLogger($this->logger);
     }
@@ -133,7 +137,7 @@ class VolumePacker implements LoggerAwareInterface
             $this->rotateLayersNinetyDegrees();
         }
 
-        if (!$this->lookAheadMode) {
+        if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
             $this->stabiliseLayers();
         }
 
