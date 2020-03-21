@@ -77,6 +77,11 @@ class VolumePacker implements LoggerAwareInterface
      */
     private $orientatedItemFactory;
 
+    /**
+     * @var OrientatedItem[]
+     */
+    private $orientatedItemCache = [];
+
     /** @var bool */
     private $hasConstrainedItems;
 
@@ -187,16 +192,24 @@ class VolumePacker implements LoggerAwareInterface
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $orientatedItem->getDepth();
                 $stackedZ = $z + $orientatedItem->getDepth();
-                while ($items->count() > 0 && $this->checkNonDimensionalConstraints($items->top(), $layers)) {
-                    $stackedItem = $this->getOrientationForItem($items->top(), $prevItem, $items, $layers, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
-                    if ($stackedItem) {
+                $stackSkippedItems = [];
+                while ($items->count() > 0) {
+                    $itemToTryStacking = $items->extract();
+                    $stackedItem = $this->getOrientationForItem($itemToTryStacking, $prevItem, $items, $layers, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
+                    if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers)) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
-                        $items->extract();
                         $stackableDepth -= $stackedItem->getDepth();
                         $stackedZ += $stackedItem->getDepth();
                     } else {
-                        break;
+                        $stackSkippedItems[] = $itemToTryStacking;
+                        // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
+                        while ($items->count() > 0 && static::isSameDimensions($itemToTryStacking, $items->top())) {
+                            $stackSkippedItems[] = $items->extract();
+                        }
                     }
+                }
+                if ($stackSkippedItems) {
+                    $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
                 }
                 $x += $orientatedItem->getWidth();
 
@@ -275,10 +288,16 @@ class VolumePacker implements LoggerAwareInterface
             ]
         );
 
-        $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
-        $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
+        $cacheKey = spl_object_hash($itemToPack) . '|' . $x . '|' . $y . '|' . $z . '|' . $nextItems->count();
 
-        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
+        if (!isset($this->orientatedItemCache[$cacheKey])) {
+            $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
+            $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
+
+            $this->orientatedItemCache[$cacheKey] = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
+        }
+
+        return $this->orientatedItemCache[$cacheKey];
     }
 
     /**
