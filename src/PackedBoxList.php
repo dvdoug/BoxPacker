@@ -59,6 +59,7 @@ class PackedBoxList implements IteratorAggregate, Countable
     public function insert(PackedBox $item): void
     {
         $this->list[] = $item;
+        $this->isSorted = false;
     }
 
     /**
