@@ -61,11 +61,6 @@ class VolumePacker implements LoggerAwareInterface
     protected $boxRotated = false;
 
     /**
-     * @var PackedLayer[]
-     */
-    protected $layers = [];
-
-    /**
      * Whether the packer is in look-ahead mode (i.e. working ahead of the main packing).
      *
      * @var bool
@@ -134,32 +129,35 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
+        /** @var PackedLayer[] $layers */
+        $layers = [];
+
         while ($this->items->count() > 0) {
-            $layerStartDepth = static::getCurrentPackedDepth($this->layers);
+            $layerStartDepth = static::getCurrentPackedDepth($layers);
 
             //do a preliminary layer to get the depth used
-            $preliminaryLayers = $this->layers;
+            $preliminaryLayers = $layers;
             $preliminaryItems = $this->packLayer(clone $this->items, $preliminaryLayers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
 
             if ($preliminaryItems->count() === 0) { // preliminary === final
-                $this->layers = $preliminaryLayers;
+                $layers = $preliminaryLayers;
                 $this->items = $preliminaryItems;
             } else {
-                $this->items = $this->packLayer($this->items, $this->layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, end($preliminaryLayers)->getDepth());
+                $this->items = $this->packLayer($this->items, $layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, end($preliminaryLayers)->getDepth());
             }
         }
 
         if ($this->boxRotated) {
-            $this->layers = static::rotateLayersNinetyDegrees($this->layers);
+            $layers = static::rotateLayersNinetyDegrees($layers);
         }
 
         if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
-            $this->layers = static::stabiliseLayers($this->layers);
+            $layers = static::stabiliseLayers($layers);
         }
 
         $this->logger->debug('done with this box ' . $this->box->getReference());
 
-        return new PackedBox($this->box, $this->getPackedItemList($this->layers));
+        return new PackedBox($this->box, $this->getPackedItemList($layers));
     }
 
     /**
