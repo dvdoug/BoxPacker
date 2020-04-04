@@ -136,15 +136,18 @@ class VolumePacker implements LoggerAwareInterface
         while ($items->count() > 0) {
             $layerStartDepth = static::getCurrentPackedDepth($layers);
 
-            //do a preliminary layer to get the depth used
-            $preliminaryLayers = $layers;
-            $preliminaryItems = $this->packLayer(clone $items, $preliminaryLayers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
+            //do a preliminary layer pack to get the depth used
+            $preliminaryItems = clone $items;
+            $preliminaryLayer = $this->packLayer($preliminaryItems, $layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
+            if (count($preliminaryLayer->getItems()) === 0) {
+                break;
+            }
 
-            if ($preliminaryItems->count() === 0) { // preliminary === final
-                $layers = $preliminaryLayers;
+            if ($preliminaryLayer->getDepth() === $preliminaryLayer->getItems()[0]->getDepth()) { // preliminary === final
+                $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
-            } else {
-                $items = $this->packLayer($items, $layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, end($preliminaryLayers)->getDepth());
+            } else { //redo with now-known-depth so that we can stack to that height from the first item
+                $layers[] = $this->packLayer($items, $layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth());
             }
         }
 
@@ -164,7 +167,7 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    protected function packLayer(ItemList $items, array &$layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): ItemList
+    protected function packLayer(ItemList &$items, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): PackedLayer
     {
         $layers[] = $layer = new PackedLayer();
         $prevItem = null;
@@ -241,11 +244,13 @@ class VolumePacker implements LoggerAwareInterface
                 $this->logger->debug('no items fit, so starting next vertical layer');
                 $skippedItems[] = $itemToPack;
 
-                return ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+
+                return $layer;
             }
         }
 
-        return $items;
+        return $layer;
     }
 
     /**
