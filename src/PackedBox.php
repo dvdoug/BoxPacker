@@ -195,7 +195,7 @@ class PackedBox
      */
     public function getVolumeUtilisation(): float
     {
-        return round($this->getUsedVolume() / $this->getInnerVolume() * 100, 1);
+        return round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
     }
 
     /**
