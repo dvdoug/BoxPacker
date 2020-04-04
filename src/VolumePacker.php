@@ -131,19 +131,20 @@ class VolumePacker implements LoggerAwareInterface
 
         /** @var PackedLayer[] $layers */
         $layers = [];
+        $items = clone $this->items;
 
-        while ($this->items->count() > 0) {
+        while ($items->count() > 0) {
             $layerStartDepth = static::getCurrentPackedDepth($layers);
 
             //do a preliminary layer to get the depth used
             $preliminaryLayers = $layers;
-            $preliminaryItems = $this->packLayer(clone $this->items, $preliminaryLayers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
+            $preliminaryItems = $this->packLayer(clone $items, $preliminaryLayers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
 
             if ($preliminaryItems->count() === 0) { // preliminary === final
                 $layers = $preliminaryLayers;
-                $this->items = $preliminaryItems;
+                $items = $preliminaryItems;
             } else {
-                $this->items = $this->packLayer($this->items, $layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, end($preliminaryLayers)->getDepth());
+                $items = $this->packLayer($items, $layers, $layerStartDepth, $this->boxWidth, $this->boxLength, $this->box->getInnerDepth() - $layerStartDepth, end($preliminaryLayers)->getDepth());
             }
         }
 
