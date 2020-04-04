@@ -129,6 +129,8 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
+        $boxPermutations = [];
+
         /** @var PackedLayer[] $layers */
         $layers = [];
         $items = clone $this->items;
@@ -161,7 +163,13 @@ class VolumePacker implements LoggerAwareInterface
 
         $this->logger->debug('done with this box ' . $this->box->getReference());
 
-        return new PackedBox($this->box, $this->getPackedItemList($layers));
+        $boxPermutations[] = new PackedBox($this->box, $this->getPackedItemList($layers));
+
+        usort($boxPermutations, static function (PackedBox $a, PackedBox $b) {
+            return $b->getVolumeUtilisation() <=> $a->getVolumeUtilisation();
+        });
+
+        return reset($boxPermutations);
     }
 
     /**
