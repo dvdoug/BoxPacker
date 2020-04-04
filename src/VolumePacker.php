@@ -150,7 +150,7 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         if ($this->boxRotated) {
-            $this->rotateLayersNinetyDegrees();
+            $this->layers = static::rotateLayersNinetyDegrees($this->layers);
         }
 
         if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
@@ -317,17 +317,21 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Swap back width/length of the packed items to match orientation of the box if needed.
+     * @param PackedLayer[] $oldLayers
      */
-    protected function rotateLayersNinetyDegrees(): void
+    protected static function rotateLayersNinetyDegrees($oldLayers): array
     {
-        foreach ($this->layers as $i => $originalLayer) {
+        $newLayers = [];
+        foreach ($oldLayers as $originalLayer) {
             $newLayer = new PackedLayer();
             foreach ($originalLayer->getItems() as $item) {
                 $packedItem = new PackedItem($item->getItem(), $item->getY(), $item->getX(), $item->getZ(), $item->getLength(), $item->getWidth(), $item->getDepth());
                 $newLayer->insert($packedItem);
             }
-            $this->layers[$i] = $newLayer;
+            $newLayers[] = $newLayer;
         }
+
+        return $newLayers;
     }
 
     /**
