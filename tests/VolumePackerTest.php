@@ -39,30 +39,6 @@ class VolumePackerTest extends TestCase
     }
 
     /**
-     * From issue #86.
-     */
-    public function testUsedWidthAndRemainingWidthHandleRotationsCorrectly(): void
-    {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 23, 27, 14, 0, 23, 27, 14, 30));
-        $packer->addItem(new TestItem('Item 1', 11, 22, 2, 1, true), 3);
-        $packer->addItem(new TestItem('Item 2', 11, 22, 2, 1, true), 4);
-        $packer->addItem(new TestItem('Item 3', 6, 17, 2, 1, true), 3);
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(1, $packedBoxes);
-
-        /** @var PackedBox $packedBox */
-        $packedBox = $packedBoxes->top();
-        self::assertEquals(22, $packedBox->getUsedWidth());
-        self::assertEquals(23, $packedBox->getUsedLength());
-        self::assertEquals(10, $packedBox->getUsedDepth());
-        self::assertEquals(1, $packedBox->getRemainingWidth());
-        self::assertEquals(4, $packedBox->getRemainingLength());
-        self::assertEquals(4, $packedBox->getRemainingDepth());
-    }
-
-    /**
      * Test that constraint handling works correctly.
      */
     public function testLegacyConstraints(): void
