@@ -154,7 +154,7 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
-            $this->stabiliseLayers();
+            $this->layers = static::stabiliseLayers($this->layers);
         }
 
         $this->logger->debug('done with this box ' . $this->box->getReference());
@@ -254,12 +254,13 @@ class VolumePacker implements LoggerAwareInterface
      * i.e. they overhang the ones below.
      *
      * This function reorders them so that the ones with the greatest surface area are placed at the bottom
+     * @param PackedLayer[] $layers
      */
-    public function stabiliseLayers(): void
+    protected static function stabiliseLayers(array $layers): array
     {
         $stabiliser = new LayerStabiliser();
-        $stabiliser->setLogger($this->logger);
-        $this->layers = $stabiliser->stabilise($this->layers);
+
+        return $stabiliser->stabilise($layers);
     }
 
     protected function getOrientationForItem(
