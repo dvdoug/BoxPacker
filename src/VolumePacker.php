@@ -135,7 +135,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
         while ($this->items->count() > 0) {
-            $layerStartDepth = $this->getCurrentPackedDepth();
+            $layerStartDepth = static::getCurrentPackedDepth($this->layers);
 
             //do a preliminary layer to get the depth used
             $preliminaryLayers = $this->layers;
@@ -346,11 +346,12 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Return the current packed depth.
+     * @param PackedLayer[] $layers
      */
-    protected function getCurrentPackedDepth(): int
+    protected static function getCurrentPackedDepth(array $layers): int
     {
         $depth = 0;
-        foreach ($this->layers as $layer) {
+        foreach ($layers as $layer) {
             $depth += $layer->getDepth();
         }
 
