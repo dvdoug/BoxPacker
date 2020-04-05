@@ -203,7 +203,7 @@ class VolumePacker implements LoggerAwareInterface
                 $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $orientatedItem->getDepth();
                 $stackedZ = $z + $orientatedItem->getDepth();
                 $stackSkippedItems = [];
-                while ($items->count() > 0) {
+                while ($stackableDepth > 0 && $items->count() > 0) {
                     $itemToTryStacking = $items->extract();
                     $stackedItem = $this->getOrientationForItem($itemToTryStacking, $prevItem, $items, $layers, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
                     if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers)) {
