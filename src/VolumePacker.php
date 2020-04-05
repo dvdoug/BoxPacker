@@ -10,7 +10,6 @@ namespace DVDoug\BoxPacker;
 
 use function count;
 use function max;
-use function min;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -71,11 +70,6 @@ class VolumePacker implements LoggerAwareInterface
      * @var OrientatedItemFactory
      */
     private $orientatedItemFactory;
-
-    /**
-     * @var OrientatedItem[]
-     */
-    private $orientatedItemCache = [];
 
     /** @var bool */
     private $hasConstrainedItems;
@@ -301,16 +295,10 @@ class VolumePacker implements LoggerAwareInterface
             ]
         );
 
-        $cacheKey = spl_object_hash($itemToPack) . '|' . $x . '|' . $y . '|' . $z . '|' . $nextItems->count();
+        $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
+        $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
 
-        if (!isset($this->orientatedItemCache[$cacheKey])) {
-            $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
-            $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
-
-            $this->orientatedItemCache[$cacheKey] = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
-        }
-
-        return $this->orientatedItemCache[$cacheKey];
+        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
     }
 
     /**
