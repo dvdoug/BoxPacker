@@ -40,6 +40,13 @@ class PackedBox
     protected $itemWeight;
 
     /**
+     * Volume used for items as % of box.
+     *
+     * @var float
+     */
+    protected $volumeUtilisation;
+
+    /**
      * Get box used.
      */
     public function getBox(): Box
@@ -195,7 +202,7 @@ class PackedBox
      */
     public function getVolumeUtilisation(): float
     {
-        return round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
+        return $this->volumeUtilisation;
     }
 
     /**
@@ -205,5 +212,7 @@ class PackedBox
     {
         $this->box = $box;
         $this->items = $packedItemList;
+
+        $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
     }
 }
