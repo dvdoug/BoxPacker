@@ -185,8 +185,6 @@ class VolumePackerTest extends TestCase
      */
     public function testUnpackedSpaceInsideLayersIsFilled(): void
     {
-        $this->markTestSkipped(); // until bug is fixed
-
         $box = new TestBox('Box', 4, 14, 11, 0, 4, 14, 11, 100);
         $itemList = new ItemList();
         $itemList->insert(new TestItem('Item 1', 8, 8, 2, 1, false));
