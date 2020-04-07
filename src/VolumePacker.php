@@ -293,7 +293,7 @@ class VolumePacker implements LoggerAwareInterface
         $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
         $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
 
-        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList);
+        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList, $this->lookAheadMode);
     }
 
     /**

@@ -62,7 +62,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $x,
         int $y,
         int $z,
-        PackedItemList $prevPackedItemList
+        PackedItemList $prevPackedItemList,
+        bool $lookAheadMode
     ): ?OrientatedItem {
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
         $usableOrientations = $this->getUsableOrientations($item, $possibleOrientations, $isLastItem);
@@ -71,7 +72,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return null;
         }
 
-        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList) {
+        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $lookAheadMode) {
 
             //Prefer exact fits in width/length/depth order
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
@@ -118,11 +119,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
                     return 1;
                 }
 
-                // if not an easy either/or, do a partial lookahead
-                $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                if ($additionalPackedA !== $additionalPackedB) {
-                    return $additionalPackedB <=> $additionalPackedA;
+                if (!$lookAheadMode) {
+                    // if not an easy either/or, do a partial lookahead
+                    $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+                    $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+                    if ($additionalPackedA !== $additionalPackedB) {
+                        return $additionalPackedB <=> $additionalPackedA;
+                    }
                 }
             }
             // otherwise prefer leaving minimum possible gap, or the greatest footprint
