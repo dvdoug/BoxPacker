@@ -186,12 +186,10 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         //remove any that simply don't fit
-        $orientationsDimensions = array_filter($orientationsDimensions, static function (array $i) use ($widthLeft, $lengthLeft, $depthLeft) {
-            return $i[0] <= $widthLeft && $i[1] <= $lengthLeft && $i[2] <= $depthLeft;
-        });
-
         foreach ($orientationsDimensions as $dimensions) {
-            $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
+            if ($dimensions[0] <= $widthLeft && $dimensions[1] <= $lengthLeft && $dimensions[2] <= $depthLeft) {
+                $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
+            }
         }
 
         if ($item instanceof ConstrainedPlacementItem) {
