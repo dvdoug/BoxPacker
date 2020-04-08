@@ -163,6 +163,7 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Pack items into an individual vertical layer.
+     * @internal
      */
     protected function packLayer(ItemList &$items, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): PackedLayer
     {
@@ -179,7 +180,7 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $items, $layers, count($skippedItems) + $items->count() === 0, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
+            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $items, $layers, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -194,7 +195,7 @@ class VolumePacker implements LoggerAwareInterface
                 $stackSkippedItems = [];
                 while ($stackableDepth > 0 && $items->count() > 0) {
                     $itemToTryStacking = $items->extract();
-                    $stackedItem = $this->getOrientationForItem($itemToTryStacking, $prevItem, $items, $layers, $items->count() === 1, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
+                    $stackedItem = $this->getOrientationForItem($itemToTryStacking, $prevItem, $items, $layers, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
                     if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers)) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                         $stackableDepth -= $stackedItem->getDepth();
@@ -269,7 +270,6 @@ class VolumePacker implements LoggerAwareInterface
         ?PackedItem $prevItem,
         ItemList $nextItems,
         array $layers,
-        bool $isLastItem,
         int $maxWidth,
         int $maxLength,
         int $maxDepth,
@@ -293,7 +293,7 @@ class VolumePacker implements LoggerAwareInterface
         $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
         $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
 
-        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $isLastItem, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList, $this->lookAheadMode);
+        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList, $this->lookAheadMode);
     }
 
     /**

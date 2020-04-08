@@ -54,7 +54,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         Item $item,
         ?OrientatedItem $prevItem,
         ItemList $nextItems,
-        bool $isLastItem,
         int $widthLeft,
         int $lengthLeft,
         int $depthLeft,
@@ -66,7 +65,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         bool $lookAheadMode
     ): ?OrientatedItem {
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-        $usableOrientations = $this->getUsableOrientations($item, $possibleOrientations, $isLastItem);
+        $usableOrientations = $this->getUsableOrientations($item, $possibleOrientations);
 
         if (empty($usableOrientations)) {
             return null;
@@ -252,8 +251,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     protected function getUsableOrientations(
         Item $item,
-        array $possibleOrientations,
-        bool $isLastItem
+        array $possibleOrientations
     ): array {
         $orientationsToUse = $stableOrientations = $unstableOrientations = [];
 
@@ -267,8 +265,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         /*
-         * We prefer to use stable orientations only, but allow unstable ones if either
-         * the item is the last one left to pack OR
+         * We prefer to use stable orientations only, but allow unstable ones if
          * the item doesn't fit in the box any other way
          */
         if (count($stableOrientations) > 0) {
@@ -276,7 +273,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         } elseif (count($unstableOrientations) > 0) {
             $stableOrientationsInEmptyBox = $this->getStableOrientationsInEmptyBox($item);
 
-            if ($isLastItem || count($stableOrientationsInEmptyBox) === 0) {
+            if (count($stableOrientationsInEmptyBox) === 0) {
                 $orientationsToUse = $unstableOrientations;
             }
         }
