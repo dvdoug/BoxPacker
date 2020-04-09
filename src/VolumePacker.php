@@ -106,7 +106,6 @@ class VolumePacker implements LoggerAwareInterface
 
         $boxPermutations = [];
         foreach ($rotationsToTest as $rotation) {
-
             /** @var PackedLayer[] $layers */
             $layers = [];
             $items = clone $this->items;

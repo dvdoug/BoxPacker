@@ -15,7 +15,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 use function reset;
-use function sort;
 use function usort;
 
 /**
@@ -72,7 +71,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $lookAheadMode) {
-
             //Prefer exact fits in width/length/depth order
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
@@ -155,40 +153,32 @@ class OrientatedItemFactory implements LoggerAwareInterface
     ): array {
         $orientations = $orientationsDimensions = [];
 
-        $isSame = false;
-        if ($prevItem) {
-            if ($item === $prevItem->getItem()) {
-                $isSame = true;
-            } else {
-                $itemADimensions = [$item->getWidth(), $item->getLength(), $item->getDepth()];
-                $itemBDimensions = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
-                sort($itemADimensions);
-                sort($itemBDimensions);
-                $isSame = ($itemADimensions === $itemBDimensions);
-            }
-        }
-
         //Special case items that are the same as what we just packed - keep orientation
-        if ($isSame && $prevItem) {
-            $orientationsDimensions[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
+        if ($prevItem && $item === $prevItem->getItem() && $prevItem->getWidth() <= $widthLeft && $prevItem->getLength() <= $lengthLeft && $prevItem->getDepth() <= $depthLeft) {
+            $orientations[] = $prevItem; // reuse the existing object for a small speed boost
         } else {
-            //simple 2D rotation
-            $orientationsDimensions[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
-            $orientationsDimensions[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
+            //Might be different a item but having same dimensions - apply same rule
+            if ($prevItem && $prevItem->isSameDimensions($item)) {
+                $orientationsDimensions[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
+            } else {
+                //simple 2D rotation
+                $orientationsDimensions[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+                $orientationsDimensions[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
 
-            //add 3D rotation if we're allowed
-            if (!$item->getKeepFlat()) {
-                $orientationsDimensions[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
-                $orientationsDimensions[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
-                $orientationsDimensions[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];
-                $orientationsDimensions[] = [$item->getDepth(), $item->getLength(), $item->getWidth()];
+                //add 3D rotation if we're allowed
+                if (!$item->getKeepFlat()) {
+                    $orientationsDimensions[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
+                    $orientationsDimensions[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
+                    $orientationsDimensions[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];
+                    $orientationsDimensions[] = [$item->getDepth(), $item->getLength(), $item->getWidth()];
+                }
             }
-        }
 
-        //remove any that simply don't fit
-        foreach ($orientationsDimensions as $dimensions) {
-            if ($dimensions[0] <= $widthLeft && $dimensions[1] <= $lengthLeft && $dimensions[2] <= $depthLeft) {
-                $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
+            //remove any that simply don't fit
+            foreach ($orientationsDimensions as $dimensions) {
+                if ($dimensions[0] <= $widthLeft && $dimensions[1] <= $lengthLeft && $dimensions[2] <= $depthLeft) {
+                    $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
+                }
             }
         }
 

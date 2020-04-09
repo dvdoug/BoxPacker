@@ -49,6 +49,11 @@ class OrientatedItem implements JsonSerializable
     protected static $stabilityCache = [];
 
     /**
+     * @var array
+     */
+    protected $dimensionsAsArray;
+
+    /**
      * Constructor.
      */
     public function __construct(Item $item, int $width, int $length, int $depth)
@@ -58,6 +63,9 @@ class OrientatedItem implements JsonSerializable
         $this->length = $length;
         $this->depth = $depth;
         $this->surfaceFootprint = $width * $length;
+
+        $this->dimensionsAsArray = [$width, $length, $depth];
+        sort($this->dimensionsAsArray);
     }
 
     /**
@@ -110,6 +118,18 @@ class OrientatedItem implements JsonSerializable
         $cacheKey = $this->width . '|' . $this->length . '|' . $this->depth;
 
         return static::$stabilityCache[$cacheKey] ?? (static::$stabilityCache[$cacheKey] = atan(min($this->length, $this->width) / ($this->depth ?: 1)) > 0.261);
+    }
+
+    /**
+     * Is the supplied item the same size as this one?
+     * @internal
+     */
+    public function isSameDimensions(Item $item): bool
+    {
+        $itemDimensions = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+        sort($itemDimensions);
+
+        return $this->dimensionsAsArray === $itemDimensions;
     }
 
     /**
