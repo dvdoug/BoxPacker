@@ -170,12 +170,13 @@ class VolumePacker implements LoggerAwareInterface
         $prevItem = null;
         $x = $y = $rowLength = 0;
         $skippedItems = [];
+        $remainingWeightAllowed = $this->getRemainingWeightAllowed($layers);
 
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
 
             //skip items that are simply too heavy or too large
-            if (!$this->checkNonDimensionalConstraints($itemToPack, $layers)) {
+            if (!$this->checkNonDimensionalConstraints($itemToPack, $layers, $remainingWeightAllowed)) {
                 continue;
             }
 
@@ -184,6 +185,7 @@ class VolumePacker implements LoggerAwareInterface
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
                 $layer->insert($packedItem);
+                $remainingWeightAllowed -= $itemToPack->getWeight();
 
                 $rowLength = max($rowLength, $orientatedItem->getLength());
 
@@ -195,8 +197,9 @@ class VolumePacker implements LoggerAwareInterface
                 while ($stackableDepth > 0 && $items->count() > 0) {
                     $itemToTryStacking = $items->extract();
                     $stackedItem = $this->getOrientationForItem($itemToTryStacking, $prevItem, $items, $layers, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
-                    if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers)) {
+                    if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers, $remainingWeightAllowed)) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
+                        $remainingWeightAllowed -= $itemToTryStacking->getWeight();
                         $stackableDepth -= $stackedItem->getDepth();
                         $stackedZ += $stackedItem->getDepth();
                     } else {
@@ -299,14 +302,14 @@ class VolumePacker implements LoggerAwareInterface
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
      */
-    protected function checkNonDimensionalConstraints(Item $itemToPack, array $layers): bool
+    protected function checkNonDimensionalConstraints(Item $itemToPack, array $layers, int $remainingWeightAllowed): bool
     {
         $customConstraintsOK = true;
         if ($itemToPack instanceof ConstrainedItem) {
             $customConstraintsOK = $itemToPack->canBePackedInBox($this->getPackedItemList($layers), $this->box);
         }
 
-        return $customConstraintsOK && $itemToPack->getWeight() <= $this->getRemainingWeightAllowed($layers);
+        return $customConstraintsOK && $itemToPack->getWeight() <= $remainingWeightAllowed;
     }
 
     /**
