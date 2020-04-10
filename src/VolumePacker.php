@@ -148,8 +148,8 @@ class VolumePacker implements LoggerAwareInterface
 
             $boxPermutations[] = new PackedBox($this->box, $this->getPackedItemList($layers));
 
-            if (!$rotation && reset($boxPermutations)->getItems()->count() === $this->items->count()) {
-                break;
+            if (end($boxPermutations)->getItems()->count() === $this->items->count()) {
+                return end($boxPermutations);
             }
         }
 
