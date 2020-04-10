@@ -329,7 +329,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         if (!isset(static::$lookaheadCache[$cacheKey])) {
             $tempBox = new WorkingVolume($originalWidthLeft - $prevItem->getWidth(), $currentRowLength, $depthLeft, PHP_INT_MAX);
-            $tempPacker = new VolumePacker($tempBox, clone $itemsToPack);
+            $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setLookAheadMode(true);
             $remainingRowPacked = $tempPacker->pack();
             /** @var PackedItem $packedItem */
@@ -338,7 +338,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             }
 
             $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
-            $tempPacker = new VolumePacker($tempBox, clone $itemsToPack);
+            $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setLookAheadMode(true);
             $nextRowsPacked = $tempPacker->pack();
             /** @var PackedItem $packedItem */
