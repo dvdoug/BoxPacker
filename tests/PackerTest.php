@@ -334,6 +334,52 @@ class PackerTest extends TestCase
     }
 
     /**
+     * From issue #192.
+     */
+    public function testIssue192(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, false));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, false));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 345, 250, 55, 10, false));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, false));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, false));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 50, 10, false));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 360, 250, 55, 10, false));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, false));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, false));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 60, 10, false));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        self::assertCount(1, $packer->pack());
+    }
+
+    /**
      * From issue #196.
      */
     public function testIssue196(): void
