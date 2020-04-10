@@ -332,4 +332,25 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item 2', 400, 150, 200, 10, false), 1);
         self::assertCount(1, $packer->pack());
     }
+
+    /**
+     * From issue #196.
+     */
+    public function testIssue196(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('[Box]', 360, 620, 370, 1, 360, 620, 370, 29000));
+        $packer->addItem(new TestItem('C5 240 x 165 mm, 1000 vnt.', 259, 375, 99, 5440, false), 4);
+        $packer->addItem(new TestItem('170x230+30mm', 200, 300, 10, 194, false), 12);
+        $packer->addItem(new TestItem('50 mm x 66 m, ruda', 100, 100, 50, 165, false), 12);
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('[Box]', 360, 620, 370, 1, 360, 620, 370, 29000));
+        $packer->addItem(new TestItem('C5 240 x 165 mm, 1000 vnt.', 259, 375, 99, 5440, false), 4);
+        $packer->addItem(new TestItem('170x230+30mm', 200, 300, 10, 194, false), 12);
+        $packer->addItem(new TestItem('50 mm x 66 m, ruda', 100, 100, 50, 165, false), 12);
+        $packer->addItem(new TestItem('175 x 255, B5', 130, 210, 30, 391, false), 2);
+        self::assertCount(1, $packer->pack());
+    }
 }
