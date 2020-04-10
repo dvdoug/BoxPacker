@@ -171,7 +171,7 @@ class Packer implements LoggerAwareInterface
             $packedBoxesIteration = [];
 
             //Loop through boxes starting with smallest, see what happens
-            foreach ($this->boxes as $box) {
+            foreach ($this->getBoxList() as $box) {
                 if ($this->boxesQtyAvailable[$box] > 0) {
                     $volumePacker = new VolumePacker($box, clone $this->items);
                     $volumePacker->setLogger($this->logger);
@@ -200,6 +200,33 @@ class Packer implements LoggerAwareInterface
         }
 
         return $packedBoxes;
+    }
+
+    /**
+     * Get a "smart" ordering of the boxes to try packing items into. The initial BoxList is already sorted in order
+     * so that the smallest boxes are evaluated first, but this means that time is spent on boxes that cannot possibly
+     * hold the entire set of items due to volume limitations. These should be evaluated first.
+     */
+    protected function getBoxList(): iterable
+    {
+        $itemVolume = 0;
+        /** @var Item $item */
+        foreach ($this->items as $item) {
+            $itemVolume += $item->getWidth() * $item->getLength() * $item->getDepth();
+        }
+
+        $preferredBoxes = [];
+        $otherBoxes = [];
+        /** @var Box $box */
+        foreach ($this->boxes as $box) {
+            if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
+                $preferredBoxes[] = $box;
+            } else {
+                $otherBoxes[] = $box;
+            }
+        }
+
+        return array_merge($preferredBoxes, $otherBoxes);
     }
 
     /**
