@@ -173,6 +173,7 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Pack items into an individual vertical layer.
+     *
      * @internal
      */
     protected function packLayer(ItemList &$items, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): PackedLayer
@@ -269,6 +270,7 @@ class VolumePacker implements LoggerAwareInterface
      * i.e. they overhang the ones below.
      *
      * This function reorders them so that the ones with the greatest surface area are placed at the bottom
+     *
      * @param PackedLayer[] $layers
      */
     protected static function stabiliseLayers(array $layers): array
@@ -325,6 +327,7 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Swap back width/length of the packed items to match orientation of the box if needed.
+     *
      * @param PackedLayer[] $oldLayers
      */
     protected static function rotateLayersNinetyDegrees($oldLayers): array
@@ -344,6 +347,8 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Generate a single list of items packed.
+     *
+     * @param PackedLayer[] $layers
      */
     protected function getPackedItemList(array $layers): PackedItemList
     {
@@ -359,6 +364,7 @@ class VolumePacker implements LoggerAwareInterface
 
     /**
      * Return the current packed depth.
+     *
      * @param PackedLayer[] $layers
      */
     protected static function getCurrentPackedDepth(array $layers): int

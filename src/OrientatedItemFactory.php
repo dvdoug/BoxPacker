@@ -232,8 +232,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     }
 
     /**
-     * @param OrientatedItem[] $possibleOrientations
-     *
+     * @param  OrientatedItem[] $possibleOrientations
      * @return OrientatedItem[]
      */
     protected function getUsableOrientations(

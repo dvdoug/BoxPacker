@@ -78,6 +78,7 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Set a list of items all at once.
+     * @param iterable|Item[] $items
      */
     public function setItems(iterable $items): void
     {

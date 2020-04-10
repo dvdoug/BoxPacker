@@ -38,6 +38,9 @@ class PackedBoxList implements IteratorAggregate, Countable
      */
     private $isSorted = false;
 
+    /**
+     * @return Traversable|Box[]
+     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {

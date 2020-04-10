@@ -42,6 +42,9 @@ class PackedItemList implements Countable, IteratorAggregate
         $this->list[] = $item;
     }
 
+    /**
+     * @return Traversable|PackedItem[]
+     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {

@@ -56,6 +56,8 @@ class PackedBox
 
     /**
      * Get items packed.
+     *
+     * @return PackedItemList|PackedItem[]
      */
     public function getItems(): PackedItemList
     {
