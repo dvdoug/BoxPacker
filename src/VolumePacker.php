@@ -106,10 +106,6 @@ class VolumePacker implements LoggerAwareInterface
 
         $boxPermutations = [];
         foreach ($rotationsToTest as $rotation) {
-            /** @var PackedLayer[] $layers */
-            $layers = [];
-            $items = clone $this->items;
-
             if ($rotation) {
                 $boxWidth = $this->box->getInnerLength();
                 $boxLength = $this->box->getInnerWidth();
@@ -118,39 +114,12 @@ class VolumePacker implements LoggerAwareInterface
                 $boxLength = $this->box->getInnerLength();
             }
 
-            while ($items->count() > 0) {
-                $layerStartDepth = static::getCurrentPackedDepth($layers);
-
-                //do a preliminary layer pack to get the depth used
-                $preliminaryItems = clone $items;
-                $preliminaryLayer = $this->packLayer($preliminaryItems, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
-                if (count($preliminaryLayer->getItems()) === 0) {
-                    break;
-                }
-
-                if ($preliminaryLayer->getDepth() === $preliminaryLayer->getItems()[0]->getDepth()) { // preliminary === final
-                    $layers[] = $preliminaryLayer;
-                    $items = $preliminaryItems;
-                } else { //redo with now-known-depth so that we can stack to that height from the first item
-                    $layers[] = $this->packLayer($items, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth());
-                }
+            $boxPermutation = $this->packRotation($boxWidth, $boxLength);
+            if ($boxPermutation->getItems()->count() === $this->items->count()) {
+                return $boxPermutation;
             }
 
-            if ($rotation) {
-                $layers = static::rotateLayersNinetyDegrees($layers);
-            }
-
-            if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
-                $layers = static::stabiliseLayers($layers);
-            }
-
-            $this->logger->debug('done with this box ' . $this->box->getReference());
-
-            $boxPermutations[] = new PackedBox($this->box, $this->getPackedItemList($layers));
-
-            if (end($boxPermutations)->getItems()->count() === $this->items->count()) {
-                return end($boxPermutations);
-            }
+            $boxPermutations[] = $boxPermutation;
         }
 
         usort($boxPermutations, static function (PackedBox $a, PackedBox $b) {
@@ -158,6 +127,48 @@ class VolumePacker implements LoggerAwareInterface
         });
 
         return reset($boxPermutations);
+    }
+
+    /**
+     * Pack as many items as possible into specific given box.
+     *
+     * @return PackedBox packed box
+     */
+    protected function packRotation(int $boxWidth, int $boxLength): PackedBox
+    {
+        $this->logger->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
+
+        /** @var PackedLayer[] $layers */
+        $layers = [];
+        $items = clone $this->items;
+
+        while ($items->count() > 0) {
+            $layerStartDepth = static::getCurrentPackedDepth($layers);
+
+            //do a preliminary layer pack to get the depth used
+            $preliminaryItems = clone $items;
+            $preliminaryLayer = $this->packLayer($preliminaryItems, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
+            if (count($preliminaryLayer->getItems()) === 0) {
+                break;
+            }
+
+            if ($preliminaryLayer->getDepth() === $preliminaryLayer->getItems()[0]->getDepth()) { // preliminary === final
+                $layers[] = $preliminaryLayer;
+                $items = $preliminaryItems;
+            } else { //redo with now-known-depth so that we can stack to that height from the first item
+                $layers[] = $this->packLayer($items, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth());
+            }
+        }
+
+        if ($this->box->getInnerWidth() !== $boxWidth) {
+            $layers = static::rotateLayersNinetyDegrees($layers);
+        }
+
+        if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
+            $layers = static::stabiliseLayers($layers);
+        }
+
+        return new PackedBox($this->box, $this->getPackedItemList($layers));
     }
 
     /**
