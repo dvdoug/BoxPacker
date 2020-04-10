@@ -331,7 +331,5 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, false), 1);
         $packer->addItem(new TestItem('Item 2', 400, 150, 200, 10, false), 1);
         self::assertCount(1, $packer->pack());
-
     }
-
 }
