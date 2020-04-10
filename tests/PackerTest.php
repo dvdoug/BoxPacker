@@ -299,4 +299,39 @@ class PackerTest extends TestCase
         self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
         self::assertEquals('Heavy box', $packedBoxes[2]->getBox()->getReference());
     }
+
+    /**
+     * From issue #191.
+     */
+    public function testIssue191(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 400, 150, 200, 10, false), 2);
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, false), 2);
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 200, 400, 150, 10, false), 2);
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 400, 150, 200, 10, false), 1);
+        $packer->addItem(new TestItem('Item 2', 400, 200, 150, 10, false), 1);
+        self::assertCount(1, $packer->pack());
+
+        $packer = new Packer();
+        $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
+        $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, false), 1);
+        $packer->addItem(new TestItem('Item 2', 400, 150, 200, 10, false), 1);
+        self::assertCount(1, $packer->pack());
+
+    }
+
 }
