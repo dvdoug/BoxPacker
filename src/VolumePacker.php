@@ -192,7 +192,7 @@ class VolumePacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->getOrientationForItem($itemToPack, $prevItem, $items, $packedItemList, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList, $this->singlePassMode);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -209,7 +209,7 @@ class VolumePacker implements LoggerAwareInterface
                 $stackSkippedItems = [];
                 while ($stackableDepth > 0 && $items->count() > 0) {
                     $itemToTryStacking = $items->extract();
-                    $stackedItem = $this->getOrientationForItem($itemToTryStacking, $prevItem, $items, $packedItemList, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ);
+                    $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList, $this->singlePassMode);
                     if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers, $remainingWeightAllowed)) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                         $remainingWeightAllowed -= $itemToTryStacking->getWeight();
@@ -279,36 +279,6 @@ class VolumePacker implements LoggerAwareInterface
         $stabiliser = new LayerStabiliser();
 
         return $stabiliser->stabilise($layers);
-    }
-
-    protected function getOrientationForItem(
-        Item $itemToPack,
-        ?PackedItem $prevItem,
-        ItemList $nextItems,
-        PackedItemList $prevPackedItemList,
-        int $maxWidth,
-        int $maxLength,
-        int $maxDepth,
-        int $rowLength,
-        int $x,
-        int $y,
-        int $z
-    ): ?OrientatedItem {
-        $this->logger->debug(
-            "evaluating item {$itemToPack->getDescription()} for fit",
-            [
-                'item' => $itemToPack,
-                'space' => [
-                    'maxWidth' => $maxWidth,
-                    'maxLength' => $maxLength,
-                    'maxDepth' => $maxDepth,
-                ],
-            ]
-        );
-
-        $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
-
-        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList, $this->singlePassMode);
     }
 
     /**

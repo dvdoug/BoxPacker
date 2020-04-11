@@ -63,6 +63,18 @@ class OrientatedItemFactory implements LoggerAwareInterface
         PackedItemList $prevPackedItemList,
         bool $singlePassMode
     ): ?OrientatedItem {
+        $this->logger->debug(
+            "evaluating item {$item->getDescription()} for fit",
+            [
+                'item' => $item,
+                'space' => [
+                    'widthLeft' => $widthLeft,
+                    'lengthLeft' => $lengthLeft,
+                    'depthLeft' => $depthLeft,
+                ],
+            ]
+        );
+
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
         $usableOrientations = $this->getUsableOrientations($item, $possibleOrientations);
 
