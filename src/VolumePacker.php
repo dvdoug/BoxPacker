@@ -47,7 +47,7 @@ class VolumePacker implements LoggerAwareInterface
      *
      * @var bool
      */
-    protected $lookAheadMode = false;
+    protected $singlePassMode = false;
 
     /**
      * @var OrientatedItemFactory
@@ -85,9 +85,9 @@ class VolumePacker implements LoggerAwareInterface
     /**
      * @internal
      */
-    public function setLookAheadMode(bool $lookAhead): void
+    public function setSinglePassMode(bool $singlePassMode): void
     {
-        $this->lookAheadMode = $lookAhead;
+        $this->singlePassMode = $singlePassMode;
     }
 
     /**
@@ -100,7 +100,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
         $rotationsToTest = [false];
-        if (!$this->lookAheadMode) {
+        if (!$this->singlePassMode) {
             $rotationsToTest[] = true;
         }
 
@@ -164,7 +164,7 @@ class VolumePacker implements LoggerAwareInterface
             $layers = static::rotateLayersNinetyDegrees($layers);
         }
 
-        if (!$this->lookAheadMode && !$this->hasConstrainedItems) {
+        if (!$this->singlePassMode && !$this->hasConstrainedItems) {
             $layers = static::stabiliseLayers($layers);
         }
 
@@ -306,7 +306,7 @@ class VolumePacker implements LoggerAwareInterface
         $prevOrientatedItem = $prevItem ? $prevItem->toOrientatedItem() : null;
         $prevPackedItemList = $itemToPack instanceof ConstrainedPlacementItem ? $this->getPackedItemList($layers) : new PackedItemList(); // don't calculate it if not going to be used
 
-        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList, $this->lookAheadMode);
+        return $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevOrientatedItem, $nextItems, $maxWidth, $maxLength, $maxDepth, $rowLength, $x, $y, $z, $prevPackedItemList, $this->singlePassMode);
     }
 
     /**

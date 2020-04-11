@@ -61,7 +61,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $y,
         int $z,
         PackedItemList $prevPackedItemList,
-        bool $lookAheadMode
+        bool $singlePassMode
     ): ?OrientatedItem {
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
         $usableOrientations = $this->getUsableOrientations($item, $possibleOrientations);
@@ -70,7 +70,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return null;
         }
 
-        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $lookAheadMode) {
+        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $singlePassMode) {
             //Prefer exact fits in width/length/depth order
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
@@ -116,7 +116,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
                     return 1;
                 }
 
-                if (!$lookAheadMode) {
+                if (!$singlePassMode) {
                     // if not an easy either/or, do a partial lookahead
                     $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
                     $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
@@ -330,7 +330,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if (!isset(static::$lookaheadCache[$cacheKey])) {
             $tempBox = new WorkingVolume($originalWidthLeft - $prevItem->getWidth(), $currentRowLength, $depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
-            $tempPacker->setLookAheadMode(true);
+            $tempPacker->setSinglePassMode(true);
             $remainingRowPacked = $tempPacker->pack();
             /** @var PackedItem $packedItem */
             foreach ($remainingRowPacked->getItems() as $packedItem) {
@@ -339,7 +339,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
             $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
-            $tempPacker->setLookAheadMode(true);
+            $tempPacker->setSinglePassMode(true);
             $nextRowsPacked = $tempPacker->pack();
             /** @var PackedItem $packedItem */
             foreach ($nextRowsPacked->getItems() as $packedItem) {
