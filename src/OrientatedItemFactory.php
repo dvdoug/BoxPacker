@@ -111,12 +111,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return 1;
             }
 
-            $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
-            $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
-            if ($orientationAMinGap === 0 && $orientationBMinGap === 0) {
-                return $b->getDepth() <=> $a->getDepth();
-            }
-
             // prefer leaving room for next item in current row
             if ($nextItems->count()) {
                 $nextItemFitA = $this->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
@@ -137,6 +131,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
                     }
                 }
             }
+            $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
+            $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
             // otherwise prefer leaving minimum possible gap, or the greatest footprint
             return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
         });
