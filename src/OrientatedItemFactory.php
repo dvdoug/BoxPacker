@@ -141,10 +141,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
         });
 
-        $bestFit = reset($usableOrientations);
-        $this->logger->debug('Selected best fit orientation', ['orientation' => $bestFit]);
+        $this->logger->debug('Selected best fit orientation', ['orientation' => $usableOrientations[0]]);
 
-        return $bestFit;
+        return $usableOrientations[0];
     }
 
     /**
