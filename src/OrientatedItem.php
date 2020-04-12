@@ -126,6 +126,10 @@ class OrientatedItem implements JsonSerializable
      */
     public function isSameDimensions(Item $item): bool
     {
+        if ($item === $this->item) {
+            return true;
+        }
+
         $itemDimensions = [$item->getWidth(), $item->getLength(), $item->getDepth()];
         sort($itemDimensions);
 
