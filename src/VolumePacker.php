@@ -89,6 +89,7 @@ class VolumePacker implements LoggerAwareInterface
     public function setSinglePassMode(bool $singlePassMode): void
     {
         $this->singlePassMode = $singlePassMode;
+        $this->layerPacker->setSinglePassMode($singlePassMode);
     }
 
     /**

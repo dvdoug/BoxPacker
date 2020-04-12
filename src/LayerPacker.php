@@ -37,6 +37,13 @@ class LayerPacker implements LoggerAwareInterface
     private $box;
 
     /**
+     * Whether the packer is in single-pass mode.
+     *
+     * @var bool
+     */
+    private $singlePassMode = false;
+
+    /**
      * @var OrientatedItemFactory
      */
     private $orientatedItemFactory;
@@ -47,7 +54,6 @@ class LayerPacker implements LoggerAwareInterface
     public function __construct(Box $box)
     {
         $this->box = $box;
-
         $this->logger = new NullLogger();
 
         $this->orientatedItemFactory = new OrientatedItemFactory($this->box);
@@ -61,6 +67,12 @@ class LayerPacker implements LoggerAwareInterface
     {
         $this->logger = $logger;
         $this->orientatedItemFactory->setLogger($logger);
+    }
+
+    public function setSinglePassMode(bool $singlePassMode): void
+    {
+        $this->singlePassMode = $singlePassMode;
+        $this->orientatedItemFactory->setSinglePassMode($singlePassMode);
     }
 
     /**
@@ -82,7 +94,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList, $singlePassMode);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -99,8 +111,8 @@ class LayerPacker implements LoggerAwareInterface
                 $stackSkippedItems = [];
                 while ($stackableDepth > 0 && $items->count() > 0) {
                     $itemToTryStacking = $items->extract();
-                    $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList, $singlePassMode);
-                    if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $layers, $remainingWeightAllowed, $packedItemList)) {
+                    $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $orientatedItem->getWidth(), $orientatedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList);
+                    if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $remainingWeightAllowed, $packedItemList)) {
                         $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                         $remainingWeightAllowed -= $itemToTryStacking->getWeight();
                         $packedItemList->insert($packedItem);

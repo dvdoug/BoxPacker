@@ -31,6 +31,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected $box;
 
     /**
+     * Whether the packer is in single-pass mode.
+     *
+     * @var bool
+     */
+    protected $singlePassMode = false;
+
+    /**
      * @var OrientatedItem[]
      */
     protected static $emptyBoxCache = [];
@@ -44,6 +51,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
     {
         $this->box = $box;
         $this->logger = new NullLogger();
+    }
+
+    public function setSinglePassMode(bool $singlePassMode): void
+    {
+        $this->singlePassMode = $singlePassMode;
     }
 
     /**
@@ -60,8 +72,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $x,
         int $y,
         int $z,
-        PackedItemList $prevPackedItemList,
-        bool $singlePassMode
+        PackedItemList $prevPackedItemList
     ): ?OrientatedItem {
         $this->logger->debug(
             "evaluating item {$item->getDescription()} for fit",
@@ -82,7 +93,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return null;
         }
 
-        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $singlePassMode) {
+        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList) {
             //Prefer exact fits in width/length/depth order
             $orientationAWidthLeft = $widthLeft - $a->getWidth();
             $orientationBWidthLeft = $widthLeft - $b->getWidth();
@@ -122,13 +133,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
                     return 1;
                 }
 
-                if (!$singlePassMode) {
-                    // if not an easy either/or, do a partial lookahead
-                    $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                    $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                    if ($additionalPackedA !== $additionalPackedB) {
-                        return $additionalPackedB <=> $additionalPackedA;
-                    }
+                // if not an easy either/or, do a partial lookahead
+                $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+                $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+                if ($additionalPackedA !== $additionalPackedB) {
+                    return $additionalPackedB <=> $additionalPackedA;
                 }
             }
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
@@ -304,6 +313,10 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $depthLeft,
         int $currentRowLengthBeforePacking
     ): int {
+        if ($this->singlePassMode) {
+            return 0;
+        }
+
         $currentRowLength = max($prevItem->getLength(), $currentRowLengthBeforePacking);
 
         $itemsToPack = $nextItems->topN(8); // cap lookahead as this gets recursive and slow
