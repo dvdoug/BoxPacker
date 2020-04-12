@@ -121,27 +121,16 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return 1;
             }
 
-            // prefer leaving room for next item in current row
-            if ($nextItems->count()) {
-                $nextItemFitA = $this->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-                $nextItemFitB = $this->getPossibleOrientations($nextItems->top(), $b, $orientationBWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-                if ($nextItemFitA && !$nextItemFitB) {
-                    return -1;
-                }
-                if ($nextItemFitB && !$nextItemFitA) {
-                    return 1;
-                }
-
-                // if not an easy either/or, do a partial lookahead
-                $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-                if ($additionalPackedA !== $additionalPackedB) {
-                    return $additionalPackedB <=> $additionalPackedA;
-                }
+            // prefer leaving room for next item(s)
+            $followingItemDecider = $this->lookAheadDecider($nextItems, $a, $b, $orientationAWidthLeft, $orientationBWidthLeft, $widthLeft, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $prevPackedItemList);
+            if ($followingItemDecider !== 0) {
+                return $followingItemDecider;
             }
+
+            // otherwise prefer leaving minimum possible gap, or the greatest footprint
             $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
             $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
-            // otherwise prefer leaving minimum possible gap, or the greatest footprint
+
             return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
         });
 
@@ -372,5 +361,27 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         return static::$lookaheadCache[$cacheKey];
+    }
+
+    private function lookAheadDecider(ItemList $nextItems, OrientatedItem $a, OrientatedItem $b, int $orientationAWidthLeft, int $orientationBWidthLeft, int $widthLeft, int $lengthLeft, int $depthLeft, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList): int
+    {
+        if ($nextItems->count() === 0) {
+            return 0;
+        }
+
+        $nextItemFitA = $this->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
+        $nextItemFitB = $this->getPossibleOrientations($nextItems->top(), $b, $orientationBWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
+        if ($nextItemFitA && !$nextItemFitB) {
+            return -1;
+        }
+        if ($nextItemFitB && !$nextItemFitA) {
+            return 1;
+        }
+
+        // if not an easy either/or, do a partial lookahead
+        $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+        $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+
+        return $additionalPackedB <=> $additionalPackedA ?: 0;
     }
 }
