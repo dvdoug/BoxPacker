@@ -99,7 +99,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             if ($orientationAWidthLeft === 0 && $orientationBWidthLeft > 0) {
                 return -1;
             }
-            if ($orientationAWidthLeft > 0 && $orientationBWidthLeft === 0) {
+            if ($orientationBWidthLeft === 0 && $orientationAWidthLeft > 0) {
                 return 1;
             }
 
@@ -108,7 +108,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             if ($orientationALengthLeft === 0 && $orientationBLengthLeft > 0) {
                 return -1;
             }
-            if ($orientationALengthLeft > 0 && $orientationBLengthLeft === 0) {
+            if ($orientationBLengthLeft === 0 && $orientationALengthLeft > 0) {
                 return 1;
             }
 
@@ -117,7 +117,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             if ($orientationADepthLeft === 0 && $orientationBDepthLeft > 0) {
                 return -1;
             }
-            if ($orientationADepthLeft > 0 && $orientationBDepthLeft === 0) {
+            if ($orientationBDepthLeft === 0 && $orientationADepthLeft > 0) {
                 return 1;
             }
 
