@@ -150,7 +150,7 @@ class VolumePacker implements LoggerAwareInterface
 
             //do a preliminary layer pack to get the depth used
             $preliminaryItems = clone $items;
-            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, $this->singlePassMode);
+            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
             if (count($preliminaryLayer->getItems()) === 0) {
                 break;
             }
@@ -159,7 +159,7 @@ class VolumePacker implements LoggerAwareInterface
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { //redo with now-known-depth so that we can stack to that height from the first item
-                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth(), $this->singlePassMode);
+                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth());
             }
         }
 

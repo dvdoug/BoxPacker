@@ -14,7 +14,6 @@ use function min;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
-use function reset;
 use function usort;
 
 /**

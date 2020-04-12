@@ -78,9 +78,9 @@ class LayerPacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth, bool $singlePassMode): PackedLayer
+    public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): PackedLayer
     {
-        $layers[] = $layer = new PackedLayer();
+        $layer = new PackedLayer();
         $prevItem = null;
         $x = $y = $rowLength = 0;
         $skippedItems = [];
@@ -90,7 +90,7 @@ class LayerPacker implements LoggerAwareInterface
             $itemToPack = $items->extract();
 
             //skip items that are simply too heavy or too large
-            if (!$this->checkNonDimensionalConstraints($itemToPack, $layers, $remainingWeightAllowed, $packedItemList)) {
+            if (!$this->checkNonDimensionalConstraints($itemToPack, $remainingWeightAllowed, $packedItemList)) {
                 continue;
             }
 
@@ -173,7 +173,7 @@ class LayerPacker implements LoggerAwareInterface
      * As well as purely dimensional constraints, there are other constraints that need to be met
      * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
      */
-    private function checkNonDimensionalConstraints(Item $itemToPack, array $layers, int $remainingWeightAllowed, PackedItemList $packedItemList): bool
+    private function checkNonDimensionalConstraints(Item $itemToPack, int $remainingWeightAllowed, PackedItemList $packedItemList): bool
     {
         $customConstraintsOK = true;
         if ($itemToPack instanceof ConstrainedItem) {
