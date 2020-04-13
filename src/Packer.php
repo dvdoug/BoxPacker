@@ -204,6 +204,48 @@ class Packer implements LoggerAwareInterface
     }
 
     /**
+     * Pack all items into a single box if possible, otherwise return an empty list.
+     *
+     * @throws NoBoxesAvailableException
+     */
+    public function doVolumePackingSingleBox(): PackedBoxList
+    {
+        $packedBoxes = new PackedBoxList();
+
+        $itemVolume = 0;
+        /** @var Item $item */
+        foreach ($this->items as $item) {
+            $itemVolume += $item->getWidth() * $item->getLength() * $item->getDepth();
+        }
+
+        // Find smallest box that will hold all items
+        foreach ($this->boxes as $box) {
+            // Skip boxes that are not available
+            if ($this->boxesQtyAvailable[$box] < 1) {
+                continue;
+            }
+
+            // Skip boxes that are obviously too small
+            if ($box->getInnerLength() * $box->getInnerWidth() * $box->getInnerDepth() < $itemVolume) {
+                continue;
+            }
+
+            // Attempt to pack all items into one box
+            $volumePacker = new VolumePacker($box, $this->items);
+            $volumePacker->setLogger($this->logger);
+            $volumePacker->setSinglePassMode(true);
+            $packedBox = $volumePacker->pack();
+            if ($packedBox->getItems()->count() === $this->items->count()) {
+                $packedBoxes->insert($packedBox);
+                $this->boxesQtyAvailable[$packedBox->getBox()] = $this->boxesQtyAvailable[$packedBox->getBox()] - 1;
+                break;
+            }
+        }
+
+        return $packedBoxes;
+    }
+
+    /**
      * Get a "smart" ordering of the boxes to try packing items into. The initial BoxList is already sorted in order
      * so that the smallest boxes are evaluated first, but this means that time is spent on boxes that cannot possibly
      * hold the entire set of items due to volume limitations. These should be evaluated first.
