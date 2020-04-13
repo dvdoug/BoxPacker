@@ -122,6 +122,7 @@ class OrientatedItem implements JsonSerializable
 
     /**
      * Is the supplied item the same size as this one?
+     *
      * @internal
      */
     public function isSameDimensions(Item $item): bool

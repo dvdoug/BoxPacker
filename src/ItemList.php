@@ -122,7 +122,6 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * @internal
-     *
      * @return ItemList
      */
     public function topN(int $n): self
@@ -139,6 +138,9 @@ class ItemList implements Countable, IteratorAggregate
         return $topNList;
     }
 
+    /**
+     * @return Traversable|Item[]
+     */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
