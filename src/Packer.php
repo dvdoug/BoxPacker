@@ -142,6 +142,7 @@ class Packer implements LoggerAwareInterface
      */
     public function pack(): PackedBoxList
     {
+        $this->sanityPrecheck();
         $packedBoxes = $this->doVolumePacking();
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
@@ -161,11 +162,9 @@ class Packer implements LoggerAwareInterface
      *
      * @throws NoBoxesAvailableException
      */
-    public function doVolumePacking(): PackedBoxList
+    public function doVolumePacking(bool $singlePassMode = false): PackedBoxList
     {
         $packedBoxes = new PackedBoxList();
-
-        $this->sanityPrecheck();
 
         //Keep going until everything packed
         while ($this->items->count()) {
@@ -174,8 +173,9 @@ class Packer implements LoggerAwareInterface
             //Loop through boxes starting with smallest, see what happens
             foreach ($this->getBoxList() as $box) {
                 if ($this->boxesQtyAvailable[$box] > 0) {
-                    $volumePacker = new VolumePacker($box, clone $this->items);
+                    $volumePacker = new VolumePacker($box, $this->items);
                     $volumePacker->setLogger($this->logger);
+                    $volumePacker->setSinglePassMode($singlePassMode);
                     $packedBox = $volumePacker->pack();
                     if ($packedBox->getItems()->count()) {
                         $packedBoxesIteration[] = $packedBox;
