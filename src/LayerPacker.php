@@ -163,7 +163,7 @@ class LayerPacker implements LoggerAwareInterface
                 $stackedZ += $stackedItem->getDepth();
             } else {
                 $stackSkippedItems[] = $itemToTryStacking;
-                // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
+                // abandon here if next item is the same, no point trying to keep going
                 while ($items->count() > 0 && static::isSameDimensions($itemToTryStacking, $items->top())) {
                     $stackSkippedItems[] = $items->extract();
                 }
