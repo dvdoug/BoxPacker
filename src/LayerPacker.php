@@ -94,7 +94,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem instanceof PackedItem ? $prevItem->toOrientatedItem() : null, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -109,7 +109,7 @@ class LayerPacker implements LoggerAwareInterface
                 $this->packVerticallyInsideItemFootprint($layer, $packedItem, $packedItemList, $items, $remainingWeightAllowed, $guidelineLayerDepth, $rowLength, $x, $y, $z);
                 $x += $packedItem->getWidth();
 
-                $prevItem = $packedItem;
+                $prevItem = $orientatedItem;
                 if ($items->count() === 0) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
@@ -152,9 +152,10 @@ class LayerPacker implements LoggerAwareInterface
         $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
         $stackedZ = $z + $packedItem->getDepth();
         $stackSkippedItems = [];
+        $stackedItem = $packedItem->toOrientatedItem();
         while ($stackableDepth > 0 && $items->count() > 0) {
             $itemToTryStacking = $items->extract();
-            $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $packedItem->toOrientatedItem(), $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList);
+            $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList);
             if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $remainingWeightAllowed, $packedItemList)) {
                 $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                 $remainingWeightAllowed -= $itemToTryStacking->getWeight();
