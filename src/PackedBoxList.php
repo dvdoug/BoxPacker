@@ -27,7 +27,7 @@ class PackedBoxList implements IteratorAggregate, Countable
     /**
      * List containing boxes.
      *
-     * @var Box[]
+     * @var PackedBox[]
      */
     private $list = [];
 
@@ -39,7 +39,7 @@ class PackedBoxList implements IteratorAggregate, Countable
     private $isSorted = false;
 
     /**
-     * @return Traversable|Box[]
+     * @return Traversable|PackedBox[]
      */
     public function getIterator(): Traversable
     {
