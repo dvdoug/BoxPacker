@@ -114,17 +114,25 @@ class LayerPacker implements LoggerAwareInterface
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
-            } elseif (count($layer->getItems()) === 0) { // zero items on layer
+                continue;
+            }
+
+            if (count($layer->getItems()) === 0) { // zero items on layer
                 $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
-            } elseif ($items->count() > 0) { // skip for now, move on to the next item
+            }
+
+            if ($items->count() > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
                 $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
-                while ($items->count() > 2 && static::isSameDimensions($itemToPack, $items->top())) {
+                while ($items->count() > 1 && static::isSameDimensions($itemToPack, $items->top())) {
                     $skippedItems[] = $items->extract();
                 }
-            } elseif ($x > 0) {
+                continue;
+            }
+
+            if ($x > 0) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $lengthLeft -= $rowLength;
                 $y += $rowLength;
@@ -134,14 +142,14 @@ class LayerPacker implements LoggerAwareInterface
                 $skippedItems = [];
                 $prevItem = null;
                 continue;
-            } else {
-                $this->logger->debug('no items fit, so starting next vertical layer');
-                $skippedItems[] = $itemToPack;
-
-                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
-
-                return $layer;
             }
+
+            $this->logger->debug('no items fit, so starting next vertical layer');
+            $skippedItems[] = $itemToPack;
+
+            $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+
+            return $layer;
         }
 
         return $layer;
@@ -162,12 +170,13 @@ class LayerPacker implements LoggerAwareInterface
                 $packedItemList->insert($packedItem);
                 $stackableDepth -= $stackedItem->getDepth();
                 $stackedZ += $stackedItem->getDepth();
-            } else {
-                $stackSkippedItems[] = $itemToTryStacking;
-                // abandon here if next item is the same, no point trying to keep going
-                while ($items->count() > 0 && static::isSameDimensions($itemToTryStacking, $items->top())) {
-                    $stackSkippedItems[] = $items->extract();
-                }
+                continue;
+            }
+
+            $stackSkippedItems[] = $itemToTryStacking;
+            // abandon here if next item is the same, no point trying to keep going
+            while ($items->count() > 0 && static::isSameDimensions($itemToTryStacking, $items->top())) {
+                $stackSkippedItems[] = $items->extract();
             }
         }
         if ($stackSkippedItems) {
