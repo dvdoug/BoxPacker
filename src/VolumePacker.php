@@ -163,13 +163,8 @@ class VolumePacker implements LoggerAwareInterface
             }
         }
 
-        if ($this->box->getInnerWidth() !== $boxWidth) {
-            $layers = static::rotateLayersNinetyDegrees($layers);
-        }
-
-        if (!$this->singlePassMode && !$this->hasConstrainedItems) {
-            $layers = static::stabiliseLayers($layers);
-        }
+        $layers = $this->correctLayerRotation($layers, $boxWidth);
+        $layers = $this->stabiliseLayers($layers);
 
         return new PackedBox($this->box, $this->getPackedItemList($layers));
     }
@@ -180,13 +175,18 @@ class VolumePacker implements LoggerAwareInterface
      *
      * This function reorders them so that the ones with the greatest surface area are placed at the bottom
      *
-     * @param PackedLayer[] $layers
+     * @param  PackedLayer[] $oldLayers
+     * @return PackedLayer[]
      */
-    private static function stabiliseLayers(array $layers): array
+    private function stabiliseLayers(array $oldLayers): array
     {
+        if ($this->singlePassMode || $this->hasConstrainedItems) { // constraints include position, so cannot change
+            return $oldLayers;
+        }
+
         $stabiliser = new LayerStabiliser();
 
-        return $stabiliser->stabilise($layers);
+        return $stabiliser->stabilise($oldLayers);
     }
 
     /**
@@ -194,8 +194,12 @@ class VolumePacker implements LoggerAwareInterface
      *
      * @param PackedLayer[] $oldLayers
      */
-    private static function rotateLayersNinetyDegrees($oldLayers): array
+    private function correctLayerRotation(array $oldLayers, int $boxWidth): array
     {
+        if ($this->box->getInnerWidth() === $boxWidth) {
+            return $oldLayers;
+        }
+
         $newLayers = [];
         foreach ($oldLayers as $originalLayer) {
             $newLayer = new PackedLayer();
