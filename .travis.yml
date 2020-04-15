@@ -45,9 +45,7 @@ script:
   - |
     if [ "$CSFIXER" = "1" ]; then
       vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --diff-format=udiff --allow-risky=yes;
-    fi;
-  - |
-    if [ "${TEST_SUITE}" = "unit" ]; then
+    elif [ "${TEST_SUITE}" = "unit" ]; then
       php vendor/bin/phpunit --exclude-group efficiency;
     elif [ "${TEST_SUITE}" = "efficiency" ]; then
       php vendor/bin/phpunit --group efficiency;
