@@ -89,7 +89,7 @@ class LayerPacker implements LoggerAwareInterface
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
 
-            //skip items that are simply too heavy or too large
+            //skip items that will never fit e.g. too heavy
             if (!$this->checkNonDimensionalConstraints($itemToPack, $remainingWeightAllowed, $packedItemList)) {
                 continue;
             }
@@ -163,8 +163,14 @@ class LayerPacker implements LoggerAwareInterface
         $stackedItem = $packedItem->toOrientatedItem();
         while ($stackableDepth > 0 && $items->count() > 0) {
             $itemToTryStacking = $items->extract();
+
+            //skip items that will never fit
+            if (!$this->checkNonDimensionalConstraints($itemToTryStacking, $remainingWeightAllowed, $packedItemList)) {
+                continue;
+            }
+
             $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList);
-            if ($stackedItem && $this->checkNonDimensionalConstraints($itemToTryStacking, $remainingWeightAllowed, $packedItemList)) {
+            if ($stackedItem) {
                 $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
                 $remainingWeightAllowed -= $itemToTryStacking->getWeight();
                 $packedItemList->insert($packedItem);
