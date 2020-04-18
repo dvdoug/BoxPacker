@@ -162,7 +162,7 @@ class Packer implements LoggerAwareInterface
      *
      * @throws NoBoxesAvailableException
      */
-    public function doVolumePacking(bool $singlePassMode = false): PackedBoxList
+    public function doVolumePacking(bool $singlePassMode = false, bool $enforceSingleBox = false): PackedBoxList
     {
         $packedBoxes = new PackedBoxList();
 
@@ -171,7 +171,7 @@ class Packer implements LoggerAwareInterface
             $packedBoxesIteration = [];
 
             //Loop through boxes starting with smallest, see what happens
-            foreach ($this->getBoxList() as $box) {
+            foreach ($this->getBoxList($enforceSingleBox) as $box) {
                 if ($this->boxesQtyAvailable[$box] > 0) {
                     $volumePacker = new VolumePacker($box, $this->items);
                     $volumePacker->setLogger($this->logger);
@@ -188,8 +188,15 @@ class Packer implements LoggerAwareInterface
                 }
             }
 
-            //Find best box of iteration, and remove packed items from unpacked list
-            $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
+            try {
+                //Find best box of iteration, and remove packed items from unpacked list
+                $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
+            } catch (NoBoxesAvailableException $e) {
+                if ($enforceSingleBox) {
+                    return new PackedBoxList();
+                }
+                throw $e;
+            }
 
             /** @var PackedItem $packedItem */
             foreach ($bestBox->getItems() as $packedItem) {
@@ -208,7 +215,7 @@ class Packer implements LoggerAwareInterface
      * so that the smallest boxes are evaluated first, but this means that time is spent on boxes that cannot possibly
      * hold the entire set of items due to volume limitations. These should be evaluated first.
      */
-    protected function getBoxList(): iterable
+    protected function getBoxList(bool $enforceSingleBox = false): iterable
     {
         $itemVolume = 0;
         /** @var Item $item */
@@ -222,7 +229,7 @@ class Packer implements LoggerAwareInterface
         foreach ($this->boxes as $box) {
             if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
                 $preferredBoxes[] = $box;
-            } else {
+            } elseif (!$enforceSingleBox) {
                 $otherBoxes[] = $box;
             }
         }
