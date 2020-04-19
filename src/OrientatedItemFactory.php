@@ -111,27 +111,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $z,
         PackedItemList $prevPackedItemList
     ): array {
-        $orientations = $orientationsDimensions = [];
-
-        //Special case items that are the same as what we just packed - keep orientation
-        if ($prevItem && $prevItem->isSameDimensions($item)) {
-            $orientationsDimensions[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
-        } else {
-            //simple 2D rotation
-            $orientationsDimensions[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
-            $orientationsDimensions[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
-
-            //add 3D rotation if we're allowed
-            if (!$item->getKeepFlat()) {
-                $orientationsDimensions[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
-                $orientationsDimensions[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
-                $orientationsDimensions[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];
-                $orientationsDimensions[] = [$item->getDepth(), $item->getLength(), $item->getWidth()];
-            }
-        }
+        $permutations = $this->generatePermutations($item, $prevItem);
 
         //remove any that simply don't fit
-        foreach ($orientationsDimensions as $dimensions) {
+        $orientations = [];
+        foreach ($permutations as $dimensions) {
             if ($dimensions[0] <= $widthLeft && $dimensions[1] <= $lengthLeft && $dimensions[2] <= $depthLeft) {
                 $orientations[] = new OrientatedItem($item, $dimensions[0], $dimensions[1], $dimensions[2]);
             }
@@ -234,5 +218,29 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return $orientation->isStable();
             }
         );
+    }
+
+    private function generatePermutations(Item $item, ?OrientatedItem $prevItem): array
+    {
+        $permutations = [];
+
+        //Special case items that are the same as what we just packed - keep orientation
+        if ($prevItem && $prevItem->isSameDimensions($item)) {
+            $permutations[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
+        } else {
+            //simple 2D rotation
+            $permutations[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+            $permutations[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
+
+            //add 3D rotation if we're allowed
+            if (!$item->getKeepFlat()) {
+                $permutations[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
+                $permutations[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
+                $permutations[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];
+                $permutations[] = [$item->getDepth(), $item->getLength(), $item->getWidth()];
+            }
+        }
+
+        return $permutations;
     }
 }
