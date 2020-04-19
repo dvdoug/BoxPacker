@@ -179,9 +179,7 @@ class LayerPacker implements LoggerAwareInterface
                 $stackSkippedItems[] = $items->extract();
             }
         }
-        if ($stackSkippedItems) {
-            $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
-        }
+        $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
     }
 
     /**
