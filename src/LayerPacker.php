@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function count;
 use function max;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -114,11 +113,6 @@ class LayerPacker implements LoggerAwareInterface
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
-                continue;
-            }
-
-            if (count($layer->getItems()) === 0) { // zero items on layer
-                $this->logger->debug("doesn't fit on layer even when empty, skipping for good");
                 continue;
             }
 
