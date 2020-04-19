@@ -101,29 +101,23 @@ class OrientatedItemSorter implements LoggerAwareInterface
         //Prefer exact fits in width/length/depth order
         $orientationAWidthLeft = $this->widthLeft - $a->getWidth();
         $orientationBWidthLeft = $this->widthLeft - $b->getWidth();
-        if ($orientationAWidthLeft === 0 && $orientationBWidthLeft > 0) {
-            return -1;
-        }
-        if ($orientationBWidthLeft === 0 && $orientationAWidthLeft > 0) {
-            return 1;
+        $widthDecider = $this->exactFitDecider($orientationAWidthLeft, $orientationBWidthLeft);
+        if ($widthDecider !== 0) {
+            return $widthDecider;
         }
 
         $orientationALengthLeft = $this->lengthLeft - $a->getLength();
         $orientationBLengthLeft = $this->lengthLeft - $b->getLength();
-        if ($orientationALengthLeft === 0 && $orientationBLengthLeft > 0) {
-            return -1;
-        }
-        if ($orientationBLengthLeft === 0 && $orientationALengthLeft > 0) {
-            return 1;
+        $lengthDecider = $this->exactFitDecider($orientationALengthLeft, $orientationBLengthLeft);
+        if ($lengthDecider !== 0) {
+            return $lengthDecider;
         }
 
         $orientationADepthLeft = $this->depthLeft - $a->getDepth();
         $orientationBDepthLeft = $this->depthLeft - $b->getDepth();
-        if ($orientationADepthLeft === 0 && $orientationBDepthLeft > 0) {
-            return -1;
-        }
-        if ($orientationBDepthLeft === 0 && $orientationADepthLeft > 0) {
-            return 1;
+        $depthDecider = $this->exactFitDecider($orientationADepthLeft, $orientationBDepthLeft);
+        if ($depthDecider !== 0) {
+            return $depthDecider;
         }
 
         // prefer leaving room for next item(s)
@@ -234,5 +228,18 @@ class OrientatedItemSorter implements LoggerAwareInterface
         }
 
         return static::$lookaheadCache[$cacheKey];
+    }
+
+    private function exactFitDecider(int $dimensionALeft, int $dimensionBLeft)
+    {
+        if ($dimensionALeft === 0 && $dimensionBLeft > 0) {
+            return -1;
+        }
+
+        if ($dimensionALeft > 0 && $dimensionBLeft === 0) {
+            return 1;
+        }
+
+        return 0;
     }
 }
