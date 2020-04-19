@@ -10,7 +10,6 @@ namespace DVDoug\BoxPacker;
 
 use function array_filter;
 use function count;
-use function min;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
@@ -40,11 +39,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
      * @var OrientatedItem[]
      */
     protected static $emptyBoxCache = [];
-
-    /**
-     * @var int[]
-     */
-    protected static $lookaheadCache = [];
 
     public function __construct(Box $box)
     {
@@ -92,47 +86,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return null;
         }
 
-        usort($usableOrientations, function (OrientatedItem $a, OrientatedItem $b) use ($widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList) {
-            //Prefer exact fits in width/length/depth order
-            $orientationAWidthLeft = $widthLeft - $a->getWidth();
-            $orientationBWidthLeft = $widthLeft - $b->getWidth();
-            if ($orientationAWidthLeft === 0 && $orientationBWidthLeft > 0) {
-                return -1;
-            }
-            if ($orientationBWidthLeft === 0 && $orientationAWidthLeft > 0) {
-                return 1;
-            }
-
-            $orientationALengthLeft = $lengthLeft - $a->getLength();
-            $orientationBLengthLeft = $lengthLeft - $b->getLength();
-            if ($orientationALengthLeft === 0 && $orientationBLengthLeft > 0) {
-                return -1;
-            }
-            if ($orientationBLengthLeft === 0 && $orientationALengthLeft > 0) {
-                return 1;
-            }
-
-            $orientationADepthLeft = $depthLeft - $a->getDepth();
-            $orientationBDepthLeft = $depthLeft - $b->getDepth();
-            if ($orientationADepthLeft === 0 && $orientationBDepthLeft > 0) {
-                return -1;
-            }
-            if ($orientationBDepthLeft === 0 && $orientationADepthLeft > 0) {
-                return 1;
-            }
-
-            // prefer leaving room for next item(s)
-            $followingItemDecider = $this->lookAheadDecider($nextItems, $a, $b, $orientationAWidthLeft, $orientationBWidthLeft, $widthLeft, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $prevPackedItemList);
-            if ($followingItemDecider !== 0) {
-                return $followingItemDecider;
-            }
-
-            // otherwise prefer leaving minimum possible gap, or the greatest footprint
-            $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
-            $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
-
-            return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
-        });
+        $sorter = new OrientatedItemSorter($this, $this->singlePassMode, $widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList);
+        $sorter->setLogger($this->logger);
+        usort($usableOrientations, $sorter);
 
         $this->logger->debug('Selected best fit orientation', ['orientation' => $usableOrientations[0]]);
 
@@ -278,103 +234,5 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return $orientation->isStable();
             }
         );
-    }
-
-    /**
-     * Approximation of a forward-looking packing.
-     *
-     * Not an actual packing, that has additional logic regarding constraints and stackability, this focuses
-     * purely on fit.
-     */
-    protected function calculateAdditionalItemsPackedWithThisOrientation(
-        OrientatedItem $prevItem,
-        ItemList $nextItems,
-        int $originalWidthLeft,
-        int $originalLengthLeft,
-        int $depthLeft,
-        int $currentRowLengthBeforePacking
-    ): int {
-        if ($this->singlePassMode) {
-            return 0;
-        }
-
-        $currentRowLength = max($prevItem->getLength(), $currentRowLengthBeforePacking);
-
-        $itemsToPack = $nextItems->topN(8); // cap lookahead as this gets recursive and slow
-
-        $cacheKey = $originalWidthLeft .
-            '|' .
-            $originalLengthLeft .
-            '|' .
-            $prevItem->getWidth() .
-            '|' .
-            $prevItem->getLength() .
-            '|' .
-            $currentRowLength .
-            '|'
-            . $depthLeft;
-
-        /** @var Item $itemToPack */
-        foreach ($itemsToPack as $itemToPack) {
-            $cacheKey .= '|' .
-                $itemToPack->getWidth() .
-                '|' .
-                $itemToPack->getLength() .
-                '|' .
-                $itemToPack->getDepth() .
-                '|' .
-                $itemToPack->getWeight() .
-                '|' .
-                ($itemToPack->getKeepFlat() ? '1' : '0');
-        }
-
-        if (!isset(static::$lookaheadCache[$cacheKey])) {
-            $tempBox = new WorkingVolume($originalWidthLeft - $prevItem->getWidth(), $currentRowLength, $depthLeft, PHP_INT_MAX);
-            $tempPacker = new VolumePacker($tempBox, $itemsToPack);
-            $tempPacker->setSinglePassMode(true);
-            $remainingRowPacked = $tempPacker->pack();
-            /** @var PackedItem $packedItem */
-            foreach ($remainingRowPacked->getItems() as $packedItem) {
-                $itemsToPack->remove($packedItem->getItem());
-            }
-
-            $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
-            $tempPacker = new VolumePacker($tempBox, $itemsToPack);
-            $tempPacker->setSinglePassMode(true);
-            $nextRowsPacked = $tempPacker->pack();
-            /** @var PackedItem $packedItem */
-            foreach ($nextRowsPacked->getItems() as $packedItem) {
-                $itemsToPack->remove($packedItem->getItem());
-            }
-
-            $packedCount = $nextItems->count() - $itemsToPack->count();
-            $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
-
-            static::$lookaheadCache[$cacheKey] = $packedCount;
-        }
-
-        return static::$lookaheadCache[$cacheKey];
-    }
-
-    private function lookAheadDecider(ItemList $nextItems, OrientatedItem $a, OrientatedItem $b, int $orientationAWidthLeft, int $orientationBWidthLeft, int $widthLeft, int $lengthLeft, int $depthLeft, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList): int
-    {
-        if ($nextItems->count() === 0) {
-            return 0;
-        }
-
-        $nextItemFitA = $this->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-        $nextItemFitB = $this->getPossibleOrientations($nextItems->top(), $b, $orientationBWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-        if ($nextItemFitA && !$nextItemFitB) {
-            return -1;
-        }
-        if ($nextItemFitB && !$nextItemFitA) {
-            return 1;
-        }
-
-        // if not an easy either/or, do a partial lookahead
-        $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-        $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-
-        return $additionalPackedB <=> $additionalPackedA ?: 0;
     }
 }
