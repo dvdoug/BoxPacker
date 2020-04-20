@@ -172,18 +172,16 @@ class Packer implements LoggerAwareInterface
 
             //Loop through boxes starting with smallest, see what happens
             foreach ($this->getBoxList($enforceSingleBox) as $box) {
-                if ($this->boxesQtyAvailable[$box] > 0) {
-                    $volumePacker = new VolumePacker($box, $this->items);
-                    $volumePacker->setLogger($this->logger);
-                    $volumePacker->setSinglePassMode($singlePassMode);
-                    $packedBox = $volumePacker->pack();
-                    if ($packedBox->getItems()->count()) {
-                        $packedBoxesIteration[] = $packedBox;
+                $volumePacker = new VolumePacker($box, $this->items);
+                $volumePacker->setLogger($this->logger);
+                $volumePacker->setSinglePassMode($singlePassMode);
+                $packedBox = $volumePacker->pack();
+                if ($packedBox->getItems()->count()) {
+                    $packedBoxesIteration[] = $packedBox;
 
-                        //Have we found a single box that contains everything?
-                        if ($packedBox->getItems()->count() === $this->items->count()) {
-                            break;
-                        }
+                    //Have we found a single box that contains everything?
+                    if ($packedBox->getItems()->count() === $this->items->count()) {
+                        break;
                     }
                 }
             }
@@ -198,7 +196,6 @@ class Packer implements LoggerAwareInterface
                 throw $e;
             }
 
-            /** @var PackedItem $packedItem */
             foreach ($bestBox->getItems() as $packedItem) {
                 $this->items->remove($packedItem->getItem());
             }
@@ -218,19 +215,19 @@ class Packer implements LoggerAwareInterface
     protected function getBoxList(bool $enforceSingleBox = false): iterable
     {
         $itemVolume = 0;
-        /** @var Item $item */
         foreach ($this->items as $item) {
             $itemVolume += $item->getWidth() * $item->getLength() * $item->getDepth();
         }
 
         $preferredBoxes = [];
         $otherBoxes = [];
-        /** @var Box $box */
         foreach ($this->boxes as $box) {
-            if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
-                $preferredBoxes[] = $box;
-            } elseif (!$enforceSingleBox) {
-                $otherBoxes[] = $box;
+            if ($this->boxesQtyAvailable[$box] > 0) {
+                if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
+                    $preferredBoxes[] = $box;
+                } elseif (!$enforceSingleBox) {
+                    $otherBoxes[] = $box;
+                }
             }
         }
 
