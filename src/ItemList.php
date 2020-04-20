@@ -90,6 +90,20 @@ class ItemList implements Countable, IteratorAggregate
         } while (prev($this->list) !== false);
     }
 
+    public function removePackedItems(PackedItemList $packedItemList): void
+    {
+        foreach ($packedItemList as $packedItem) {
+            end($this->list);
+            do {
+                if (current($this->list) === $packedItem->getItem()) {
+                    unset($this->list[key($this->list)]);
+
+                    break;
+                }
+            } while (prev($this->list) !== false);
+        }
+    }
+
     /**
      * @internal
      */

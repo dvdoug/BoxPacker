@@ -208,18 +208,14 @@ class OrientatedItemSorter implements LoggerAwareInterface
             $tempPacker->setSinglePassMode(true);
             $remainingRowPacked = $tempPacker->pack();
 
-            foreach ($remainingRowPacked->getItems() as $packedItem) {
-                $itemsToPack->remove($packedItem->getItem());
-            }
+            $itemsToPack->removePackedItems($remainingRowPacked->getItems());
 
             $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setSinglePassMode(true);
             $nextRowsPacked = $tempPacker->pack();
 
-            foreach ($nextRowsPacked->getItems() as $packedItem) {
-                $itemsToPack->remove($packedItem->getItem());
-            }
+            $itemsToPack->removePackedItems($nextRowsPacked->getItems());
 
             $packedCount = $nextItems->count() - $itemsToPack->count();
             $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);

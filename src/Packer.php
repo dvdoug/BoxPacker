@@ -196,9 +196,7 @@ class Packer implements LoggerAwareInterface
                 throw $e;
             }
 
-            foreach ($bestBox->getItems() as $packedItem) {
-                $this->items->remove($packedItem->getItem());
-            }
+            $this->items->removePackedItems($bestBox->getItems());
 
             $packedBoxes->insert($bestBox);
             $this->boxesQtyAvailable[$bestBox->getBox()] = $this->boxesQtyAvailable[$bestBox->getBox()] - 1;
