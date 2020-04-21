@@ -4,7 +4,6 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 /**
@@ -14,6 +13,13 @@ namespace DVDoug\BoxPacker;
  */
 class ItemList extends \SplMaxHeap
 {
+    /**
+     * Does this list contain constrained items?
+     *
+     * @var bool
+     */
+    private $hasConstrainedItems;
+
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      *
@@ -109,6 +115,56 @@ class ItemList extends \SplMaxHeap
         foreach ($workingSet as $workingSetItem) {
             $this->insert($workingSetItem);
         }
+    }
 
+    /**
+     * @param PackedItemList $packedItemList
+     */
+    public function removePackedItems(PackedItemList $packedItemList)
+    {
+        /** @var PackedItem $packedItem */
+        foreach (clone $packedItemList as $packedItem) {
+            $workingSet = [];
+
+            foreach ($this as $that) {
+                if ($that === $packedItem->getItem()) {
+                    $this->extract();
+                    break;
+                } else {
+                    $workingSet[] = $that;
+                }
+            }
+
+            foreach ($workingSet as $workingSetItem) {
+                $this->insert($workingSetItem);
+            }
+        }
+    }
+
+    /**
+     * @param Item $item
+     */
+    public function insert($item)
+    {
+        $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
+        parent::insert($item);
+    }
+
+    /**
+     * Does this list contain items with constrained placement criteria.
+     */
+    public function hasConstrainedItems()
+    {
+        if (!isset($this->hasConstrainedItems)) {
+            $this->hasConstrainedItems = false;
+            foreach (clone $this as $item) {
+                if ($item instanceof ConstrainedPlacementItem) {
+                    $this->hasConstrainedItems = true;
+                    break;
+                }
+            }
+        }
+
+        return $this->hasConstrainedItems;
     }
 }

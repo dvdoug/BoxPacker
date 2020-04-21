@@ -155,7 +155,7 @@ class WeightRedistributor implements LoggerAwareInterface
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
         $packer->setItems($items);
 
-        return $packer->doVolumePacking();
+        return $packer->doVolumePacking(true, true);
     }
 
     /**

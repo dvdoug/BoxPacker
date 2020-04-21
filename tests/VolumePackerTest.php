@@ -37,30 +37,6 @@ class VolumePackerTest extends TestCase
     }
 
     /**
-     * From issue #86.
-     */
-    public function testUsedWidthAndRemainingWidthHandleRotationsCorrectly()
-    {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 23, 27, 14, 0, 23, 27, 14, 30));
-        $packer->addItem(new TestItem('Item 1', 11, 22, 2, 1, true), 3);
-        $packer->addItem(new TestItem('Item 2', 11, 22, 2, 1, true), 4);
-        $packer->addItem(new TestItem('Item 3', 6, 17, 2, 1, true), 3);
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(1, $packedBoxes);
-
-        /** @var PackedBox $packedBox */
-        $packedBox = $packedBoxes->top();
-        self::assertEquals(22, $packedBox->getUsedWidth());
-        self::assertEquals(23, $packedBox->getUsedLength());
-        self::assertEquals(10, $packedBox->getUsedDepth());
-        self::assertEquals(1, $packedBox->getRemainingWidth());
-        self::assertEquals(4, $packedBox->getRemainingLength());
-        self::assertEquals(4, $packedBox->getRemainingDepth());
-    }
-
-    /**
      * Test that constraint handling works correctly.
      */
     public function testLegacyConstraints()
@@ -207,8 +183,6 @@ class VolumePackerTest extends TestCase
      */
     public function testUnpackedSpaceInsideLayersIsFilled()
     {
-        $this->markTestSkipped(); // until bug is fixed
-
         $box = new TestBox('Box', 4, 14, 11, 0, 4, 14, 11, 100);
         $itemList = new ItemList();
         $itemList->insert(new TestItem('Item 1', 8, 8, 2, 1, false));
@@ -387,31 +361,19 @@ class VolumePackerTest extends TestCase
     /**
      * From issue #172.
      */
-    public function testIssue172A()
-    {
-        $box = new TestBox('Box', 800, 1200, 1300, 0, 800, 1200, 1300, 500000);
-        $items = array_fill(0, 8928, new TestItem('Larger', 150, 110, 5, 56, false));
-
-        $volumePacker = new VolumePacker($box, ItemList::fromArray($items));
-        $packedBox = $volumePacker->pack();
-
-        self::assertCount(8928, $packedBox->getItems());
-    }
-
-    /**
-     * From issue #172.
-     */
     public function testIssue172B()
     {
         $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
 
         $items = new ItemList();
+        $item = new TestItem('Larger', 10, 5, 8, 0, false);
         for ($i = 0; $i < 10; ++$i) {
-            $items->insert(new TestItem('Larger', 10, 5, 8, 0, false));
+            $items->insert($item);
         }
 
         for ($i = 0; $i < 5; ++$i) {
-            $items->insert(new TestItem('Smaller', 5, 5, 3, 0, false));
+            $item = new TestItem('Smaller', 5, 5, 3, 0, false);
+            $items->insert($item);
         }
 
         $volumePacker = new VolumePacker($box, $items);
@@ -428,13 +390,33 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
 
         $items = new ItemList();
+        $item = new TestItem('Item', 10, 5, 8, 0, false);
         for ($i = 0; $i < 10; ++$i) {
-            $items->insert(new TestItem('Item', 10, 5, 8, 0, false));
+            $items->insert($item);
         }
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
 
         self::assertCount(10, $items);
+    }
+
+    /**
+     * From issue #175.
+     */
+    public function testIssue175()
+    {
+        $this->markTestSkipped(); //mark skipped until fixed
+        $box = new TestBox('Box', 40, 40, 40, 0, 40, 40, 40, 1000);
+        $items = new ItemList();
+        $item = new TestItem('Item', 35, 35, 5, 20, false);
+        for ($i = 0; $i < 10; ++$i) {
+            $items->insert($item);
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(10, $packedBox->getItems());
     }
 }

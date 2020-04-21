@@ -10,7 +10,7 @@ build:
   environment:
     # Languages
     php:
-      version: "7.2"
+      version: "7.4"
 
   tests:
     override:

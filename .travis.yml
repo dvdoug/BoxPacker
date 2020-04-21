@@ -14,12 +14,13 @@ php:
   - 5.6
   - 5.5
   - 5.4
-  - nightly
 
 matrix:
   include:
-    - php: 5.4
-      env: lowest=1
+    - php: nightly
+      env: FORCE_LATEST=1
+    - php: 7.1
+      env: PREFER_LOWEST=1
   allow_failures:
     - php: nightly
 
@@ -30,16 +31,18 @@ cache:
 
 install:
   - phpenv config-rm xdebug.ini || true;
-  - phpenv config-add travis-php.ini;
   - composer validate --strict;
   - |
     sed -i 's/"bin-compat" : "full"/"bin-compat" : "auto"/g' composer.json;
   - |
-    if [ "$lowest" = "1" ]; then
-      COMPOSER_MEMORY_LIMIT=-1 composer update --prefer-lowest --prefer-stable;
+    if [ "$PREFER_LOWEST" = "1" ]; then
+      COMPOSER_MEMORY_LIMIT=-1 composer update --prefer-lowest;
+    elif [ "$FORCE_LATEST" = "1" ]; then
+      COMPOSER_MEMORY_LIMIT=-1 composer update --ignore-platform-reqs;
     else
       COMPOSER_MEMORY_LIMIT=-1 composer update;
     fi;
+  - phpenv config-add travis-php.ini;
 
 script:
   - |

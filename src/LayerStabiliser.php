@@ -6,28 +6,14 @@
  */
 namespace DVDoug\BoxPacker;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\NullLogger;
-
 /**
  * Applies load stability to generated result.
  *
  * @author Doug Wright
  * @internal
  */
-class LayerStabiliser implements LoggerAwareInterface
+class LayerStabiliser
 {
-    use LoggerAwareTrait;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->logger = new NullLogger();
-    }
-
     /**
      * @param PackedLayer[] $packedLayers
      *

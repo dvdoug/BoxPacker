@@ -69,7 +69,7 @@ class Packer implements LoggerAwareInterface
     /**
      * Set a list of items all at once.
      *
-     * @param iterable $items
+     * @param iterable|Item[] $items
      */
     public function setItems($items)
     {
@@ -131,6 +131,7 @@ class Packer implements LoggerAwareInterface
      */
     public function pack()
     {
+        $this->sanityPrecheck();
         $packedBoxes = $this->doVolumePacking();
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
@@ -152,20 +153,19 @@ class Packer implements LoggerAwareInterface
      *
      * @return PackedBoxList
      */
-    public function doVolumePacking()
+    public function doVolumePacking($singlePassMode = false, $enforceSingleBox = false)
     {
         $packedBoxes = new PackedBoxList();
-
-        $this->sanityPrecheck();
 
         //Keep going until everything packed
         while ($this->items->count()) {
             $packedBoxesIteration = [];
 
             //Loop through boxes starting with smallest, see what happens
-            foreach (clone $this->boxes as $box) {
-                $volumePacker = new VolumePacker($box, clone $this->items);
+            foreach ($this->getBoxList($enforceSingleBox) as $box) {
+                $volumePacker = new VolumePacker($box, $this->items);
                 $volumePacker->setLogger($this->logger);
+                $volumePacker->setSinglePassMode($singlePassMode);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
                     $packedBoxesIteration[] = $packedBox;
@@ -177,18 +177,47 @@ class Packer implements LoggerAwareInterface
                 }
             }
 
-            //Find best box of iteration, and remove packed items from unpacked list
-            $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
-
-            /** @var Item $packedItem */
-            foreach (clone $bestBox->getItems() as $packedItem) {
-                $this->items->remove($packedItem);
+            try {
+                //Find best box of iteration, and remove packed items from unpacked list
+                $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
+            } catch (NoBoxesAvailableException $e) {
+                if ($enforceSingleBox) {
+                    return new PackedBoxList();
+                }
+                throw $e;
             }
+
+            $this->items->removePackedItems($bestBox->getPackedItems());
 
             $packedBoxes->insert($bestBox);
         }
 
         return $packedBoxes;
+    }
+
+    /**
+     * Get a "smart" ordering of the boxes to try packing items into. The initial BoxList is already sorted in order
+     * so that the smallest boxes are evaluated first, but this means that time is spent on boxes that cannot possibly
+     * hold the entire set of items due to volume limitations. These should be evaluated first.
+     */
+    protected function getBoxList($enforceSingleBox = false)
+    {
+        $itemVolume = 0;
+        foreach (clone $this->items as $item) {
+            $itemVolume += $item->getWidth() * $item->getLength() * $item->getDepth();
+        }
+
+        $preferredBoxes = [];
+        $otherBoxes = [];
+        foreach (clone $this->boxes as $box) {
+            if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
+                $preferredBoxes[] = $box;
+            } elseif (!$enforceSingleBox) {
+                $otherBoxes[] = $box;
+            }
+        }
+
+        return array_merge($preferredBoxes, $otherBoxes);
     }
 
     /**
@@ -210,6 +239,7 @@ class Packer implements LoggerAwareInterface
         /** @var Item $item */
         foreach (clone $this->items as $item) {
             $possibleFits = 0;
+
             /** @var Box $box */
             foreach (clone $this->boxes as $box) {
                 if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight())) {
