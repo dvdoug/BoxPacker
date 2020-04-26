@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.6.0] - 2020-04-26
+### Changed
+ - Improved efficiency in packing and weight distribution
+ - Major internal refactoring. The public-facing API did not change in any incompatible ways, but if you extended any of the `@internal` classes or made use of `@internal` methods you may be affected.
+ - Bail out earlier in the packing process where an item doesn't fit [colinmollenhour]
+### Fixed
+ - Fixed potential issue where internal sort consistency wasn't always correct
+ - Fixed potential issue where custom constraints might not be fully respected
+ - Avoid divide by zero error when a box is specified to have a depth of 0mm (e.g. 2D packing)
+ - Better docblocks [colinmollenhour]
+
 ## [3.5.2] - 2020-02-02
 ### Changed
  - Further optimisation when packing a large number of items
@@ -92,6 +103,15 @@
  - Minimum PHP version is now 7.1
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
+
+## [2.7.0] - 2020-04-26
+### Changed
+ - Improved efficiency in packing and weight distribution
+ - Major internal refactoring. The public-facing API did not change in any incompatible ways, but if you extended any of the `@internal` classes or made use of `@internal` methods you may be affected.
+ - Bail out earlier in the packing process where an item doesn't fit [colinmollenhour]
+### Fixed
+ - Fixed potential issue where custom constraints might not be fully respected
+ - Avoid divide by zero error when a box is specified to have a depth of 0mm (e.g. 2D packing)
 
 ## [2.6.5] - 2020-02-02
 ### Changed
@@ -377,8 +397,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.5.2...master
+[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...master
 
+[3.6.0]: https://github.com/dvdoug/BoxPacker/compare/3.5.2...3.6.0
 [3.5.2]: https://github.com/dvdoug/BoxPacker/compare/3.5.1...3.5.2
 [3.5.1]: https://github.com/dvdoug/BoxPacker/compare/3.5.0...3.5.1
 [3.5.0]: https://github.com/dvdoug/BoxPacker/compare/3.4.1...3.5.0
@@ -394,6 +415,7 @@ Initial release
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
+[2.7.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.5...2.7.0
 [2.6.5]: https://github.com/dvdoug/BoxPacker/compare/2.6.4...2.6.5
 [2.6.4]: https://github.com/dvdoug/BoxPacker/compare/2.6.3...2.6.4
 [2.6.3]: https://github.com/dvdoug/BoxPacker/compare/2.6.2...2.6.3
