@@ -140,7 +140,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             }
         }
 
-        if ($item instanceof ConstrainedPlacementItem) {
+        if ($item instanceof ConstrainedPlacementItem && !$this->box instanceof WorkingVolume) {
             $orientations = array_filter($orientations, function (OrientatedItem $i) use ($x, $y, $z, $prevPackedItemList) {
                 return $i->getItem()->canBePacked($this->box, clone $prevPackedItemList, $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
             });
