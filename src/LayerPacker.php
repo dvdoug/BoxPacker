@@ -189,7 +189,7 @@ class LayerPacker implements LoggerAwareInterface
     private function checkNonDimensionalConstraints(Item $itemToPack, int $remainingWeightAllowed, PackedItemList $packedItemList): bool
     {
         $customConstraintsOK = true;
-        if ($itemToPack instanceof ConstrainedItem) {
+        if ($itemToPack instanceof ConstrainedItem && !$this->box instanceof WorkingVolume) {
             $customConstraintsOK = $itemToPack->canBePackedInBox($packedItemList, $this->box);
         }
 
