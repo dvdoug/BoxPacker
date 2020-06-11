@@ -36,5 +36,10 @@
             "DVDoug\\BoxPacker\\": "src/",
             "DVDoug\\BoxPacker\\Test\\": "tests/Test"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.0-dev"
+        }
     }
 }

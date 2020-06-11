@@ -1,5 +1,7 @@
 # Changelog
 
+## [4.x - Unreleased] - 2020-xx-xx
+
 ## [3.x - Unreleased] - 2020-xx-xx
 
 ## [3.6.1] - 2020-06-11
@@ -409,6 +411,7 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
+[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...master
 [3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...3.x-dev
 
 [3.6.1]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...3.6.1

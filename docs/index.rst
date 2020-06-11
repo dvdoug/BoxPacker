@@ -11,6 +11,10 @@ License
 -------
 BoxPacker is licensed under the `MIT license`_.
 
+.. warning::
+
+    You are reading the documentation for BoxPacker v4 which is not yet released.
+
 .. _MIT license: https://github.com/dvdoug/BoxPacker/blob/master/license.txt
 
 
