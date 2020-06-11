@@ -9,7 +9,7 @@ even just want to know the right number of labels to print.
 
 See [documentation](http://boxpacker.readthedocs.io/en/1.x/) for more details.
 
-[![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master)](https://travis-ci.org/dvdoug/BoxPacker)
+[![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=1.x)](https://travis-ci.org/dvdoug/BoxPacker)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=1.x)
 [![Download count](https://img.shields.io/packagist/dt/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
 [![Current version](https://img.shields.io/packagist/v/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
