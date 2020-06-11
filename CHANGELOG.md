@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.x - Unreleased] - 2020-xx-xx
+
+## [3.6.1] - 2020-06-11
+### Fixed
+ - Fixed situation where internal `WorkingVolume` could be passed into a constraint callback, rather than the calling application's own `Box`
+ - Fixed issue where the list of previously packed items passed into a constraint callback was not correct
+
 ## [3.6.0] - 2020-04-26
 ### Changed
  - Improved efficiency in packing and weight distribution
@@ -103,6 +110,11 @@
  - Minimum PHP version is now 7.1
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
+
+## [2.7.1] - 2020-06-11
+### Fixed
+ - Fixed situation where internal `WorkingVolume` could be passed into a constraint callback, rather than the calling application's own `Box`
+ - Fixed issue where the list of previously packed items passed into a constraint callback was not correct
 
 ## [2.7.0] - 2020-04-26
 ### Changed
@@ -397,8 +409,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...master
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...3.x-dev
 
+[3.6.1]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...3.6.1
 [3.6.0]: https://github.com/dvdoug/BoxPacker/compare/3.5.2...3.6.0
 [3.5.2]: https://github.com/dvdoug/BoxPacker/compare/3.5.1...3.5.2
 [3.5.1]: https://github.com/dvdoug/BoxPacker/compare/3.5.0...3.5.1
@@ -415,6 +428,7 @@ Initial release
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
+[2.7.1]: https://github.com/dvdoug/BoxPacker/compare/2.7.0...2.7.1
 [2.7.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.5...2.7.0
 [2.6.5]: https://github.com/dvdoug/BoxPacker/compare/2.6.4...2.6.5
 [2.6.4]: https://github.com/dvdoug/BoxPacker/compare/2.6.3...2.6.4
