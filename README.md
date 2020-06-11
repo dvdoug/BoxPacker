@@ -7,13 +7,13 @@ them all in.
 Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs, or
 even just want to know the right number of labels to print.
 
-See [documentation](http://boxpacker.readthedocs.io/en/1.x-dev/) for more details.
+See [documentation](http://boxpacker.readthedocs.io/en/1.x/) for more details.
 
 [![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master)](https://travis-ci.org/dvdoug/BoxPacker)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=1.x-dev)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=1.x-dev)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=1.x)
 [![Download count](https://img.shields.io/packagist/dt/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
 [![Current version](https://img.shields.io/packagist/v/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
-[![Documentation](https://readthedocs.org/projects/boxpacker/badge/?version=1.x-dev)](https://boxpacker.readthedocs.io/en/1.x-dev/?badge=1.x-dev)
+[![Documentation](https://readthedocs.org/projects/boxpacker/badge/?version=1.x)](https://boxpacker.readthedocs.io/en/1.x/?badge=1.x)
 
 Requirements
 ------------
