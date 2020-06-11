@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
@@ -555,5 +556,17 @@ class PackerTest extends TestCase
 
         $packedBoxList = $packer->pack();
         self::assertCount(6, $packedBoxList);
+    }
+
+    public function testIssue206(): void
+    {
+        ConstrainedPlacementByCountTestItem::$limit = 2;
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box', 6, 10, 6, 0, 6, 10, 5, PHP_INT_MAX));
+        $packer->addItem(new ConstrainedPlacementByCountTestItem('ConstrainedItem', 1, 1, 1, 1, false), 3);
+        $packer->addItem(new TestItem('RegularItem', 2, 4, 1, 2, false), 5);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(2, $packedBoxes);
     }
 }
