@@ -19,7 +19,7 @@ matrix:
   include:
     - php: nightly
       env: FORCE_LATEST=1
-    - php: 7.1
+    - php: 5.4
       env: PREFER_LOWEST=1
   allow_failures:
     - php: nightly
