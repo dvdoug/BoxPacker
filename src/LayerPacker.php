@@ -89,7 +89,7 @@ class LayerPacker implements LoggerAwareInterface
             $itemToPack = $items->extract();
 
             //skip items that will never fit e.g. too heavy
-            if (!$this->checkNonDimensionalConstraints($itemToPack, $remainingWeightAllowed, $packedItemList)) {
+            if ($itemToPack->getWeight() > $remainingWeightAllowed) {
                 continue;
             }
 
@@ -159,7 +159,7 @@ class LayerPacker implements LoggerAwareInterface
             $itemToTryStacking = $items->extract();
 
             //skip items that will never fit
-            if (!$this->checkNonDimensionalConstraints($itemToTryStacking, $remainingWeightAllowed, $packedItemList)) {
+            if ($itemToTryStacking->getWeight() > $remainingWeightAllowed) {
                 continue;
             }
 
@@ -181,20 +181,6 @@ class LayerPacker implements LoggerAwareInterface
             }
         }
         $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
-    }
-
-    /**
-     * As well as purely dimensional constraints, there are other constraints that need to be met
-     * e.g. weight limits or item-specific restrictions (e.g. max <x> batteries per box).
-     */
-    private function checkNonDimensionalConstraints(Item $itemToPack, int $remainingWeightAllowed, PackedItemList $packedItemList): bool
-    {
-        $customConstraintsOK = true;
-        if ($itemToPack instanceof ConstrainedItem && !$this->box instanceof WorkingVolume) {
-            $customConstraintsOK = $itemToPack->canBePackedInBox($packedItemList, $this->box);
-        }
-
-        return $customConstraintsOK && $itemToPack->getWeight() <= $remainingWeightAllowed;
     }
 
     private function getRemainingWeightAllowed(array $layers): int

@@ -1,6 +1,8 @@
 # Changelog
 
 ## [4.x - Unreleased] - 2020-xx-xx
+### Removed
+ - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
 
 ## [3.x - Unreleased] - 2020-xx-xx
 

@@ -10,7 +10,6 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
-use DVDoug\BoxPacker\Test\ConstrainedTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
@@ -36,30 +35,6 @@ class VolumePackerTest extends TestCase
         self::assertEquals(60, $packedBox->getUsedWidth());
         self::assertEquals(14, $packedBox->getUsedLength());
         self::assertEquals(2, $packedBox->getUsedDepth());
-    }
-
-    /**
-     * Test that constraint handling works correctly.
-     */
-    public function testLegacyConstraints(): void
-    {
-        // first a regular item
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 0, false), 8);
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(1, $packedBoxes);
-
-        // same dimensions but now constrained by type
-        ConstrainedTestItem::$limit = 2;
-
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 0));
-        $packer->addItem(new ConstrainedTestItem('Item', 1, 1, 1, 0, false), 8);
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(4, $packedBoxes);
     }
 
     /**
