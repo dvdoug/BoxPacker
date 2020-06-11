@@ -162,9 +162,10 @@ class LayerPacker implements LoggerAwareInterface
 
             $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList);
             if ($stackedItem) {
-                $layer->insert(PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ));
+                $packedStackedItem = PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ);
+                $layer->insert($packedStackedItem);
                 $remainingWeightAllowed -= $itemToTryStacking->getWeight();
-                $packedItemList->insert($packedItem);
+                $packedItemList->insert($packedStackedItem);
                 $stackableDepth -= $stackedItem->getDepth();
                 $stackedZ += $stackedItem->getDepth();
                 continue;
