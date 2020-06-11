@@ -34,10 +34,6 @@ install:
   - |
     sed -i 's/"bin-compat" : "full"/"bin-compat" : "auto"/g' composer.json;
   - |
-    if [ "$csfixer" != "1" ]; then
-      composer remove --dev friendsofphp/php-cs-fixer;
-    fi;
-  - |
     if [ "$lowest" = "1" ]; then
       composer update --prefer-lowest --prefer-stable;
     else
