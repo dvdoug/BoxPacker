@@ -81,7 +81,7 @@ Example - only allow 2 batteries per box
     <?php
         use DVDoug\BoxPacker\Box;
         use DVDoug\BoxPacker\Item;
-        use DVDoug\BoxPacker\ItemList;
+        use DVDoug\BoxPacker\PackedItemList;
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
@@ -132,7 +132,7 @@ Example - don't allow batteries to be stacked
     <?php
         use DVDoug\BoxPacker\Box;
         use DVDoug\BoxPacker\Item;
-        use DVDoug\BoxPacker\ItemList;
+        use DVDoug\BoxPacker\PackedItemList;
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
