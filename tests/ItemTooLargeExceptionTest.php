@@ -8,11 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Exception\ItemTooLargeException;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \DVDoug\BoxPacker\ItemTooLargeException
+ * @covers \DVDoug\BoxPacker\Exception\ItemTooLargeException
  */
 class ItemTooLargeExceptionTest extends TestCase
 {

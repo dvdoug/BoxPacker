@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Exception\ItemTooLargeException;
+use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use function count;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;

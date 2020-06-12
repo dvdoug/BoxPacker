@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Exception\ItemTooLargeException;
+use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;

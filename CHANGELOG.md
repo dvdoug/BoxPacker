@@ -3,6 +3,7 @@
 ## [4.x - Unreleased] - 2020-xx-xx
 ### Changed
  - Minimum PHP version is now 7.3
+ - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
 

@@ -7,8 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace DVDoug\BoxPacker;
+namespace DVDoug\BoxPacker\Exception;
 
+use DVDoug\BoxPacker\Item;
 use RuntimeException;
 
 /**

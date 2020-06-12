@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Exception\ItemTooLargeException;
+
 /**
  * A version of the packer that swallows internal exceptions.
  *
