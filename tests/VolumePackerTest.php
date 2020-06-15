@@ -362,6 +362,7 @@ class VolumePackerTest extends TestCase
 
     /**
      * From issue #172.
+     * @group efficiency
      */
     public function testIssue172A(): void
     {

@@ -17,6 +17,7 @@ class InfalliblePackerTest extends TestCase
 {
     /**
      * From issue #182.
+     * @group efficiency
      */
     public function testIssue182B(): void
     {
