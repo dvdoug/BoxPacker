@@ -15,6 +15,28 @@ use PHPUnit\Framework\TestCase;
 
 class InfalliblePackerTest extends TestCase
 {
+    public function testPackThreeItemsOneDoesntFitInAnyBox(): void
+    {
+        $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+        $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
+
+        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+
+        $packer = new InfalliblePacker();
+        $packer->addBox($box1);
+        $packer->addBox($box2);
+        $packer->addItem($item1);
+        $packer->addItem($item2);
+        $packer->addItem($item3);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+        self::assertCount(2, $packedBoxes->top()->getItems());
+        self::assertCount(1, $packer->getUnpackedItems());
+    }
+
     /**
      * From issue #182.
      * @group efficiency
