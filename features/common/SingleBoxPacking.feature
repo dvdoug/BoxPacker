@@ -1,4 +1,4 @@
-Feature: BoxPacker
+Feature: SingleBoxPacking
   In order to make logistics easier
   As a developer
   I need to be able to find out how a set of items can fit into a box
