@@ -12,7 +12,7 @@ matrix:
   include:
     - php: nightly
       env: FORCE_LATEST=1
-    - php: 7.2
+    - php: 7.3
       env: PREFER_LOWEST=1
     - php: 7.4
       env: CSFIXER=1
