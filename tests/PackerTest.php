@@ -204,21 +204,6 @@ class PackerTest extends TestCase
     }
 
     /**
-     * From issue #170.
-     */
-    public function testIssue170(): void
-    {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 170, 120, 120, 2000, 170, 120, 120, 60000));
-        $packer->addItem(new TestItem('Item', 70, 130, 2, 657, false), 100);
-
-        /** @var PackedBox[] $packedBoxes */
-        $packedBoxes = iterator_to_array($packer->pack(), false);
-
-        self::assertCount(2, $packedBoxes);
-    }
-
-    /**
      * From issue #182.
      */
     public function testIssue182A(): void
