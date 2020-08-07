@@ -12,16 +12,16 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.1",
+        "php": "^7.3",
         "ext-json": "*",
-        "psr/log": "^1.0"
+        "psr/log": "^1.1"
     },
     "require-dev": {
         "behat/behat": "^3.7",
         "friendsofphp/php-cs-fixer": "^2.16.4",
         "dvdoug/behat-code-coverage": "^5.0",
-        "monolog/monolog": "^1.0||^2.0",
-        "phpunit/phpunit": "^7.5.20||^8.5.8||^9.3"
+        "monolog/monolog": "^2.1",
+        "phpunit/phpunit": "^9.3"
     },
     "config": {
         "preferred-install": {

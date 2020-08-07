@@ -127,10 +127,6 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
 
-        if (\PHP_VERSION_ID < 70300) {
-            return array_slice($this->list, -1, 1)[0];
-        }
-
         return $this->list[array_key_last($this->list)];
     }
 
