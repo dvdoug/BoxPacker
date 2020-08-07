@@ -11,6 +11,8 @@ build:
     # Languages
     php:
       version: "7.4"
+      ini:
+        memory_limit:     "-1"
 
   tests:
     override:
