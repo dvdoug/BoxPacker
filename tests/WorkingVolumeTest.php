@@ -22,7 +22,7 @@ class WorkingVolumeTest extends TestCase
      */
     private $volume;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->volume = new WorkingVolume(1, 2, 3, 4);
     }

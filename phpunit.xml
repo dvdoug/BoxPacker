@@ -2,7 +2,7 @@
 
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/schema/9.2.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/schema/9.3.xsd"
          colors="true"
          bootstrap="vendor/autoload.php"
 >
@@ -13,20 +13,15 @@
     </testsuite>
   </testsuites>
 
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
+  <coverage pathCoverage="true" processUncoveredFiles="true">
+    <include>
       <directory suffix=".php">src</directory>
-    </whitelist>
-  </filter>
+    </include>
 
-  <logging>
-    <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
-    <log type="coverage-html" target="build/coverage-phpunit" showUncoveredFiles="true"/>
-    <log type="coverage-clover" target="build/coverage-phpunit/clover.xml" showUncoveredFiles="true"/>
-  </logging>
+    <report>
+      <text outputFile="php://stdout" showUncoveredFiles="true"/>
+      <html outputDirectory="build/coverage-phpunit"/>
+    </report>
+  </coverage>
 
-  <php>
-    <ini name="date.timezone" value="UTC"/>
-    <ini name="error_reporting" value="2147483647"/>
-  </php>
 </phpunit>
