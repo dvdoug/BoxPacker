@@ -100,9 +100,9 @@ class THPackTestItem implements ConstrainedPlacementItem
         return 0;
     }
 
-    public function getKeepFlat(): bool
+    public function getAllowedRotations(): int
     {
-        return !$this->widthAllowedVertical && !$this->lengthAllowedVertical && $this->depthAllowedVertical;
+        return (!$this->widthAllowedVertical && !$this->lengthAllowedVertical && $this->depthAllowedVertical) ? self::ROTATION_KEEP_FLAT : self::ROTATION_BEST_FIT;
     }
 
     /**

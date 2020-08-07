@@ -59,6 +59,11 @@ class VolumePacker implements LoggerAwareInterface
     private $hasConstrainedItems;
 
     /**
+     * @var bool
+     */
+    private $hasNoRotationItems;
+
+    /**
      * Constructor.
      */
     public function __construct(Box $box, ItemList $items)
@@ -69,6 +74,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger = new NullLogger();
 
         $this->hasConstrainedItems = $items->hasConstrainedItems();
+        $this->hasNoRotationItems = $items->hasNoRotationItems();
 
         $this->layerPacker = new LayerPacker($this->box);
         $this->layerPacker->setLogger($this->logger);
@@ -102,7 +108,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
         $rotationsToTest = [false];
-        if (!$this->singlePassMode) {
+        if (!$this->singlePassMode && !$this->hasNoRotationItems) {
             $rotationsToTest[] = true;
         }
 

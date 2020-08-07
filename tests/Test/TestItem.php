@@ -42,7 +42,7 @@ class TestItem implements Item, JsonSerializable
     /**
      * @var int
      */
-    private $keepFlat;
+    private $allowedRotations;
 
     /**
      * Test objects that recurse.
@@ -67,14 +67,14 @@ class TestItem implements Item, JsonSerializable
         int $length,
         int $depth,
         int $weight,
-        bool $keepFlat)
+        int $allowedRotations)
     {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
         $this->weight = $weight;
-        $this->keepFlat = $keepFlat;
+        $this->allowedRotations = $allowedRotations;
 
         $this->a = new stdClass();
         $this->b = new stdClass();
@@ -108,9 +108,9 @@ class TestItem implements Item, JsonSerializable
         return $this->weight;
     }
 
-    public function getKeepFlat(): bool
+    public function getAllowedRotations(): int
     {
-        return $this->keepFlat;
+        return $this->allowedRotations;
     }
 
     /**
@@ -124,7 +124,7 @@ class TestItem implements Item, JsonSerializable
             'length' => $this->length,
             'depth' => $this->depth,
             'weight' => $this->weight,
-            'keepFlat' => $this->keepFlat,
+            'allowedRotations' => $this->allowedRotations,
         ];
     }
 }

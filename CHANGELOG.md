@@ -1,11 +1,16 @@
 # Changelog
 
 ## [4.x - Unreleased] - 2020-xx-xx
+### Added
+ - Added new constants `Item::ROTATION_NEVER`, `Item::ROTATION_KEEP_FLAT` and `Item::ROTATION_BEST_FIT`
+ - Added new `getAllowedRotations()` method to the `Item` interface to replace `getKeepFlat()`. This should return
+   one of the new `Item::ROTATION_*` constants
 ### Changed
  - Minimum PHP version is now 7.3
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
+ - Removed `getKeepFlat()` from the `Item` interface
 
 ## [3.x - Unreleased] - 2020-xx-xx
 

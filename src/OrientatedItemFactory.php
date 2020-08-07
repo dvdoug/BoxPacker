@@ -141,7 +141,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             '|' .
             $item->getDepth() .
             '|' .
-            ($item->getKeepFlat() ? '2D' : '3D') .
+            $item->getAllowedRotations() .
             '|' .
             $this->box->getInnerWidth() .
             '|' .
@@ -228,12 +228,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if ($prevItem && $prevItem->isSameDimensions($item)) {
             $permutations[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
         } else {
-            //simple 2D rotation
             $permutations[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
-            $permutations[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
 
-            //add 3D rotation if we're allowed
-            if (!$item->getKeepFlat()) {
+            if ($item->getAllowedRotations() > 1) { //simple 2D rotation
+                $permutations[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
+            }
+
+            if ($item->getAllowedRotations() === Item::ROTATION_BEST_FIT) { //add 3D rotation if we're allowed
                 $permutations[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
                 $permutations[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
                 $permutations[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];

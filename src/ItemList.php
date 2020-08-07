@@ -49,6 +49,13 @@ class ItemList implements Countable, IteratorAggregate
     private $hasConstrainedItems;
 
     /**
+     * Does this list contain items which cannot be rotated?
+     *
+     * @var bool
+     */
+    private $hasNoRotationItems;
+
+    /**
      * Do a bulk create.
      *
      * @param  Item[]   $items
@@ -68,6 +75,7 @@ class ItemList implements Countable, IteratorAggregate
         $this->list[] = $item;
         $this->isSorted = false;
         $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
+        $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotations() === Item::ROTATION_NEVER;
     }
 
     /**
@@ -185,6 +193,24 @@ class ItemList implements Countable, IteratorAggregate
         }
 
         return $this->hasConstrainedItems;
+    }
+
+    /**
+     * Does this list contain items which cannot be rotated.
+     */
+    public function hasNoRotationItems(): bool
+    {
+        if (!isset($this->hasNoRotationItems)) {
+            $this->hasNoRotationItems = false;
+            foreach ($this->list as $item) {
+                if ($item->getAllowedRotations() === Item::ROTATION_NEVER) {
+                    $this->hasNoRotationItems = true;
+                    break;
+                }
+            }
+        }
+
+        return $this->hasNoRotationItems;
     }
 
     private static function compare(Item $itemA, Item $itemB): int

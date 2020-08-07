@@ -57,9 +57,9 @@ Packing a set of items into a given set of box types
          * Add items to be packed - e.g. from shopping cart stored in user session. Again, the dimensional information
          * (and keep-flat requirement) would normally come from a DB
          */
-        $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200, true), 1); // item, quantity
-        $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, true), 2);
-        $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, false), 1);
+        $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200, Item::ROTATION_KEEP_FLAT), 1); // item, quantity
+        $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, Item::ROTATION_KEEP_FLAT), 2);
+        $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, Item::ROTATION_BEST_FIT), 1);
 
         $packedBoxes = $packer->pack();
 
@@ -87,9 +87,9 @@ Does a set of items fit into a particular box
         $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
 
         $items = new ItemList();
-        $items->insert(new TestItem('Item 1', 297, 296, 2, 200, false));
-        $items->insert(new TestItem('Item 2', 297, 296, 2, 500, false));
-        $items->insert(new TestItem('Item 3', 296, 296, 4, 290, false));
+        $items->insert(new TestItem('Item 1', 297, 296, 2, 200, Item::ROTATION_BEST_FIT));
+        $items->insert(new TestItem('Item 2', 297, 296, 2, 500, Item::ROTATION_BEST_FIT));
+        $items->insert(new TestItem('Item 3', 296, 296, 4, 290, Item::ROTATION_BEST_FIT));
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack(); //$packedBox->getItems() contains the items that fit

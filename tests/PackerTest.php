@@ -25,9 +25,9 @@ class PackerTest extends TestCase
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
-        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, true);
-        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, true);
-        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, true);
+        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
 
         $packer = new Packer();
         $packer->addBox($box1);
@@ -41,9 +41,9 @@ class PackerTest extends TestCase
     public function testPackWithoutBox(): void
     {
         $this->expectException(ItemTooLargeException::class);
-        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, true);
-        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, true);
-        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, true);
+        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
 
         $packer = new Packer();
         $packer->addItem($item1);
@@ -71,7 +71,7 @@ class PackerTest extends TestCase
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, TestItem::ROTATION_BEST_FIT), 4);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -82,7 +82,7 @@ class PackerTest extends TestCase
         // same items, but with redistribution turned off - expecting 3+1 based on pure fit
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, TestItem::ROTATION_BEST_FIT), 4);
         $packer->setMaxBoxesToBalanceWeight(1);
 
         /** @var PackedBox[] $packedBoxes */
@@ -99,7 +99,7 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 100, 50, 50, 0, 100, 50, 50, 5000));
-        $packer->addItem(new TestItem('Item', 15, 13, 8, 407, true), 2);
+        $packer->addItem(new TestItem('Item', 15, 13, 8, 407, TestItem::ROTATION_KEEP_FLAT), 2);
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -115,10 +115,10 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000));
-        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, true));
-        $packer->addItem(new TestItem('Item 2', 210, 297, 11, 648, true));
-        $packer->addItem(new TestItem('Item 3', 210, 297, 5, 187, true));
-        $packer->addItem(new TestItem('Item 4', 148, 210, 32, 880, true));
+        $packer->addItem(new TestItem('Item 1', 220, 310, 12, 679, TestItem::ROTATION_KEEP_FLAT));
+        $packer->addItem(new TestItem('Item 2', 210, 297, 11, 648, TestItem::ROTATION_KEEP_FLAT));
+        $packer->addItem(new TestItem('Item 3', 210, 297, 5, 187, TestItem::ROTATION_KEEP_FLAT));
+        $packer->addItem(new TestItem('Item 4', 148, 210, 32, 880, TestItem::ROTATION_KEEP_FLAT));
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -134,9 +134,9 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 230, 300, 240, 160, 230, 300, 240, 15000));
-        $packer->addItem(new TestItem('Item 1', 210, 297, 4, 213, true));
-        $packer->addItem(new TestItem('Item 2', 80, 285, 70, 199, true));
-        $packer->addItem(new TestItem('Item 3', 80, 285, 70, 199, true));
+        $packer->addItem(new TestItem('Item 1', 210, 297, 4, 213, TestItem::ROTATION_KEEP_FLAT));
+        $packer->addItem(new TestItem('Item 2', 80, 285, 70, 199, TestItem::ROTATION_KEEP_FLAT));
+        $packer->addItem(new TestItem('Item 3', 80, 285, 70, 199, TestItem::ROTATION_KEEP_FLAT));
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -155,8 +155,8 @@ class PackerTest extends TestCase
         $packer = new Packer();
         $packer->addBox(new TestBox('Box A', 36, 8, 3, 0, 36, 8, 3, 2));
         $packer->addBox(new TestBox('Box B', 36, 8, 8, 0, 36, 8, 8, 2));
-        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1, false));
-        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1, false));
+        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1, TestItem::ROTATION_BEST_FIT));
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
         self::assertCount(1, $packedBoxes);
@@ -172,15 +172,15 @@ class PackerTest extends TestCase
         $packer = new Packer();
         $packer->addBox(new TestBox('Box1', 2, 2, 2, 0, 2, 2, 2, 1000));
         $packer->addBox(new TestBox('Box2', 4, 4, 4, 0, 4, 4, 4, 1000));
-        $packer->addItem(new TestItem('Item 1', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 2', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 3', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 4', 1, 1, 1, 100, false));
-        $packer->addItem(new TestItem('Item 5', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 6', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 7', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 8', 2, 2, 2, 100, false));
-        $packer->addItem(new TestItem('Item 9', 4, 4, 4, 100, false));
+        $packer->addItem(new TestItem('Item 1', 1, 1, 1, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 1, 1, 1, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 1, 1, 1, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 4', 1, 1, 1, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 5', 2, 2, 2, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 6', 2, 2, 2, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 7', 2, 2, 2, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 8', 2, 2, 2, 100, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 9', 4, 4, 4, 100, TestItem::ROTATION_BEST_FIT));
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -196,7 +196,7 @@ class PackerTest extends TestCase
         $packer = new Packer();
         $packer->addBox(new TestBox('Small', 85, 190, 230, 30, 85, 190, 230, 10000));
         $packer->addBox(new TestBox('Medium', 220, 160, 160, 50, 220, 160, 160, 10000));
-        $packer->addItem(new TestItem('Item', 55, 85, 122, 350, false));
+        $packer->addItem(new TestItem('Item', 55, 85, 122, 350, TestItem::ROTATION_BEST_FIT));
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -220,7 +220,7 @@ class PackerTest extends TestCase
         $packer->addBox(new TestBox('Box', 310, 210, 155, 2000, 310, 210, 155, 60000));
         $packer->addBox(new TestBox('Box', 210, 160, 105, 2000, 210, 160, 105, 60000));
 
-        $packer->addItem(new TestItem('Item', 150, 100, 100, 1, false), 200);
+        $packer->addItem(new TestItem('Item', 150, 100, 100, 1, TestItem::ROTATION_BEST_FIT), 200);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -237,7 +237,7 @@ class PackerTest extends TestCase
         $packer->addBox(new TestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100));
         $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
 
-        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, TestItem::ROTATION_BEST_FIT), 3);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -258,7 +258,7 @@ class PackerTest extends TestCase
         $packer->addBox(new LimitedSupplyTestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100, 2));
         $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
 
-        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, TestItem::ROTATION_BEST_FIT), 3);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -278,7 +278,7 @@ class PackerTest extends TestCase
         $this->expectException(NoBoxesAvailableException::class);
         $packer = new Packer();
         $packer->addBox(new LimitedSupplyTestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100, 2));
-        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, false), 3);
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, TestItem::ROTATION_BEST_FIT), 3);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -296,29 +296,29 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 400, 150, 200, 10, false), 2);
+        $packer->addItem(new TestItem('Item 1', 400, 150, 200, 10, TestItem::ROTATION_BEST_FIT), 2);
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, false), 2);
+        $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, TestItem::ROTATION_BEST_FIT), 2);
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 200, 400, 150, 10, false), 2);
+        $packer->addItem(new TestItem('Item 1', 200, 400, 150, 10, TestItem::ROTATION_BEST_FIT), 2);
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 400, 150, 200, 10, false), 1);
-        $packer->addItem(new TestItem('Item 2', 400, 200, 150, 10, false), 1);
+        $packer->addItem(new TestItem('Item 1', 400, 150, 200, 10, TestItem::ROTATION_BEST_FIT), 1);
+        $packer->addItem(new TestItem('Item 2', 400, 200, 150, 10, TestItem::ROTATION_BEST_FIT), 1);
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('B 1', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, false), 1);
-        $packer->addItem(new TestItem('Item 2', 400, 150, 200, 10, false), 1);
+        $packer->addItem(new TestItem('Item 1', 400, 200, 150, 10, TestItem::ROTATION_BEST_FIT), 1);
+        $packer->addItem(new TestItem('Item 2', 400, 150, 200, 10, TestItem::ROTATION_BEST_FIT), 1);
         self::assertCount(1, $packer->pack());
     }
 
@@ -329,42 +329,42 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, false));
-        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, false));
-        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
-        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, TestItem::ROTATION_BEST_FIT));
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 345, 250, 55, 10, false));
-        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, false));
-        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
-        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        $packer->addItem(new TestItem('Item 1', 345, 250, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, TestItem::ROTATION_BEST_FIT));
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, false));
-        $packer->addItem(new TestItem('Item 2', 225, 180, 50, 10, false));
-        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
-        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 50, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, TestItem::ROTATION_BEST_FIT));
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 360, 250, 55, 10, false));
-        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, false));
-        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
-        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        $packer->addItem(new TestItem('Item 1', 360, 250, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, TestItem::ROTATION_BEST_FIT));
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 400, 300, 200, 10, 400, 300, 200, 1000));
-        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, false));
-        $packer->addItem(new TestItem('Item 2', 225, 180, 60, 10, false));
-        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, false));
-        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, false));
+        $packer->addItem(new TestItem('Item 1', 350, 250, 55, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 225, 180, 60, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 265, 195, 30, 10, TestItem::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 4', 260, 190, 30, 10, TestItem::ROTATION_BEST_FIT));
         self::assertCount(1, $packer->pack());
     }
 
@@ -375,17 +375,17 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('[Box]', 360, 620, 370, 1, 360, 620, 370, 29000));
-        $packer->addItem(new TestItem('C5 240 x 165 mm, 1000 vnt.', 259, 375, 99, 5440, false), 4);
-        $packer->addItem(new TestItem('170x230+30mm', 200, 300, 10, 194, false), 12);
-        $packer->addItem(new TestItem('50 mm x 66 m, ruda', 100, 100, 50, 165, false), 12);
+        $packer->addItem(new TestItem('C5 240 x 165 mm, 1000 vnt.', 259, 375, 99, 5440, TestItem::ROTATION_BEST_FIT), 4);
+        $packer->addItem(new TestItem('170x230+30mm', 200, 300, 10, 194, TestItem::ROTATION_BEST_FIT), 12);
+        $packer->addItem(new TestItem('50 mm x 66 m, ruda', 100, 100, 50, 165, TestItem::ROTATION_BEST_FIT), 12);
         self::assertCount(1, $packer->pack());
 
         $packer = new Packer();
         $packer->addBox(new TestBox('[Box]', 360, 620, 370, 1, 360, 620, 370, 29000));
-        $packer->addItem(new TestItem('C5 240 x 165 mm, 1000 vnt.', 259, 375, 99, 5440, false), 4);
-        $packer->addItem(new TestItem('170x230+30mm', 200, 300, 10, 194, false), 12);
-        $packer->addItem(new TestItem('50 mm x 66 m, ruda', 100, 100, 50, 165, false), 12);
-        $packer->addItem(new TestItem('175 x 255, B5', 130, 210, 30, 391, false), 2);
+        $packer->addItem(new TestItem('C5 240 x 165 mm, 1000 vnt.', 259, 375, 99, 5440, TestItem::ROTATION_BEST_FIT), 4);
+        $packer->addItem(new TestItem('170x230+30mm', 200, 300, 10, 194, TestItem::ROTATION_BEST_FIT), 12);
+        $packer->addItem(new TestItem('50 mm x 66 m, ruda', 100, 100, 50, 165, TestItem::ROTATION_BEST_FIT), 12);
+        $packer->addItem(new TestItem('175 x 255, B5', 130, 210, 30, 391, TestItem::ROTATION_BEST_FIT), 2);
         self::assertCount(1, $packer->pack());
     }
 
@@ -532,16 +532,16 @@ class PackerTest extends TestCase
         $packer->addBox(new TestBox('A2 - LQ 10x8x6', 800, 1000, 600, 450, 800, 1000, 600, 60000));
         $packer->addBox(new TestBox('A1 - LQ 8x5x3.5', 600, 800, 400, 200, 600, 800, 400, 60000));
 
-        $packer->addItem(new TestItem('Item 1', 725, 1500, 650, 21403, false), 1);
-        $packer->addItem(new TestItem('Item 2', 562, 731, 568, 6994, false), 6);
-        $packer->addItem(new TestItem('Item 3', 612, 1475, 650, 25008, false), 3);
-        $packer->addItem(new TestItem('Item 4', 600, 1225, 650, 13210, false), 2);
-        $packer->addItem(new TestItem('Item 5', 975, 1200, 500, 18734, false), 4);
-        $packer->addItem(new TestItem('Item 6', 550, 1495, 550, 14160, false), 2);
-        $packer->addItem(new TestItem('Item 7', 275, 475, 175, 944, false), 1);
-        $packer->addItem(new TestItem('Item 8', 625, 1000, 650, 14021, false), 1);
-        $packer->addItem(new TestItem('Item 9', 612, 650, 637, 5661, false), 1);
-        $packer->addItem(new TestItem('Item 10', 287, 612, 125, 514, false), 2);
+        $packer->addItem(new TestItem('Item 1', 725, 1500, 650, 21403, TestItem::ROTATION_BEST_FIT), 1);
+        $packer->addItem(new TestItem('Item 2', 562, 731, 568, 6994, TestItem::ROTATION_BEST_FIT), 6);
+        $packer->addItem(new TestItem('Item 3', 612, 1475, 650, 25008, TestItem::ROTATION_BEST_FIT), 3);
+        $packer->addItem(new TestItem('Item 4', 600, 1225, 650, 13210, TestItem::ROTATION_BEST_FIT), 2);
+        $packer->addItem(new TestItem('Item 5', 975, 1200, 500, 18734, TestItem::ROTATION_BEST_FIT), 4);
+        $packer->addItem(new TestItem('Item 6', 550, 1495, 550, 14160, TestItem::ROTATION_BEST_FIT), 2);
+        $packer->addItem(new TestItem('Item 7', 275, 475, 175, 944, TestItem::ROTATION_BEST_FIT), 1);
+        $packer->addItem(new TestItem('Item 8', 625, 1000, 650, 14021, TestItem::ROTATION_BEST_FIT), 1);
+        $packer->addItem(new TestItem('Item 9', 612, 650, 637, 5661, TestItem::ROTATION_BEST_FIT), 1);
+        $packer->addItem(new TestItem('Item 10', 287, 612, 125, 514, TestItem::ROTATION_BEST_FIT), 2);
 
         $packedBoxList = $packer->pack();
         self::assertCount(6, $packedBoxList);
@@ -552,8 +552,8 @@ class PackerTest extends TestCase
         ConstrainedPlacementByCountTestItem::$limit = 2;
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 6, 10, 6, 0, 6, 10, 5, PHP_INT_MAX));
-        $packer->addItem(new ConstrainedPlacementByCountTestItem('ConstrainedItem', 1, 1, 1, 1, false), 3);
-        $packer->addItem(new TestItem('RegularItem', 2, 4, 1, 2, false), 5);
+        $packer->addItem(new ConstrainedPlacementByCountTestItem('ConstrainedItem', 1, 1, 1, 1, TestItem::ROTATION_BEST_FIT), 3);
+        $packer->addItem(new TestItem('RegularItem', 2, 4, 1, 2, TestItem::ROTATION_BEST_FIT), 5);
         $packedBoxes = $packer->pack();
 
         self::assertCount(2, $packedBoxes);

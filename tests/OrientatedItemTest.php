@@ -18,7 +18,7 @@ class OrientatedItemTest extends TestCase
 {
     public function testSerialize(): void
     {
-        $item = new OrientatedItem(new TestItem('Test', 1, 2, 3, 4, false), 1, 2, 3);
+        $item = new OrientatedItem(new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_BEST_FIT), 1, 2, 3);
 
         $serializedDataKeys = json_decode(json_encode($item), true);
         self::assertArrayHasKey('item', $serializedDataKeys);

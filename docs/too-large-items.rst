@@ -24,9 +24,9 @@ Alternatively, you may wish to catch it explicitly and have domain-specific hand
             $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
             $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
 
-            $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, true));
-            $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, true));
-            $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, true));
+            $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, Item::ROTATION_BEST_FIT));
+            $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, Item::ROTATION_BEST_FIT));
+            $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, Item::ROTATION_BEST_FIT));
 
             $packedBoxes = $packer->pack();
         } catch (ItemTooLargeException $e) {
@@ -52,9 +52,9 @@ handles any ``ItemTooLargeExceptions``. It can be used like this:
         $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
         $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
 
-        $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, true));
-        $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, true));
-        $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, true));
+        $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, Item::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, Item::ROTATION_BEST_FIT));
+        $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, Item::ROTATION_BEST_FIT));
 
         $packedBoxes = $packer->pack(); //same as regular Packer
         $unpackedItems = $packer->getUnpackedItems();

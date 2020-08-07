@@ -22,7 +22,7 @@ class ItemTooLargeExceptionTest extends TestCase
      */
     public function testCanGetItem(): void
     {
-        $item = new TestItem('Item 1', 2500, 2500, 20, 2000, true);
+        $item = new TestItem('Item 1', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
 
         $exception = new ItemTooLargeException('Just testing...', $item);
         self::assertEquals($item, $exception->getItem());

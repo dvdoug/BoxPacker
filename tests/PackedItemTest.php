@@ -21,7 +21,7 @@ class PackedItemTest extends TestCase
      */
     public function testVolumeCalculation(): void
     {
-        $packedItem = new PackedItem(new TestItem('Item', 1, 1, 0, 0, false), 0, 0, 0, 3, 5, 7);
+        $packedItem = new PackedItem(new TestItem('Item', 1, 1, 0, 0, TestItem::ROTATION_BEST_FIT), 0, 0, 0, 3, 5, 7);
         self::assertSame(105, $packedItem->getVolume());
     }
 }

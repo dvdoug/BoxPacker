@@ -199,7 +199,7 @@ class OrientatedItemSorter implements LoggerAwareInterface
                 '|' .
                 $itemToPack->getWeight() .
                 '|' .
-                ($itemToPack->getKeepFlat() ? '1' : '0');
+                $itemToPack->getAllowedRotations();
         }
 
         if (!isset(static::$lookaheadCache[$cacheKey])) {

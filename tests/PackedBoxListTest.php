@@ -23,8 +23,8 @@ class PackedBoxListTest extends TestCase
     public function testInsertAndCount(): void
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, TestItem::ROTATION_BEST_FIT);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, TestItem::ROTATION_BEST_FIT);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -50,8 +50,8 @@ class PackedBoxListTest extends TestCase
     public function testInsertFromArrayAndCount(): void
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, TestItem::ROTATION_BEST_FIT);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, TestItem::ROTATION_BEST_FIT);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -76,8 +76,8 @@ class PackedBoxListTest extends TestCase
     public function testTop(): void
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, TestItem::ROTATION_BEST_FIT);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, TestItem::ROTATION_BEST_FIT);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -103,7 +103,7 @@ class PackedBoxListTest extends TestCase
     public function testVolumeUtilisation(): void
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
-        $item = new TestItem('Item', 5, 10, 10, 10, true);
+        $item = new TestItem('Item', 5, 10, 10, 10, TestItem::ROTATION_BEST_FIT);
 
         $packedItem = new PackedItem($item, 0, 0, 0, 5, 10, 10);
 
@@ -124,8 +124,8 @@ class PackedBoxListTest extends TestCase
     public function testWeightVariance(): void
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, TestItem::ROTATION_BEST_FIT);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, TestItem::ROTATION_BEST_FIT);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -151,8 +151,8 @@ class PackedBoxListTest extends TestCase
     public function testMeanWeight(): void
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, TestItem::ROTATION_BEST_FIT);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, TestItem::ROTATION_BEST_FIT);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);

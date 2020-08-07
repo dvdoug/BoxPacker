@@ -15,6 +15,12 @@ namespace DVDoug\BoxPacker;
  */
 interface Item
 {
+    public const ROTATION_NEVER = 1;
+
+    public const ROTATION_KEEP_FLAT = 2;
+
+    public const ROTATION_BEST_FIT = 6;
+
     /**
      * Item SKU etc.
      */
@@ -41,7 +47,7 @@ interface Item
     public function getWeight(): int;
 
     /**
-     * Does this item need to be kept flat / packed "this way up"?
+     * Possible item rotations allowed. One of the ROTATION_* constants.
      */
-    public function getKeepFlat(): bool;
+    public function getAllowedRotations(): int;
 }
