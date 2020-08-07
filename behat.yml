@@ -12,20 +12,15 @@ default:
 
   extensions:
     DVDoug\Behat\CodeCoverage\Extension:
-      auth: ~
-      drivers:
-        - local
       filter:
-        forceCoversAnnotation:                false
-        mapTestClassNameToCoveredClassName:   false
-        whitelist:
-          addUncoveredFilesFromWhitelist:     true
-          processUncoveredFilesFromWhitelist: true
-          include:
-            directories:
-              'src':
-                prefix: ''
-      report:
-        format: clover
-        options:
-          target: build/behat.clover
+        include:
+          directories:
+            'src': ~
+      reports:
+        clover:
+          target: build/coverage-behat/clover.xml
+        html:
+          target: build/coverage-behat
+        text:
+          showColors: true
+          showUncoveredFiles: true

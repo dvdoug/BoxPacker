@@ -15,14 +15,14 @@ build:
   tests:
     override:
       -
-        command: 'vendor/bin/phpunit --coverage-clover=build/phpunit.clover --exclude-group efficiency'
+        command: 'vendor/bin/phpunit --exclude-group efficiency'
         idle_timeout: 3600
         coverage:
-            file: 'build/phpunit.clover'
+            file: 'build/coverage-phpunit/clover.xml'
             format: 'clover'
       -
         command: 'vendor/bin/behat'
         coverage:
-            file: 'build/behat.clover'
+            file: 'build/coverage-behat/clover.xml'
             format: 'clover'
       - php-scrutinizer-run
