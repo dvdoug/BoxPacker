@@ -36,7 +36,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected $singlePassMode = false;
 
     /**
-     * @var OrientatedItem[]
+     * @var array<string, array<OrientatedItem>>
      */
     protected static $emptyBoxCache = [];
 
@@ -86,8 +86,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return null;
         }
 
-        $sorter = new OrientatedItemSorter($this, $this->singlePassMode, $widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList);
-        $sorter->setLogger($this->logger);
+        $sorter = new OrientatedItemSorter($this, $this->singlePassMode, $widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $this->logger);
         usort($usableOrientations, $sorter);
 
         $this->logger->debug('Selected best fit orientation', ['orientation' => $usableOrientations[0]]);
@@ -123,7 +122,10 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         if ($item instanceof ConstrainedPlacementItem && !$this->box instanceof WorkingVolume) {
             $orientations = array_filter($orientations, function (OrientatedItem $i) use ($x, $y, $z, $prevPackedItemList) {
-                return $i->getItem()->canBePacked($this->box, $prevPackedItemList, $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
+                /** @var ConstrainedPlacementItem */
+                $constrainedItem = $i->getItem();
+
+                return $constrainedItem->canBePacked($this->box, $prevPackedItemList, $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
             });
         }
 
@@ -207,6 +209,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
+     * @return OrientatedItem[]
      */
     protected function getStableOrientationsInEmptyBox(Item $item): array
     {
@@ -220,6 +223,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
         );
     }
 
+    /**
+     * @return array<array<int>>
+     */
     private function generatePermutations(Item $item, ?OrientatedItem $prevItem): array
     {
         $permutations = [];

@@ -211,6 +211,8 @@ class Packer implements LoggerAwareInterface
      * Get a "smart" ordering of the boxes to try packing items into. The initial BoxList is already sorted in order
      * so that the smallest boxes are evaluated first, but this means that time is spent on boxes that cannot possibly
      * hold the entire set of items due to volume limitations. These should be evaluated first.
+     *
+     * @return iterable<Box>
      */
     protected function getBoxList(bool $enforceSingleBox = false): iterable
     {

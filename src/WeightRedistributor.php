@@ -61,7 +61,6 @@ class WeightRedistributor implements LoggerAwareInterface
         $targetWeight = $originalBoxes->getMeanItemWeight();
         $this->logger->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
-        /** @var PackedBox[] $boxes */
         $boxes = iterator_to_array($originalBoxes);
 
         usort($boxes, static function (PackedBox $boxA, PackedBox $boxB) {
@@ -157,6 +156,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * Do a volume repack of a set of items.
+     * @param iterable<Item> $items
      */
     private function doVolumeRepack(iterable $items, Box $currentBox): PackedBoxList
     {
@@ -175,6 +175,8 @@ class WeightRedistributor implements LoggerAwareInterface
      * Not every attempted repack is actually helpful - sometimes moving an item between two otherwise identical
      * boxes, or sometimes the box used for the now lighter set of items actually weighs more when empty causing
      * an increase in total weight.
+     * @param array<Item> $overWeightBoxItems
+     * @param array<Item> $underWeightBoxItems
      */
     private static function wouldRepackActuallyHelp(array $overWeightBoxItems, Item $overWeightItem, array $underWeightBoxItems, float $targetWeight): bool
     {

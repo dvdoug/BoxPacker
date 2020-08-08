@@ -199,6 +199,8 @@ class VolumePacker implements LoggerAwareInterface
      * Swap back width/length of the packed items to match orientation of the box if needed.
      *
      * @param PackedLayer[] $oldLayers
+     *
+     * @return PackedLayer[]
      */
     private function correctLayerRotation(array $oldLayers, int $boxWidth): array
     {

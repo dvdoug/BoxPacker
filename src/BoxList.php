@@ -35,7 +35,7 @@ class BoxList implements IteratorAggregate
     private $isSorted = false;
 
     /**
-     * @return Traversable|Box[]
+     * @return Traversable<Box>
      */
     public function getIterator(): Traversable
     {

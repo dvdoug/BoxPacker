@@ -97,7 +97,7 @@ class WorkingVolume implements Box, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @return array<string, int|string>
      */
     public function jsonSerialize(): array
     {

@@ -43,7 +43,7 @@ class PackedItemList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return Traversable|PackedItem[]
+     * @return Traversable<PackedItem>
      */
     public function getIterator(): Traversable
     {

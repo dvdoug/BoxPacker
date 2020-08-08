@@ -157,7 +157,7 @@ class ItemList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return Traversable|Item[]
+     * @return Traversable<Item>
      */
     public function getIterator(): Traversable
     {

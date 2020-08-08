@@ -76,6 +76,7 @@ class LayerPacker implements LoggerAwareInterface
 
     /**
      * Pack items into an individual vertical layer.
+     * @param array<PackedLayer> $layers
      */
     public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): PackedLayer
     {
@@ -183,6 +184,9 @@ class LayerPacker implements LoggerAwareInterface
         $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
     }
 
+    /**
+     * @param array<PackedLayer> $layers
+     */
     private function getRemainingWeightAllowed(array $layers): int
     {
         $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight();

@@ -49,7 +49,7 @@ class OrientatedItem implements JsonSerializable
     protected static $stabilityCache = [];
 
     /**
-     * @var array
+     * @var array<int>
      */
     protected $dimensionsAsArray;
 
