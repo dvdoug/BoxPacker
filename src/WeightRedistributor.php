@@ -193,7 +193,7 @@ class WeightRedistributor implements LoggerAwareInterface
         return $newVariance < $oldVariance;
     }
 
-    private static function calculateVariance(int $boxAWeight, int $boxBWeight)
+    private static function calculateVariance(int $boxAWeight, int $boxBWeight): float
     {
         return ($boxAWeight - (($boxAWeight + $boxBWeight) / 2)) ** 2; //don't need to calculate B and ÷ 2, for a 2-item population the difference from mean is the same for each box
     }

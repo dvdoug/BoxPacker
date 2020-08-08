@@ -96,7 +96,7 @@ class OrientatedItemSorter implements LoggerAwareInterface
         $this->prevPackedItemList = $prevPackedItemList;
     }
 
-    public function __invoke(OrientatedItem $a, OrientatedItem $b)
+    public function __invoke(OrientatedItem $a, OrientatedItem $b): int
     {
         //Prefer exact fits in width/length/depth order
         $orientationAWidthLeft = $this->widthLeft - $a->getWidth();
@@ -226,7 +226,7 @@ class OrientatedItemSorter implements LoggerAwareInterface
         return static::$lookaheadCache[$cacheKey];
     }
 
-    private function exactFitDecider(int $dimensionALeft, int $dimensionBLeft)
+    private function exactFitDecider(int $dimensionALeft, int $dimensionBLeft): int
     {
         if ($dimensionALeft === 0 && $dimensionBLeft > 0) {
             return -1;
