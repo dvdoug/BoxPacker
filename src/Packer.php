@@ -15,7 +15,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
-use SplObjectStorage;
 use function usort;
 
 /**
@@ -51,9 +50,9 @@ class Packer implements LoggerAwareInterface
     /**
      * Quantities available of each box type.
      *
-     * @var SplObjectStorage<Box, int>
+     * @var array<int, int>
      */
-    protected $boxesQtyAvailable;
+    protected $boxesQtyAvailable = [];
 
     /**
      * Constructor.
@@ -62,7 +61,6 @@ class Packer implements LoggerAwareInterface
     {
         $this->items = new ItemList();
         $this->boxes = new BoxList();
-        $this->boxesQtyAvailable = new SplObjectStorage();
 
         $this->logger = new NullLogger();
     }
@@ -120,7 +118,7 @@ class Packer implements LoggerAwareInterface
      */
     public function setBoxQuantity(Box $box, int $qty): void
     {
-        $this->boxesQtyAvailable[$box] = $qty;
+        $this->boxesQtyAvailable[spl_object_id($box)] = $qty;
     }
 
     /**
@@ -201,7 +199,7 @@ class Packer implements LoggerAwareInterface
             $this->items->removePackedItems($bestBox->getItems());
 
             $packedBoxes->insert($bestBox);
-            $this->boxesQtyAvailable[$bestBox->getBox()] = $this->boxesQtyAvailable[$bestBox->getBox()] - 1;
+            --$this->boxesQtyAvailable[spl_object_id($bestBox->getBox())];
         }
 
         return $packedBoxes;
@@ -224,7 +222,7 @@ class Packer implements LoggerAwareInterface
         $preferredBoxes = [];
         $otherBoxes = [];
         foreach ($this->boxes as $box) {
-            if ($this->boxesQtyAvailable[$box] > 0) {
+            if ($this->boxesQtyAvailable[spl_object_id($box)] > 0) {
                 if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
                     $preferredBoxes[] = $box;
                 } elseif (!$enforceSingleBox) {
