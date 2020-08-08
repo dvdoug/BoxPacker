@@ -51,7 +51,7 @@ class Packer implements LoggerAwareInterface
     /**
      * Quantities available of each box type.
      *
-     * @var SplObjectStorage
+     * @var SplObjectStorage<Box, int>
      */
     protected $boxesQtyAvailable;
 
@@ -80,7 +80,7 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Set a list of items all at once.
-     * @param iterable|Item[] $items
+     * @param iterable<Item>|ItemList $items
      */
     public function setItems(iterable $items): void
     {

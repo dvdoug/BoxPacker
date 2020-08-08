@@ -44,14 +44,14 @@ class ItemList implements Countable, IteratorAggregate
     /**
      * Does this list contain constrained items?
      *
-     * @var bool
+     * @var ?bool
      */
     private $hasConstrainedItems;
 
     /**
      * Does this list contain items which cannot be rotated?
      *
-     * @var bool
+     * @var ?bool
      */
     private $hasNoRotationItems;
 

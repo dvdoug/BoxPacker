@@ -39,7 +39,7 @@ class WeightRedistributor implements LoggerAwareInterface
     /**
      * Quantities available of each box type.
      *
-     * @var SplObjectStorage|int[]
+     * @var SplObjectStorage<Box, int>
      */
     private $boxesQtyAvailable;
 
