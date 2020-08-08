@@ -8,8 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Figure out best choice of orientations for an item and a given context.
@@ -17,9 +16,14 @@ use Psr\Log\LoggerAwareTrait;
  * @author Doug Wright
  * @internal
  */
-class OrientatedItemSorter implements LoggerAwareInterface
+class OrientatedItemSorter
 {
-    use LoggerAwareTrait;
+    /**
+     * The logger instance.
+     *
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var int[]
@@ -81,7 +85,7 @@ class OrientatedItemSorter implements LoggerAwareInterface
      */
     private $prevPackedItemList;
 
-    public function __construct(OrientatedItemFactory $factory, bool $singlePassMode, int $widthLeft, int $lengthLeft, int $depthLeft, ItemList $nextItems, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList)
+    public function __construct(OrientatedItemFactory $factory, bool $singlePassMode, int $widthLeft, int $lengthLeft, int $depthLeft, ItemList $nextItems, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList, LoggerInterface $logger)
     {
         $this->orientatedItemFactory = $factory;
         $this->singlePassMode = $singlePassMode;
@@ -94,6 +98,7 @@ class OrientatedItemSorter implements LoggerAwareInterface
         $this->y = $y;
         $this->z = $z;
         $this->prevPackedItemList = $prevPackedItemList;
+        $this->logger = $logger;
     }
 
     public function __invoke(OrientatedItem $a, OrientatedItem $b): int
