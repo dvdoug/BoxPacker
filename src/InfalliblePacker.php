@@ -52,7 +52,7 @@ class InfalliblePacker extends Packer
             } catch (ItemTooLargeException $e) {
                 $this->unpackedItems->insert($e->getItem());
                 $itemList->remove($e->getItem());
-                $this->setItems($itemList);
+                $this->items = clone $itemList;
             }
         }
     }
