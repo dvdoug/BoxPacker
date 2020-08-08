@@ -37,7 +37,7 @@ class PackedBox
      *
      * @var int
      */
-    protected $itemWeight;
+    protected $itemWeight = 0;
 
     /**
      * Volume used for items as % of box.
@@ -79,16 +79,6 @@ class PackedBox
      */
     public function getItemWeight(): int
     {
-        if ($this->itemWeight !== null) {
-            return $this->itemWeight;
-        }
-
-        $this->itemWeight = 0;
-        /** @var PackedItem $item */
-        foreach ($this->items as $item) {
-            $this->itemWeight += $item->getItem()->getWeight();
-        }
-
         return $this->itemWeight;
     }
 
@@ -213,6 +203,9 @@ class PackedBox
         $this->box = $box;
         $this->items = $packedItemList;
 
+        foreach ($this->items as $item) {
+            $this->itemWeight += $item->getItem()->getWeight();
+        }
         $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
     }
 }
