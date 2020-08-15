@@ -23,4 +23,4 @@ default:
       report:
         format: clover
         options:
-          target: build/behat.clover
+          target: build/coverage-behat/clover.xml
