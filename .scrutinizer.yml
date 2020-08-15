@@ -4,7 +4,7 @@ checks:
 tools:
   external_code_coverage:
     runs: 2    # Scrutinizer will wait for this many code coverage submissions
-    timeout: 600    # Timeout in seconds.
+    timeout: 1800    # Timeout in seconds.
 
 filter:
   excluded_paths:
