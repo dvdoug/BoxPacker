@@ -1,6 +1,11 @@
 checks:
   php: true
 
+tools:
+  external_code_coverage:
+    runs: 2    # Scrutinizer will wait for this many code coverage submissions
+    timeout: 600    # Timeout in seconds.
+
 filter:
   excluded_paths:
     - 'features/'
@@ -11,18 +16,13 @@ build:
     # Languages
     php:
       version: "7.4"
+      ini:
+        memory_limit: "-1"
+
+  dependencies:
+    override:
+      - 'composer update --no-interaction --prefer-dist --ignore-platform-reqs'
 
   tests:
     override:
-      -
-        command: 'vendor/bin/phpunit --coverage-clover=build/phpunit.clover --exclude-group efficiency'
-        idle_timeout: 3600
-        coverage:
-            file: 'build/phpunit.clover'
-            format: 'clover'
-      -
-        command: 'vendor/bin/behat'
-        coverage:
-            file: 'build/behat.clover'
-            format: 'clover'
       - php-scrutinizer-run
