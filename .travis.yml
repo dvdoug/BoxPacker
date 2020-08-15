@@ -24,6 +24,9 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.cache/composer
 
+before_install:
+  - composer self-update --preview
+
 install:
   - phpenv config-rm xdebug.ini || true;
   - composer validate --strict;

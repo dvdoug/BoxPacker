@@ -1,0 +1,186 @@
+name: CI
+
+on:
+  push: ~
+  pull_request: ~
+  schedule:
+    - cron: '44 13 * * *'
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "8.0"
+          - "7.4"
+          - "7.3"
+
+        dependencies:
+          - highest
+          - lowest
+
+        include:
+          - php-version: "8.0"
+            dependencies: "force_latest"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: "Setup PHP"
+      uses: "shivammathur/setup-php@v2"
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: "xdebug"
+        tools: composer:v2, cs2pr
+      env:
+        COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify PHP version used
+      run: |
+        php -v && php -m;
+
+    - name: Setup problem matchers for PHP
+      run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+
+    - name: Setup problem matchers for PHPUnit
+      run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+    - name: Validate composer.json
+      run: composer validate
+
+    - name: Get composer cache directory
+      id: composercache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Set up build cache
+      uses: "actions/cache@v2"
+      with:
+        path: |
+          ${{ steps.composercache.outputs.dir }}
+          "build/php-code-coverage-cache"
+        key: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ hashFiles('composer.json') }}"
+        restore-keys: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}"
+
+    - name: Remove PHP-CS-Fixer if not called
+      if: matrix.php-version != '7.4' || matrix.dependencies != 'highest'
+      run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
+
+    - name: Install dependencies (low)
+      if: matrix.dependencies == 'lowest'
+      run: composer update --prefer-lowest --no-interaction --prefer-dist
+
+    - name: Install dependencies (high)
+      if: matrix.dependencies == 'highest'
+      run: composer update --no-interaction --prefer-dist
+
+    - name: Install dependencies (force latest)
+      if: matrix.dependencies == 'force_latest'
+      run: |
+        composer config minimum-stability dev;
+        composer update --no-interaction --prefer-dist --ignore-platform-reqs;
+
+    - name: Check code style
+      if: matrix.php-version == '7.4' && matrix.dependencies == 'highest'
+      run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --diff-format=udiff --allow-risky=yes --format=checkstyle | cs2pr
+
+    - name: PHPUnit (Xdebug)
+      run: |
+        php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
+        if [ "${{ matrix.php-version }}" = "7.4" ]; then
+          wget https://scrutinizer-ci.com/ocular.phar;
+          php ocular.phar code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
+        fi;
+
+    - name: Behat (Xdebug)
+      run: |
+        php -dmemory_limit=-1 vendor/bin/behat --strict;
+        if [ "${{ matrix.php-version }}" = "7.4" ]; then
+          wget https://scrutinizer-ci.com/ocular.phar;
+          php ocular.phar code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
+        fi;
+
+
+  speedrun:
+    name: Speed run
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "8.0"
+          - "7.4"
+          - "7.3"
+
+        dependencies:
+          - highest
+          - lowest
+
+        include:
+          - php-version: "8.0"
+            dependencies: "force_latest"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: "Setup PHP"
+      uses: "shivammathur/setup-php@v2"
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: "none"
+        tools: composer:v2
+      env:
+        COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify PHP version used
+      run: |
+        php -v && php -m;
+
+    - name: Setup problem matchers for PHP
+      run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+
+    - name: Setup problem matchers for PHPUnit
+      run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+    - name: Validate composer.json
+      run: composer validate
+
+    - name: Get composer cache directory
+      id: composercache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Set up build cache
+      uses: "actions/cache@v2"
+      with:
+        path: |
+          ${{ steps.composercache.outputs.dir }}
+          "build/php-code-coverage-cache"
+        key: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ hashFiles('composer.json') }}"
+        restore-keys: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}"
+
+    - name: Remove PHP-CS-Fixer
+      run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
+
+    - name: Install dependencies (low)
+      if: matrix.dependencies == 'lowest'
+      run: composer update --prefer-lowest --no-interaction --prefer-dist
+
+    - name: Install dependencies (high)
+      if: matrix.dependencies == 'highest'
+      run: composer update --no-interaction --prefer-dist
+
+    - name: Install dependencies (force latest)
+      if: matrix.dependencies == 'force_latest'
+      run: |
+        composer config minimum-stability dev;
+        composer update --no-interaction --prefer-dist --ignore-platform-reqs;
+
+    - name: PHPUnit (no coverage)
+      run: vendor/bin/phpunit --no-coverage;
+
+    - name: Behat (no coverage)
+      run: vendor/bin/behat --strict --no-coverage;

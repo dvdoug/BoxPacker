@@ -18,10 +18,10 @@
     },
     "require-dev": {
         "behat/behat": "^3.7",
+        "dvdoug/behat-code-coverage": "^5.1.1",
         "friendsofphp/php-cs-fixer": "^2.16.4",
-        "dvdoug/behat-code-coverage": "^5.0",
         "monolog/monolog": "^2.1",
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^9.3.5"
     },
     "config": {
         "preferred-install": {
