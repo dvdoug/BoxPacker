@@ -22,8 +22,6 @@ jobs:
           - "7.1"
           - "7.0"
           - "5.6"
-          - "5.5"
-          - "5.4"
 
         dependencies:
           - highest
@@ -117,8 +115,6 @@ jobs:
           - "7.1"
           - "7.0"
           - "5.6"
-          - "5.5"
-          - "5.4"
 
         dependencies:
           - highest
