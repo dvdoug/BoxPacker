@@ -84,5 +84,5 @@ it's side or not.
 Removal of deprecated methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The ``packIntoBox``, ``packBox`` and ``redistributeWeight`` methods were removed from the ``Packer`` class. If you were previously
-using these v1 methods, please see their implementations in https://github.com/dvdoug/BoxPacker/blob/1.x-dev/Packer.php for a
+using these v1 methods, please see their implementations in https://github.com/dvdoug/BoxPacker/blob/1.x/src/Packer.php for a
 guide on how to achieve the same results with v2.
