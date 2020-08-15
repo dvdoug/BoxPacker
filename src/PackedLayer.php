@@ -15,6 +15,20 @@ namespace DVDoug\BoxPacker;
 class PackedLayer
 {
     /**
+     * @var int
+     */
+    private $startDepth = PHP_INT_MAX;
+
+    /**
+     * @var int
+     */
+    private $endDepth = 0;
+
+    /**
+     * @var int
+     */
+    private $weight = 0;
+    /**
      * Items packed into this layer.
      *
      * @var PackedItem[]
@@ -29,6 +43,9 @@ class PackedLayer
     public function insert(PackedItem $packedItem)
     {
         $this->items[] = $packedItem;
+        $this->weight += $packedItem->getItem()->getWeight();
+        $this->startDepth = min($this->startDepth, $packedItem->getZ());
+        $this->endDepth = max($this->endDepth, $packedItem->getZ() + $packedItem->getDepth());
     }
 
     /**
@@ -66,13 +83,7 @@ class PackedLayer
      */
     public function getStartDepth()
     {
-        $startDepth = PHP_INT_MAX;
-
-        foreach ($this->items as $item) {
-            $startDepth = min($startDepth, $item->getZ());
-        }
-
-        return $startDepth;
+        return $this->startDepth;
     }
 
     /**
@@ -82,12 +93,16 @@ class PackedLayer
      */
     public function getDepth()
     {
-        $layerDepth = 0;
+        return $this->endDepth - $this->getStartDepth();
+    }
 
-        foreach ($this->items as $item) {
-            $layerDepth = max($layerDepth, $item->getZ() + $item->getDepth());
-        }
-
-        return $layerDepth - $this->getStartDepth();
+    /**
+     * Calculate weight of this layer.
+     *
+     * @return int weight in grams
+     */
+    public function getWeight()
+    {
+        return $this->weight;
     }
 }

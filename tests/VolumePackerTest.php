@@ -8,8 +8,8 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
-use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\ConstrainedTestItem;
+use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
@@ -34,30 +34,6 @@ class VolumePackerTest extends TestCase
         self::assertEquals(60, $packedBox->getUsedWidth());
         self::assertEquals(14, $packedBox->getUsedLength());
         self::assertEquals(2, $packedBox->getUsedDepth());
-    }
-
-    /**
-     * From issue #86.
-     */
-    public function testUsedWidthAndRemainingWidthHandleRotationsCorrectly()
-    {
-        $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 23, 27, 14, 0, 23, 27, 14, 30));
-        $packer->addItem(new TestItem('Item 1', 11, 22, 2, 1), 3);
-        $packer->addItem(new TestItem('Item 2', 11, 22, 2, 1), 4);
-        $packer->addItem(new TestItem('Item 3', 6, 17, 2, 1), 3);
-        $packedBoxes = $packer->pack();
-
-        self::assertCount(1, $packedBoxes);
-
-        /** @var PackedBox $packedBox */
-        $packedBox = $packedBoxes->top();
-        self::assertEquals(22, $packedBox->getUsedWidth());
-        self::assertEquals(23, $packedBox->getUsedLength());
-        self::assertEquals(10, $packedBox->getUsedDepth());
-        self::assertEquals(1, $packedBox->getRemainingWidth());
-        self::assertEquals(4, $packedBox->getRemainingLength());
-        self::assertEquals(4, $packedBox->getRemainingDepth());
     }
 
     /**
@@ -329,36 +305,43 @@ class VolumePackerTest extends TestCase
     /**
      * From issue #172.
      */
-    public function testIssue172A()
-    {
-        $box = new TestBox('Box', 800, 1200, 1300, 0, 800, 1200, 1300, 500000);
-        $items = array_fill(0, 8928, new TestItem('Larger', 150, 110, 5, 56));
-
-        $volumePacker = new VolumePacker($box, ItemList::fromArray($items));
-        $packedBox = $volumePacker->pack();
-
-        self::assertCount(8928, $packedBox->getItems());
-    }
-
-    /**
-     * From issue #172.
-     */
     public function testIssue172B()
     {
         $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
 
         $items = new ItemList();
+        $item = new TestItem('Larger', 10, 5, 8, 0);
         for ($i = 0; $i < 10; ++$i) {
-            $items->insert(new TestItem('Larger', 10, 5, 8, 0));
+            $items->insert($item);
         }
 
         for ($i = 0; $i < 5; ++$i) {
-            $items->insert(new TestItem('Smaller', 5, 5, 3, 0));
+            $item = new TestItem('Smaller', 5, 5, 3, 0);
+            $items->insert($item);
         }
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
 
         self::assertCount(15, $packedBox->getItems());
+    }
+
+    /**
+     * From issue #186.
+     */
+    public function testPassedInItemListKeepsItems()
+    {
+        $box = new TestBox('Box', 18, 18, 24, 0, 18, 18, 24, 10000);
+
+        $items = new ItemList();
+        $item = new TestItem('Item', 10, 5, 8, 0);
+        for ($i = 0; $i < 10; ++$i) {
+            $items->insert($item);
+        }
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(10, $items);
     }
 }

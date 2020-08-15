@@ -7,9 +7,9 @@
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
+use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\PackedItemList;
-use DVDoug\BoxPacker\ConstrainedPlacementItem;
 
 class ConstrainedPlacementNoStackingTestItem extends TestItem implements ConstrainedPlacementItem
 {

@@ -4,7 +4,6 @@
  *
  * @author Doug Wright
  */
-
 namespace DVDoug\BoxPacker;
 
 /**
@@ -14,6 +13,13 @@ namespace DVDoug\BoxPacker;
  */
 class ItemList extends \SplMaxHeap
 {
+    /**
+     * Does this list contain constrained items?
+     *
+     * @var bool
+     */
+    private $hasConstrainedItems;
+
     /**
      * Compare elements in order to place them correctly in the heap while sifting up.
      *
@@ -96,18 +102,69 @@ class ItemList extends \SplMaxHeap
     public function remove(Item $item)
     {
         $workingSet = [];
-        while (!$this->isEmpty()) {
-            $workingSet[] = $this->extract();
-        }
 
-        $removed = false; // there can be multiple identical items, ensure that only 1 is removed
-        foreach ($workingSet as $workingSetItem) {
-            if (!$removed && $workingSetItem === $item) {
-                $removed = true;
+        foreach ($this as $that) {
+            if ($that === $item) {
+                $this->extract();
+                break;
             } else {
-                $this->insert($workingSetItem);
+                $workingSet[] = $that;
             }
         }
 
+        foreach ($workingSet as $workingSetItem) {
+            $this->insert($workingSetItem);
+        }
+    }
+
+    /**
+     * @param PackedItemList $packedItemList
+     */
+    public function removePackedItems(PackedItemList $packedItemList)
+    {
+        /** @var PackedItem $packedItem */
+        foreach (clone $packedItemList as $packedItem) {
+            $workingSet = [];
+
+            foreach ($this as $that) {
+                if ($that === $packedItem->getItem()) {
+                    $this->extract();
+                    break;
+                } else {
+                    $workingSet[] = $that;
+                }
+            }
+
+            foreach ($workingSet as $workingSetItem) {
+                $this->insert($workingSetItem);
+            }
+        }
+    }
+
+    /**
+     * @param Item $item
+     */
+    public function insert($item)
+    {
+        $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
+        parent::insert($item);
+    }
+
+    /**
+     * Does this list contain items with constrained placement criteria.
+     */
+    public function hasConstrainedItems()
+    {
+        if (!isset($this->hasConstrainedItems)) {
+            $this->hasConstrainedItems = false;
+            foreach (clone $this as $item) {
+                if ($item instanceof ConstrainedPlacementItem) {
+                    $this->hasConstrainedItems = true;
+                    break;
+                }
+            }
+        }
+
+        return $this->hasConstrainedItems;
     }
 }

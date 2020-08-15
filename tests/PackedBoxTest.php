@@ -22,7 +22,7 @@ class PackedBoxTest extends TestCase
     public function testGetters()
     {
         $box = new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000);
-        $item = new OrientatedItem(new TestItem('Item', 230, 330, 6, 320, true), 230, 330, 6);
+        $item = new OrientatedItem(new TestItem('Item', 230, 330, 6, 320), 230, 330, 6);
 
         $packedItemList = new PackedItemList();
         $packedItemList->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
@@ -46,7 +46,7 @@ class PackedBoxTest extends TestCase
     public function testVolumeUtilisation()
     {
         $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
-        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, true), 4, 10, 10);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10), 4, 10, 10);
 
         $boxItems = new PackedItemList();
         $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
@@ -64,7 +64,7 @@ class PackedBoxTest extends TestCase
     public function testWeightCalcCaching()
     {
         $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
-        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, true), 4, 10, 10);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10), 4, 10, 10);
 
         $boxItems = new PackedItemList();
         $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));

@@ -59,7 +59,7 @@ class WorkingVolume implements Box, JsonSerializable
      */
     public function getReference()
     {
-        return 'Working Volume';
+        return "Working Volume {$this->width}x{$this->length}x{$this->depth}";
     }
 
     /**

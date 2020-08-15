@@ -21,8 +21,8 @@ class PackedBoxListTest extends TestCase
     public function testInsertAndCount()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -48,8 +48,8 @@ class PackedBoxListTest extends TestCase
     public function testInsertFromArrayAndCount()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -74,8 +74,8 @@ class PackedBoxListTest extends TestCase
     public function testTop()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -92,7 +92,7 @@ class PackedBoxListTest extends TestCase
         $packedBoxList->insert($packedBoxA);
         $packedBoxList->insert($packedBoxB);
 
-        self::assertInstanceOf('DVDoug\BoxPacker\PackedBox', $packedBoxList->top());
+        self::assertEquals($packedBoxA, $packedBoxList->top());
     }
 
     /**
@@ -101,7 +101,7 @@ class PackedBoxListTest extends TestCase
     public function testVolumeUtilisation()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 10);
-        $item = new TestItem('Item', 5, 10, 10, 10);
+        $item = new TestItem('Item', 5, 10, 10, 10, true);
 
         $packedItem = new PackedItem($item, 0, 0, 0, 5, 10, 10);
 
@@ -122,8 +122,8 @@ class PackedBoxListTest extends TestCase
     public function testWeightVariance()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
@@ -149,8 +149,8 @@ class PackedBoxListTest extends TestCase
     public function testMeanWeight()
     {
         $box = new TestBox('Box', 10, 10, 10, 0, 10, 10, 10, 100);
-        $itemA = new TestItem('Item A', 5, 10, 10, 10);
-        $itemB = new TestItem('Item B', 5, 10, 10, 20);
+        $itemA = new TestItem('Item A', 5, 10, 10, 10, true);
+        $itemB = new TestItem('Item B', 5, 10, 10, 20, true);
 
         $packedItemA = new PackedItem($itemA, 0, 0, 0, 5, 10, 10);
         $packedItemB = new PackedItem($itemB, 0, 0, 0, 5, 10, 10);
