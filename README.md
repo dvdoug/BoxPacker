@@ -9,17 +9,11 @@ even just want to know the right number of labels to print.
 
 See [documentation](https://boxpacker.io/) for more details.
 
-[![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master)](https://travis-ci.org/dvdoug/BoxPacker)
+[![Build Status](https://github.com/dvdoug/BoxPacker/workflows/CI/badge.svg?branch=master)](https://github.com/dvdoug/BoxPacker/actions?query=workflow%3ACI+branch%3Amaster)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=master)
 [![Download count](https://img.shields.io/packagist/dt/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
 [![Current version](https://img.shields.io/packagist/v/dvdoug/boxpacker.svg)](https://packagist.org/packages/dvdoug/boxpacker)
 [![Documentation](https://readthedocs.org/projects/boxpacker/badge/?version=latest)](https://www.boxpacker.io/en/latest/)
-
-Requirements
-------------
-
-* PHP version 7.1 or higher (from version 3)
-* PHP version 5.4 or higher (version 2 - still maintained)
 
 License
 -------
