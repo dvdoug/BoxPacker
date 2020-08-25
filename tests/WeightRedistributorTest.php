@@ -37,6 +37,7 @@ class WeightRedistributorTest extends TestCase
 
     /**
      * From issue #166.
+     * @group efficiency
      */
     public function testIssue166(): void
     {
