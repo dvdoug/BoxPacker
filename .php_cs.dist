@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Box packing (3D bin packing, knapsack problem).
+ *
+ * @author Doug Wright
+ */
 declare(strict_types=1);
 
 return PhpCsFixer\Config::create()
@@ -17,6 +21,12 @@ return PhpCsFixer\Config::create()
         'yoda_style' => false,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
         'no_superfluous_phpdoc_tags' => ['allow_mixed' => false],
+        'header_comment' => [
+            'location' => 'after_open',
+            'comment_type' => 'PHPDoc',
+            'separate' => 'none',
+            'header' => "Box packing (3D bin packing, knapsack problem).\n\n@author Doug Wright",
+        ],
     ])
     ->setRiskyAllowed(true)
     ->setFinder(

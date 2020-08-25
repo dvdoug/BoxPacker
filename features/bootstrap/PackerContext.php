@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Box packing (3D bin packing, knapsack problem).
+ *
+ * @author Doug Wright
+ */
 declare(strict_types=1);
 
 use Behat\Behat\Context\Context;
