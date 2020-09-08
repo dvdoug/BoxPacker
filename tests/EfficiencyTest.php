@@ -25,7 +25,6 @@ class EfficiencyTest extends TestCase
      * @group efficiency
      */
     public function testCanPackRepresentativeLargerSamples(
-        string $test,
         array $boxes,
         array $items,
         int $expectedBoxes2D,
@@ -137,7 +136,6 @@ class EfficiencyTest extends TestCase
                 ];
             } else {
                 $tests[$data[0]] = [
-                    'test' => $data[0],
                     'boxes' => $boxes,
                     'items' => [
                         [
