@@ -428,7 +428,7 @@ class VolumePackerTest extends TestCase
      */
     public function testIssue175(): void
     {
-        $this->markTestSkipped(); //mark skipped until fixed
+        self::markTestSkipped(); //mark skipped until fixed
         $box = new TestBox('Box', 40, 40, 40, 0, 40, 40, 40, 1000);
         $items = new ItemList();
         $item = new TestItem('Item', 35, 35, 5, 20, TestItem::ROTATION_BEST_FIT);
