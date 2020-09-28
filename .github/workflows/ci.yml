@@ -101,7 +101,7 @@ jobs:
 
     - name: Behat (Xdebug)
       run: |
-        php -dmemory_limit=-1 vendor/bin/behat --strict;
+        php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
         if [ "${{ matrix.php-version }}" = "7.4" ]; then
           wget https://scrutinizer-ci.com/ocular.phar;
           php ocular.phar code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
