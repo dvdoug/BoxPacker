@@ -22,7 +22,7 @@
         "friendsofphp/php-cs-fixer": "^2.16.4",
         "monolog/monolog": "^2.1",
         "phpunit/phpunit": "^9.3.11",
-        "vimeo/psalm": "^3.12"
+        "vimeo/psalm": "^3.16"
     },
     "config": {
         "preferred-install": {
