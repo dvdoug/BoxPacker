@@ -12,15 +12,15 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^5.6||^7.0||^8.0",
+        "php": "^7.1||^8.0",
         "ext-json": "*",
         "psr/log": "^1.0"
     },
     "require-dev": {
         "behat/behat": "^3.5",
-        "dvdoug/behat-code-coverage": "^3.0||^4.0",
+        "dvdoug/behat-code-coverage": "^5.0",
         "monolog/monolog": "^1.25||^2.0",
-        "phpunit/phpunit": "^5.7.27||^6.5.14||^7.5.20||^8.5.8||^9.0"
+        "phpunit/phpunit": "^7.5.20||^8.5.8||^9.3.11"
     },
     "config": {
         "preferred-install": {
