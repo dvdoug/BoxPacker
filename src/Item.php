@@ -15,10 +15,13 @@ namespace DVDoug\BoxPacker;
  */
 interface Item
 {
+    /** @var int must be placed in it's defined orientation only */
     public const ROTATION_NEVER = 1;
 
+    /** @var int can be turned sideways 90°, but cannot be placed *on* it's side e.g. fragile "↑this way up" items */
     public const ROTATION_KEEP_FLAT = 2;
 
+    /** @var int no handling restrictions, item can be placed in any orientation */
     public const ROTATION_BEST_FIT = 6;
 
     /**
