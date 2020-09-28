@@ -14,6 +14,10 @@
 
 ## [3.x - Unreleased] - 2020-xx-xx
 
+## [3.6.2] - 2020-09-28
+### Added
+ - Support for PHP 8.0
+
 ## [3.6.1] - 2020-06-11
 ### Fixed
  - Fixed situation where internal `WorkingVolume` could be passed into a constraint callback, rather than the calling application's own `Box`
@@ -122,6 +126,15 @@
  - Minimum PHP version is now 7.1
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
+
+## [2.7.2] - 2020-09-28
+### Added
+ - Support for PHP 8.0
+
+### Removed
+ - Making the test suite compatible with PHP 8.0 has necessitated the removal of support for PHP 5.4 - 7.0 (see note below)
+
+v2 of BoxPacker is in maintenance mode only, all users are encouraged to update to v3. This release has been made primarily to certify PHP 8 compatibility, unless an egregious bug is discovered (e.g. a physically impossible packing) this will probably be the last v2 release that includes any changes to core packing logic. (Any) further releases are intended to be limited to compatibility with future PHP versions.
 
 ## [2.7.1] - 2020-06-11
 ### Fixed
@@ -268,6 +281,25 @@ There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 re
  - Various refactorings to split out large functions into more readable pieces
 ### Removed
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
+
+## [1.7.3] - 2020-09-28
+### Added
+  - Support for PHP 8.0
+
+### Changed
+ - Optimisation when packing a large number of items
+ - Improved efficiency in packing and weight distribution
+ - The ItemList passed to VolumePacker's constructor is now cloned before usage, leaving the passed-in object unaffected. Previously this was used as a working dataset. The new behaviour aligns with the existing behaviour of Packer
+
+### Fixed
+ - Fixed issue where internal sort consistency wasn't always correct
+ - Fixed situation where internal WorkingVolume could be passed into a constraint callback, rather than the calling application's own Box
+ - Fixed issue where the list of previously packed items passed into a constraint callback was not correct
+
+### Removed
+ - Making the test suite compatible with PHP 8.0 has necessitated the removal of support for PHP 5.4 - 7.0 (see note below)
+
+v1 of BoxPacker is in maintenance mode only, all users are encouraged to update to v3. This release has been made primarily to certify PHP 8 compatibility, unless an egregious bug is discovered (e.g. a physically impossible packing) this will be the last v1 release that includes any changes to core packing logic. (Any) further releases will be limited to compatibility with future PHP versions.
 
 ## [1.7.2] - 2019-12-21
 ### Changed
@@ -421,9 +453,10 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...master
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...3.x-dev
+[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.2...master
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.2...3.x
 
+[3.6.2]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...3.6.2
 [3.6.1]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...3.6.1
 [3.6.0]: https://github.com/dvdoug/BoxPacker/compare/3.5.2...3.6.0
 [3.5.2]: https://github.com/dvdoug/BoxPacker/compare/3.5.1...3.5.2
@@ -441,6 +474,7 @@ Initial release
 [3.1.0]: https://github.com/dvdoug/BoxPacker/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/dvdoug/BoxPacker/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/dvdoug/BoxPacker/compare/2.4.2...3.0.0
+[2.7.2]: https://github.com/dvdoug/BoxPacker/compare/2.7.1...2.7.2
 [2.7.1]: https://github.com/dvdoug/BoxPacker/compare/2.7.0...2.7.1
 [2.7.0]: https://github.com/dvdoug/BoxPacker/compare/2.6.5...2.7.0
 [2.6.5]: https://github.com/dvdoug/BoxPacker/compare/2.6.4...2.6.5
@@ -468,6 +502,7 @@ Initial release
 [2.0.2]: https://github.com/dvdoug/BoxPacker/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/dvdoug/BoxPacker/compare/2.0...2.0.1
 [2.0]: https://github.com/dvdoug/BoxPacker/compare/1.5.3...2.0
+[1.7.3]: https://github.com/dvdoug/BoxPacker/compare/1.7.2...1.7.3
 [1.7.2]: https://github.com/dvdoug/BoxPacker/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/dvdoug/BoxPacker/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/dvdoug/BoxPacker/compare/1.6.9...1.7.0
