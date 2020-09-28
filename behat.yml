@@ -6,21 +6,16 @@ default:
       contexts: [ PackerContext ]
 
   extensions:
-    LeanPHP\Behat\CodeCoverage\Extension:
-      auth: ~
-      drivers:
-        - local
+    DVDoug\Behat\CodeCoverage\Extension:
       filter:
-        forceCoversAnnotation:                false
-        mapTestClassNameToCoveredClassName:   false
-        whitelist:
-          addUncoveredFilesFromWhitelist:     true
-          processUncoveredFilesFromWhitelist: true
-          include:
-            directories:
-              'src':
-                prefix: ''
-      report:
-        format: clover
-        options:
+        include:
+          directories:
+            'src': ~
+      reports:
+        clover:
           target: build/coverage-behat/clover.xml
+        html:
+          target: build/coverage-behat
+        text:
+          showColors: true
+          showUncoveredFiles: true
