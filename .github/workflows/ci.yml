@@ -35,7 +35,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-version }}
         coverage: "xdebug"
-        tools: composer:v2, cs2pr
+        tools: cs2pr
       env:
         COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -21,7 +21,7 @@ build:
 
   dependencies:
     override:
-      - 'composer update --no-interaction --prefer-dist --ignore-platform-reqs'
+      - 'composer update --no-interaction --prefer-dist'
 
   tests:
     override:

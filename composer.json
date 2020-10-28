@@ -18,11 +18,11 @@
     },
     "require-dev": {
         "behat/behat": "^3.7",
-        "dvdoug/behat-code-coverage": "^5.1.1",
-        "friendsofphp/php-cs-fixer": "^2.16.4",
+        "dvdoug/behat-code-coverage": "^5.2",
+        "friendsofphp/php-cs-fixer": "^2.16.7",
         "monolog/monolog": "^2.1",
-        "phpunit/phpunit": "^9.3.11",
-        "vimeo/psalm": "^3.16"
+        "phpunit/phpunit": "^9.4",
+        "vimeo/psalm": "^4.0"
     },
     "config": {
         "preferred-install": {

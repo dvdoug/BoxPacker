@@ -17,6 +17,7 @@
     <issueHandlers>
 
         <MissingConstructor errorLevel="suppress"/>
+        <UnsafeInstantiation errorLevel="suppress"/>
 
         <InvalidReturnType>
             <errorLevel type="suppress">
