@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 /**
  * @covers \DVDoug\BoxPacker\PackedBox
@@ -74,7 +75,7 @@ class PackedBoxTest extends TestCase
         self::assertEquals(10, $packedBox->getItemWeight());
 
         //inspect cache, then poke at the value and see if it's returned correctly
-        $cachedValue = new \ReflectionProperty($packedBox, 'itemWeight');
+        $cachedValue = new ReflectionProperty($packedBox, 'itemWeight');
         $cachedValue->setAccessible(true);
         $cachedValue->getValue($packedBox);
         self::assertEquals(10, $cachedValue->getValue($packedBox));

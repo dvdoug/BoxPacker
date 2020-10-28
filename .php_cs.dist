@@ -17,6 +17,7 @@ return PhpCsFixer\Config::create()
         'concat_space' => ['spacing' => 'one'],
         'fopen_flags' => ['b_mode' => true],
         'native_function_invocation' => false,
+        'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
         'phpdoc_separation' => false,
         'yoda_style' => false,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
