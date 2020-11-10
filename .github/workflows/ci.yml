@@ -136,7 +136,6 @@ jobs:
       with:
         php-version: ${{ matrix.php-version }}
         coverage: "none"
-        tools: composer:v2
         ini-values: opcache.enable=1, opcache.enable_cli=1, opcache.jit=tracing, opcache.jit_buffer_size=128M
       env:
         COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
