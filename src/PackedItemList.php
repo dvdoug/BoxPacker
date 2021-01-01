@@ -77,6 +77,20 @@ class PackedItemList implements Countable, IteratorAggregate
         }, $this->list);
     }
 
+    /**
+     * Get total volume of these items.
+     */
+    public function getVolume(): int
+    {
+        $volume = 0;
+
+        foreach ($this->list as $item) {
+            $volume += $item->getVolume();
+        }
+
+        return $volume;
+    }
+
     private function compare(PackedItem $itemA, PackedItem $itemB): int
     {
         $itemAVolume = $itemA->getItem()->getWidth() * $itemA->getItem()->getLength() * $itemA->getItem()->getDepth();

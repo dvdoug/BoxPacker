@@ -179,14 +179,7 @@ class PackedBox
      */
     public function getUsedVolume(): int
     {
-        $volume = 0;
-
-        /** @var PackedItem $item */
-        foreach ($this->items as $item) {
-            $volume += $item->getVolume();
-        }
-
-        return $volume;
+        return $this->items->getVolume();
     }
 
     /**
