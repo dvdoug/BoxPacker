@@ -12,7 +12,11 @@
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface
 
-## [3.x - Unreleased] - 2020-xx-xx
+## [3.x - Unreleased] - 2021-xx-xx
+
+## [3.7.0] - 2021-01-01
+### Added
+- Added `getVolume` helper method to `PackedItemList`
 
 ## [3.6.2] - 2020-09-28
 ### Added
@@ -453,9 +457,10 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.2...master
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.6.2...3.x
+[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.7.0...3.x
+[3.7.0]: https://github.com/dvdoug/BoxPacker/compare/3.6.2...3.7.0
 [3.6.2]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...3.6.2
 [3.6.1]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...3.6.1
 [3.6.0]: https://github.com/dvdoug/BoxPacker/compare/3.5.2...3.6.0

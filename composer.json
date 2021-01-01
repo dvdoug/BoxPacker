@@ -17,10 +17,10 @@
         "psr/log": "^1.1"
     },
     "require-dev": {
-        "behat/behat": "^3.7",
+        "behat/behat": "^3.8.1",
         "dvdoug/behat-code-coverage": "^5.2",
-        "friendsofphp/php-cs-fixer": "^2.17.0",
-        "monolog/monolog": "^2.1",
+        "friendsofphp/php-cs-fixer": "^2.17.3",
+        "monolog/monolog": "^2.2",
         "phpunit/phpunit": "^9.5",
         "vimeo/psalm": "^4.3"
     },
