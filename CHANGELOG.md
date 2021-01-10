@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.x - Unreleased] - 2020-xx-xx
+## [4.x - Unreleased] - 2021-xx-xx
 ### Added
  - Added new constants `Item::ROTATION_NEVER`, `Item::ROTATION_KEEP_FLAT` and `Item::ROTATION_BEST_FIT`
  - Added new `getAllowedRotations()` method to the `Item` interface to replace `getKeepFlat()`. This should return
@@ -8,6 +8,10 @@
 ### Changed
  - Minimum PHP version is now 7.3
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
+ - The signature of the `canBePacked` method on the `ConstrainedPlacementItem` interface has been changed to replace the
+   first two arguments(`Box $box`, `PackedItemList $alreadyPackedItems`) with `PackedBox $packedBox`. This allows
+   callbacks to make use of the helper methods provided on `PackedBox`. Access to the box and items can be done via
+   `->getBox()` and `->getItems()`
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface
@@ -16,7 +20,7 @@
 
 ## [3.7.0] - 2021-01-01
 ### Added
-- Added `getVolume` helper method to `PackedItemList`
+- Added `getVolume()` helper method to `PackedItemList`
 
 ## [3.6.2] - 2020-09-28
 ### Added

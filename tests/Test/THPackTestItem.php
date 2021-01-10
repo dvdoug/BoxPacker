@@ -10,7 +10,7 @@ namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedPlacementItem;
-use DVDoug\BoxPacker\PackedItemList;
+use DVDoug\BoxPacker\PackedBox;
 
 class THPackTestItem implements ConstrainedPlacementItem
 {
@@ -109,8 +109,7 @@ class THPackTestItem implements ConstrainedPlacementItem
      * Hook for user implementation of item-specific constraints, e.g. max <x> batteries per box.
      */
     public function canBePacked(
-        Box $box,
-        PackedItemList $alreadyPackedItems,
+        PackedBox $packedBox,
         int $proposedX,
         int $proposedY,
         int $proposedZ,

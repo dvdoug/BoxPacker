@@ -79,9 +79,7 @@ Example - only allow 2 batteries per box
 .. code-block:: php
 
     <?php
-        use DVDoug\BoxPacker\Box;
-        use DVDoug\BoxPacker\Item;
-        use DVDoug\BoxPacker\PackedItemList;
+        use DVDoug\BoxPacker\PackedBox;
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
@@ -89,8 +87,7 @@ Example - only allow 2 batteries per box
             /**
              * Max 2 batteries per box.
              *
-             * @param  Box            $box
-             * @param  PackedItemList $alreadyPackedItems
+             * @param  PackedBox      $packedBox
              * @param  int            $proposedX
              * @param  int            $proposedY
              * @param  int            $proposedZ
@@ -100,8 +97,7 @@ Example - only allow 2 batteries per box
              * @return bool
              */
             public function canBePacked(
-                Box $box,
-                PackedItemList $alreadyPackedItems,
+                PackedBox $packedBox,
                 int $proposedX,
                 int $proposedY,
                 int $proposedZ,
@@ -110,7 +106,7 @@ Example - only allow 2 batteries per box
                 int $depth
             ) {
                 $batteriesPacked = 0;
-                foreach ($alreadyPackedItems as $packedItem) {
+                foreach ($packedBox->getItems() as $packedItem) {
                   if ($packedItem->getItem() instanceof LithiumBattery) {
                       $batteriesPacked++;
                   }
@@ -130,9 +126,8 @@ Example - don't allow batteries to be stacked
 .. code-block:: php
 
     <?php
-        use DVDoug\BoxPacker\Box;
-        use DVDoug\BoxPacker\Item;
-        use DVDoug\BoxPacker\PackedItemList;
+        use DVDoug\BoxPacker\PackedBox;
+        use DVDoug\BoxPacker\PackedItem;
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
@@ -140,8 +135,7 @@ Example - don't allow batteries to be stacked
             /**
              * Batteries cannot be stacked on top of each other.
              *
-             * @param  Box            $box
-             * @param  PackedItemList $alreadyPackedItems
+             * @param  PackedBox      $packedBox
              * @param  int            $proposedX
              * @param  int            $proposedY
              * @param  int            $proposedZ
@@ -151,8 +145,7 @@ Example - don't allow batteries to be stacked
              * @return bool
              */
             public function canBePacked(
-                Box $box,
-                PackedItemList $alreadyPackedItems,
+                PackedBox $packedBox,
                 int $proposedX,
                 int $proposedY,
                 int $proposedZ,
@@ -161,7 +154,7 @@ Example - don't allow batteries to be stacked
                 int $depth
             ) {
                 $alreadyPackedType = array_filter(
-                    iterator_to_array($alreadyPackedItems, false),
+                    iterator_to_array($packedBox->getItems(), false),
                     function (PackedItem $item) {
                         return $item->getItem()->getDescription() === 'Battery';
                     }
