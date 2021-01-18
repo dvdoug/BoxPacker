@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 use function count;
 use DVDoug\BoxPacker\Exception\ItemTooLargeException;
 use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
+use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;

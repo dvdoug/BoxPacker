@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use const PHP_INT_MAX;
 use Psr\Log\LoggerInterface;
 
 /**

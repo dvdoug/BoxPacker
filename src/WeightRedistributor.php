@@ -12,6 +12,7 @@ use function array_filter;
 use function array_merge;
 use function count;
 use function iterator_to_array;
+use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
