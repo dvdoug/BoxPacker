@@ -9,9 +9,13 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use function array_filter;
+use function array_map;
 use function array_merge;
+use function array_sum;
 use function count;
 use function iterator_to_array;
+use function max;
+use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function array_fill;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedTestItem;

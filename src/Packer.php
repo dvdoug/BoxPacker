@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function array_merge;
 use function count;
+use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;

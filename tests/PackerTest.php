@@ -13,6 +13,7 @@ use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use function iterator_to_array;
+use const PHP_INT_MAX;
 use PHPUnit\Framework\TestCase;
 
 class PackerTest extends TestCase

@@ -15,8 +15,12 @@ use function array_slice;
 use ArrayIterator;
 use function count;
 use Countable;
+use function current;
 use function end;
 use IteratorAggregate;
+use function key;
+use const PHP_VERSION_ID;
+use function prev;
 use Traversable;
 use function usort;
 
@@ -127,7 +131,7 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
 
-        if (\PHP_VERSION_ID < 70300) {
+        if (PHP_VERSION_ID < 70300) {
             return array_slice($this->list, -1, 1)[0];
         }
 

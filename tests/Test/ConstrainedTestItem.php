@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Test;
 
+use function array_filter;
 use function count;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedItem;

@@ -12,6 +12,8 @@ use function count;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use function reset;
+use function usort;
 
 /**
  * Actual packer.

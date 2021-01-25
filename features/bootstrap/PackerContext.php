@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Box packing (3D bin packing, knapsack problem).
+ *
+ * @author Doug Wright
+ */
 declare(strict_types=1);
 
 use Behat\Behat\Context\Context;
@@ -15,7 +19,7 @@ use DVDoug\BoxPacker\Test\TestItem;
 use DVDoug\BoxPacker\VolumePacker;
 use PHPUnit\Framework\Assert;
 
-chdir(__DIR__ . '/../..');
+\chdir(__DIR__ . '/../..');
 
 /**
  * Defines application features from the specific context.

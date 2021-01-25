@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Box packing (3D bin packing, knapsack problem).
+ *
+ * @author Doug Wright
+ */
 declare(strict_types=1);
 
 return $config = (new PhpCsFixer\Config())
@@ -8,14 +12,22 @@ return $config = (new PhpCsFixer\Config())
         '@Symfony:risky' => true,
         '@PHP71Migration' => true,
         '@PHP71Migration:risky' => true,
+        '@PHP73Migration' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'fopen_flags' => ['b_mode' => true],
-        'native_function_invocation' => false,
+        'native_function_invocation' => true,
+        'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
         'phpdoc_separation' => false,
         'yoda_style' => false,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
         'no_superfluous_phpdoc_tags' => ['allow_mixed' => false],
+        'header_comment' => [
+            'location' => 'after_open',
+            'comment_type' => 'PHPDoc',
+            'separate' => 'none',
+            'header' => "Box packing (3D bin packing, knapsack problem).\n\n@author Doug Wright",
+        ],
     ])
     ->setRiskyAllowed(true)
     ->setFinder(

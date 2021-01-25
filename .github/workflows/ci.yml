@@ -71,6 +71,12 @@ jobs:
       if: matrix.php-version != '7.4' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
 
+    - name: Fix min version for PHP8
+      if: matrix.php-version == '8.0'
+      run: |
+        composer require --dev --no-update "dvdoug/behat-code-coverage ^5.2";
+        composer require --dev --no-update "behat/behat ^3.8";
+
     - name: Install dependencies (low)
       if: matrix.dependencies == 'lowest'
       run: composer update --prefer-lowest --no-interaction --prefer-dist
