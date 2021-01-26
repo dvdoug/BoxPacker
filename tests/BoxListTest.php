@@ -37,7 +37,7 @@ class BoxListTest extends TestCase
     }
 
     /**
-     * Test that creating an instance using the fromArray method will sort the boxes by default
+     * Test that creating an instance using the fromArray method will sort the boxes by default.
      */
     public function testFromArray(): void
     {
@@ -52,7 +52,7 @@ class BoxListTest extends TestCase
     }
 
     /**
-     * Test that creating an instance using the fromArray method can skip sorting the boxes
+     * Test that creating an instance using the fromArray method can skip sorting the boxes.
      */
     public function testFromArrayPreSorted(): void
     {

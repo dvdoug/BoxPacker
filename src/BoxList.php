@@ -43,8 +43,8 @@ class BoxList implements IteratorAggregate
      */
     public static function fromArray(array $boxes, bool $preSorted = false): self
     {
-        $list           = new static();
-        $list->list     = $boxes;
+        $list = new static();
+        $list->list = $boxes;
         $list->isSorted = $preSorted;
 
         return $list;
