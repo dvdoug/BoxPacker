@@ -37,6 +37,36 @@ class BoxListTest extends TestCase
     }
 
     /**
+     * Test that creating an instance using the fromArray method will sort the boxes by default
+     */
+    public function testFromArray(): void
+    {
+        $box1 = new TestBox('Small', 21, 21, 3, 1, 20, 20, 2, 100);
+        $box2 = new TestBox('Large', 201, 201, 21, 1, 200, 200, 20, 1000);
+        $box3 = new TestBox('Medium', 101, 101, 11, 5, 100, 100, 10, 500);
+
+        $list = BoxList::fromArray([$box1, $box2, $box3]);
+
+        $sorted = iterator_to_array($list, false);
+        self::assertEquals([$box1, $box3, $box2], $sorted);
+    }
+
+    /**
+     * Test that creating an instance using the fromArray method can skip sorting the boxes
+     */
+    public function testFromArrayPreSorted(): void
+    {
+        $box1 = new TestBox('Small', 21, 21, 3, 1, 20, 20, 2, 100);
+        $box2 = new TestBox('Large', 201, 201, 21, 1, 200, 200, 20, 1000);
+        $box3 = new TestBox('Medium', 101, 101, 11, 5, 100, 100, 10, 500);
+
+        $list = BoxList::fromArray([$box1, $box2, $box3], true);
+
+        $sorted = iterator_to_array($list, false);
+        self::assertEquals([$box1, $box2, $box3], $sorted);
+    }
+
+    /**
      * Test that when there are spatially identical boxes that hold the same contents, prefer the one that weighs least.
      */
     public function testPickLighterBoxAllElseEqual(): void
