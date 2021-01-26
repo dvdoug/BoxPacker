@@ -2,6 +2,10 @@
 
 ## [3.x - Unreleased] - 2021-xx-xx
 
+## [3.8.0] - 2021-01-26
+### Added
+- Added `fromArray` helper method to `BoxList` to make bulk add easier [bram123]
+
 ## [3.7.0] - 2021-01-01
 ### Added
 - Added `getVolume` helper method to `PackedItemList`
@@ -445,8 +449,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.7.0...3.x
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.8.0...3.x
 
+[3.8.0]: https://github.com/dvdoug/BoxPacker/compare/3.7.0...3.8.0
 [3.7.0]: https://github.com/dvdoug/BoxPacker/compare/3.6.2...3.7.0
 [3.6.2]: https://github.com/dvdoug/BoxPacker/compare/3.6.1...3.6.2
 [3.6.1]: https://github.com/dvdoug/BoxPacker/compare/3.6.0...3.6.1
