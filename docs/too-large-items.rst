@@ -15,8 +15,8 @@ Alternatively, you may wish to catch it explicitly and have domain-specific hand
     <?php
         use DVDoug\BoxPacker\ItemTooLargeException;
         use DVDoug\BoxPacker\Packer;
-        use DVDoug\BoxPacker\Test\TestBox;  // use your own object
-        use DVDoug\BoxPacker\Test\TestItem; // use your own object
+        use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
+        use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
 
         try {
             $packer = new Packer();
@@ -44,8 +44,8 @@ handles any ``ItemTooLargeExceptions``. It can be used like this:
 
     <?php
         use DVDoug\BoxPacker\InfalliblePacker;
-        use DVDoug\BoxPacker\Test\TestBox;  // use your own object
-        use DVDoug\BoxPacker\Test\TestItem; // use your own object
+        use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
+        use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
 
         $packer = new InfalliblePacker();
 
