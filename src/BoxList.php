@@ -35,6 +35,21 @@ class BoxList implements IteratorAggregate
     private $isSorted = false;
 
     /**
+     * Do a bulk create.
+     *
+     * @param  Box[]   $items
+     * @return BoxList
+     */
+    public static function fromArray(array $boxes, bool $preSorted = false): self
+    {
+        $list = new static();
+        $list->list = $boxes;
+        $list->isSorted = $preSorted;
+
+        return $list;
+    }
+
+    /**
      * @return Traversable<Box>
      */
     public function getIterator(): Traversable

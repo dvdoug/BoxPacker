@@ -41,8 +41,8 @@ Packing a set of items into a given set of box types
 
     <?php
         use DVDoug\BoxPacker\Packer;
-        use DVDoug\BoxPacker\Test\TestBox;  // use your own object
-        use DVDoug\BoxPacker\Test\TestItem; // use your own object
+        use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
+        use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
 
         $packer = new Packer();
 
