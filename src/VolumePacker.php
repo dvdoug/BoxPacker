@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function array_map;
 use function count;
+use function max;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -152,7 +154,7 @@ class VolumePacker implements LoggerAwareInterface
 
             //do a preliminary layer pack to get the depth used
             $preliminaryItems = clone $items;
-            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0);
+            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, true);
             if (count($preliminaryLayer->getItems()) === 0) {
                 break;
             }
@@ -161,12 +163,26 @@ class VolumePacker implements LoggerAwareInterface
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { //redo with now-known-depth so that we can stack to that height from the first item
-                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth());
+                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth(), true);
             }
         }
 
+        if (!$this->singlePassMode && $layers) {
+            $layers = $this->stabiliseLayers($layers);
+
+            // having packed layers, there may be tall, narrow gaps at the ends that can be utilised
+            $maxLayerWidth = max(array_map(static function (PackedLayer $layer) {
+                return $layer->getEndX();
+            }, $layers));
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $layers, 0, $boxWidth - $maxLayerWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+
+            $maxLayerLength = max(array_map(static function (PackedLayer $layer) {
+                return $layer->getEndY();
+            }, $layers));
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $layers, 0, $boxWidth, $boxLength - $maxLayerLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+        }
+
         $layers = $this->correctLayerRotation($layers, $boxWidth);
-        $layers = $this->stabiliseLayers($layers);
 
         return new PackedBox($this->box, $this->getPackedItemList($layers));
     }
@@ -182,7 +198,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     private function stabiliseLayers(array $oldLayers): array
     {
-        if ($this->singlePassMode || $this->hasConstrainedItems) { // constraints include position, so cannot change
+        if ($this->hasConstrainedItems) { // constraints include position, so cannot change
             return $oldLayers;
         }
 

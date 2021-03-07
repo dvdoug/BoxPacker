@@ -65,7 +65,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         int $x,
         int $y,
         int $z,
-        PackedItemList $prevPackedItemList
+        PackedItemList $prevPackedItemList,
+        bool $considerStability
     ): ?OrientatedItem {
         $this->logger->debug(
             "evaluating item {$item->getDescription()} for fit",
@@ -80,7 +81,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         );
 
         $possibleOrientations = $this->getPossibleOrientations($item, $prevItem, $widthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-        $usableOrientations = $this->getUsableOrientations($item, $possibleOrientations);
+        $usableOrientations = $considerStability ? $this->getUsableOrientations($item, $possibleOrientations) : $possibleOrientations;
 
         if (empty($usableOrientations)) {
             return null;

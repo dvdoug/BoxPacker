@@ -32,7 +32,7 @@ class LayerStabiliser
         // then for each item in the layer, re-calculate each item's z position
         $currentZ = 0;
         foreach ($packedLayers as $oldZLayer) {
-            $oldZStart = $oldZLayer->getStartDepth();
+            $oldZStart = $oldZLayer->getStartZ();
             $newZLayer = new PackedLayer();
             foreach ($oldZLayer->getItems() as $oldZItem) {
                 $newZ = $oldZItem->getZ() - $oldZStart + $currentZ;

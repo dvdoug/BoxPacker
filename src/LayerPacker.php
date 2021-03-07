@@ -80,7 +80,7 @@ class LayerPacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth): PackedLayer
+    public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth, bool $considerStability): PackedLayer
     {
         $layer = new PackedLayer();
         $prevItem = null;
@@ -96,7 +96,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -108,7 +108,7 @@ class LayerPacker implements LoggerAwareInterface
 
                 //Figure out if we can stack the next item vertically on top of this rather than side by side
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $this->packVerticallyInsideItemFootprint($layer, $packedItem, $packedItemList, $items, $remainingWeightAllowed, $guidelineLayerDepth, $rowLength, $x, $y, $z);
+                $this->packVerticallyInsideItemFootprint($layer, $packedItem, $packedItemList, $items, $remainingWeightAllowed, $guidelineLayerDepth, $rowLength, $x, $y, $z, $considerStability);
                 $x += $packedItem->getWidth();
 
                 $prevItem = $orientatedItem;
@@ -152,7 +152,7 @@ class LayerPacker implements LoggerAwareInterface
         return $layer;
     }
 
-    private function packVerticallyInsideItemFootprint(PackedLayer $layer, PackedItem $packedItem, PackedItemList $packedItemList, ItemList &$items, int &$remainingWeightAllowed, int $guidelineLayerDepth, int $rowLength, int $x, int $y, int $z): void
+    private function packVerticallyInsideItemFootprint(PackedLayer $layer, PackedItem $packedItem, PackedItemList $packedItemList, ItemList &$items, int &$remainingWeightAllowed, int $guidelineLayerDepth, int $rowLength, int $x, int $y, int $z, bool $considerStability): void
     {
         $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
         $stackedZ = $z + $packedItem->getDepth();
@@ -166,7 +166,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList);
+            $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList, $considerStability);
             if ($stackedItem) {
                 $packedStackedItem = PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ);
                 $layer->insert($packedStackedItem);
