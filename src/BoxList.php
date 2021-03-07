@@ -37,7 +37,6 @@ class BoxList implements IteratorAggregate
     /**
      * Do a bulk create.
      *
-     * @param  Box[]   $items
      * @return BoxList
      */
     public static function fromArray(array $boxes, bool $preSorted = false): self
