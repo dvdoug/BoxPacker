@@ -135,7 +135,7 @@ class LayerPacker implements LoggerAwareInterface
                 $y += $rowLength;
                 $x = $rowLength = 0;
                 $skippedItems[] = $itemToPack;
-                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+                $items = ItemList::fromArray($skippedItems, true);
                 $skippedItems = [];
                 $prevItem = null;
                 continue;
