@@ -51,6 +51,13 @@ class VolumePacker implements LoggerAwareInterface
     protected $singlePassMode = false;
 
     /**
+     * Whether the packer should only try packing along the width.
+     *
+     * @var bool
+     */
+    protected $packAcrossWidthOnly = false;
+
+    /**
      * @var LayerPacker
      */
     private $layerPacker;
@@ -91,12 +98,20 @@ class VolumePacker implements LoggerAwareInterface
         $this->layerPacker->setLogger($logger);
     }
 
+    public function packAcrossWidthOnly(): void
+    {
+        $this->packAcrossWidthOnly = true;
+    }
+
     /**
      * @internal
      */
     public function setSinglePassMode(bool $singlePassMode): void
     {
         $this->singlePassMode = $singlePassMode;
+        if ($singlePassMode) {
+            $this->packAcrossWidthOnly = true;
+        }
         $this->layerPacker->setSinglePassMode($singlePassMode);
     }
 
@@ -110,7 +125,7 @@ class VolumePacker implements LoggerAwareInterface
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
         $rotationsToTest = [false];
-        if (!$this->singlePassMode && !$this->hasNoRotationItems) {
+        if (!$this->packAcrossWidthOnly && !$this->hasNoRotationItems) {
             $rotationsToTest[] = true;
         }
 
