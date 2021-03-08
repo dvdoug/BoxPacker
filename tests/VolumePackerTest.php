@@ -255,6 +255,12 @@ class VolumePackerTest extends TestCase
         $packedBox = $packer->pack();
 
         self::assertCount(14, $packedBox->getItems());
+
+        // less efficient packing
+        $packer->packAcrossWidthOnly();
+        $packedBox = $packer->pack();
+
+        self::assertCount(13, $packedBox->getItems());
     }
 
     /**
