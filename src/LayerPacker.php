@@ -80,13 +80,13 @@ class LayerPacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth, bool $considerStability): PackedLayer
+    public function packLayer(ItemList &$items, PackedItemList $packedItemList, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth, bool $considerStability): PackedLayer
     {
         $layer = new PackedLayer();
         $prevItem = null;
         $x = $y = $rowLength = 0;
         $skippedItems = [];
-        $remainingWeightAllowed = $this->getRemainingWeightAllowed($layers);
+        $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight();
 
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
@@ -198,16 +198,6 @@ class LayerPacker implements LoggerAwareInterface
         }
 
         return $customConstraintsOK && $itemToPack->getWeight() <= $remainingWeightAllowed;
-    }
-
-    private function getRemainingWeightAllowed(array $layers): int
-    {
-        $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
-        foreach ($layers as $layer) {
-            $remainingWeightAllowed -= $layer->getWeight();
-        }
-
-        return $remainingWeightAllowed;
     }
 
     /**
