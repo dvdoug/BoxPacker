@@ -109,7 +109,7 @@ class PackedLayer
 
     public function getWidth(): int
     {
-        return $this->endX - $this->startX;
+        return $this->endX ? $this->endX - $this->startX : 0;
     }
 
     public function getStartY(): int
@@ -124,7 +124,7 @@ class PackedLayer
 
     public function getLength(): int
     {
-        return $this->endY - $this->startY;
+        return $this->endY ? $this->endY - $this->startY : 0;
     }
 
     public function getStartZ(): int
@@ -139,11 +139,18 @@ class PackedLayer
 
     public function getDepth(): int
     {
-        return $this->endZ - $this->startZ;
+        return $this->endZ ? $this->endZ - $this->startZ : 0;
     }
 
     public function getWeight(): int
     {
         return $this->weight;
+    }
+
+    public function merge(self $otherLayer): void
+    {
+        foreach ($otherLayer->items as $packedItem) {
+            $this->insert($packedItem);
+        }
     }
 }
