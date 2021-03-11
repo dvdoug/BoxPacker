@@ -123,7 +123,7 @@ class LayerPacker implements LoggerAwareInterface
 
                 $x += $packedItem->getWidth();
 
-                if ($items->count() === 0) {
+                if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
@@ -195,7 +195,9 @@ class LayerPacker implements LoggerAwareInterface
                 $stackSkippedItems[] = $items->extract();
             }
         }
-        $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
+        if ($stackSkippedItems) {
+            $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
+        }
     }
 
     /**
