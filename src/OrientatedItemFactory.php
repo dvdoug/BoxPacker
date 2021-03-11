@@ -229,24 +229,27 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     private function generatePermutations(Item $item, ?OrientatedItem $prevItem): array
     {
-        $permutations = [];
-
         //Special case items that are the same as what we just packed - keep orientation
         if ($prevItem && $prevItem->isSameDimensions($item)) {
-            $permutations[] = [$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()];
-        } else {
-            $permutations[] = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+            return [[$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()]];
+        }
 
-            if ($item->getAllowedRotations() > 1) { //simple 2D rotation
-                $permutations[] = [$item->getLength(), $item->getWidth(), $item->getDepth()];
-            }
+        $permutations = [];
+        $w = $item->getWidth();
+        $l = $item->getLength();
+        $d = $item->getDepth();
 
-            if ($item->getAllowedRotations() === Item::ROTATION_BEST_FIT) { //add 3D rotation if we're allowed
-                $permutations[] = [$item->getWidth(), $item->getDepth(), $item->getLength()];
-                $permutations[] = [$item->getLength(), $item->getDepth(), $item->getWidth()];
-                $permutations[] = [$item->getDepth(), $item->getWidth(), $item->getLength()];
-                $permutations[] = [$item->getDepth(), $item->getLength(), $item->getWidth()];
-            }
+        $permutations[$w . $l . $d] = [$w, $l, $d];
+
+        if ($item->getAllowedRotations() > 1) { //simple 2D rotation
+            $permutations[$l . $w . $d] = [$l, $w, $d];
+        }
+
+        if ($item->getAllowedRotations() === Item::ROTATION_BEST_FIT) { //add 3D rotation if we're allowed
+            $permutations[$w . $d . $l] = [$w, $d, $l];
+            $permutations[$l . $d . $w] = [$l, $d, $w];
+            $permutations[$d . $w . $l] = [$d, $w, $l];
+            $permutations[$d . $l . $w] = [$d, $l, $w];
         }
 
         return $permutations;

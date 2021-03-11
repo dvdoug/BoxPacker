@@ -76,15 +76,18 @@ class LayerPacker implements LoggerAwareInterface
 
     /**
      * Pack items into an individual vertical layer.
-     * @param array<PackedLayer> $layers
      */
-    public function packLayer(ItemList &$items, PackedItemList $packedItemList, array $layers, int $z, int $layerWidth, int $lengthLeft, int $depthLeft, int $guidelineLayerDepth, bool $considerStability): PackedLayer
+    public function packLayer(ItemList &$items, PackedItemList $packedItemList, int $startX, int $startY, int $startZ, int $widthForLayer, int $lengthForLayer, int $depthForLayer, int $guidelineLayerDepth, bool $considerStability): PackedLayer
     {
         $layer = new PackedLayer();
+        $x = $startX;
+        $y = $startY;
+        $z = $startZ;
+        $lengthLeft = $lengthForLayer;
+        $rowLength = 0;
         $prevItem = null;
-        $x = $y = $rowLength = 0;
         $skippedItems = [];
-        $remainingWeightAllowed = $this->getRemainingWeightAllowed($layers);
+        $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight();
 
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
@@ -94,7 +97,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $layerWidth - $x, $lengthLeft, $depthLeft, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthLeft, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -107,10 +110,17 @@ class LayerPacker implements LoggerAwareInterface
                 //Figure out if we can stack the next item vertically on top of this rather than side by side
                 //e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $this->packVerticallyInsideItemFootprint($layer, $packedItem, $packedItemList, $items, $remainingWeightAllowed, $guidelineLayerDepth, $rowLength, $x, $y, $z, $considerStability);
-                $x += $packedItem->getWidth();
 
                 $prevItem = $orientatedItem;
-                if ($items->count() === 0) {
+
+                //Having now placed an item, there is space *within the same row* along the length. Pack into that.
+                if (!$this->singlePassMode && $rowLength - $orientatedItem->getLength() > 0) {
+                    $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength - $orientatedItem->getLength(), $depthForLayer, $layer->getDepth(), $considerStability));
+                }
+
+                $x += $packedItem->getWidth();
+
+                if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
@@ -127,13 +137,14 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            if ($x > 0) {
+            if ($x > $startX) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $lengthLeft -= $rowLength;
                 $y += $rowLength;
-                $x = $rowLength = 0;
+                $x = $startX;
+                $rowLength = 0;
                 $skippedItems[] = $itemToPack;
-                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+                $items = ItemList::fromArray($skippedItems, true);
                 $skippedItems = [];
                 $prevItem = null;
                 continue;
@@ -181,20 +192,19 @@ class LayerPacker implements LoggerAwareInterface
                 $stackSkippedItems[] = $items->extract();
             }
         }
-        $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
+        if ($stackSkippedItems) {
+            $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
+        }
     }
 
-    /**
-     * @param array<PackedLayer> $layers
-     */
-    private function getRemainingWeightAllowed(array $layers): int
+    private function checkNonDimensionalConstraints(Item $itemToPack, int $remainingWeightAllowed, PackedItemList $packedItemList): bool
     {
-        $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
-        foreach ($layers as $layer) {
-            $remainingWeightAllowed -= $layer->getWeight();
+        $customConstraintsOK = true;
+        if ($itemToPack instanceof ConstrainedItem && !$this->box instanceof WorkingVolume) {
+            $customConstraintsOK = $itemToPack->canBePackedInBox($packedItemList, $this->box);
         }
 
-        return $remainingWeightAllowed;
+        return $customConstraintsOK && $itemToPack->getWeight() <= $remainingWeightAllowed;
     }
 
     /**

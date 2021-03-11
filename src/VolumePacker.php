@@ -173,7 +173,7 @@ class VolumePacker implements LoggerAwareInterface
 
             //do a preliminary layer pack to get the depth used
             $preliminaryItems = clone $items;
-            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, true);
+            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, true);
             if (count($preliminaryLayer->getItems()) === 0) {
                 break;
             }
@@ -182,7 +182,7 @@ class VolumePacker implements LoggerAwareInterface
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { //redo with now-known-depth so that we can stack to that height from the first item
-                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, $layers, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth(), true);
+                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth(), true);
             }
         }
 
@@ -193,12 +193,12 @@ class VolumePacker implements LoggerAwareInterface
             $maxLayerWidth = max(array_map(static function (PackedLayer $layer) {
                 return $layer->getEndX();
             }, $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $layers, 0, $boxWidth - $maxLayerWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, 0, 0, $boxWidth - $maxLayerWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
 
             $maxLayerLength = max(array_map(static function (PackedLayer $layer) {
                 return $layer->getEndY();
             }, $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $layers, 0, $boxWidth, $boxLength - $maxLayerLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, 0, 0, $boxWidth, $boxLength - $maxLayerLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
         }
 
         $layers = $this->correctLayerRotation($layers, $boxWidth);

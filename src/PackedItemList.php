@@ -30,6 +30,8 @@ class PackedItemList implements Countable, IteratorAggregate
      */
     private $list = [];
 
+    private $weight = 0;
+
     /**
      * Has this list already been sorted?
      *
@@ -40,6 +42,7 @@ class PackedItemList implements Countable, IteratorAggregate
     public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
+        $this->weight += $item->getItem()->getWeight();
     }
 
     /**
@@ -89,6 +92,14 @@ class PackedItemList implements Countable, IteratorAggregate
         }
 
         return $volume;
+    }
+
+    /**
+     * Get total weight of these items.
+     */
+    public function getWeight(): int
+    {
+        return $this->weight;
     }
 
     private function compare(PackedItem $itemA, PackedItem $itemB): int

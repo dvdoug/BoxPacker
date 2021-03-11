@@ -127,7 +127,7 @@ class OrientatedItemSorter
         }
 
         // prefer leaving room for next item(s)
-        $followingItemDecider = $this->lookAheadDecider($this->nextItems, $a, $b, $orientationAWidthLeft, $orientationBWidthLeft, $this->widthLeft, $this->lengthLeft, $this->depthLeft, $this->rowLength, $this->x, $this->y, $this->z, $this->prevPackedItemList);
+        $followingItemDecider = $this->lookAheadDecider($a, $b, $orientationAWidthLeft, $orientationBWidthLeft);
         if ($followingItemDecider !== 0) {
             return $followingItemDecider;
         }
@@ -139,14 +139,14 @@ class OrientatedItemSorter
         return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
     }
 
-    private function lookAheadDecider(ItemList $nextItems, OrientatedItem $a, OrientatedItem $b, int $orientationAWidthLeft, int $orientationBWidthLeft, int $widthLeft, int $lengthLeft, int $depthLeft, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList): int
+    private function lookAheadDecider(OrientatedItem $a, OrientatedItem $b, int $orientationAWidthLeft, int $orientationBWidthLeft): int
     {
-        if ($nextItems->count() === 0) {
+        if ($this->nextItems->count() === 0) {
             return 0;
         }
 
-        $nextItemFitA = $this->orientatedItemFactory->getPossibleOrientations($nextItems->top(), $a, $orientationAWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
-        $nextItemFitB = $this->orientatedItemFactory->getPossibleOrientations($nextItems->top(), $b, $orientationBWidthLeft, $lengthLeft, $depthLeft, $x, $y, $z, $prevPackedItemList);
+        $nextItemFitA = $this->orientatedItemFactory->getPossibleOrientations($this->nextItems->top(), $a, $orientationAWidthLeft, $this->lengthLeft, $this->depthLeft, $this->x, $this->y, $this->z, $this->prevPackedItemList);
+        $nextItemFitB = $this->orientatedItemFactory->getPossibleOrientations($this->nextItems->top(), $b, $orientationBWidthLeft, $this->lengthLeft, $this->depthLeft, $this->x, $this->y, $this->z, $this->prevPackedItemList);
         if ($nextItemFitA && !$nextItemFitB) {
             return -1;
         }
@@ -155,8 +155,8 @@ class OrientatedItemSorter
         }
 
         // if not an easy either/or, do a partial lookahead
-        $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
-        $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b, $nextItems, $widthLeft, $lengthLeft, $depthLeft, $rowLength);
+        $additionalPackedA = $this->calculateAdditionalItemsPackedWithThisOrientation($a);
+        $additionalPackedB = $this->calculateAdditionalItemsPackedWithThisOrientation($b);
 
         return $additionalPackedB <=> $additionalPackedA ?: 0;
     }
@@ -168,24 +168,19 @@ class OrientatedItemSorter
      * purely on fit.
      */
     protected function calculateAdditionalItemsPackedWithThisOrientation(
-        OrientatedItem $prevItem,
-        ItemList $nextItems,
-        int $originalWidthLeft,
-        int $originalLengthLeft,
-        int $depthLeft,
-        int $currentRowLengthBeforePacking
+        OrientatedItem $prevItem
     ): int {
         if ($this->singlePassMode) {
             return 0;
         }
 
-        $currentRowLength = max($prevItem->getLength(), $currentRowLengthBeforePacking);
+        $currentRowLength = max($prevItem->getLength(), $this->rowLength);
 
-        $itemsToPack = $nextItems->topN(8); // cap lookahead as this gets recursive and slow
+        $itemsToPack = $this->nextItems->topN(8); // cap lookahead as this gets recursive and slow
 
-        $cacheKey = $originalWidthLeft .
+        $cacheKey = $this->widthLeft .
             '|' .
-            $originalLengthLeft .
+            $this->lengthLeft .
             '|' .
             $prevItem->getWidth() .
             '|' .
@@ -193,7 +188,7 @@ class OrientatedItemSorter
             '|' .
             $currentRowLength .
             '|'
-            . $depthLeft;
+            . $this->depthLeft;
 
         foreach ($itemsToPack as $itemToPack) {
             $cacheKey .= '|' .
@@ -209,21 +204,21 @@ class OrientatedItemSorter
         }
 
         if (!isset(static::$lookaheadCache[$cacheKey])) {
-            $tempBox = new WorkingVolume($originalWidthLeft - $prevItem->getWidth(), $currentRowLength, $depthLeft, PHP_INT_MAX);
+            $tempBox = new WorkingVolume($this->widthLeft - $prevItem->getWidth(), $currentRowLength, $this->depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setSinglePassMode(true);
             $remainingRowPacked = $tempPacker->pack();
 
             $itemsToPack->removePackedItems($remainingRowPacked->getItems());
 
-            $tempBox = new WorkingVolume($originalWidthLeft, $originalLengthLeft - $currentRowLength, $depthLeft, PHP_INT_MAX);
+            $tempBox = new WorkingVolume($this->widthLeft, $this->lengthLeft - $currentRowLength, $this->depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setSinglePassMode(true);
             $nextRowsPacked = $tempPacker->pack();
 
             $itemsToPack->removePackedItems($nextRowsPacked->getItems());
 
-            $packedCount = $nextItems->count() - $itemsToPack->count();
+            $packedCount = $this->nextItems->count() - $itemsToPack->count();
             $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
 
             static::$lookaheadCache[$cacheKey] = $packedCount;
