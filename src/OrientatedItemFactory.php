@@ -178,7 +178,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         Item $item,
         array $possibleOrientations
     ): array {
-        $orientationsToUse = $stableOrientations = $unstableOrientations = [];
+        $stableOrientations = $unstableOrientations = [];
 
         // Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
         foreach ($possibleOrientations as $orientation) {
@@ -194,16 +194,18 @@ class OrientatedItemFactory implements LoggerAwareInterface
          * the item doesn't fit in the box any other way
          */
         if (count($stableOrientations) > 0) {
-            $orientationsToUse = $stableOrientations;
-        } elseif (count($unstableOrientations) > 0) {
+            return $stableOrientations;
+        }
+
+        if (count($unstableOrientations) > 0) {
             $stableOrientationsInEmptyBox = $this->getStableOrientationsInEmptyBox($item);
 
             if (count($stableOrientationsInEmptyBox) === 0) {
-                $orientationsToUse = $unstableOrientations;
+                return $unstableOrientations;
             }
         }
 
-        return $orientationsToUse;
+        return [];
     }
 
     /**
