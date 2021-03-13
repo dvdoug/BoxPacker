@@ -8,12 +8,14 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use JsonSerializable;
+
 /**
  * A packed item.
  *
  * @author Doug Wright
  */
-class PackedItem
+class PackedItem implements JsonSerializable
 {
     /**
      * @var int
@@ -123,5 +125,24 @@ class PackedItem
     public function toOrientatedItem(): OrientatedItem
     {
         return new OrientatedItem($this->item, $this->width, $this->length, $this->depth);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'x' => $this->x,
+            'y' => $this->y,
+            'z' => $this->z,
+            'width' => $this->width,
+            'length' => $this->length,
+            'depth' => $this->depth,
+            'item' => [
+                'description' => $this->item->getDescription(),
+                'width' => $this->item->getWidth(),
+                'length' => $this->item->getLength(),
+                'depth' => $this->item->getDepth(),
+                'keepFlat' => $this->item->getKeepFlat(),
+            ],
+        ];
     }
 }
