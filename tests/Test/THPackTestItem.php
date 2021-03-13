@@ -118,14 +118,17 @@ class THPackTestItem implements ConstrainedPlacementItem
         int $length,
         int $depth
     ): bool {
+        $ok = false;
         if ($depth === $this->width) {
-            return $this->widthAllowedVertical;
+            $ok = $ok || $this->widthAllowedVertical;
         }
         if ($depth === $this->length) {
-            return $this->lengthAllowedVertical;
+            $ok = $ok || $this->lengthAllowedVertical;
         }
         if ($depth === $this->depth) {
-            return $this->depthAllowedVertical;
+            $ok = $ok || $this->depthAllowedVertical;
         }
+
+        return $ok;
     }
 }
