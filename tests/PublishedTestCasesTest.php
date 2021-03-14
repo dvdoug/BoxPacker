@@ -10,7 +10,16 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\THPackTestItem;
+use function explode;
+use function fclose;
+use function feof;
+use function fgetcsv;
+use function fgets;
+use function fopen;
+use function ini_set;
+use function is_array;
 use PHPUnit\Framework\TestCase;
+use function trim;
 
 /*
  * The testcases in this file are benchmark tests for informational purposes, not tests of correctness.

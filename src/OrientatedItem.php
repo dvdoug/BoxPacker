@@ -8,8 +8,10 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function atan;
 use JsonSerializable;
 use function min;
+use function sort;
 
 /**
  * An item to be packed.

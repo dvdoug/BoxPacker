@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function array_merge;
 use function count;
 use DVDoug\BoxPacker\Exception\ItemTooLargeException;
 use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
@@ -16,6 +17,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use function spl_object_id;
 use function usort;
 
 /**

@@ -16,7 +16,7 @@ return $config = (new PhpCsFixer\Config())
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'fopen_flags' => ['b_mode' => true],
-        'native_function_invocation' => false,
+        'native_function_invocation' => true,
         'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
         'phpdoc_separation' => false,
         'yoda_style' => false,
