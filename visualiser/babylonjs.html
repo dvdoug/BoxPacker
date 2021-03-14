@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>BoxPacker packing visualiser</title>
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="babylon.js"></script>
+</head>
+<body>
+<script>
+
+    // replace with contents of json_encode($packedBox)
+    const PACKING = {};
+
+    const ZOOM = 0.1; // very large containers make weird visual artifacts, reduce everything down
+
+    const ITEM_COLOURS = [
+        new BABYLON.Color3(1.0,0.0,0.0),
+        new BABYLON.Color3(0.0,1.0,0.0),
+        new BABYLON.Color3(0.0,0.0,1.0),
+        new BABYLON.Color3(1.0,1.0,0.0),
+        new BABYLON.Color3(0.0,1.0,1.0),
+        new BABYLON.Color3(1.0,0.0,1.0),
+        new BABYLON.Color3(1.0,1.0,1.0),
+
+        new BABYLON.Color3(0.8,0.0,0.0),
+        new BABYLON.Color3(0.0,0.8,0.0),
+        new BABYLON.Color3(0.0,0.0,0.8),
+        new BABYLON.Color3(0.8,0.8,0.0),
+        new BABYLON.Color3(0.0,0.8,0.8),
+        new BABYLON.Color3(0.8,0.0,0.8),
+        new BABYLON.Color3(0.8,0.8,0.8),
+
+        new BABYLON.Color3(0.6,0.0,0.0),
+        new BABYLON.Color3(0.0,0.6,0.0),
+        new BABYLON.Color3(0.0,0.0,0.6),
+        new BABYLON.Color3(0.6,0.6,0.0),
+        new BABYLON.Color3(0.0,0.6,0.6),
+        new BABYLON.Color3(0.6,0.0,0.6),
+        new BABYLON.Color3(0.6,0.6,0.6),
+
+        new BABYLON.Color3(0.4,0.0,0.0),
+        new BABYLON.Color3(0.0,0.4,0.0),
+        new BABYLON.Color3(0.0,0.0,0.4),
+        new BABYLON.Color3(0.4,0.4,0.0),
+        new BABYLON.Color3(0.0,0.4,0.4),
+        new BABYLON.Color3(0.4,0.0,0.4),
+        new BABYLON.Color3(0.4,0.4,0.4),
+
+        new BABYLON.Color3(0.2,0.0,0.0),
+        new BABYLON.Color3(0.0,0.2,0.0),
+        new BABYLON.Color3(0.0,0.0,0.2),
+        new BABYLON.Color3(0.2,0.2,0.0),
+        new BABYLON.Color3(0.0,0.2,0.2),
+        new BABYLON.Color3(0.2,0.0,0.2),
+        new BABYLON.Color3(0.2,0.2,0.2),
+    ];
+
+    const createScene = () => {
+        const scene = new BABYLON.Scene(engine);
+
+        /*
+         * Light equally from above and below. If was just boxes could use emissiveColor on the items and skip lighting
+         * altogether, but we also draw axes and they need to be lit.
+         */
+        let light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
+        light.groundColor = new BABYLON.Color3(1, 1, 1);
+
+        const box = BABYLON.MeshBuilder.CreateBox(
+            "box",
+            {
+                width: ZOOM * PACKING.box.innerWidth,
+                depth: ZOOM * PACKING.box.innerLength,
+                height: ZOOM * PACKING.box.innerDepth,
+            }
+        );
+        let material = new BABYLON.StandardMaterial("material", scene);
+        material.alpha = 0; // make box faces invisible
+        box.material = material;
+        box.showBoundingBox = true; // but show edges
+        // Babylon positions the centre of the box at (0,0,0) so compensate for that as BoxPacker measures from the corner
+        box.position.x = ZOOM * PACKING.box.innerWidth / 2;
+        box.position.z = ZOOM * PACKING.box.innerLength / 2;
+        box.position.y = ZOOM * PACKING.box.innerDepth / 2;
+
+        for (let itemsKey in PACKING.items) {
+            let item = BABYLON.MeshBuilder.CreateBox(
+                "item" + itemsKey,
+                {
+                    width: ZOOM * PACKING.items[itemsKey].width,
+                    depth: ZOOM * PACKING.items[itemsKey].length,
+                    height: ZOOM * PACKING.items[itemsKey].depth,
+                }
+            );
+            let material = new BABYLON.StandardMaterial("material", scene);
+            material.diffuseColor = ITEM_COLOURS[itemsKey % 35];
+            material.alpha = 0.6;
+            item.material = material;
+            // Babylon positions the centre of the item at (0,0,0) not a corner so compensate for that
+            item.position.x = ZOOM * PACKING.items[itemsKey].width / 2 + ZOOM * PACKING.items[itemsKey].x;
+            item.position.z = ZOOM * PACKING.items[itemsKey].length / 2 + ZOOM * PACKING.items[itemsKey].y;
+            item.position.y = ZOOM * PACKING.items[itemsKey].depth / 2 + ZOOM * PACKING.items[itemsKey].z;
+        }
+
+
+        const camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", -0.8 * Math.PI, 0.5 * Math.PI, ZOOM * PACKING.box.innerDepth * 2.5, new BABYLON.Vector3(0, ZOOM * PACKING.box.innerDepth / 2, 0), scene);
+        camera.panningSensibility = 10;
+        camera.attachControl(canvas, true, true);
+
+        // draw **BoxPacker** axes (y/z are flipped compared to Babylon)
+        let showAxis = function (size) {
+            let makeTextPlane = function (text, color, size) {
+                let dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
+                dynamicTexture.hasAlpha = true;
+                dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color, "transparent", true);
+                let plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
+                plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
+                plane.material.backFaceCulling = false;
+                plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
+                plane.material.diffuseTexture = dynamicTexture;
+                return plane;
+            };
+
+            let axisX = BABYLON.Mesh.CreateLines("axisX", [
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, 0.05 * size, 0),
+                new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, -0.05 * size, 0)
+            ], scene);
+            axisX.color = new BABYLON.Color3(1, 0, 0);
+            let xChar = makeTextPlane("X", "red", size / 10);
+            xChar.position = new BABYLON.Vector3(0.9 * size, -0.05 * size, 0);
+            let axisY = BABYLON.Mesh.CreateLines("axisY", [
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3(-0.05 * size, size * 0.95, 0),
+                new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3(0.05 * size, size * 0.95, 0)
+            ], scene);
+            axisY.color = new BABYLON.Color3(0, 1, 0);
+            let yChar = makeTextPlane("Z", "green", size / 10);
+            yChar.position = new BABYLON.Vector3(0, 0.9 * size, -0.05 * size);
+            let axisZ = BABYLON.Mesh.CreateLines("axisZ", [
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3(0, -0.05 * size, size * 0.95),
+                new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3(0, 0.05 * size, size * 0.95)
+            ], scene);
+            axisZ.color = new BABYLON.Color3(0, 0, 1);
+            let zChar = makeTextPlane("Y", "blue", size / 10);
+            zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.9 * size);
+        };
+        showAxis(ZOOM * Math.max(PACKING.box.innerWidth, PACKING.box.innerLength, PACKING.box.innerDepth));
+
+        return scene;
+    };
+</script>
+
+<canvas id="renderCanvas"></canvas>
+<script>
+    const canvas = document.getElementById("renderCanvas"); // Get the canvas element
+    const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+    // Add your code here matching the playground format
+    const scene = createScene(); //Call the createScene function
+    // Register a render loop to repeatedly render the scene
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+    // Watch for browser/canvas resize events
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+</script>
+</body>
+</html>

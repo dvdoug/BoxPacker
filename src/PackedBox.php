@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function iterator_to_array;
+use JsonSerializable;
 use function max;
 use function round;
 
@@ -16,7 +18,7 @@ use function round;
  *
  * @author Doug Wright
  */
-class PackedBox
+class PackedBox implements JsonSerializable
 {
     /**
      * Box used.
@@ -200,5 +202,18 @@ class PackedBox
             $this->itemWeight += $item->getItem()->getWeight();
         }
         $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'box' => [
+                'reference' => $this->box->getReference(),
+                'innerWidth' => $this->box->getInnerWidth(),
+                'innerLength' => $this->box->getInnerLength(),
+                'innerDepth' => $this->box->getInnerDepth(),
+            ],
+            'items' => iterator_to_array($this->items),
+        ];
     }
 }
