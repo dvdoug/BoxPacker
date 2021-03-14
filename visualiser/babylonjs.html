@@ -16,7 +16,8 @@
             height: 100%;
         }
     </style>
-    <script src="babylon.js"></script>
+    <script src="babylon.min.js"></script>
+    <script src="babylon.gui.min.js"></script>
 </head>
 <body>
 <script>
@@ -58,14 +59,6 @@
         new BABYLON.Color3(0.0,0.4,0.4),
         new BABYLON.Color3(0.4,0.0,0.4),
         new BABYLON.Color3(0.4,0.4,0.4),
-
-        new BABYLON.Color3(0.2,0.0,0.0),
-        new BABYLON.Color3(0.0,0.2,0.0),
-        new BABYLON.Color3(0.0,0.0,0.2),
-        new BABYLON.Color3(0.2,0.2,0.0),
-        new BABYLON.Color3(0.0,0.2,0.2),
-        new BABYLON.Color3(0.2,0.0,0.2),
-        new BABYLON.Color3(0.2,0.2,0.2),
     ];
 
     const createScene = () => {
@@ -75,8 +68,13 @@
          * Light equally from above and below. If was just boxes could use emissiveColor on the items and skip lighting
          * altogether, but we also draw axes and they need to be lit.
          */
-        let light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
+        const light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
         light.groundColor = new BABYLON.Color3(1, 1, 1);
+
+        // Add the highlight layer.
+        let hl = new BABYLON.HighlightLayer("hl1", scene);
+
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         const box = BABYLON.MeshBuilder.CreateBox(
             "box",
@@ -86,6 +84,7 @@
                 height: ZOOM * PACKING.box.innerDepth,
             }
         );
+        hl.addExcludedMesh(box);
         let material = new BABYLON.StandardMaterial("material", scene);
         material.alpha = 0; // make box faces invisible
         box.material = material;
@@ -105,13 +104,87 @@
                 }
             );
             let material = new BABYLON.StandardMaterial("material", scene);
-            material.diffuseColor = ITEM_COLOURS[itemsKey % 35];
-            material.alpha = 0.6;
+            material.diffuseColor = ITEM_COLOURS[itemsKey % 28];
+            material.alpha = 0.7;
             item.material = material;
             // Babylon positions the centre of the item at (0,0,0) not a corner so compensate for that
             item.position.x = ZOOM * PACKING.items[itemsKey].width / 2 + ZOOM * PACKING.items[itemsKey].x;
             item.position.z = ZOOM * PACKING.items[itemsKey].length / 2 + ZOOM * PACKING.items[itemsKey].y;
             item.position.y = ZOOM * PACKING.items[itemsKey].depth / 2 + ZOOM * PACKING.items[itemsKey].z;
+
+            let rect1 = new BABYLON.GUI.Rectangle();
+            advancedTexture.addControl(rect1);
+            rect1.width = "300px";
+            rect1.height ="150px";
+            rect1.thickness = 2;
+            rect1.linkOffsetX = "150px";
+            rect1.linkOffsetY = "-100px";
+            rect1.transformCenterX = 0;
+            rect1.transformCenterY = 1;
+            rect1.background = "grey";
+            rect1.alpha = 0.7;
+            rect1.scaleX = 0;
+            rect1.scaleY = 0;
+            rect1.cornerRadius = 10
+            rect1.linkWithMesh(item);
+
+            let text1 = new BABYLON.GUI.TextBlock();
+            text1.text = "Item: " + PACKING.items[itemsKey].item.description;
+            text1.text += "\n";
+            text1.text += "As specified (W×L×D): " + PACKING.items[itemsKey].item.width + '×' + PACKING.items[itemsKey].item.length + '×' + PACKING.items[itemsKey].item.depth;
+            text1.text += "\n";
+            text1.text += "As packed (W×L×D): " + PACKING.items[itemsKey].width + '×' + PACKING.items[itemsKey].length + '×' + PACKING.items[itemsKey].depth;
+            text1.text += "\n";
+            text1.text += "x: " + PACKING.items[itemsKey].x;
+            text1.text += "\n";
+            text1.text += "y: " + PACKING.items[itemsKey].y;
+            text1.text += "\n";
+            text1.text += "z: " + PACKING.items[itemsKey].z;
+            text1.color = "White";
+            text1.fontSize = 14;
+            text1.textWrapping = true;
+            text1.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            text1.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            text1.background = '#006994'
+            rect1.addControl(text1)
+            text1.alpha = (1/text1.parent.alpha);
+            text1.paddingTop = "20px";
+            text1.paddingBottom = "20px";
+            text1.paddingLeft = "20px";
+            text1.paddingRight = "20px";
+
+            let actionManager = new BABYLON.ActionManager(scene);
+            item.actionManager = actionManager;
+
+            let scaleXAnimation = new BABYLON.Animation("myAnimation", "scaleX", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+            let scaleYAnimation = new BABYLON.Animation("myAnimation", "scaleY", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+            let keys = [];
+            keys.push({
+                frame: 0,
+                value: 0
+            });
+            keys.push({
+                frame: 10,
+                value: 1
+            });
+
+            scaleXAnimation.setKeys(keys);
+            scaleYAnimation.setKeys(keys);
+            rect1.animations = [];
+            rect1.animations.push(scaleXAnimation);
+            rect1.animations.push(scaleYAnimation);
+
+            actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){
+                hl.addMesh(item, BABYLON.Color3.Green());
+                scene.beginAnimation(rect1, 0, 10, false);
+            }));
+            //if hover is over remove highlight of the mesh
+            actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
+                hl.removeMesh(item);
+                scene.beginAnimation(rect1, 10, 0, false);
+            }));
+
         }
 
 
@@ -164,7 +237,7 @@
 <canvas id="renderCanvas"></canvas>
 <script>
     const canvas = document.getElementById("renderCanvas"); // Get the canvas element
-    const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+    const engine = new BABYLON.Engine(canvas, true, { stencil: true }); // Generate the BABYLON 3D engine
     // Add your code here matching the playground format
     const scene = createScene(); //Call the createScene function
     // Register a render loop to repeatedly render the scene
