@@ -108,7 +108,7 @@ Example - only allow 2 batteries per box
                 int $width,
                 int $length,
                 int $depth
-            ) {
+            ): bool {
                 $batteriesPacked = 0;
                 foreach ($alreadyPackedItems as $packedItem) {
                   if ($packedItem->getItem() instanceof LithiumBattery) {
@@ -159,7 +159,7 @@ Example - don't allow batteries to be stacked
                 int $width,
                 int $length,
                 int $depth
-            ) {
+            ): bool {
                 $alreadyPackedType = array_filter(
                     iterator_to_array($alreadyPackedItems, false),
                     function (PackedItem $item) {
