@@ -57,7 +57,7 @@ jobs:
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
     - name: Set up build cache
-      uses: "actions/cache@v2.1.4"
+      uses: "actions/cache@v2.1.5"
       with:
         path: |
           ${{ steps.composercache.outputs.dir }}
@@ -158,7 +158,7 @@ jobs:
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
     - name: Set up build cache
-      uses: "actions/cache@v2.1.4"
+      uses: "actions/cache@v2.1.5"
       with:
         path: |
           ${{ steps.composercache.outputs.dir }}
