@@ -189,12 +189,12 @@ class VolumePacker implements LoggerAwareInterface
             $maxLayerWidth = max(array_map(static function (PackedLayer $layer) {
                 return $layer->getEndX();
             }, $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, 0, 0, $boxWidth - $maxLayerWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $maxLayerWidth, 0, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
 
             $maxLayerLength = max(array_map(static function (PackedLayer $layer) {
                 return $layer->getEndY();
             }, $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, 0, 0, $boxWidth, $boxLength - $maxLayerLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, $maxLayerLength, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
         }
 
         $layers = $this->correctLayerRotation($layers, $boxWidth);

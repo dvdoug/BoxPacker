@@ -86,7 +86,6 @@ class LayerPacker implements LoggerAwareInterface
         $x = $startX;
         $y = $startY;
         $z = $startZ;
-        $lengthLeft = $lengthForLayer;
         $rowLength = 0;
         $prevItem = null;
         $skippedItems = [];
@@ -100,7 +99,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthLeft, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthForLayer - $y, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -118,7 +117,7 @@ class LayerPacker implements LoggerAwareInterface
 
                 //Having now placed an item, there is space *within the same row* along the length. Pack into that.
                 if (!$this->singlePassMode && $rowLength - $orientatedItem->getLength() > 0) {
-                    $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength - $orientatedItem->getLength(), $depthForLayer, $layer->getDepth(), $considerStability));
+                    $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
                 }
 
                 $x += $packedItem->getWidth();
@@ -142,7 +141,6 @@ class LayerPacker implements LoggerAwareInterface
 
             if ($x > $startX) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
-                $lengthLeft -= $rowLength;
                 $y += $rowLength;
                 $x = $startX;
                 $rowLength = 0;
