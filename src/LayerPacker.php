@@ -86,7 +86,6 @@ class LayerPacker implements LoggerAwareInterface
         $x = $startX;
         $y = $startY;
         $z = $startZ;
-        $lengthLeft = $lengthForLayer;
         $rowLength = 0;
         $prevItem = null;
         $skippedItems = [];
@@ -100,28 +99,31 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthLeft, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
+            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthForLayer - $y, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
                 $layer->insert($packedItem);
-                $remainingWeightAllowed -= $itemToPack->getWeight();
                 $packedItemList->insert($packedItem);
 
                 $rowLength = max($rowLength, $packedItem->getLength());
-
-                //Figure out if we can stack the next item vertically on top of this rather than side by side
-                //e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $this->packVerticallyInsideItemFootprint($layer, $packedItem, $packedItemList, $items, $remainingWeightAllowed, $guidelineLayerDepth, $rowLength, $x, $y, $z, $considerStability);
-
                 $prevItem = $orientatedItem;
 
+                //Figure out if we can stack items on top of this rather than side by side
+                //e.g. when we've packed a tall item, and have just put a shorter one next to it.
+                $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
+                if ($stackableDepth > 0) {
+                    $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->getDepth(), $x + $packedItem->getWidth(), $y + $packedItem->getLength(), $stackableDepth, $stackableDepth, $considerStability);
+                    $layer->merge($stackedLayer);
+                }
+
                 //Having now placed an item, there is space *within the same row* along the length. Pack into that.
-                if (!$this->singlePassMode && $rowLength - $orientatedItem->getLength() > 0) {
-                    $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength - $orientatedItem->getLength(), $depthForLayer, $layer->getDepth(), $considerStability));
+                if ($rowLength - $orientatedItem->getLength() > 0) {
+                    $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
                 }
 
                 $x += $packedItem->getWidth();
+                $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
@@ -142,7 +144,6 @@ class LayerPacker implements LoggerAwareInterface
 
             if ($x > $startX) {
                 $this->logger->debug('No more fit in width wise, resetting for new row');
-                $lengthLeft -= $rowLength;
                 $y += $rowLength;
                 $x = $startX;
                 $rowLength = 0;
@@ -162,52 +163,6 @@ class LayerPacker implements LoggerAwareInterface
         }
 
         return $layer;
-    }
-
-    private function packVerticallyInsideItemFootprint(PackedLayer $layer, PackedItem $packedItem, PackedItemList $packedItemList, ItemList &$items, int &$remainingWeightAllowed, int $guidelineLayerDepth, int $rowLength, int $x, int $y, int $z, bool $considerStability): void
-    {
-        $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
-        $stackedZ = $z + $packedItem->getDepth();
-        $stackSkippedItems = [];
-        $stackedItem = $packedItem->toOrientatedItem();
-        while ($stackableDepth > 0 && $items->count() > 0) {
-            $itemToTryStacking = $items->extract();
-
-            //skip items that will never fit
-            if ($itemToTryStacking->getWeight() > $remainingWeightAllowed) {
-                continue;
-            }
-
-            $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList, $considerStability);
-            if ($stackedItem) {
-                $packedStackedItem = PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ);
-                $layer->insert($packedStackedItem);
-                $remainingWeightAllowed -= $itemToTryStacking->getWeight();
-                $packedItemList->insert($packedStackedItem);
-                $stackableDepth -= $stackedItem->getDepth();
-                $stackedZ += $stackedItem->getDepth();
-                continue;
-            }
-
-            $stackSkippedItems[] = $itemToTryStacking;
-            // abandon here if next item is the same, no point trying to keep going
-            while ($items->count() > 0 && static::isSameDimensions($itemToTryStacking, $items->top())) {
-                $stackSkippedItems[] = $items->extract();
-            }
-        }
-        if ($stackSkippedItems) {
-            $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
-        }
-    }
-
-    private function checkNonDimensionalConstraints(Item $itemToPack, int $remainingWeightAllowed, PackedItemList $packedItemList): bool
-    {
-        $customConstraintsOK = true;
-        if ($itemToPack instanceof ConstrainedItem && !$this->box instanceof WorkingVolume) {
-            $customConstraintsOK = $itemToPack->canBePackedInBox($packedItemList, $this->box);
-        }
-
-        return $customConstraintsOK && $itemToPack->getWeight() <= $remainingWeightAllowed;
     }
 
     /**
