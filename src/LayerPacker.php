@@ -104,23 +104,26 @@ class LayerPacker implements LoggerAwareInterface
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
                 $layer->insert($packedItem);
-                $remainingWeightAllowed -= $itemToPack->getWeight();
                 $packedItemList->insert($packedItem);
 
                 $rowLength = max($rowLength, $packedItem->getLength());
-
-                //Figure out if we can stack the next item vertically on top of this rather than side by side
-                //e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $this->packVerticallyInsideItemFootprint($layer, $packedItem, $packedItemList, $items, $remainingWeightAllowed, $guidelineLayerDepth, $rowLength, $x, $y, $z, $considerStability);
-
                 $prevItem = $orientatedItem;
 
+                //Figure out if we can stack items on top of this rather than side by side
+                //e.g. when we've packed a tall item, and have just put a shorter one next to it.
+                $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
+                if ($stackableDepth > 0) {
+                    $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->getDepth(), $x + $packedItem->getWidth(), $y + $packedItem->getLength(), $stackableDepth, $stackableDepth, $considerStability);
+                    $layer->merge($stackedLayer);
+                }
+
                 //Having now placed an item, there is space *within the same row* along the length. Pack into that.
-                if (!$this->singlePassMode && $rowLength - $orientatedItem->getLength() > 0) {
+                if ($rowLength - $orientatedItem->getLength() > 0) {
                     $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
                 }
 
                 $x += $packedItem->getWidth();
+                $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
@@ -160,42 +163,6 @@ class LayerPacker implements LoggerAwareInterface
         }
 
         return $layer;
-    }
-
-    private function packVerticallyInsideItemFootprint(PackedLayer $layer, PackedItem $packedItem, PackedItemList $packedItemList, ItemList &$items, int &$remainingWeightAllowed, int $guidelineLayerDepth, int $rowLength, int $x, int $y, int $z, bool $considerStability): void
-    {
-        $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
-        $stackedZ = $z + $packedItem->getDepth();
-        $stackSkippedItems = [];
-        $stackedItem = $packedItem->toOrientatedItem();
-        while ($stackableDepth > 0 && $items->count() > 0) {
-            $itemToTryStacking = $items->extract();
-
-            //skip items that will never fit
-            if (!$this->checkNonDimensionalConstraints($itemToTryStacking, $remainingWeightAllowed, $packedItemList)) {
-                continue;
-            }
-
-            $stackedItem = $this->orientatedItemFactory->getBestOrientation($itemToTryStacking, $stackedItem, $items, $packedItem->getWidth(), $packedItem->getLength(), $stackableDepth, $rowLength, $x, $y, $stackedZ, $packedItemList, $considerStability);
-            if ($stackedItem) {
-                $packedStackedItem = PackedItem::fromOrientatedItem($stackedItem, $x, $y, $stackedZ);
-                $layer->insert($packedStackedItem);
-                $remainingWeightAllowed -= $itemToTryStacking->getWeight();
-                $packedItemList->insert($packedStackedItem);
-                $stackableDepth -= $stackedItem->getDepth();
-                $stackedZ += $stackedItem->getDepth();
-                continue;
-            }
-
-            $stackSkippedItems[] = $itemToTryStacking;
-            // abandon here if next item is the same, no point trying to keep going
-            while ($items->count() > 0 && static::isSameDimensions($itemToTryStacking, $items->top())) {
-                $stackSkippedItems[] = $items->extract();
-            }
-        }
-        if ($stackSkippedItems) {
-            $items = ItemList::fromArray(array_merge($stackSkippedItems, iterator_to_array($items)), true);
-        }
     }
 
     /**
