@@ -6,7 +6,7 @@
 ### Fixed
 - Fixed issue where available width for an item could be miscalculated at the far end of a box
 ### Changed
-- Improved efficiency in packing
+- Improved efficiency in packing in the vertical direction
 
 ## [3.9.0] - 2021-03-14
 ### Added
