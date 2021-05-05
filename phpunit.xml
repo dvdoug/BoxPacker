@@ -14,7 +14,7 @@
     </testsuite>
   </testsuites>
 
-  <coverage pathCoverage="true" processUncoveredFiles="true" cacheDirectory="build/php-code-coverage-cache">
+  <coverage pathCoverage="true" cacheDirectory="build/php-code-coverage-cache">
     <include>
       <directory suffix=".php">src</directory>
     </include>
