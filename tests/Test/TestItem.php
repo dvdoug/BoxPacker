@@ -67,8 +67,8 @@ class TestItem implements Item, JsonSerializable
         int $length,
         int $depth,
         int $weight,
-        int $allowedRotations)
-    {
+        int $allowedRotations
+    ) {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;
