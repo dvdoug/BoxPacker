@@ -93,7 +93,7 @@ jobs:
 
     - name: Check code style
       if: matrix.php-version == '7.4' && matrix.dependencies == 'highest'
-      run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --diff-format=udiff --allow-risky=yes --format=checkstyle | cs2pr
+      run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --allow-risky=yes --format=checkstyle | cs2pr
 
     - name: PHPUnit (Xdebug)
       run: |
