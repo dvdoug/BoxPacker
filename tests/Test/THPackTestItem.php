@@ -64,7 +64,8 @@ class THPackTestItem implements ConstrainedPlacementItem
         int $length,
         bool $lengthAllowedVertical,
         int $depth,
-        bool $depthAllowedVertical)
+        bool $depthAllowedVertical
+    )
     {
         $this->description = $description;
         $this->width = $width;
