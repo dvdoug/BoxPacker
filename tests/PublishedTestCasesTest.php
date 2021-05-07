@@ -125,7 +125,8 @@ class PublishedTestCasesTest extends TestCase
         for ($p = 1; $p <= $problemCount; ++$p) {
             $problemId = explode(' ', trim(fgets($handle)))[0];
             $boxDimensions = explode(' ', trim(fgets($handle)));
-            $box = new TestBox("Container {$problemId}",
+            $box = new TestBox(
+                "Container {$problemId}",
                 (int) $boxDimensions[0],
                 (int) $boxDimensions[1],
                 (int) $boxDimensions[2],
@@ -133,19 +134,22 @@ class PublishedTestCasesTest extends TestCase
                 (int) $boxDimensions[0],
                 (int) $boxDimensions[1],
                 (int) $boxDimensions[2],
-                1);
+                1
+            );
             $itemTypeCount = trim(fgets($handle));
 
             $items = new ItemList();
             for ($i = 1; $i <= $itemTypeCount; ++$i) {
                 $itemDimensions = explode(' ', trim(fgets($handle)));
-                $item = new THPackTestItem("Item {$itemDimensions[0]}",
+                $item = new THPackTestItem(
+                    "Item {$itemDimensions[0]}",
                     (int) $itemDimensions[1],
                     (bool) $itemDimensions[2],
                     (int) $itemDimensions[3],
                     (bool) $itemDimensions[4],
                     (int) $itemDimensions[5],
-                    (bool) $itemDimensions[6]);
+                    (bool) $itemDimensions[6]
+                );
                 for ($c = 1; $c <= $itemDimensions[7]; ++$c) {
                     $items->insert($item);
                 }

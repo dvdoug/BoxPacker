@@ -67,8 +67,8 @@ class TestItem implements Item, JsonSerializable
         int $length,
         int $depth,
         int $weight,
-        bool $keepFlat)
-    {
+        bool $keepFlat
+    ) {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;
