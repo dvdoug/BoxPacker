@@ -256,4 +256,13 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         return $permutations;
     }
+
+    /**
+     * Clear the empty box cache. Useful is part of a long running 
+     * process to prevent memory leaks.
+     */
+    public static function clearEmptyBoxCache() : void
+    {
+        self::$emptyBoxCache = [];
+    }
 }
