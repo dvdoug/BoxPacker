@@ -489,6 +489,6 @@ class VolumePackerTest extends TestCase
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
 
-        self::assertCount(38, $packedBox->getItems());
+        self::assertCount(32, $packedBox->getItems());
     }
 }
