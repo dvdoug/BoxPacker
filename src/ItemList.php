@@ -73,9 +73,11 @@ class ItemList implements Countable, IteratorAggregate
         return $list;
     }
 
-    public function insert(Item $item): void
+    public function insert(Item $item, int $qty = 1): void
     {
-        $this->list[] = $item;
+        for ($i = 0; $i < $qty; ++$i) {
+            $this->list[] = $item;
+        }
         $this->isSorted = false;
         $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
         $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotations() <= Item::ROTATION_NEVER;

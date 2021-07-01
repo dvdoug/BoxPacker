@@ -117,11 +117,6 @@ class LayerPacker implements LoggerAwareInterface
                     $layer->merge($stackedLayer);
                 }
 
-                //Having now placed an item, there is space *within the same row* along the length. Pack into that.
-                if ($rowLength - $orientatedItem->getLength() > 0) {
-                    $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $orientatedItem->getLength(), $z, $widthForLayer, $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
-                }
-
                 $x += $packedItem->getWidth();
                 $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
@@ -143,6 +138,10 @@ class LayerPacker implements LoggerAwareInterface
             }
 
             if ($x > $startX) {
+                //Having now placed items, there is space *within the same row* along the length. Pack into that.
+                $this->logger->debug('No more fit in width wise, packing along remaining length');
+                $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $rowLength, $z, $widthForLayer, $lengthForLayer - $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
+
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $y += $rowLength;
                 $x = $startX;
