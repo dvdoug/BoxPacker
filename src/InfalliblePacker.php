@@ -44,7 +44,7 @@ class InfalliblePacker extends Packer
     {
         foreach ($this->items as $item) {
             foreach ($this->boxes as $box) {
-                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight()) && (new OrientatedItemFactory($box))->getPossibleOrientationsInEmptyBox($item)) {
+                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight()) && (new OrientatedItemFactory($box))->hasPossibleOrientationsInEmptyBox($item)) {
                     continue 2;
                 }
             }

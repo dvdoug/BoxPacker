@@ -36,12 +36,12 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected $singlePassMode = false;
 
     /**
-     * @var int[]
+     * @var bool[]
      */
     protected static $emptyBoxItemOrientationCache = [];
 
     /**
-     * @var int[]
+     * @var bool[]
      */
     protected static $emptyBoxStableItemOrientationCache = [];
 
@@ -136,7 +136,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         return $orientations;
     }
 
-    public function getPossibleOrientationsInEmptyBox(Item $item): int
+    public function hasPossibleOrientationsInEmptyBox(Item $item): bool
     {
         $cacheKey = $item->getWidth() .
             '|' .
@@ -167,7 +167,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             0,
             new PackedItemList()
         );
-        static::$emptyBoxItemOrientationCache[$cacheKey] = count($orientations);
+        static::$emptyBoxItemOrientationCache[$cacheKey] = count($orientations) > 0;
 
         return static::$emptyBoxItemOrientationCache[$cacheKey];
     }
@@ -199,11 +199,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
             return $stableOrientations;
         }
 
-        if (count($unstableOrientations) > 0) {
-            $stableOrientationsInEmptyBox = $this->getStableOrientationsInEmptyBox($item);
-            if ($stableOrientationsInEmptyBox === 0) {
-                return $unstableOrientations;
-            }
+        if ((count($unstableOrientations) > 0) && !$this->hasStableOrientationsInEmptyBox($item)) {
+            return $unstableOrientations;
         }
 
         return [];
@@ -212,7 +209,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
      */
-    protected function getStableOrientationsInEmptyBox(Item $item): int
+    protected function hasStableOrientationsInEmptyBox(Item $item): bool
     {
         $cacheKey = $item->getWidth() .
             '|' .
@@ -250,7 +247,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 return $orientation->isStable();
             }
         );
-        static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations);
+        static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations) > 0;
 
         return static::$emptyBoxStableItemOrientationCache[$cacheKey];
     }
