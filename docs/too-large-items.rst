@@ -6,14 +6,14 @@ best handled by you and your own code as the appropriate way to to handle a fail
 There is no attempt made to handle/recover from them internally.
 
 This includes the case where there are no boxes large enough to pack a particular item. The normal operation of the Packer
-class is to throw an ``ItemTooLargeException``. If your application has well-defined logging and monitoring it may be
+class is to throw an ``NoBoxesAvailableException``. If your application has well-defined logging and monitoring it may be
 sufficient to simply allow the exception to bubble up to your generic handling layer and handle like any other runtime failure.
 Alternatively, you may wish to catch it explicitly and have domain-specific handling logic e.g.
 
 .. code-block:: php
 
     <?php
-        use DVDoug\BoxPacker\ItemTooLargeException;
+        use DVDoug\BoxPacker\NoBoxesAvailableException;
         use DVDoug\BoxPacker\Packer;
         use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
         use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
@@ -29,7 +29,7 @@ Alternatively, you may wish to catch it explicitly and have domain-specific hand
             $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, true));
 
             $packedBoxes = $packer->pack();
-        } catch (ItemTooLargeException $e) {
+        } catch (NoBoxesAvailableException $e) {
             $problemItem = $e->getItem(); //the custom exception allows you to retrieve the affected item
             // pause dispatch, email someone or any other handling of your choosing
         }
@@ -38,7 +38,7 @@ For some applications the ability/requirement to do their own handling of this c
 problematic, e.g. if some items being too large and requiring special handling is a normal situation for that particular business.
 
 BoxPacker also supports this workflow with the ``InfalliblePacker``. This class extends the base ``Packer`` and automatically
-handles any ``ItemTooLargeExceptions``. It can be used like this:
+handles any ``NoBoxesAvailableException``. It can be used like this:
 
 .. code-block:: php
 
