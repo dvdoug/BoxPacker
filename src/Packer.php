@@ -142,7 +142,6 @@ class Packer implements LoggerAwareInterface
      */
     public function pack(): PackedBoxList
     {
-        $this->sanityPrecheck();
         $packedBoxes = $this->doVolumePacking();
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
@@ -244,25 +243,6 @@ class Packer implements LoggerAwareInterface
         usort($packedBoxes, [$this, 'compare']);
 
         return $packedBoxes[0];
-    }
-
-    private function sanityPrecheck(): void
-    {
-        /** @var Item $item */
-        foreach ($this->items as $item) {
-            $possibleFits = 0;
-
-            /** @var Box $box */
-            foreach ($this->boxes as $box) {
-                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight())) {
-                    $possibleFits += count((new OrientatedItemFactory($box))->getPossibleOrientationsInEmptyBox($item));
-                }
-            }
-
-            if ($possibleFits === 0) {
-                throw new ItemTooLargeException("Item '{$item->getDescription()}' is too large to fit into any box", $item);
-            }
-        }
     }
 
     private static function compare(PackedBox $boxA, PackedBox $boxB): int

@@ -36,9 +36,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected $singlePassMode = false;
 
     /**
-     * @var OrientatedItem[]
+     * @var int[]
      */
-    protected static $emptyBoxCache = [];
+    protected static $emptyBoxItemOrientationCache = [];
 
     /**
      * @var int[]
@@ -136,10 +136,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         return $orientations;
     }
 
-    /**
-     * @return OrientatedItem[]
-     */
-    public function getPossibleOrientationsInEmptyBox(Item $item): array
+    public function getPossibleOrientationsInEmptyBox(Item $item): int
     {
         $cacheKey = $item->getWidth() .
             '|' .
@@ -155,24 +152,24 @@ class OrientatedItemFactory implements LoggerAwareInterface
             '|' .
             $this->box->getInnerDepth();
 
-        if (isset(static::$emptyBoxCache[$cacheKey])) {
-            $orientations = static::$emptyBoxCache[$cacheKey];
-        } else {
-            $orientations = $this->getPossibleOrientations(
-                $item,
-                null,
-                $this->box->getInnerWidth(),
-                $this->box->getInnerLength(),
-                $this->box->getInnerDepth(),
-                0,
-                0,
-                0,
-                new PackedItemList()
-            );
-            static::$emptyBoxCache[$cacheKey] = $orientations;
+        if (isset(static::$emptyBoxItemOrientationCache[$cacheKey])) {
+            return static::$emptyBoxItemOrientationCache[$cacheKey];
         }
 
-        return $orientations;
+        $orientations = $this->getPossibleOrientations(
+            $item,
+            null,
+            $this->box->getInnerWidth(),
+            $this->box->getInnerLength(),
+            $this->box->getInnerDepth(),
+            0,
+            0,
+            0,
+            new PackedItemList()
+        );
+        static::$emptyBoxItemOrientationCache[$cacheKey] = count($orientations);
+
+        return static::$emptyBoxItemOrientationCache[$cacheKey];
     }
 
     /**

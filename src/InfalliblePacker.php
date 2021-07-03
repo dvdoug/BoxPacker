@@ -42,15 +42,22 @@ class InfalliblePacker extends Packer
      */
     public function pack(): PackedBoxList
     {
-        $itemList = clone $this->items;
+        foreach ($this->items as $item) {
+            foreach ($this->boxes as $box) {
+                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight()) && (new OrientatedItemFactory($box))->getPossibleOrientationsInEmptyBox($item)) {
+                    continue 2;
+                }
+            }
+            $this->unpackedItems->insert($item);
+            $this->items->remove($item);
+        }
 
         while (true) {
             try {
                 return parent::pack();
-            } catch (ItemTooLargeException $e) {
+            } catch (NoBoxesAvailableException $e) {
                 $this->unpackedItems->insert($e->getItem());
-                $itemList->remove($e->getItem());
-                $this->setItems($itemList);
+                $this->items->remove($e->getItem());
             }
         }
     }
