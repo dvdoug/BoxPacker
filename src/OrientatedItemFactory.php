@@ -40,6 +40,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     protected static $emptyBoxCache = [];
 
+    /**
+     * @var int[]
+     */
+    protected static $emptyBoxStableItemOrientationCache = [];
+
     public function __construct(Box $box)
     {
         $this->box = $box;
@@ -199,8 +204,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         if (count($unstableOrientations) > 0) {
             $stableOrientationsInEmptyBox = $this->getStableOrientationsInEmptyBox($item);
-
-            if (count($stableOrientationsInEmptyBox) === 0) {
+            if ($stableOrientationsInEmptyBox === 0) {
                 return $unstableOrientations;
             }
         }
@@ -211,16 +215,47 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
      */
-    protected function getStableOrientationsInEmptyBox(Item $item): array
+    protected function getStableOrientationsInEmptyBox(Item $item): int
     {
-        $orientationsInEmptyBox = $this->getPossibleOrientationsInEmptyBox($item);
+        $cacheKey = $item->getWidth() .
+            '|' .
+            $item->getLength() .
+            '|' .
+            $item->getDepth() .
+            '|' .
+            ($item->getKeepFlat() ? '2D' : '3D') .
+            '|' .
+            $this->box->getInnerWidth() .
+            '|' .
+            $this->box->getInnerLength() .
+            '|' .
+            $this->box->getInnerDepth();
 
-        return array_filter(
-            $orientationsInEmptyBox,
-            function (OrientatedItem $orientation) {
+        if (isset(static::$emptyBoxStableItemOrientationCache[$cacheKey])) {
+            return static::$emptyBoxStableItemOrientationCache[$cacheKey];
+        }
+
+        $orientations = $this->getPossibleOrientations(
+            $item,
+            null,
+            $this->box->getInnerWidth(),
+            $this->box->getInnerLength(),
+            $this->box->getInnerDepth(),
+            0,
+            0,
+            0,
+            new PackedItemList()
+        );
+
+        $stableOrientations = array_filter(
+            $orientations,
+            static function (OrientatedItem $orientation) {
                 return $orientation->isStable();
             }
         );
+        static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations);
+
+        return static::$emptyBoxStableItemOrientationCache[$cacheKey];
     }
 
     private function generatePermutations(Item $item, ?OrientatedItem $prevItem): array
