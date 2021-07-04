@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use function json_encode;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 
@@ -77,10 +78,25 @@ class PackedBoxTest extends TestCase
         //inspect cache, then poke at the value and see if it's returned correctly
         $cachedValue = new ReflectionProperty($packedBox, 'itemWeight');
         $cachedValue->setAccessible(true);
-        $cachedValue->getValue($packedBox);
         self::assertEquals(10, $cachedValue->getValue($packedBox));
 
         $cachedValue->setValue($packedBox, 30);
         self::assertEquals(30, $cachedValue->getValue($packedBox));
+    }
+
+    /**
+     * Test JSON representation.
+     */
+    public function testJsonSerialize(): void
+    {
+        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, true), 4, 10, 10);
+
+        $boxItems = new PackedItemList();
+        $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
+
+        $packedBox = new PackedBox($box, $boxItems);
+
+        self::assertJsonStringEqualsJsonString('{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"keepFlat":true}}]}', json_encode($packedBox));
     }
 }

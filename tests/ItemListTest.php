@@ -79,6 +79,9 @@ class ItemListTest extends TestCase
         $item3 = new TestItem('Item C', 20, 20, 2, 100, true);
         $itemList->insert($item3);
         self::assertCount(3, $itemList);
+
+        $itemList->remove($item2);
+        self::assertCount(2, $itemList);
     }
 
     /**

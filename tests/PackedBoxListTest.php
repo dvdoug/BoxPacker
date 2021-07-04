@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use function json_encode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -170,5 +171,24 @@ class PackedBoxListTest extends TestCase
         $packedBoxList->insert($packedBoxB);
 
         self::assertEquals(15, $packedBoxList->getMeanWeight());
+    }
+
+    /**
+     * Test JSON representation.
+     */
+    public function testJsonSerialize(): void
+    {
+        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, true), 4, 10, 10);
+
+        $boxItems = new PackedItemList();
+        $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
+
+        $packedBox = new PackedBox($box, $boxItems);
+
+        $packedBoxList = new PackedBoxList();
+        $packedBoxList->insert($packedBox);
+
+        self::assertJsonStringEqualsJsonString('[{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"keepFlat":true}}]}]', json_encode($packedBoxList));
     }
 }

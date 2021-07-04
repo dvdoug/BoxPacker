@@ -564,11 +564,13 @@ class PackerTest extends TestCase
         $packer->setMaxBoxesToBalanceWeight(0);
         $packer->addBox(new TestBox('Box 2.5-1', 30, 20, 20, 2, 30, 20, 20, 1000));
 
-        $packer->addItem(new TestItem('Item 1', 20, 20, 2, 0, false), 4);
-        $packer->addItem(new TestItem('Item 2', 8, 3, 2, 0, false), 5);
-        $packer->addItem(new TestItem('Item 3', 10, 10, 10, 0, false), 4);
-        $packer->addItem(new TestItem('Item 4', 12, 12, 10, 0, false), 2);
-        $packer->addItem(new TestItem('Item 5', 6, 4, 2, 0, false), 2);
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 20, 20, 2, 0, false), 4);
+        $itemList->insert(new TestItem('Item 2', 8, 3, 2, 0, false), 5);
+        $itemList->insert(new TestItem('Item 3', 10, 10, 10, 0, false), 4);
+        $itemList->insert(new TestItem('Item 4', 12, 12, 10, 0, false), 2);
+        $itemList->insert(new TestItem('Item 5', 6, 4, 2, 0, false), 2);
+        $packer->setItems($itemList);
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use function iterator_to_array;
@@ -15,6 +16,37 @@ use PHPUnit\Framework\TestCase;
 
 class InfalliblePackerTest extends TestCase
 {
+    public function testTooLargeItemsHandled(): void
+    {
+        $packer = new InfalliblePacker();
+        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
+        $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
+        $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, true));
+        $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, true));
+        $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, true));
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+        self::assertCount(2, $packedBoxes->top()->getItems());
+        self::assertCount(1, $packer->getUnpackedItems());
+    }
+
+    public function testUnpackableItemsHandled(): void
+    {
+        $packer = new InfalliblePacker();
+        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
+        $packer->addBox(new LimitedSupplyTestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000, 0));
+        $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, true));
+        $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, true));
+        $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, true));
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(0, $packedBoxes);
+        self::assertCount(3, $packer->getUnpackedItems());
+    }
+
     /**
      * From issue #182.
      * @group efficiency
