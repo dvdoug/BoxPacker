@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use DVDoug\BoxPacker\Exception\ItemTooLargeException;
 use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
@@ -22,7 +21,7 @@ class PackerTest extends TestCase
 {
     public function testPackThreeItemsOneDoesntFitInAnyBox(): void
     {
-        $this->expectException(ItemTooLargeException::class);
+        $this->expectException(NoBoxesAvailableException::class);
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
         $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
 
@@ -41,10 +40,10 @@ class PackerTest extends TestCase
 
     public function testPackWithoutBox(): void
     {
-        $this->expectException(ItemTooLargeException::class);
-        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
-        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
-        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
+        $this->expectException(NoBoxesAvailableException::class);
+        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, Item::ROTATION_BEST_FIT);
+        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, Item::ROTATION_BEST_FIT);
+        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, Item::ROTATION_BEST_FIT);
 
         $packer = new Packer();
         $packer->addItem($item1);
@@ -566,11 +565,33 @@ class PackerTest extends TestCase
         $packer->setMaxBoxesToBalanceWeight(0);
         $packer->addBox(new TestBox('Box 2.5-1', 30, 20, 20, 2, 30, 20, 20, 1000));
 
-        $packer->addItem(new TestItem('Item 1', 20, 20, 2, 0, Item::ROTATION_BEST_FIT), 4);
-        $packer->addItem(new TestItem('Item 2', 8, 3, 2, 0, Item::ROTATION_BEST_FIT), 5);
-        $packer->addItem(new TestItem('Item 3', 10, 10, 10, 0, Item::ROTATION_BEST_FIT), 4);
-        $packer->addItem(new TestItem('Item 4', 12, 12, 10, 0, Item::ROTATION_BEST_FIT), 2);
-        $packer->addItem(new TestItem('Item 5', 6, 4, 2, 0, Item::ROTATION_BEST_FIT), 2);
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('Item 1', 20, 20, 2, 0, Item::ROTATION_BEST_FIT), 4);
+        $itemList->insert(new TestItem('Item 2', 8, 3, 2, 0, Item::ROTATION_BEST_FIT), 5);
+        $itemList->insert(new TestItem('Item 3', 10, 10, 10, 0, Item::ROTATION_BEST_FIT), 4);
+        $itemList->insert(new TestItem('Item 4', 12, 12, 10, 0, Item::ROTATION_BEST_FIT), 2);
+        $itemList->insert(new TestItem('Item 5', 6, 4, 2, 0, Item::ROTATION_BEST_FIT), 2);
+        $packer->setItems($itemList);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue244(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('11', 4400, 1400, 3400, 0, 4600, 1600, 3600, 30000));
+        $packer->addItem(new TestItem('Shakes', 900, 95, 1500, 34, Item::ROTATION_BEST_FIT), 6);
+        $packer->addItem(new TestItem('Bars', 356, 170, 1056, 56, Item::ROTATION_BEST_FIT), 6);
+        $packer->addItem(new TestItem('Noodles', 1250, 140, 1650, 45, Item::ROTATION_BEST_FIT), 6);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, Item::ROTATION_BEST_FIT), 6);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, Item::ROTATION_BEST_FIT), 6);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, Item::ROTATION_BEST_FIT), 3);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, Item::ROTATION_BEST_FIT), 4);
+        $packer->addItem(new TestItem('Soups', 1000, 60, 1400, 35, Item::ROTATION_BEST_FIT), 2);
+        $packer->addItem(new TestItem('Cereals', 850, 60, 1400, 40, Item::ROTATION_BEST_FIT), 3);
+        $packer->addItem(new TestItem('Snacks', 1600, 300, 2000, 30, Item::ROTATION_BEST_FIT), 1);
+
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);

@@ -12,6 +12,7 @@ namespace DVDoug\BoxPacker\Exception;
 /**
  * Class ItemTooLargeException
  * Exception used when an item is too large to pack into any box.
+ * @deprecated now unused, just catch NoBoxesAvailableException
  */
 class ItemTooLargeException extends NoBoxesAvailableException
 {

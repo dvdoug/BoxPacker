@@ -122,6 +122,9 @@ class PackedItem implements JsonSerializable
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function toOrientatedItem(): OrientatedItem
     {
         return new OrientatedItem($this->item, $this->width, $this->length, $this->depth);

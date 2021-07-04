@@ -21,7 +21,7 @@ class OrientatedItemFactoryTest extends TestCase
         $factory = new OrientatedItemFactory($box);
 
         $item = new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_BEST_FIT);
-        $orientations = $factory->getPossibleOrientationsInEmptyBox($item);
+        $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
 
         self::assertCount(6, $orientations);
 
@@ -56,7 +56,7 @@ class OrientatedItemFactoryTest extends TestCase
         $factory = new OrientatedItemFactory($box);
 
         $item = new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_KEEP_FLAT);
-        $orientations = $factory->getPossibleOrientationsInEmptyBox($item);
+        $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
 
         self::assertCount(2, $orientations);
 
@@ -75,7 +75,7 @@ class OrientatedItemFactoryTest extends TestCase
         $factory = new OrientatedItemFactory($box);
 
         $item = new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_NEVER);
-        $orientations = $factory->getPossibleOrientationsInEmptyBox($item);
+        $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
 
         self::assertCount(1, $orientations);
 

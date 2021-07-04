@@ -8,14 +8,11 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use DVDoug\BoxPacker\Exception\ItemTooLargeException;
+use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \DVDoug\BoxPacker\Exception\ItemTooLargeException
- */
-class ItemTooLargeExceptionTest extends TestCase
+class NoBoxesAvailableExceptionTest extends TestCase
 {
     /**
      * Test that the offending item can be retrieved from the object.
@@ -24,7 +21,7 @@ class ItemTooLargeExceptionTest extends TestCase
     {
         $item = new TestItem('Item 1', 2500, 2500, 20, 2000, TestItem::ROTATION_BEST_FIT);
 
-        $exception = new ItemTooLargeException('Just testing...', $item);
+        $exception = new NoBoxesAvailableException('Just testing...', $item);
         self::assertEquals($item, $exception->getItem());
     }
 }
