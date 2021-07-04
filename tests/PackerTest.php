@@ -575,4 +575,23 @@ class PackerTest extends TestCase
 
         self::assertCount(1, $packedBoxes);
     }
+
+    public function testIssue244(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('11', 4400, 1400, 3400, 0, 4600, 1600, 3600, 30000));
+        $packer->addItem(new TestItem('Shakes', 900, 95, 1500, 34, false), 6);
+        $packer->addItem(new TestItem('Bars', 356, 170, 1056, 56, false), 6);
+        $packer->addItem(new TestItem('Noodles', 1250, 140, 1650, 45, false), 6);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, false), 6);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, false), 6);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, false), 3);
+        $packer->addItem(new TestItem('Ready Meals', 1250, 285, 1600, 270, false), 4);
+        $packer->addItem(new TestItem('Soups', 1000, 60, 1400, 35, false), 2);
+        $packer->addItem(new TestItem('Cereals', 850, 60, 1400, 40, false), 3);
+        $packer->addItem(new TestItem('Snacks', 1600, 300, 2000, 30, false), 1);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
 }
