@@ -18,6 +18,15 @@
 
 ## [3.x - Unreleased] - 2021-xx-xx
 
+## [3.9.2] - 2021-07-04
+### Added
+- Optional second parameter `$qty` to `ItemList->insert`
+### Fixed
+- Fixed issue where available width for an item could be miscalculated
+### Changed
+- Improved memory usage
+
+
 ## [3.9.1] - 2021-05-05
 ### Fixed
 - Fixed issue where available width for an item could be miscalculated at the far end of a box
@@ -482,8 +491,9 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.1...3.x
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.x
 
+[3.9.2]: https://github.com/dvdoug/BoxPacker/compare/3.9.1...3.9.2
 [3.9.1]: https://github.com/dvdoug/BoxPacker/compare/3.9.0...3.9.1
 [3.9.0]: https://github.com/dvdoug/BoxPacker/compare/3.8.0...3.9.0
 [3.8.0]: https://github.com/dvdoug/BoxPacker/compare/3.7.0...3.8.0
