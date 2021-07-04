@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use function count;
+
 /**
  * A version of the packer that swallows internal exceptions.
  *
@@ -42,16 +44,7 @@ class InfalliblePacker extends Packer
      */
     public function pack(): PackedBoxList
     {
-        foreach ($this->items as $item) {
-            foreach ($this->boxes as $box) {
-                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight()) && (new OrientatedItemFactory($box))->hasPossibleOrientationsInEmptyBox($item)) {
-                    continue 2;
-                }
-            }
-            $this->unpackedItems->insert($item);
-            $this->items->remove($item);
-        }
-
+        $this->sanityPrecheck();
         while (true) {
             try {
                 return parent::pack();
@@ -59,6 +52,30 @@ class InfalliblePacker extends Packer
                 $this->unpackedItems->insert($e->getItem());
                 $this->items->remove($e->getItem());
             }
+        }
+    }
+
+    private function sanityPrecheck(): void
+    {
+        $cache = [];
+
+        foreach ($this->items as $item) {
+            $cacheKey = $item->getWidth() .
+                '|' .
+                $item->getLength() .
+                '|' .
+                $item->getDepth() .
+                '|' .
+                ($item->getKeepFlat() ? '2D' : '3D');
+
+            foreach ($this->boxes as $box) {
+                if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight()) && (isset($cache[$cacheKey]) || (count((new OrientatedItemFactory($box))->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList())) > 0))) {
+                    $cache[$cacheKey] = true;
+                    continue 2;
+                }
+            }
+            $this->unpackedItems->insert($item);
+            $this->items->remove($item);
         }
     }
 }

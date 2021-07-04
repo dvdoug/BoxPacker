@@ -38,11 +38,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
     /**
      * @var bool[]
      */
-    protected static $emptyBoxItemOrientationCache = [];
-
-    /**
-     * @var bool[]
-     */
     protected static $emptyBoxStableItemOrientationCache = [];
 
     public function __construct(Box $box)
@@ -134,42 +129,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         return $orientations;
-    }
-
-    public function hasPossibleOrientationsInEmptyBox(Item $item): bool
-    {
-        $cacheKey = $item->getWidth() .
-            '|' .
-            $item->getLength() .
-            '|' .
-            $item->getDepth() .
-            '|' .
-            ($item->getKeepFlat() ? '2D' : '3D') .
-            '|' .
-            $this->box->getInnerWidth() .
-            '|' .
-            $this->box->getInnerLength() .
-            '|' .
-            $this->box->getInnerDepth();
-
-        if (isset(static::$emptyBoxItemOrientationCache[$cacheKey])) {
-            return static::$emptyBoxItemOrientationCache[$cacheKey];
-        }
-
-        $orientations = $this->getPossibleOrientations(
-            $item,
-            null,
-            $this->box->getInnerWidth(),
-            $this->box->getInnerLength(),
-            $this->box->getInnerDepth(),
-            0,
-            0,
-            0,
-            new PackedItemList()
-        );
-        static::$emptyBoxItemOrientationCache[$cacheKey] = count($orientations) > 0;
-
-        return static::$emptyBoxItemOrientationCache[$cacheKey];
     }
 
     /**
