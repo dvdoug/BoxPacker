@@ -229,17 +229,17 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $l = $item->getLength();
         $d = $item->getDepth();
 
-        $permutations[$w . $l . $d] = [$w, $l, $d];
+        $permutations[$w . '|' . $l . '|' . $d] = [$w, $l, $d];
 
         if ($item->getAllowedRotations() > 1) { //simple 2D rotation
-            $permutations[$l . $w . $d] = [$l, $w, $d];
+            $permutations[$l . '|' . $w . '|' . $d] = [$l, $w, $d];
         }
 
         if ($item->getAllowedRotations() === Item::ROTATION_BEST_FIT) { //add 3D rotation if we're allowed
-            $permutations[$w . $d . $l] = [$w, $d, $l];
-            $permutations[$l . $d . $w] = [$l, $d, $w];
-            $permutations[$d . $w . $l] = [$d, $w, $l];
-            $permutations[$d . $l . $w] = [$d, $l, $w];
+            $permutations[$w . '|' . $d . '|' . $l] = [$w, $d, $l];
+            $permutations[$l . '|' . $d . '|' . $w] = [$l, $d, $w];
+            $permutations[$d . '|' . $w . '|' . $l] = [$d, $w, $l];
+            $permutations[$d . '|' . $l . '|' . $w] = [$d, $l, $w];
         }
 
         return $permutations;
