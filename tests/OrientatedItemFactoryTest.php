@@ -15,6 +15,17 @@ use PHPUnit\Framework\TestCase;
 
 class OrientatedItemFactoryTest extends TestCase
 {
+    public function testAllRotationsCount(): void
+    {
+        $box = new TestBox('Box', PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, 0, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX);
+        $factory = new OrientatedItemFactory($box);
+
+        $item = new TestItem('Test', 4, 44, 41, 4, TestItem::ROTATION_BEST_FIT);
+        $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
+
+        self::assertCount(6, $orientations);
+    }
+
     public function testAllRotations(): void
     {
         $box = new TestBox('Box', PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, 0, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX);
