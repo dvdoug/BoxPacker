@@ -224,15 +224,15 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $d = $item->getDepth();
 
         //simple 2D rotation
-        $permutations[$w . $l . $d] = [$w, $l, $d];
-        $permutations[$l . $w . $d] = [$l, $w, $d];
+        $permutations[$w . '|' . $l . '|' . $d] = [$w, $l, $d];
+        $permutations[$l . '|' . $w . '|' . $d] = [$l, $w, $d];
 
         //add 3D rotation if we're allowed
         if (!$item->getKeepFlat()) {
-            $permutations[$w . $d . $l] = [$w, $d, $l];
-            $permutations[$l . $d . $w] = [$l, $d, $w];
-            $permutations[$d . $w . $l] = [$d, $w, $l];
-            $permutations[$d . $l . $w] = [$d, $l, $w];
+            $permutations[$w . '|' . $d . '|' . $l] = [$w, $d, $l];
+            $permutations[$l . '|' . $d . '|' . $w] = [$l, $d, $w];
+            $permutations[$d . '|' . $w . '|' . $l] = [$d, $w, $l];
+            $permutations[$d . '|' . $l . '|' . $w] = [$d, $l, $w];
         }
 
         return $permutations;
