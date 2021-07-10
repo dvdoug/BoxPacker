@@ -594,4 +594,28 @@ class PackerTest extends TestCase
 
         self::assertCount(1, $packedBoxes);
     }
+
+    public function testIssue248(): void
+    {
+        $items = [];
+        $packer = new Packer();
+        $packer->addBox(new LimitedSupplyTestBox('FULL_SLAB', 3150, 1520, 1, 1, 3150, 1520, 1, 10000000, 1000));
+
+        $items[] = new TestItem('Item 1', 1900, 50, 1, 1, false);
+        $items[] = new TestItem('Item 2', 700, 50, 1, 1, false);
+        $items[] = new TestItem('Item 3', 600, 50, 1, 1, false);
+        $items[] = new TestItem('Item 4', 1300, 50, 1, 1, false);
+        $items[] = new TestItem('Item 5', 1200, 200, 1, 1, false);
+        $items[] = new TestItem('Item 6', 2500, 50, 1, 1, false);
+        $items[] = new TestItem('Item 7', 900, 600, 1, 1, false);
+        $items[] = new TestItem('Item 8', 1900, 600, 1, 1, false);
+        $items[] = new TestItem('Item 9', 1300, 600, 1, 1, false);
+        $items[] = new TestItem('Item 10', 1900, 600, 1, 1, false);
+        $items[] = new TestItem('Item 11', 1500, 600, 1, 1, false);
+
+        $packer->setItems(ItemList::fromArray($items, true));
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(2, $packedBoxes);
+    }
 }
