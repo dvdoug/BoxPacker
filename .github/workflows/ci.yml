@@ -38,6 +38,7 @@ jobs:
         php-version: ${{ matrix.php-version }}
         coverage: "xdebug"
         tools: composer:v2, cs2pr
+        ini-values: "error_reporting=E_ALL, display_errors=On"
       env:
         COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -143,7 +144,7 @@ jobs:
         php-version: ${{ matrix.php-version }}
         coverage: "none"
         tools: composer:v2
-        ini-values: opcache.enable=1, opcache.enable_cli=1, opcache.jit=1205, opcache.jit_buffer_size=128M
+        ini-values: "opcache.enable=1, opcache.enable_cli=1, opcache.jit=1205, opcache.jit_buffer_size=128M, error_reporting=E_ALL, display_errors=On"
       env:
         COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
