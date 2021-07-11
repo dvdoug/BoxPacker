@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use JsonSerializable;
+use ReturnTypeWillChange;
 
 /**
  * Class WorkingVolume.
@@ -96,10 +97,8 @@ class WorkingVolume implements Box, JsonSerializable
         return $this->maxWeight;
     }
 
-    /**
-     * @return array<string, int|string>
-     */
-    public function jsonSerialize(): array
+    #[ReturnTypeWillChange]
+    public function jsonSerialize()/*: mixed*/
     {
         return [
             'reference' => $this->getReference(),

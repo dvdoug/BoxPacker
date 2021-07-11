@@ -14,6 +14,7 @@ use Countable;
 use IteratorAggregate;
 use JsonSerializable;
 use function reset;
+use ReturnTypeWillChange;
 use function round;
 use Traversable;
 use function usort;
@@ -173,7 +174,8 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
         return round($itemVolume / $boxVolume * 100, 1);
     }
 
-    public function jsonSerialize(): array
+    #[ReturnTypeWillChange]
+    public function jsonSerialize()/*: mixed*/
     {
         return $this->list;
     }

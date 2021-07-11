@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use JsonSerializable;
+use ReturnTypeWillChange;
 
 /**
  * A packed item.
@@ -122,7 +123,8 @@ class PackedItem implements JsonSerializable
         );
     }
 
-    public function jsonSerialize(): array
+    #[ReturnTypeWillChange]
+    public function jsonSerialize()/*: mixed*/
     {
         return [
             'x' => $this->x,
