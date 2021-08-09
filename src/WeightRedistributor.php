@@ -14,8 +14,6 @@ use function array_merge;
 use function array_sum;
 use function count;
 use function iterator_to_array;
-use function max;
-use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -151,7 +149,7 @@ class WeightRedistributor implements LoggerAwareInterface
             $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] - 1;
             $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] - 1;
             $underWeightBox = $boxB = $newLighterBoxes->top();
-            $boxA = $newHeavierBoxes->top();
+            $overWeightBox = $boxA = $newHeavierBoxes->top();
 
             $anyIterationSuccessful = true;
         }
@@ -169,7 +167,7 @@ class WeightRedistributor implements LoggerAwareInterface
         foreach ($this->boxes as $box) {
             $packer->setBoxQuantity($box, $this->boxesQtyAvailable[$box]);
         }
-        $packer->setBoxQuantity($currentBox, max(PHP_INT_MAX, $this->boxesQtyAvailable[$currentBox] + 1));
+        $packer->setBoxQuantity($currentBox, $this->boxesQtyAvailable[$currentBox] + 1);
         $packer->setItems($items);
 
         return $packer->doVolumePacking(true, true);
