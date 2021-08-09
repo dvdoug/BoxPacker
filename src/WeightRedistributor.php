@@ -14,8 +14,6 @@ use function array_merge;
 use function array_sum;
 use function count;
 use function iterator_to_array;
-use function max;
-use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -134,7 +132,7 @@ class WeightRedistributor implements LoggerAwareInterface
             if (count($overWeightBoxItems) === 1) { //sometimes a repack can be efficient enough to eliminate a box
                 $boxB = $newLighterBoxes->top();
                 $boxA = null;
-                --$this->boxesQtyAvailable[spl_object_id($boxB->getBox())];
+                --$this->boxesQtyAvailable[spl_object_id($underWeightBox->getBox())];
                 ++$this->boxesQtyAvailable[spl_object_id($overWeightBox->getBox())];
 
                 return true;
@@ -146,12 +144,12 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
             }
 
-            ++$this->boxesQtyAvailable[spl_object_id($boxA->getBox())];
-            ++$this->boxesQtyAvailable[spl_object_id($boxB->getBox())];
+            ++$this->boxesQtyAvailable[spl_object_id($overWeightBox->getBox())];
+            ++$this->boxesQtyAvailable[spl_object_id($underWeightBox->getBox())];
             --$this->boxesQtyAvailable[spl_object_id($newHeavierBoxes->top()->getBox())];
             --$this->boxesQtyAvailable[spl_object_id($newLighterBoxes->top()->getBox())];
             $underWeightBox = $boxB = $newLighterBoxes->top();
-            $boxA = $newHeavierBoxes->top();
+            $overWeightBox = $boxA = $newHeavierBoxes->top();
 
             $anyIterationSuccessful = true;
         }
@@ -170,7 +168,7 @@ class WeightRedistributor implements LoggerAwareInterface
         foreach ($this->boxes as $box) {
             $packer->setBoxQuantity($box, $this->boxesQtyAvailable[spl_object_id($box)]);
         }
-        $packer->setBoxQuantity($currentBox, max(PHP_INT_MAX, $this->boxesQtyAvailable[spl_object_id($currentBox)] + 1));
+        $packer->setBoxQuantity($currentBox, $this->boxesQtyAvailable[spl_object_id($currentBox)] + 1);
         $packer->setItems($items);
 
         return $packer->doVolumePacking(true, true);
