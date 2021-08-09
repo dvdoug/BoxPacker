@@ -134,7 +134,7 @@ class WeightRedistributor implements LoggerAwareInterface
             if (count($overWeightBoxItems) === 1) { //sometimes a repack can be efficient enough to eliminate a box
                 $boxB = $newLighterBoxes->top();
                 $boxA = null;
-                $this->boxesQtyAvailable[$boxB->getBox()] = $this->boxesQtyAvailable[$boxB->getBox()] - 1;
+                $this->boxesQtyAvailable[$underWeightBox->getBox()] = $this->boxesQtyAvailable[$underWeightBox->getBox()] - 1;
                 $this->boxesQtyAvailable[$overWeightBox->getBox()] = $this->boxesQtyAvailable[$overWeightBox->getBox()] + 1;
 
                 return true;
@@ -146,8 +146,8 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
             }
 
-            $this->boxesQtyAvailable[$boxA->getBox()] = $this->boxesQtyAvailable[$boxA->getBox()] + 1;
-            $this->boxesQtyAvailable[$boxB->getBox()] = $this->boxesQtyAvailable[$boxB->getBox()] + 1;
+            $this->boxesQtyAvailable[$overWeightBox->getBox()] = $this->boxesQtyAvailable[$overWeightBox->getBox()] + 1;
+            $this->boxesQtyAvailable[$underWeightBox->getBox()] = $this->boxesQtyAvailable[$underWeightBox->getBox()] + 1;
             $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newHeavierBoxes->top()->getBox()] - 1;
             $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] = $this->boxesQtyAvailable[$newLighterBoxes->top()->getBox()] - 1;
             $underWeightBox = $boxB = $newLighterBoxes->top();
