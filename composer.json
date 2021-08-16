@@ -14,7 +14,7 @@
     "require": {
         "php": "^7.3||^8.0",
         "ext-json": "*",
-        "psr/log": "^1.1"
+        "psr/log": "^1.1 || ^2.0 || ^3.0"
     },
     "require-dev": {
         "behat/behat": "^3.8.1",
