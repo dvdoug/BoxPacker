@@ -69,7 +69,7 @@ jobs:
         restore-keys: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}"
 
     - name: Remove PHP-CS-Fixer if not called
-      if: matrix.php-version != '7.4' || matrix.dependencies != 'highest'
+      if: matrix.php-version != '8.0' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
 
     - name: Fix min version for PHP8
@@ -92,25 +92,24 @@ jobs:
         composer config minimum-stability dev;
         composer update --no-interaction --prefer-dist --ignore-platform-reqs;
 
-    - name: Check code style
-      if: matrix.php-version == '7.4' && matrix.dependencies == 'highest'
-      run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --allow-risky=yes --format=checkstyle | cs2pr
-
     - name: PHPUnit (Xdebug)
       run: |
         php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
-        if [ "${{ matrix.php-version }}" = "7.4" ]; then
-          wget https://scrutinizer-ci.com/ocular.phar;
-          php ocular.phar code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
+        if [ "${{ matrix.php-version }}" = "8.0" ]; then
+          composer global require scrutinizer/ocular;
+          ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
         fi;
 
     - name: Behat (Xdebug)
       run: |
         php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
-        if [ "${{ matrix.php-version }}" = "7.4" ]; then
-          wget https://scrutinizer-ci.com/ocular.phar;
-          php ocular.phar code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
+        if [ "${{ matrix.php-version }}" = "8.0" ]; then
+          ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
         fi;
+
+    - name: Check code style
+      if: matrix.php-version == '8.0' && matrix.dependencies == 'highest'
+      run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --allow-risky=yes --format=checkstyle | cs2pr
 
 
   speedrun:
