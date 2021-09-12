@@ -15,6 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
+          - "8.1"
           - "8.0"
           - "7.4"
           - "7.3"
@@ -22,12 +23,9 @@ jobs:
           - "7.1"
 
         dependencies:
-          - highest
-          - lowest
-
-        include:
-          - php-version: "8.1"
-            dependencies: "force_latest"
+          - "highest"
+          - "lowest"
+          - "force_latest"
 
     steps:
     - uses: actions/checkout@v2
@@ -76,7 +74,7 @@ jobs:
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
 
     - name: Fix min version for PHP8
-      if: matrix.php-version == '8.0'
+      if: matrix.php-version == '8.0' || matrix.php-version == '8.1'
       run: |
         composer require --dev --no-update "dvdoug/behat-code-coverage ^5.2";
         composer require --dev --no-update "behat/behat ^3.8";
@@ -128,6 +126,7 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
+          - "8.1"
           - "8.0"
           - "7.4"
           - "7.3"
@@ -135,12 +134,9 @@ jobs:
           - "7.1"
 
         dependencies:
-          - highest
-          - lowest
-
-        include:
-          - php-version: "8.1"
-            dependencies: "force_latest"
+          - "highest"
+          - "lowest"
+          - "force_latest"
 
     steps:
     - uses: actions/checkout@v2
