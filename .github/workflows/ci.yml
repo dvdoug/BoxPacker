@@ -27,6 +27,13 @@ jobs:
           - "lowest"
           - "force_latest"
 
+        exclude:
+          - php-version: "7.1"
+            dependencies: "force_latest" #PHPUnit has runtime checks
+
+          - php-version: "7.2"
+            dependencies: "force_latest" #PHPUnit has runtime checks
+
     steps:
     - uses: actions/checkout@v2
       with:
@@ -139,6 +146,13 @@ jobs:
           - "highest"
           - "lowest"
           - "force_latest"
+
+        exclude:
+          - php-version: "7.1"
+            dependencies: "force_latest" #PHPUnit has runtime checks
+
+          - php-version: "7.2"
+            dependencies: "force_latest" #PHPUnit has runtime checks
 
     steps:
     - uses: actions/checkout@v2
