@@ -107,19 +107,23 @@ jobs:
         composer update --no-interaction --prefer-dist --ignore-platform-reqs;
         composer show;
 
-    - name: PHPUnit (Xdebug)
+    - name: PHPUnit
       run: |
-        php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
-        if [ "${{ matrix.php-version }}" = "8.0" ]; then
+        if [ "${{ matrix.php-version }}" = "8.0" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+          php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
           composer global require scrutinizer/ocular;
           ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
+        else
+          php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency --no-coverage;
         fi;
 
-    - name: Behat (Xdebug)
+    - name: Behat
       run: |
-        php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
-        if [ "${{ matrix.php-version }}" = "8.0" ]; then
+        if [ "${{ matrix.php-version }}" = "8.0" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+          php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
           ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
+        else
+          php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict --no-coverage;
         fi;
 
     - name: Check code style
@@ -222,4 +226,4 @@ jobs:
       run: vendor/bin/phpunit --no-coverage;
 
     - name: Behat (no coverage)
-      run: vendor/bin/behat --strict;
+      run: vendor/bin/behat --strict --no-coverage;
