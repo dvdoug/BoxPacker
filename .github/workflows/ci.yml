@@ -15,20 +15,20 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
+          - "8.1"
           - "8.0"
           - "7.4"
           - "7.3"
 
         dependencies:
-          - highest
-          - lowest
-
-        include:
-          - php-version: "8.1"
-            dependencies: "force_latest"
+          - "highest"
+          - "lowest"
+          - "force_latest"
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
 
     - name: "Setup PHP"
       uses: "shivammathur/setup-php@v2"
@@ -51,7 +51,7 @@ jobs:
       run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
     - name: Validate composer.json
-      run: composer validate
+      run: composer validate --strict
 
     - name: Get composer cache directory
       id: composercache
@@ -63,50 +63,61 @@ jobs:
         path: |
           ${{ steps.composercache.outputs.dir }}
           "build/php-code-coverage-cache"
-        key: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ hashFiles('composer.json') }}"
-        restore-keys: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}"
+          ".php-cs-fixer.cache"
+        key: php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ github.ref }}
+          php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}
 
     - name: Remove PHP-CS-Fixer if not called
-      if: matrix.php-version != '7.4' || matrix.dependencies != 'highest'
+      if: matrix.php-version != '8.0' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
 
     - name: Remove Psalm if not called
-      if: matrix.php-version != '7.4' || matrix.dependencies != 'highest'
+      if: matrix.php-version != '8.0' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "vimeo/psalm";
 
     - name: Install dependencies (low)
       if: matrix.dependencies == 'lowest'
-      run: composer update --prefer-lowest --no-interaction --prefer-dist
+      run: |
+        composer update --prefer-lowest --no-interaction --prefer-dist;
+        composer show;
 
     - name: Install dependencies (high)
       if: matrix.dependencies == 'highest'
-      run: composer update --no-interaction --prefer-dist
+      run: |
+        composer update --no-interaction --prefer-dist;
+        composer show;
 
     - name: Install dependencies (force latest)
       if: matrix.dependencies == 'force_latest'
       run: |
         composer config minimum-stability dev;
         composer update --no-interaction --prefer-dist --ignore-platform-reqs;
+        composer show;
+
+    - name: PHPUnit
+      run: |
+        if [ "${{ matrix.php-version }}" = "8.0" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+          php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
+          composer global require scrutinizer/ocular;
+          ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
+        else
+          php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency --no-coverage;
+        fi;
+
+    - name: Behat
+      run: |
+        if [ "${{ matrix.php-version }}" = "8.0" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+          php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
+          ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
+        else
+          php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict --no-coverage;
+        fi;
 
     - name: Check code style
-      if: matrix.php-version == '7.4' && matrix.dependencies == 'highest'
+      if: matrix.php-version == '8.0' && matrix.dependencies == 'highest'
       run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --allow-risky=yes --format=checkstyle | cs2pr
-
-    - name: PHPUnit (Xdebug)
-      run: |
-        php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
-        if [ "${{ matrix.php-version }}" = "7.4" ]; then
-          wget https://scrutinizer-ci.com/ocular.phar;
-          php ocular.phar code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
-        fi;
-
-    - name: Behat (Xdebug)
-      run: |
-        php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
-        if [ "${{ matrix.php-version }}" = "7.4" ]; then
-          wget https://scrutinizer-ci.com/ocular.phar;
-          php ocular.phar code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
-        fi;
 
 
   speedrun:
@@ -117,17 +128,15 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
+          - "8.1"
           - "8.0"
           - "7.4"
           - "7.3"
 
         dependencies:
-          - highest
-          - lowest
-
-        include:
-          - php-version: "8.1"
-            dependencies: "force_latest"
+          - "highest"
+          - "lowest"
+          - "force_latest"
 
     steps:
     - uses: actions/checkout@v2
@@ -164,8 +173,11 @@ jobs:
         path: |
           ${{ steps.composercache.outputs.dir }}
           "build/php-code-coverage-cache"
-        key: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ hashFiles('composer.json') }}"
-        restore-keys: "php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}"
+          ".php-cs-fixer.cache"
+        key: php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}-${{ github.ref }}
+          php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}
 
     - name: Remove PHP-CS-Fixer
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
@@ -175,17 +187,22 @@ jobs:
 
     - name: Install dependencies (low)
       if: matrix.dependencies == 'lowest'
-      run: composer update --prefer-lowest --no-interaction --prefer-dist
+      run: |
+        composer update --prefer-lowest --no-interaction --prefer-dist;
+        composer show;
 
     - name: Install dependencies (high)
       if: matrix.dependencies == 'highest'
-      run: composer update --no-interaction --prefer-dist
+      run: |
+        composer update --no-interaction --prefer-dist;
+        composer show;
 
     - name: Install dependencies (force latest)
       if: matrix.dependencies == 'force_latest'
       run: |
         composer config minimum-stability dev;
         composer update --no-interaction --prefer-dist --ignore-platform-reqs;
+        composer show;
 
     - name: PHPUnit (no coverage)
       run: vendor/bin/phpunit --no-coverage;
