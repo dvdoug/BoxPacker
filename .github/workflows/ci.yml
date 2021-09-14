@@ -25,14 +25,7 @@ jobs:
         dependencies:
           - "highest"
           - "lowest"
-          - "force_latest"
-
-        exclude:
-          - php-version: "7.1"
-            dependencies: "force_latest" #PHPUnit has runtime checks
-
-          - php-version: "7.2"
-            dependencies: "force_latest" #PHPUnit has runtime checks
+          - "latest"
 
     steps:
     - uses: actions/checkout@v2
@@ -100,6 +93,13 @@ jobs:
         composer update --no-interaction --prefer-dist;
         composer show;
 
+    - name: Install dependencies (latest)
+      if: matrix.dependencies == 'latest'
+      run: |
+        composer config minimum-stability dev;
+        composer update --no-interaction --prefer-dist;
+        composer show;
+
     - name: Install dependencies (force latest)
       if: matrix.dependencies == 'force_latest'
       run: |
@@ -149,14 +149,7 @@ jobs:
         dependencies:
           - "highest"
           - "lowest"
-          - "force_latest"
-
-        exclude:
-          - php-version: "7.1"
-            dependencies: "force_latest" #PHPUnit has runtime checks
-
-          - php-version: "7.2"
-            dependencies: "force_latest" #PHPUnit has runtime checks
+          - "latest"
 
     steps:
     - uses: actions/checkout@v2
@@ -212,6 +205,13 @@ jobs:
     - name: Install dependencies (high)
       if: matrix.dependencies == 'highest'
       run: |
+        composer update --no-interaction --prefer-dist;
+        composer show;
+
+    - name: Install dependencies (latest)
+      if: matrix.dependencies == 'latest'
+      run: |
+        composer config minimum-stability dev;
         composer update --no-interaction --prefer-dist;
         composer show;
 
