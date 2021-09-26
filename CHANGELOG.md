@@ -18,6 +18,10 @@
 
 ## [3.x - Unreleased] - 2021-xx-xx
 
+## [3.9.3] - 2021-09-26
+### Fixed
+-  PHP8.1 deprecations
+
 ## [3.9.2] - 2021-07-04
 ### Added
 - Optional second parameter `$qty` to `ItemList->insert`
@@ -491,8 +495,9 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.x
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.x
 
+[3.9.3]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.9.3
 [3.9.2]: https://github.com/dvdoug/BoxPacker/compare/3.9.1...3.9.2
 [3.9.1]: https://github.com/dvdoug/BoxPacker/compare/3.9.0...3.9.1
 [3.9.0]: https://github.com/dvdoug/BoxPacker/compare/3.8.0...3.9.0
