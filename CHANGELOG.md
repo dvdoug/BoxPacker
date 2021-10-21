@@ -18,6 +18,10 @@
 
 ## [3.x - Unreleased] - 2021-xx-xx
 
+## [3.9.4] - 2021-10-21
+### Changed
+-  `psr/log` compatibility changed from `^1.0` to `^1.0||^2.0||^3.0`
+
 ## [3.9.3] - 2021-09-26
 ### Fixed
 -  PHP8.1 deprecations
@@ -495,8 +499,9 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.x
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.x
 
+[3.9.4]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.9.4
 [3.9.3]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.9.3
 [3.9.2]: https://github.com/dvdoug/BoxPacker/compare/3.9.1...3.9.2
 [3.9.1]: https://github.com/dvdoug/BoxPacker/compare/3.9.0...3.9.1
