@@ -2,7 +2,7 @@
 
 ## [3.x - Unreleased] - 2021-xx-xx
 ### Changed
--  `psr/log` compatibility changed from `^1.0` to `^1.0||^2.0`
+-  `psr/log` compatibility changed from `^1.0` to `^1.0||^2.0||^3.0`
 
 ## [3.9.3] - 2021-09-26
 ### Fixed
