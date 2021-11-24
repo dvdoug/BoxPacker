@@ -22,7 +22,7 @@ class PackedItemTest extends TestCase
      */
     public function testVolumeCalculation(): void
     {
-        $packedItem = new PackedItem(new TestItem('Item', 1, 1, 0, 0, TestItem::ROTATION_BEST_FIT), 0, 0, 0, 3, 5, 7);
+        $packedItem = new PackedItem(new TestItem('Item', 1, 1, 0, 0, Rotation::BestFit), 0, 0, 0, 3, 5, 7);
         self::assertSame(105, $packedItem->getVolume());
     }
 
@@ -31,7 +31,7 @@ class PackedItemTest extends TestCase
      */
     public function testJsonSerialize(): void
     {
-        $packedItem = new PackedItem(new TestItem('Item', 1, 2, 3, 10, Item::ROTATION_BEST_FIT), 100, 20, 300, 3, 5, 7);
-        self::assertJsonStringEqualsJsonString('{"x":100,"y":20,"z":300,"width":3,"length":5,"depth":7,"item":{"description":"Item","width":1,"length":2,"depth":3,"allowedRotations":6}}', json_encode($packedItem));
+        $packedItem = new PackedItem(new TestItem('Item', 1, 2, 3, 10, Rotation::BestFit), 100, 20, 300, 3, 5, 7);
+        self::assertJsonStringEqualsJsonString('{"x":100,"y":20,"z":300,"width":3,"length":5,"depth":7,"item":{"description":"Item","width":1,"length":2,"depth":3,"allowedRotation":6}}', json_encode($packedItem));
     }
 }

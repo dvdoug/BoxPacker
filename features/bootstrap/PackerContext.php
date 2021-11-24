@@ -14,6 +14,7 @@ use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\PackedBoxList;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\Packer;
+use DVDoug\BoxPacker\Rotation;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use DVDoug\BoxPacker\VolumePacker;
@@ -98,7 +99,7 @@ class PackerContext implements Context
         $depth,
         $weight
     ): void {
-        $item = new TestItem($itemName, $width, $length, $depth, $weight, TestItem::ROTATION_BEST_FIT);
+        $item = new TestItem($itemName, $width, $length, $depth, $weight, Rotation::BestFit);
         for ($i = 0; $i < $qty; ++$i) {
             $this->itemList->insert($item);
         }
@@ -115,7 +116,7 @@ class PackerContext implements Context
         $depth,
         $weight
     ): void {
-        $item = new TestItem($itemName, $width, $length, $depth, $weight, TestItem::ROTATION_KEEP_FLAT);
+        $item = new TestItem($itemName, $width, $length, $depth, $weight, Rotation::KeepFlat);
         for ($i = 0; $i < $qty; ++$i) {
             $this->itemList->insert($item);
         }

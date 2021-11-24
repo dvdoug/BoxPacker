@@ -12,17 +12,17 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3||^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "psr/log": "^1.0||^2.0||^3.0"
     },
     "require-dev": {
-        "behat/behat": "^3.8.1",
+        "behat/behat": "^3.10",
         "dvdoug/behat-code-coverage": "^5.2.1",
-        "friendsofphp/php-cs-fixer": "^3.1",
+        "friendsofphp/php-cs-fixer": "^3.3",
         "monolog/monolog": "^2.3",
         "phpunit/phpunit": "^9.5.9",
-        "vimeo/psalm": "^4.10"
+        "vimeo/psalm": "^4.13"
     },
     "config": {
         "preferred-install": {

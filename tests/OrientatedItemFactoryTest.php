@@ -20,7 +20,7 @@ class OrientatedItemFactoryTest extends TestCase
         $box = new TestBox('Box', PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, 0, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX);
         $factory = new OrientatedItemFactory($box);
 
-        $item = new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_BEST_FIT);
+        $item = new TestItem('Test', 1, 2, 3, 4, Rotation::BestFit);
         $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
 
         self::assertCount(6, $orientations);
@@ -55,7 +55,7 @@ class OrientatedItemFactoryTest extends TestCase
         $box = new TestBox('Box', PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, 0, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX);
         $factory = new OrientatedItemFactory($box);
 
-        $item = new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_KEEP_FLAT);
+        $item = new TestItem('Test', 1, 2, 3, 4, Rotation::KeepFlat);
         $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
 
         self::assertCount(2, $orientations);
@@ -74,7 +74,7 @@ class OrientatedItemFactoryTest extends TestCase
         $box = new TestBox('Box', PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, 0, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX);
         $factory = new OrientatedItemFactory($box);
 
-        $item = new TestItem('Test', 1, 2, 3, 4, TestItem::ROTATION_NEVER);
+        $item = new TestItem('Test', 1, 2, 3, 4, Rotation::Never);
         $orientations = $factory->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList());
 
         self::assertCount(1, $orientations);

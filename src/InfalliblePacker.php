@@ -67,7 +67,7 @@ class InfalliblePacker extends Packer
                 '|' .
                 $item->getDepth() .
                 '|' .
-                $item->getAllowedRotations();
+                $item->getAllowedRotation()->name;
 
             foreach ($this->boxes as $box) {
                 if ($item->getWeight() <= ($box->getMaxWeight() - $box->getEmptyWeight()) && (isset($cache[$cacheKey]) || (count((new OrientatedItemFactory($box))->getPossibleOrientations($item, null, $box->getInnerWidth(), $box->getInnerLength(), $box->getInnerDepth(), 0, 0, 0, new PackedItemList())) > 0))) {

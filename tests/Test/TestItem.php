@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Item;
+use DVDoug\BoxPacker\Rotation;
 use JsonSerializable;
 use ReturnTypeWillChange;
 use stdClass;
@@ -41,9 +42,9 @@ class TestItem implements Item, JsonSerializable
     private $weight;
 
     /**
-     * @var int
+     * @var Rotation
      */
-    private $allowedRotations;
+    private $allowedRotation;
 
     /**
      * Test objects that recurse.
@@ -68,14 +69,14 @@ class TestItem implements Item, JsonSerializable
         int $length,
         int $depth,
         int $weight,
-        int $allowedRotations
+        Rotation $allowedRotation
     ) {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
         $this->weight = $weight;
-        $this->allowedRotations = $allowedRotations;
+        $this->allowedRotation = $allowedRotation;
 
         $this->a = new stdClass();
         $this->b = new stdClass();
@@ -109,9 +110,9 @@ class TestItem implements Item, JsonSerializable
         return $this->weight;
     }
 
-    public function getAllowedRotations(): int
+    public function getAllowedRotation(): Rotation
     {
-        return $this->allowedRotations;
+        return $this->allowedRotation;
     }
 
     #[ReturnTypeWillChange]
@@ -123,7 +124,7 @@ class TestItem implements Item, JsonSerializable
             'length' => $this->length,
             'depth' => $this->depth,
             'weight' => $this->weight,
-            'allowedRotations' => $this->allowedRotations,
+            'allowedRotation' => $this->allowedRotation,
         ];
     }
 }

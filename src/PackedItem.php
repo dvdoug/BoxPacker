@@ -138,7 +138,7 @@ class PackedItem implements JsonSerializable
                 'width' => $this->item->getWidth(),
                 'length' => $this->item->getLength(),
                 'depth' => $this->item->getDepth(),
-                'allowedRotations' => $this->item->getAllowedRotations(),
+                'allowedRotation' => $this->item->getAllowedRotation(),
             ],
         ];
     }

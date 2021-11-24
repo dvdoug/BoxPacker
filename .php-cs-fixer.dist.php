@@ -12,9 +12,8 @@ return $config->setRules(
     [
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHP71Migration' => true,
-        '@PHP71Migration:risky' => true,
-        '@PHP73Migration' => true,
+        '@PHP80Migration:risky' => true,
+        '@PHP81Migration' => true,
         'concat_space' => ['spacing' => 'one'],
         'fopen_flags' => ['b_mode' => true],
         'native_function_invocation' => ['include' => ['@all']],

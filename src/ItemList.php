@@ -80,7 +80,7 @@ class ItemList implements Countable, IteratorAggregate
         }
         $this->isSorted = false;
         $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
-        $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotations() <= Item::ROTATION_NEVER;
+        $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotation() === Rotation::Never;
     }
 
     /**
@@ -208,7 +208,7 @@ class ItemList implements Countable, IteratorAggregate
         if (!isset($this->hasNoRotationItems)) {
             $this->hasNoRotationItems = false;
             foreach ($this->list as $item) {
-                if ($item->getAllowedRotations() <= Item::ROTATION_NEVER) {
+                if ($item->getAllowedRotation() === Rotation::Never) {
                     $this->hasNoRotationItems = true;
                     break;
                 }

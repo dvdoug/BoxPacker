@@ -4,7 +4,7 @@ Rotation
 Items
 -----
 BoxPacker gives you full control of how (or if) an individual item may be rotated to fit into a box, controlled via the
-``getAllowedRotations()`` method on the ``BoxPacker\Item`` interface.
+``getAllowedRotation()`` method on the ``BoxPacker\Item`` interface.
 
 
 Best fit
@@ -15,12 +15,13 @@ To allow an item to be placed in any orientation.
 
     <?php
         use DVDoug\BoxPacker\Item;
+        use DVDoug\BoxPacker\Rotation;
 
         class YourItem implements Item
         {
-            public function getAllowedRotations(): int
+            public function getAllowedRotation(): Rotation
             {
-                return Item::ROTATION_BEST_FIT;
+                return Rotation::BestFit;
             }
         }
 
@@ -32,12 +33,13 @@ For items that must be shipped "flat" or "this way up".
 
     <?php
         use DVDoug\BoxPacker\Item;
+        use DVDoug\BoxPacker\Rotation;
 
         class YourItem implements Item
         {
-            public function getAllowedRotations(): int
+            public function getAllowedRotation(): Rotation
             {
-                return Item::ROTATION_KEEP_FLAT;
+                return Rotation::KeepFlat;
             }
         }
 
@@ -51,12 +53,13 @@ useful when trying to use the library in other contexts e.g. packing sprites.
 
     <?php
         use DVDoug\BoxPacker\Item;
+        use DVDoug\BoxPacker\Rotation;
 
         class YourItem implements Item
         {
-            public function getAllowedRotations(): int
+            public function getAllowedRotation(): Rotation
             {
-                return Item::ROTATION_NEVER;
+                return Rotation::Never;
             }
         }
 

@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker\Test;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use DVDoug\BoxPacker\PackedBox;
+use DVDoug\BoxPacker\Rotation;
 
 class THPackTestItem implements ConstrainedPlacementItem
 {
@@ -100,9 +101,9 @@ class THPackTestItem implements ConstrainedPlacementItem
         return 0;
     }
 
-    public function getAllowedRotations(): int
+    public function getAllowedRotation(): Rotation
     {
-        return (!$this->widthAllowedVertical && !$this->lengthAllowedVertical && $this->depthAllowedVertical) ? self::ROTATION_KEEP_FLAT : self::ROTATION_BEST_FIT;
+        return (!$this->widthAllowedVertical && !$this->lengthAllowedVertical && $this->depthAllowedVertical) ? Rotation::KeepFlat : Rotation::BestFit;
     }
 
     /**

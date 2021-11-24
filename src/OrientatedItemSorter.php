@@ -202,7 +202,7 @@ class OrientatedItemSorter
                 '|' .
                 $itemToPack->getWeight() .
                 '|' .
-                $itemToPack->getAllowedRotations();
+                $itemToPack->getAllowedRotation()->name;
         }
 
         if (!isset(static::$lookaheadCache[$cacheKey])) {

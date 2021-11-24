@@ -179,7 +179,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             '|' .
             $item->getDepth() .
             '|' .
-            $item->getAllowedRotations() .
+            $item->getAllowedRotation()->name .
             '|' .
             $this->box->getInnerWidth() .
             '|' .
@@ -231,11 +231,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         $permutations[$w . '|' . $l . '|' . $d] = [$w, $l, $d];
 
-        if ($item->getAllowedRotations() > 1) { //simple 2D rotation
+        if ($item->getAllowedRotation() !== Rotation::Never) { //simple 2D rotation
             $permutations[$l . '|' . $w . '|' . $d] = [$l, $w, $d];
         }
 
-        if ($item->getAllowedRotations() === Item::ROTATION_BEST_FIT) { //add 3D rotation if we're allowed
+        if ($item->getAllowedRotation() === Rotation::BestFit) { //add 3D rotation if we're allowed
             $permutations[$w . '|' . $d . '|' . $l] = [$w, $d, $l];
             $permutations[$l . '|' . $d . '|' . $w] = [$l, $d, $w];
             $permutations[$d . '|' . $w . '|' . $l] = [$d, $w, $l];

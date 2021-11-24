@@ -53,7 +53,7 @@ class EfficiencyTest extends TestCase
                     $item['length'],
                     $item['depth'],
                     $item['weight'],
-                    TestItem::ROTATION_KEEP_FLAT
+                    Rotation::KeepFlat
                 ),
                 (int) $item['qty']
             );
@@ -65,7 +65,7 @@ class EfficiencyTest extends TestCase
                     $item['length'],
                     $item['depth'],
                     $item['weight'],
-                    TestItem::ROTATION_BEST_FIT
+                    Rotation::BestFit
                 ),
                 (int) $item['qty']
             );

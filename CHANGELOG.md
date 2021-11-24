@@ -1,14 +1,14 @@
 # Changelog
 
-## [4.x - Unreleased] - 2021-xx-xx
+## [4.x - Unreleased] - 2022-xx-xx
 ### Added
- - Added new constants `Item::ROTATION_NEVER`, `Item::ROTATION_KEEP_FLAT` and `Item::ROTATION_BEST_FIT`
- - Added new `getAllowedRotations()` method to the `Item` interface to replace `getKeepFlat()`. This should return
-   one of the new `Item::ROTATION_*` constants
+ - Added new enumeration `Rotation` with values `Never`, `KeepFlat` and `BestFit`
+ - Added new `getAllowedRotation()` method to the `Item` interface to replace `getKeepFlat()`. This should return
+   one of the new `Rotation` enum values
  - Added new `generateVisualisationURL()` method to `PackedBox` and `PackedBoxList`. This will generate a custom URL for
    a visualisation you can access via the BoxPacker website
 ### Changed
- - Minimum PHP version is now 7.3
+ - Minimum PHP version is now 8.1
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
  - The signature of the `canBePacked` method on the `ConstrainedPlacementItem` interface has been changed to replace the
    first two arguments(`Box $box`, `PackedItemList $alreadyPackedItems`) with `PackedBox $packedBox`. This allows
