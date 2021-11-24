@@ -5,6 +5,8 @@
  - Added new constants `Item::ROTATION_NEVER`, `Item::ROTATION_KEEP_FLAT` and `Item::ROTATION_BEST_FIT`
  - Added new `getAllowedRotations()` method to the `Item` interface to replace `getKeepFlat()`. This should return
    one of the new `Item::ROTATION_*` constants
+ - Added new `generateVisualisationURL()` method to `PackedBox` and `PackedBoxList`. This will generate a custom URL for
+   a visualisation you can access via the BoxPacker website
 ### Changed
  - Minimum PHP version is now 7.3
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)

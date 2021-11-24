@@ -9,10 +9,12 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use function iterator_to_array;
+use function json_encode;
 use JsonSerializable;
 use function max;
 use ReturnTypeWillChange;
 use function round;
+use function urlencode;
 
 /**
  * A "box" with items.
@@ -189,6 +191,14 @@ class PackedBox implements JsonSerializable
     public function getVolumeUtilisation(): float
     {
         return $this->volumeUtilisation;
+    }
+
+    /**
+     * Create a custom website visualiser URL for this packing.
+     */
+    public function generateVisualisationURL(): string
+    {
+        return 'https://boxpacker.io/en/latest/visualiser.html?packing=' . urlencode(json_encode($this));
     }
 
     /**

@@ -12,11 +12,13 @@ use ArrayIterator;
 use function count;
 use Countable;
 use IteratorAggregate;
+use function json_encode;
 use JsonSerializable;
 use function reset;
 use ReturnTypeWillChange;
 use function round;
 use Traversable;
+use function urlencode;
 use function usort;
 
 /**
@@ -172,6 +174,14 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
         }
 
         return round($itemVolume / $boxVolume * 100, 1);
+    }
+
+    /**
+     * Create a custom website visualiser URL for this packing.
+     */
+    public function generateVisualisationURL(): string
+    {
+        return 'https://boxpacker.io/en/latest/visualiser.html?packing=' . urlencode(json_encode($this));
     }
 
     #[ReturnTypeWillChange]

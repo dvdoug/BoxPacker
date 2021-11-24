@@ -1,64 +1,55 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>BoxPacker packing visualiser</title>
-    <style>
-        html, body {
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-    <script src="babylon.min.js"></script>
-    <script src="babylon.gui.min.js"></script>
-</head>
-<body>
-<script>
+/**
+ * Box packing (3D bin packing, knapsack problem).
+ *
+ * @author Doug Wright
+ */
+"use strict";
+document.addEventListener("DOMContentLoaded", function (event) {
 
-    // replace with contents of json_encode($packedBox) or json_encode($packedBoxList)
-    const PACKING = {};
+    const DEMO_PACKING = {"box":{"reference":"Demo Box","innerWidth":100,"innerLength":100,"innerDepth":100},"items":[{"x":0,"y":0,"z":0,"width":100,"length":100,"depth":50,"item":{"description":"Demo Item #1","width":100,"length":100,"depth":50}},{"x":0,"y":0,"z":50,"width":50,"length":100,"depth":25,"item":{"description":"Demo Item #2","width":100,"length":50,"depth":25}}]};
 
-    const ZOOM = 0.1; // very large containers make weird visual artifacts, reduce everything down
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has('packing')) {
+        document.getElementsByClassName('demotext')[0].style.display = 'none';
+    }
+
+    const PACKING = urlParams.has('packing') ? JSON.parse(urlParams.get('packing')) : DEMO_PACKING;
+
+    const ZOOM = 1;
 
     const ITEM_COLOURS = [
-        new BABYLON.Color3(1.0,0.0,0.0),
-        new BABYLON.Color3(0.0,1.0,0.0),
-        new BABYLON.Color3(0.0,0.0,1.0),
-        new BABYLON.Color3(1.0,1.0,0.0),
-        new BABYLON.Color3(0.0,1.0,1.0),
-        new BABYLON.Color3(1.0,0.0,1.0),
-        new BABYLON.Color3(1.0,1.0,1.0),
+        new BABYLON.Color3(1.0, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 1.0, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 1.0),
+        new BABYLON.Color3(1.0, 1.0, 0.0),
+        new BABYLON.Color3(0.0, 1.0, 1.0),
+        new BABYLON.Color3(1.0, 0.0, 1.0),
+        new BABYLON.Color3(1.0, 1.0, 1.0),
 
-        new BABYLON.Color3(0.8,0.0,0.0),
-        new BABYLON.Color3(0.0,0.8,0.0),
-        new BABYLON.Color3(0.0,0.0,0.8),
-        new BABYLON.Color3(0.8,0.8,0.0),
-        new BABYLON.Color3(0.0,0.8,0.8),
-        new BABYLON.Color3(0.8,0.0,0.8),
-        new BABYLON.Color3(0.8,0.8,0.8),
+        new BABYLON.Color3(0.8, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 0.8, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 0.8),
+        new BABYLON.Color3(0.8, 0.8, 0.0),
+        new BABYLON.Color3(0.0, 0.8, 0.8),
+        new BABYLON.Color3(0.8, 0.0, 0.8),
+        new BABYLON.Color3(0.8, 0.8, 0.8),
 
-        new BABYLON.Color3(0.6,0.0,0.0),
-        new BABYLON.Color3(0.0,0.6,0.0),
-        new BABYLON.Color3(0.0,0.0,0.6),
-        new BABYLON.Color3(0.6,0.6,0.0),
-        new BABYLON.Color3(0.0,0.6,0.6),
-        new BABYLON.Color3(0.6,0.0,0.6),
-        new BABYLON.Color3(0.6,0.6,0.6),
+        new BABYLON.Color3(0.6, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 0.6, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 0.6),
+        new BABYLON.Color3(0.6, 0.6, 0.0),
+        new BABYLON.Color3(0.0, 0.6, 0.6),
+        new BABYLON.Color3(0.6, 0.0, 0.6),
+        new BABYLON.Color3(0.6, 0.6, 0.6),
 
-        new BABYLON.Color3(0.4,0.0,0.0),
-        new BABYLON.Color3(0.0,0.4,0.0),
-        new BABYLON.Color3(0.0,0.0,0.4),
-        new BABYLON.Color3(0.4,0.4,0.0),
-        new BABYLON.Color3(0.0,0.4,0.4),
-        new BABYLON.Color3(0.4,0.0,0.4),
-        new BABYLON.Color3(0.4,0.4,0.4),
+        new BABYLON.Color3(0.4, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 0.4, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 0.4),
+        new BABYLON.Color3(0.4, 0.4, 0.0),
+        new BABYLON.Color3(0.0, 0.4, 0.4),
+        new BABYLON.Color3(0.4, 0.0, 0.4),
+        new BABYLON.Color3(0.4, 0.4, 0.4),
     ];
 
     const createScene = () => {
@@ -100,7 +91,7 @@
             let xChar = makeTextPlane("X", "red", xSize / 10);
             xChar.position = new BABYLON.Vector3(0.9 * xSize + xPos, -0.05 * xSize, 0);
             let axisY = BABYLON.Mesh.CreateLines("axisY", [
-                new BABYLON.Vector3(xPos, 0, 0), new BABYLON.Vector3(xPos, zSize, 0), new BABYLON.Vector3(xPos -0.05 * zSize, zSize * 0.95, 0),
+                new BABYLON.Vector3(xPos, 0, 0), new BABYLON.Vector3(xPos, zSize, 0), new BABYLON.Vector3(xPos - 0.05 * zSize, zSize * 0.95, 0),
                 new BABYLON.Vector3(xPos, zSize, 0), new BABYLON.Vector3(xPos + 0.05 * zSize, zSize * 0.95, 0)
             ], scene);
             axisY.color = new BABYLON.Color3(0, 1, 0);
@@ -239,17 +230,17 @@
 
 
         const camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", -0.8 * Math.PI, 0.5 * Math.PI, ZOOM * packingData[0].box.innerDepth * 2.5, new BABYLON.Vector3(0, ZOOM * packingData[0].box.innerDepth / 2, 0), scene);
-        camera.panningSensibility = 10;
+        camera.panningSensibility = 100;
         camera.attachControl(canvas, true, true);
 
         return scene;
     };
-</script>
 
-<canvas id="renderCanvas"></canvas>
-<script>
     const canvas = document.getElementById("renderCanvas"); // Get the canvas element
-    const engine = new BABYLON.Engine(canvas, true, { stencil: true }); // Generate the BABYLON 3D engine
+    const engine = new BABYLON.Engine(canvas, true, {stencil: true}); // Generate the BABYLON 3D engine
+    document.getElementById("makeFullscreen").addEventListener("click", function() {
+        engine.enterFullscreen();
+    });
     // Add your code here matching the playground format
     const scene = createScene(); //Call the createScene function
     // Register a render loop to repeatedly render the scene
@@ -260,6 +251,4 @@
     window.addEventListener("resize", function () {
         engine.resize();
     });
-</script>
-</body>
-</html>
+});

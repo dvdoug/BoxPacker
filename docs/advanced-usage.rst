@@ -32,6 +32,8 @@ Example - warning on a massively oversized box
             }
         }
 
+.. _positional_information:
+
 Positional information
 ----------------------
 It is also possible to see the precise positional and dimensional information of each item as packed. This is exposed as x,y,z
@@ -61,6 +63,8 @@ Example
                 echo PHP_EOL;
             }
         }
+
+A :ref:`visualiser<visualiser>` is also available.
 
 Custom Constraints
 ------------------

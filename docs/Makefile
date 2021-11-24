@@ -2,7 +2,7 @@
 #
 
 # You can set these variables from the command line.
-SPHINXOPTS    =
+SPHINXOPTS    = -E -a
 SPHINXBUILD   = python3 -msphinx
 SPHINXPROJ    = BoxPacker
 SOURCEDIR     = .
