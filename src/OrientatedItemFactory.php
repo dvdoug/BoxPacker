@@ -205,9 +205,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         $stableOrientations = array_filter(
             $orientations,
-            static function (OrientatedItem $orientation) {
-                return $orientation->isStable();
-            }
+            static fn (OrientatedItem $orientation) => $orientation->isStable()
         );
         static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations) > 0;
 

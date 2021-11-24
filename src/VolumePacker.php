@@ -149,9 +149,7 @@ class VolumePacker implements LoggerAwareInterface
             $boxPermutations[] = $boxPermutation;
         }
 
-        usort($boxPermutations, static function (PackedBox $a, PackedBox $b) {
-            return $b->getVolumeUtilisation() <=> $a->getVolumeUtilisation();
-        });
+        usort($boxPermutations, static fn (PackedBox $a, PackedBox $b) => $b->getVolumeUtilisation() <=> $a->getVolumeUtilisation());
 
         return reset($boxPermutations);
     }
@@ -192,14 +190,10 @@ class VolumePacker implements LoggerAwareInterface
             $layers = $this->stabiliseLayers($layers);
 
             // having packed layers, there may be tall, narrow gaps at the ends that can be utilised
-            $maxLayerWidth = max(array_map(static function (PackedLayer $layer) {
-                return $layer->getEndX();
-            }, $layers));
+            $maxLayerWidth = max(array_map(static fn (PackedLayer $layer) => $layer->getEndX(), $layers));
             $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $maxLayerWidth, 0, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
 
-            $maxLayerLength = max(array_map(static function (PackedLayer $layer) {
-                return $layer->getEndY();
-            }, $layers));
+            $maxLayerLength = max(array_map(static fn (PackedLayer $layer) => $layer->getEndY(), $layers));
             $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, $maxLayerLength, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
         }
 

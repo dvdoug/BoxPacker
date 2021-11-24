@@ -37,9 +37,7 @@ class ConstrainedPlacementByCountTestItem extends TestItem implements Constraine
     ): bool {
         $alreadyPackedType = array_filter(
             iterator_to_array($packedBox->getItems(), false),
-            function (PackedItem $item) {
-                return $item->getItem()->getDescription() === $this->getDescription();
-            }
+            fn (PackedItem $item) => $item->getItem()->getDescription() === $this->getDescription()
         );
 
         return count($alreadyPackedType) + 1 <= static::$limit;

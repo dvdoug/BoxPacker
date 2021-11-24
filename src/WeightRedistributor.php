@@ -66,9 +66,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
         $boxes = iterator_to_array($originalBoxes);
 
-        usort($boxes, static function (PackedBox $boxA, PackedBox $boxB) {
-            return $boxB->getWeight() <=> $boxA->getWeight();
-        });
+        usort($boxes, static fn (PackedBox $boxA, PackedBox $boxB) => $boxB->getWeight() <=> $boxA->getWeight());
 
         do {
             $iterationSuccessful = false;
@@ -183,8 +181,8 @@ class WeightRedistributor implements LoggerAwareInterface
      */
     private static function wouldRepackActuallyHelp(array $overWeightBoxItems, Item $overWeightItem, array $underWeightBoxItems, float $targetWeight): bool
     {
-        $overWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $overWeightBoxItems));
-        $underWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $underWeightBoxItems));
+        $overWeightItemsWeight = array_sum(array_map(static fn (Item $item) => $item->getWeight(), $overWeightBoxItems));
+        $underWeightItemsWeight = array_sum(array_map(static fn (Item $item) => $item->getWeight(), $underWeightBoxItems));
 
         if ($overWeightItem->getWeight() + $underWeightItemsWeight > $targetWeight) {
             return false;
