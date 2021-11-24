@@ -198,7 +198,7 @@ class PackedBox implements JsonSerializable
      */
     public function generateVisualisationURL(): string
     {
-        return 'https://boxpacker.io/en/latest/visualiser.html?packing=' . urlencode(json_encode($this));
+        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . urlencode(json_encode($this));
     }
 
     /**
