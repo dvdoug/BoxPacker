@@ -18,8 +18,6 @@ use function urlencode;
 
 /**
  * A "box" with items.
- *
- * @author Doug Wright
  */
 class PackedBox implements JsonSerializable
 {

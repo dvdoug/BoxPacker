@@ -10,8 +10,6 @@ namespace DVDoug\BoxPacker;
 
 /**
  * An item to be packed.
- *
- * @author Doug Wright
  */
 interface Item
 {

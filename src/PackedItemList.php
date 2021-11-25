@@ -18,8 +18,6 @@ use function usort;
 
 /**
  * List of packed items, ordered by volume.
- *
- * @author Doug Wright
  */
 class PackedItemList implements Countable, IteratorAggregate
 {

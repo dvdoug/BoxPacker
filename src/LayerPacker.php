@@ -18,9 +18,7 @@ use function sort;
 
 /**
  * Layer packer.
- *
  * @internal
- * @author Doug Wright
  */
 class LayerPacker implements LoggerAwareInterface
 {

@@ -25,8 +25,6 @@ use function usort;
 
 /**
  * List of items to be packed, ordered by volume.
- *
- * @author Doug Wright
  */
 class ItemList implements Countable, IteratorAggregate
 {

@@ -21,8 +21,6 @@ use function usort;
 
 /**
  * Actual packer.
- *
- * @author Doug Wright
  */
 class Packer implements LoggerAwareInterface
 {

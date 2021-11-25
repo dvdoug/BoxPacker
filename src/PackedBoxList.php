@@ -23,8 +23,6 @@ use function usort;
 
 /**
  * List of packed boxes.
- *
- * @author Doug Wright
  */
 class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
 {

@@ -13,8 +13,6 @@ use ReturnTypeWillChange;
 
 /**
  * A packed item.
- *
- * @author Doug Wright
  */
 class PackedItem implements JsonSerializable
 {

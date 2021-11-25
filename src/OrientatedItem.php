@@ -16,8 +16,6 @@ use function sort;
 
 /**
  * An item to be packed.
- *
- * @author Doug Wright
  */
 class OrientatedItem implements JsonSerializable
 {

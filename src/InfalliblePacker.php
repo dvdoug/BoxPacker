@@ -13,8 +13,6 @@ use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 
 /**
  * A version of the packer that swallows internal exceptions.
- *
- * @author Doug Wright
  */
 class InfalliblePacker extends Packer
 {

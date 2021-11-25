@@ -23,8 +23,6 @@ use function usort;
 
 /**
  * Actual packer.
- *
- * @author Doug Wright
  * @internal
  */
 class WeightRedistributor implements LoggerAwareInterface

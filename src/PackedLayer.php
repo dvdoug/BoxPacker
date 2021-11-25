@@ -14,8 +14,6 @@ use const PHP_INT_MAX;
 
 /**
  * A packed layer.
- *
- * @author Doug Wright
  * @internal
  */
 class PackedLayer

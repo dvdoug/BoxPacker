@@ -15,8 +15,6 @@ use function usort;
 
 /**
  * List of boxes available to put items into, ordered by volume.
- *
- * @author Doug Wright
  */
 class BoxList implements IteratorAggregate
 {

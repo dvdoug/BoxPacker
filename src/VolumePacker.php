@@ -19,8 +19,6 @@ use function usort;
 
 /**
  * Actual packer.
- *
- * @author Doug Wright
  */
 class VolumePacker implements LoggerAwareInterface
 {

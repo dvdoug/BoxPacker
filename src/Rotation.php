@@ -10,8 +10,6 @@ namespace DVDoug\BoxPacker;
 
 /*
  * Rotation permutations
- *
- * @author Doug Wright
  */
 enum Rotation: int
 {

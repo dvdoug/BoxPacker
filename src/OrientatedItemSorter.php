@@ -15,8 +15,6 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Figure out best choice of orientations for an item and a given context.
- *
- * @author Doug Wright
  * @internal
  */
 class OrientatedItemSorter
