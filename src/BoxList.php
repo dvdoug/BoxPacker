@@ -35,6 +35,16 @@ class BoxList implements IteratorAggregate
     private $isSorted = false;
 
     /**
+     * @var BoxSorter
+     */
+    private $sorter;
+
+    public function __construct(?BoxSorter $sorter = null)
+    {
+        $this->sorter = $sorter ?: new DefaultBoxSorter();
+    }
+
+    /**
      * Do a bulk create.
      *
      * @param Box[] $boxes
@@ -56,7 +66,7 @@ class BoxList implements IteratorAggregate
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
             $this->isSorted = true;
         }
 
@@ -66,29 +76,5 @@ class BoxList implements IteratorAggregate
     public function insert(Box $item): void
     {
         $this->list[] = $item;
-    }
-
-    /**
-     * @param Box $boxA
-     * @param Box $boxB
-     */
-    public static function compare($boxA, $boxB): int
-    {
-        $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
-        $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
-
-        $volumeDecider = $boxAVolume <=> $boxBVolume; // try smallest box first
-
-        if ($volumeDecider !== 0) {
-            return $volumeDecider;
-        }
-
-        $emptyWeightDecider = $boxA->getEmptyWeight() <=> $boxB->getEmptyWeight(); // with smallest empty weight
-        if ($emptyWeightDecider !== 0) {
-            return $emptyWeightDecider;
-        }
-
-        // maximum weight capacity as fallback decider
-        return ($boxA->getMaxWeight() - $boxA->getEmptyWeight()) <=> ($boxB->getMaxWeight() - $boxB->getEmptyWeight());
     }
 }

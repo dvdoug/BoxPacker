@@ -46,11 +46,17 @@ class WeightRedistributor implements LoggerAwareInterface
     private $boxesQtyAvailable;
 
     /**
+     * @var PackedBoxSorter
+     */
+    private $packedBoxSorter;
+
+    /**
      * Constructor.
      */
-    public function __construct(BoxList $boxList, SplObjectStorage $boxQuantitiesAvailable)
+    public function __construct(BoxList $boxList, PackedBoxSorter $packedBoxSorter, SplObjectStorage $boxQuantitiesAvailable)
     {
         $this->boxes = $boxList;
+        $this->packedBoxSorter = $packedBoxSorter;
         $this->boxesQtyAvailable = $boxQuantitiesAvailable;
         $this->logger = new NullLogger();
     }
@@ -91,7 +97,7 @@ class WeightRedistributor implements LoggerAwareInterface
         } while ($iterationSuccessful);
 
         //Combine back into a single list
-        $packedBoxes = new PackedBoxList();
+        $packedBoxes = new PackedBoxList($this->packedBoxSorter);
         $packedBoxes->insertFromArray($boxes);
 
         return $packedBoxes;

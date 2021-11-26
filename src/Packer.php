@@ -56,13 +56,16 @@ class Packer implements LoggerAwareInterface
     protected $boxesQtyAvailable;
 
     /**
-     * Constructor.
+     * @var PackedBoxSorter
      */
+    protected $packedBoxSorter;
+
     public function __construct()
     {
         $this->items = new ItemList();
         $this->boxes = new BoxList();
         $this->boxesQtyAvailable = new SplObjectStorage();
+        $this->packedBoxSorter = new DefaultPackedBoxSorter();
 
         $this->logger = new NullLogger();
     }
@@ -137,6 +140,11 @@ class Packer implements LoggerAwareInterface
         $this->maxBoxesToBalanceWeight = $maxBoxesToBalanceWeight;
     }
 
+    public function setPackedBoxSorter(PackedBoxSorter $packedBoxSorter): void
+    {
+        $this->packedBoxSorter = $packedBoxSorter;
+    }
+
     /**
      * Pack items into boxes.
      */
@@ -146,7 +154,7 @@ class Packer implements LoggerAwareInterface
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
         if ($packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
-            $redistributor = new WeightRedistributor($this->boxes, $this->boxesQtyAvailable);
+            $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxesQtyAvailable);
             $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
@@ -163,7 +171,7 @@ class Packer implements LoggerAwareInterface
      */
     public function doVolumePacking(bool $singlePassMode = false, bool $enforceSingleBox = false): PackedBoxList
     {
-        $packedBoxes = new PackedBoxList();
+        $packedBoxes = new PackedBoxList($this->packedBoxSorter);
 
         //Keep going until everything packed
         while ($this->items->count()) {
@@ -190,7 +198,7 @@ class Packer implements LoggerAwareInterface
                 $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
             } catch (NoBoxesAvailableException $e) {
                 if ($enforceSingleBox) {
-                    return new PackedBoxList();
+                    return new PackedBoxList($this->packedBoxSorter);
                 }
                 throw $e;
             }
@@ -240,22 +248,8 @@ class Packer implements LoggerAwareInterface
             throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items->top());
         }
 
-        usort($packedBoxes, [$this, 'compare']);
+        usort($packedBoxes, [$this->packedBoxSorter, 'compare']);
 
         return $packedBoxes[0];
-    }
-
-    private static function compare(PackedBox $boxA, PackedBox $boxB): int
-    {
-        $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();
-
-        if ($choice === 0) {
-            $choice = $boxB->getVolumeUtilisation() <=> $boxA->getVolumeUtilisation();
-        }
-        if ($choice === 0) {
-            $choice = $boxB->getUsedVolume() <=> $boxA->getUsedVolume();
-        }
-
-        return $choice;
     }
 }

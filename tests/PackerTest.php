@@ -263,9 +263,9 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(3, $packedBoxes);
-        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Heavy box', $packedBoxes[0]->getBox()->getReference());
         self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
-        self::assertEquals('Heavy box', $packedBoxes[2]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[2]->getBox()->getReference());
     }
 
     /**
