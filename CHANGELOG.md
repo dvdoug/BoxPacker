@@ -19,6 +19,9 @@
  - Removed `getKeepFlat()` from the `Item` interface
 
 ## [3.x - Unreleased] - 2021-xx-xx
+### Added
+- Added `ItemSorter`, `BoxSorter` and `PackedBoxSorter` to allow calling applications to have better control over
+  sorting decisions
 
 ## [3.9.4] - 2021-10-21
 ### Changed

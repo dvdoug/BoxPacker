@@ -43,11 +43,21 @@ class ItemList implements Countable, IteratorAggregate
     private $isSorted = false;
 
     /**
+     * @var ItemSorter
+     */
+    private $sorter;
+
+    /**
      * Does this list contain constrained items?
      *
      * @var ?bool
      */
     private $hasConstrainedItems;
+
+    public function __construct(?ItemSorter $sorter = null)
+    {
+        $this->sorter = $sorter ?: new DefaultItemSorter();
+    }
 
     /**
      * Does this list contain items which cannot be rotated?
@@ -87,7 +97,8 @@ class ItemList implements Countable, IteratorAggregate
     public function remove(Item $item): void
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->list = array_reverse($this->list); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -121,7 +132,8 @@ class ItemList implements Countable, IteratorAggregate
     public function extract(): Item
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->list = array_reverse($this->list); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -134,7 +146,8 @@ class ItemList implements Countable, IteratorAggregate
     public function top(): Item
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->list = array_reverse($this->list); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -148,7 +161,8 @@ class ItemList implements Countable, IteratorAggregate
     public function topN(int $n): self
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->list = array_reverse($this->list); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -165,7 +179,8 @@ class ItemList implements Countable, IteratorAggregate
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->list = array_reverse($this->list); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -214,19 +229,5 @@ class ItemList implements Countable, IteratorAggregate
         }
 
         return $this->hasNoRotationItems;
-    }
-
-    private static function compare(Item $itemA, Item $itemB): int
-    {
-        $volumeDecider = $itemA->getWidth() * $itemA->getLength() * $itemA->getDepth() <=> $itemB->getWidth() * $itemB->getLength() * $itemB->getDepth();
-        if ($volumeDecider !== 0) {
-            return $volumeDecider;
-        }
-        $weightDecider = $itemA->getWeight() - $itemB->getWeight();
-        if ($weightDecider !== 0) {
-            return $weightDecider;
-        }
-
-        return $itemB->getDescription() <=> $itemA->getDescription();
     }
 }
