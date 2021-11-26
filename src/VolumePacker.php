@@ -22,59 +22,22 @@ use function usort;
  */
 class VolumePacker implements LoggerAwareInterface
 {
-    /**
-     * The logger instance.
-     *
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * Box to pack items into.
-     *
-     * @var Box
-     */
-    protected $box;
+    protected Box $box;
 
-    /**
-     * List of items to be packed.
-     *
-     * @var ItemList
-     */
-    protected $items;
+    protected ItemList $items;
 
-    /**
-     * Whether the packer is in single-pass mode.
-     *
-     * @var bool
-     */
-    protected $singlePassMode = false;
+    protected bool $singlePassMode = false;
 
-    /**
-     * Whether the packer should only try packing along the width.
-     *
-     * @var bool
-     */
-    protected $packAcrossWidthOnly = false;
+    protected bool $packAcrossWidthOnly = false;
 
-    /**
-     * @var LayerPacker
-     */
-    private $layerPacker;
+    private LayerPacker $layerPacker;
 
-    /**
-     * @var bool
-     */
-    private $hasConstrainedItems;
+    private bool $hasConstrainedItems = false;
 
-    /**
-     * @var bool
-     */
-    private $hasNoRotationItems;
+    private bool $hasNoRotationItems = false;
 
-    /**
-     * Constructor.
-     */
     public function __construct(Box $box, ItemList $items)
     {
         $this->box = $box;
@@ -161,7 +124,6 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->logger->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
 
-        /** @var PackedLayer[] $layers */
         $layers = [];
         $items = clone $this->items;
 

@@ -23,20 +23,12 @@ class OrientatedItemFactory implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /** @var Box */
-    protected $box;
+    protected Box $box;
 
-    /**
-     * Whether the packer is in single-pass mode.
-     *
-     * @var bool
-     */
-    protected $singlePassMode = false;
+    protected bool $singlePassMode = false;
 
-    /**
-     * @var bool[]
-     */
-    protected static $emptyBoxStableItemOrientationCache = [];
+    /** @var array<string, bool> */
+    protected static array $emptyBoxStableItemOrientationCache = [];
 
     public function __construct(Box $box)
     {
@@ -120,8 +112,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         if ($item instanceof ConstrainedPlacementItem && !$this->box instanceof WorkingVolume) {
-            $orientations = array_filter($orientations, function (OrientatedItem $i) use ($x, $y, $z, $prevPackedItemList) {
-                /** @var ConstrainedPlacementItem */
+            $orientations = array_filter($orientations, function (OrientatedItem $i) use ($x, $y, $z, $prevPackedItemList): bool {
+                /** @var ConstrainedPlacementItem $constrainedItem */
                 $constrainedItem = $i->getItem();
 
                 return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
@@ -167,7 +159,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     /**
      * Return the orientations for this item if it were to be placed into the box with nothing else.
-     * @return OrientatedItem[]
      */
     protected function hasStableOrientationsInEmptyBox(Item $item): bool
     {

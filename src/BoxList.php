@@ -18,24 +18,12 @@ use function usort;
  */
 class BoxList implements IteratorAggregate
 {
-    /**
-     * List containing boxes.
-     *
-     * @var Box[]
-     */
-    private $list = [];
+    /** @var Box[] */
+    private array $list = [];
 
-    /**
-     * Has this list already been sorted?
-     *
-     * @var bool
-     */
-    private $isSorted = false;
+    private bool $isSorted = false;
 
-    /**
-     * @var BoxSorter
-     */
-    private $sorter;
+    private BoxSorter $sorter;
 
     public function __construct(?BoxSorter $sorter = null)
     {
@@ -45,6 +33,7 @@ class BoxList implements IteratorAggregate
     /**
      * Do a bulk create.
      *
+     * @param  Box[]   $boxes
      * @return BoxList
      */
     public static function fromArray(array $boxes, bool $preSorted = false): self

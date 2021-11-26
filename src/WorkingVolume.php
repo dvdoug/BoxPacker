@@ -17,29 +17,14 @@ use ReturnTypeWillChange;
  */
 class WorkingVolume implements Box, JsonSerializable
 {
-    /**
-     * @var int
-     */
-    private $width;
+    private int $width;
 
-    /**
-     * @var int
-     */
-    private $length;
+    private int $length;
 
-    /**
-     * @var int
-     */
-    private $depth;
+    private int $depth;
 
-    /**
-     * @var int
-     */
-    private $maxWeight;
+    private int $maxWeight;
 
-    /**
-     * Constructor.
-     */
     public function __construct(
         int $width,
         int $length,

@@ -21,21 +21,12 @@ use function usort;
  */
 class PackedItemList implements Countable, IteratorAggregate
 {
-    /**
-     * List containing items.
-     *
-     * @var PackedItem[]
-     */
-    private $list = [];
+    /** @var PackedItem[] */
+    private array $list = [];
 
-    private $weight = 0;
+    private int $weight = 0;
 
-    /**
-     * Has this list already been sorted?
-     *
-     * @var bool
-     */
-    private $isSorted = false;
+    private bool $isSorted = false;
 
     public function insert(PackedItem $item): void
     {

@@ -41,7 +41,6 @@ class InfalliblePackerContext extends PackerContext
     ): void {
         $foundItems = 0;
 
-        /** @var Item $unpackedItem */
         foreach ($this->unpackedItemList as $unpackedItem) {
             if ($unpackedItem->getDescription() === $itemType) {
                 ++$foundItems;

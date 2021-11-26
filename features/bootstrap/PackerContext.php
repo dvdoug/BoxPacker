@@ -12,7 +12,6 @@ use DVDoug\BoxPacker\BoxList;
 use DVDoug\BoxPacker\ItemList;
 use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\PackedBoxList;
-use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\Packer;
 use DVDoug\BoxPacker\Rotation;
 use DVDoug\BoxPacker\Test\TestBox;
@@ -127,7 +126,6 @@ class PackerContext implements Context
      */
     public function iDoAPacking(): void
     {
-        /** @var Packer $packer */
         $packer = new $this->packerClass();
         $packer->setBoxes($this->boxList);
         $packer->setItems($this->itemList);
@@ -152,7 +150,6 @@ class PackerContext implements Context
     ): void {
         $foundBoxes = 0;
 
-        /** @var PackedBox $packedBox */
         foreach ($this->packedBoxList as $packedBox) {
             if ($packedBox->getBox()->getReference() === $boxType) {
                 ++$foundBoxes;
@@ -171,7 +168,6 @@ class PackerContext implements Context
     ): void {
         $foundItems = 0;
 
-        /** @var PackedItem $packedItem */
         foreach ($this->packedBox->getItems() as $packedItem) {
             if ($packedItem->getItem()->getDescription() === $itemType) {
                 ++$foundItems;

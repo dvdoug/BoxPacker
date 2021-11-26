@@ -29,29 +29,12 @@ class WeightRedistributor implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * List of box sizes available to pack items into.
-     *
-     * @var BoxList
-     */
-    private $boxes;
+    private BoxList $boxes;
 
-    /**
-     * Quantities available of each box type.
-     *
-     * @var array<int, int>
-     */
-    private $boxesQtyAvailable;
+    private array $boxesQtyAvailable;
 
-    /**
-     * @var PackedBoxSorter
-     */
-    private $packedBoxSorter;
+    private PackedBoxSorter $packedBoxSorter;
 
-    /**
-     * Constructor.
-     * @param array<int, int> $boxQuantitiesAvailable
-     */
     public function __construct(BoxList $boxList, PackedBoxSorter $packedBoxSorter, array $boxQuantitiesAvailable)
     {
         $this->boxes = $boxList;

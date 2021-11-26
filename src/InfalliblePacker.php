@@ -16,14 +16,8 @@ use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
  */
 class InfalliblePacker extends Packer
 {
-    /**
-     * @var ItemList
-     */
-    protected $unpackedItems;
+    protected ItemList $unpackedItems;
 
-    /**
-     * InfalliblePacker constructor.
-     */
     public function __construct()
     {
         $this->unpackedItems = new ItemList();

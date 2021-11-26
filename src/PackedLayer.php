@@ -18,47 +18,22 @@ use const PHP_INT_MAX;
  */
 class PackedLayer
 {
-    /**
-     * @var int
-     */
-    private $startX = PHP_INT_MAX;
+    private int $startX = PHP_INT_MAX;
 
-    /**
-     * @var int
-     */
-    private $endX = 0;
+    private int $endX = 0;
 
-    /**
-     * @var int
-     */
-    private $startY = PHP_INT_MAX;
+    private int $startY = PHP_INT_MAX;
 
-    /**
-     * @var int
-     */
-    private $endY = 0;
+    private int $endY = 0;
 
-    /**
-     * @var int
-     */
-    private $startZ = PHP_INT_MAX;
+    private int $startZ = PHP_INT_MAX;
 
-    /**
-     * @var int
-     */
-    private $endZ = 0;
+    private int $endZ = 0;
 
-    /**
-     * @var int
-     */
-    private $weight = 0;
+    private int $weight = 0;
 
-    /**
-     * Items packed into this layer.
-     *
-     * @var PackedItem[]
-     */
-    protected $items = [];
+    /** @var PackedItem[] */
+    protected array $items = [];
 
     /**
      * Add a packed item to this layer.

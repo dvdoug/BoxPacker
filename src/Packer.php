@@ -26,38 +26,15 @@ class Packer implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * Number of boxes at which balancing weight is deemed not worth it.
-     *
-     * @var int
-     */
-    protected $maxBoxesToBalanceWeight = 12;
+    protected int $maxBoxesToBalanceWeight = 12;
 
-    /**
-     * List of items to be packed.
-     *
-     * @var ItemList
-     */
-    protected $items;
+    protected ItemList $items;
 
-    /**
-     * List of box sizes available to pack items into.
-     *
-     * @var BoxList
-     */
-    protected $boxes;
+    protected BoxList $boxes;
 
-    /**
-     * Quantities available of each box type.
-     *
-     * @var array<int, int>
-     */
-    protected $boxesQtyAvailable = [];
+    protected array $boxesQtyAvailable = [];
 
-    /**
-     * @var PackedBoxSorter
-     */
-    protected $packedBoxSorter;
+    protected PackedBoxSorter $packedBoxSorter;
 
     public function __construct()
     {

@@ -28,43 +28,21 @@ use function usort;
  */
 class ItemList implements Countable, IteratorAggregate
 {
-    /**
-     * List containing items.
-     *
-     * @var Item[]
-     */
-    private $list = [];
+    /** @var Item[] */
+    private array $list = [];
 
-    /**
-     * Has this list already been sorted?
-     *
-     * @var bool
-     */
-    private $isSorted = false;
+    private bool $isSorted = false;
 
-    /**
-     * @var ItemSorter
-     */
-    private $sorter;
+    private ItemSorter $sorter;
 
-    /**
-     * Does this list contain constrained items?
-     *
-     * @var ?bool
-     */
-    private $hasConstrainedItems;
+    private ?bool $hasConstrainedItems = null;
+
+    private ?bool $hasNoRotationItems = null;
 
     public function __construct(?ItemSorter $sorter = null)
     {
         $this->sorter = $sorter ?: new DefaultItemSorter();
     }
-
-    /**
-     * Does this list contain items which cannot be rotated?
-     *
-     * @var ?bool
-     */
-    private $hasNoRotationItems;
 
     /**
      * Do a bulk create.
@@ -87,8 +65,14 @@ class ItemList implements Countable, IteratorAggregate
             $this->list[] = $item;
         }
         $this->isSorted = false;
-        $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
-        $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotation() === Rotation::Never;
+
+        if (isset($this->hasConstrainedItems)) { // normally lazy evaluated, override if that's already been done
+            $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
+        }
+
+        if (isset($this->hasNoRotationItems)) { // normally lazy evaluated, override if that's already been done
+            $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotation() === Rotation::Never;
+        }
     }
 
     /**

@@ -19,44 +19,22 @@ use function sort;
  */
 class OrientatedItem implements JsonSerializable
 {
-    /**
-     * @var Item
-     */
-    protected $item;
+    protected Item $item;
 
-    /**
-     * @var int
-     */
-    protected $width;
+    protected int $width;
 
-    /**
-     * @var int
-     */
-    protected $length;
+    protected int $length;
 
-    /**
-     * @var int
-     */
-    protected $depth;
+    protected int $depth;
 
-    /**
-     * @var int
-     */
-    protected $surfaceFootprint;
+    protected int $surfaceFootprint;
 
-    /**
-     * @var bool[]
-     */
-    protected static $stabilityCache = [];
+    /** @var array<string, bool> */
+    protected static array $stabilityCache = [];
 
-    /**
-     * @var array<int>
-     */
-    protected $dimensionsAsArray;
+    /** @var int[] */
+    protected array $dimensionsAsArray;
 
-    /**
-     * Constructor.
-     */
     public function __construct(Item $item, int $width, int $length, int $depth)
     {
         $this->item = $item;

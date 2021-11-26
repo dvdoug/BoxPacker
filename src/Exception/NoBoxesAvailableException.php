@@ -18,12 +18,8 @@ use RuntimeException;
  */
 class NoBoxesAvailableException extends RuntimeException
 {
-    /** @var Item */
-    public $item;
+    public Item $item;
 
-    /**
-     * NoBoxesAvailableException constructor.
-     */
     public function __construct(string $message, Item $item)
     {
         $this->item = $item;
