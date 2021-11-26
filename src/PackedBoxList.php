@@ -41,12 +41,22 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     private $isSorted = false;
 
     /**
+     * @var PackedBoxSorter
+     */
+    private $sorter;
+
+    public function __construct(?PackedBoxSorter $sorter = null)
+    {
+        $this->sorter = $sorter ?: new DefaultPackedBoxSorter();
+    }
+
+    /**
      * @return Traversable|PackedBox[]
      */
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
             $this->isSorted = true;
         }
 
@@ -87,24 +97,11 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     public function top(): PackedBox
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, [$this->sorter, 'compare']);
             $this->isSorted = true;
         }
 
         return reset($this->list);
-    }
-
-    private function compare(PackedBox $boxA, PackedBox $boxB): int
-    {
-        $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();
-        if ($choice === 0) {
-            $choice = $boxB->getInnerVolume() <=> $boxA->getInnerVolume();
-        }
-        if ($choice === 0) {
-            $choice = $boxA->getWeight() <=> $boxB->getWeight();
-        }
-
-        return $choice;
     }
 
     /**

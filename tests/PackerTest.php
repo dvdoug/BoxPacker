@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
+use DVDoug\BoxPacker\Test\PackedBoxByReferenceSorter;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use function iterator_to_array;
@@ -263,9 +264,9 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(3, $packedBoxes);
-        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Heavy box', $packedBoxes[0]->getBox()->getReference());
         self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
-        self::assertEquals('Heavy box', $packedBoxes[2]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[2]->getBox()->getReference());
     }
 
     /**
@@ -617,5 +618,30 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertCount(2, $packedBoxes);
+    }
+
+    public function testCustomPackedBoxSorterIsUsed(): void
+    {
+        PackedBoxByReferenceSorter::$reference = 'Box #1';
+        $packer = new Packer();
+        $packer->setPackedBoxSorter(new PackedBoxByReferenceSorter());
+        $packer->addBox(new TestBox('Box #1', 1, 1, 1, 0, 1, 1, 1, PHP_INT_MAX));
+        $packer->addBox(new TestBox('Box #2', 1, 1, 1, 0, 1, 1, 1, PHP_INT_MAX));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 2);
+        $packedBoxes = iterator_to_array($packer->pack());
+
+        self::assertCount(2, $packedBoxes);
+        self::assertEquals('Box #1', $packedBoxes[0]->getBox()->getReference());
+
+        PackedBoxByReferenceSorter::$reference = 'Box #2';
+        $packer = new Packer();
+        $packer->setPackedBoxSorter(new PackedBoxByReferenceSorter());
+        $packer->addBox(new TestBox('Box #1', 1, 1, 1, 0, 1, 1, 1, PHP_INT_MAX));
+        $packer->addBox(new TestBox('Box #2', 1, 1, 1, 0, 1, 1, 1, PHP_INT_MAX));
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 2);
+        $packedBoxes = iterator_to_array($packer->pack());
+
+        self::assertCount(2, $packedBoxes);
+        self::assertEquals('Box #2', $packedBoxes[0]->getBox()->getReference());
     }
 }

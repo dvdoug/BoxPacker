@@ -22,6 +22,7 @@ BoxPacker is licensed under the `MIT license`_.
     principles
     getting-started
     rotation
+    sortation
     weight-distribution
     too-large-items
     advanced-usage
