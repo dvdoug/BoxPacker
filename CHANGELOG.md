@@ -4,6 +4,7 @@
 ### Added
 - Added `ItemSorter`, `BoxSorter` and `PackedBoxSorter` to allow calling applications to have better control over
   sorting decisions
+- Added `beStrictAboutItemOrdering()` to `Packer` and `VolumePacker`
 
 ## [3.9.4] - 2021-10-21
 ### Changed

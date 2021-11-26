@@ -60,6 +60,11 @@ class VolumePacker implements LoggerAwareInterface
     protected $packAcrossWidthOnly = false;
 
     /**
+     * @var bool
+     */
+    protected $beStrictAboutItemOrdering = false;
+
+    /**
      * @var LayerPacker
      */
     private $layerPacker;
@@ -97,6 +102,12 @@ class VolumePacker implements LoggerAwareInterface
     public function packAcrossWidthOnly(): void
     {
         $this->packAcrossWidthOnly = true;
+    }
+
+    public function beStrictAboutItemOrdering(bool $beStrict): void
+    {
+        $this->beStrictAboutItemOrdering = $beStrict;
+        $this->layerPacker->beStrictAboutItemOrdering($beStrict);
     }
 
     /**
@@ -213,7 +224,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     private function stabiliseLayers(array $oldLayers): array
     {
-        if ($this->hasConstrainedItems) { // constraints include position, so cannot change
+        if ($this->hasConstrainedItems || $this->beStrictAboutItemOrdering) { // constraints include position, so cannot change
             return $oldLayers;
         }
 

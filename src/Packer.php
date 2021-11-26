@@ -60,6 +60,11 @@ class Packer implements LoggerAwareInterface
      */
     protected $packedBoxSorter;
 
+    /**
+     * @var bool
+     */
+    private $beStrictAboutItemOrdering = false;
+
     public function __construct()
     {
         $this->items = new ItemList();
@@ -145,6 +150,11 @@ class Packer implements LoggerAwareInterface
         $this->packedBoxSorter = $packedBoxSorter;
     }
 
+    public function beStrictAboutItemOrdering(bool $beStrict): void
+    {
+        $this->beStrictAboutItemOrdering = $beStrict;
+    }
+
     /**
      * Pack items into boxes.
      */
@@ -153,7 +163,7 @@ class Packer implements LoggerAwareInterface
         $packedBoxes = $this->doVolumePacking();
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
-        if ($packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
+        if (!$this->beStrictAboutItemOrdering && $packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
             $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxesQtyAvailable);
             $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
@@ -182,6 +192,7 @@ class Packer implements LoggerAwareInterface
                 $volumePacker = new VolumePacker($box, $this->items);
                 $volumePacker->setLogger($this->logger);
                 $volumePacker->setSinglePassMode($singlePassMode);
+                $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
                     $packedBoxesIteration[] = $packedBox;

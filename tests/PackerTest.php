@@ -644,4 +644,78 @@ class PackerTest extends TestCase
         self::assertCount(2, $packedBoxes);
         self::assertEquals('Box #2', $packedBoxes[0]->getBox()->getReference());
     }
+
+    public function testNotStrictItemOrdering(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('Box', 3, 3, 3, 0, 3, 3, 3, PHP_INT_MAX));
+        $packer->addItem(new TestItem('Item #1', 1, 1, 1, 1, false), 18);
+        $packer->addItem(new TestItem('Item #2', 2, 2, 2, 2, false), 2);
+        $packedBoxes = iterator_to_array($packer->pack());
+
+        self::assertCount(2, $packedBoxes);
+
+        $box1Items = $packedBoxes[0]->getItems()->asItemArray();
+        self::assertEquals('Item #2', $box1Items[0]->getDescription());
+        self::assertEquals('Item #1', $box1Items[1]->getDescription());
+        self::assertEquals('Item #1', $box1Items[2]->getDescription());
+        self::assertEquals('Item #1', $box1Items[3]->getDescription());
+        self::assertEquals('Item #1', $box1Items[4]->getDescription());
+        self::assertEquals('Item #1', $box1Items[5]->getDescription());
+        self::assertEquals('Item #1', $box1Items[6]->getDescription());
+        self::assertEquals('Item #1', $box1Items[7]->getDescription());
+        self::assertEquals('Item #1', $box1Items[8]->getDescription());
+        self::assertEquals('Item #1', $box1Items[9]->getDescription());
+        self::assertEquals('Item #1', $box1Items[10]->getDescription());
+        self::assertEquals('Item #1', $box1Items[11]->getDescription());
+        self::assertEquals('Item #1', $box1Items[12]->getDescription());
+        self::assertEquals('Item #1', $box1Items[13]->getDescription());
+        self::assertEquals('Item #1', $box1Items[14]->getDescription());
+        self::assertEquals('Item #1', $box1Items[15]->getDescription());
+        self::assertEquals('Item #1', $box1Items[16]->getDescription());
+        self::assertEquals('Item #1', $box1Items[17]->getDescription());
+
+        $box2Items = $packedBoxes[1]->getItems()->asItemArray();
+        self::assertEquals('Item #2', $box2Items[0]->getDescription());
+        self::assertEquals('Item #1', $box2Items[1]->getDescription());
+    }
+
+    public function testStrictItemOrdering(): void
+    {
+        $packer = new Packer();
+        $packer->beStrictAboutItemOrdering(true);
+        $packer->addBox(new TestBox('Box', 3, 3, 3, 0, 3, 3, 3, PHP_INT_MAX));
+        $packer->addItem(new TestItem('Item #1', 1, 1, 1, 1, false), 18);
+        $packer->addItem(new TestItem('Item #2', 2, 2, 2, 2, false), 2);
+        $packedBoxes = iterator_to_array($packer->pack());
+
+        self::assertCount(3, $packedBoxes);
+
+        $box1Items = $packedBoxes[0]->getItems()->asItemArray(); // this box is actually packed second...
+        self::assertEquals('Item #2', $box1Items[0]->getDescription());
+        self::assertEquals('Item #1', $box1Items[1]->getDescription());
+        self::assertEquals('Item #1', $box1Items[2]->getDescription());
+        self::assertEquals('Item #1', $box1Items[3]->getDescription());
+        self::assertEquals('Item #1', $box1Items[4]->getDescription());
+        self::assertEquals('Item #1', $box1Items[5]->getDescription());
+        self::assertEquals('Item #1', $box1Items[6]->getDescription());
+        self::assertEquals('Item #1', $box1Items[7]->getDescription());
+        self::assertEquals('Item #1', $box1Items[8]->getDescription());
+        self::assertEquals('Item #1', $box1Items[9]->getDescription());
+        self::assertEquals('Item #1', $box1Items[10]->getDescription());
+        self::assertEquals('Item #1', $box1Items[11]->getDescription());
+        self::assertEquals('Item #1', $box1Items[12]->getDescription());
+        self::assertEquals('Item #1', $box1Items[13]->getDescription());
+        self::assertEquals('Item #1', $box1Items[14]->getDescription());
+        self::assertEquals('Item #1', $box1Items[15]->getDescription());
+        self::assertEquals('Item #1', $box1Items[16]->getDescription());
+        self::assertEquals('Item #1', $box1Items[17]->getDescription());
+
+        $box2Items = $packedBoxes[1]->getItems()->asItemArray(); // this box is actually packed first...
+        self::assertEquals('Item #2', $box2Items[0]->getDescription());
+
+        $box3Items = $packedBoxes[2]->getItems()->asItemArray(); // this box is packed third
+        self::assertEquals('Item #1', $box3Items[0]->getDescription());
+    }
 }
