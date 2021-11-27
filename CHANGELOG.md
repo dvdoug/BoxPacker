@@ -14,6 +14,8 @@
    first two arguments(`Box $box`, `PackedItemList $alreadyPackedItems`) with `PackedBox $packedBox`. This allows
    callbacks to make use of the helper methods provided on `PackedBox`. Access to the box and items can be done via
    `->getBox()` and `->getItems()`
+ - `NoBoxesAvailableException` now has a `getAffectedItems()` method instead of `getItem()`. This should allow
+   improved handling of the exception inside calling applications when multiple items cannot be packed
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface

@@ -222,7 +222,7 @@ class Packer implements LoggerAwareInterface
     protected function findBestBoxFromIteration(array $packedBoxes): PackedBox
     {
         if (count($packedBoxes) === 0) {
-            throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items->top());
+            throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items);
         }
 
         usort($packedBoxes, [$this->packedBoxSorter, 'compare']);

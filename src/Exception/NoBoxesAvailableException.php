@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Exception;
 
-use DVDoug\BoxPacker\Item;
+use DVDoug\BoxPacker\ItemList;
 use RuntimeException;
 
 /**
@@ -18,16 +18,13 @@ use RuntimeException;
  */
 class NoBoxesAvailableException extends RuntimeException
 {
-    public Item $item;
-
-    public function __construct(string $message, Item $item)
+    public function __construct(string $message, private ItemList $itemList)
     {
-        $this->item = $item;
         parent::__construct($message);
     }
 
-    public function getItem(): Item
+    public function getAffectedItems(): ItemList
     {
-        return $this->item;
+        return $this->itemList;
     }
 }

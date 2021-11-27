@@ -30,8 +30,9 @@ Alternatively, you may wish to catch it explicitly and have domain-specific hand
 
             $packedBoxes = $packer->pack();
         } catch (NoBoxesAvailableException $e) {
-            $problemItem = $e->getItem(); //the custom exception allows you to retrieve the affected item
-            // pause dispatch, email someone or any other handling of your choosing
+            $affectedItems = $e->getAffectedItems(); //the custom exception allows you to retrieve the affected items
+
+            //add code here to pause dispatch, email someone or perform any other handling of your choosing
         }
 
 For some applications the ability/requirement to do their own handling of this case may not be wanted or may even be

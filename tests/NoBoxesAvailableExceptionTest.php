@@ -19,9 +19,16 @@ class NoBoxesAvailableExceptionTest extends TestCase
      */
     public function testCanGetItem(): void
     {
-        $item = new TestItem('Item 1', 2500, 2500, 20, 2000, Rotation::BestFit);
+        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, Rotation::BestFit);
+        $item2 = new TestItem('Item 2', 2500, 2500, 20, 2000, Rotation::BestFit);
 
-        $exception = new NoBoxesAvailableException('Just testing...', $item);
-        self::assertEquals($item, $exception->getItem());
+        $itemList = new ItemList();
+        $itemList->insert($item1);
+        $itemList->insert($item2);
+
+        $exception = new NoBoxesAvailableException('Just testing...', $itemList);
+        self::assertCount(2, $exception->getAffectedItems());
+        self::assertEquals($item1, $exception->getAffectedItems()->extract());
+        self::assertEquals($item2, $exception->getAffectedItems()->extract());
     }
 }

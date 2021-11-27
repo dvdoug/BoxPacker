@@ -38,12 +38,19 @@ class InfalliblePacker extends Packer
     public function pack(): PackedBoxList
     {
         $this->sanityPrecheck();
+        $originalItemList = clone $this->items;
         while (true) {
             try {
+                $this->items = clone $originalItemList;
+                foreach($this->unpackedItems as $unpackedItem) {
+                    $this->items->remove($unpackedItem);
+                }
+
                 return parent::pack();
             } catch (NoBoxesAvailableException $e) {
-                $this->unpackedItems->insert($e->getItem());
-                $this->items->remove($e->getItem());
+                foreach ($e->getAffectedItems() as $affectedItem) {
+                    $this->unpackedItems->insert($affectedItem);
+                }
             }
         }
     }
