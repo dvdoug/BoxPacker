@@ -17,7 +17,6 @@ use function reset;
 use ReturnTypeWillChange;
 use function round;
 use Traversable;
-use function usort;
 
 /**
  * List of packed boxes.
@@ -34,32 +33,10 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     private $list = [];
 
     /**
-     * Has this list already been sorted?
-     *
-     * @var bool
-     */
-    private $isSorted = false;
-
-    /**
-     * @var PackedBoxSorter
-     */
-    private $sorter;
-
-    public function __construct(?PackedBoxSorter $sorter = null)
-    {
-        $this->sorter = $sorter ?: new DefaultPackedBoxSorter();
-    }
-
-    /**
      * @return Traversable|PackedBox[]
      */
     public function getIterator(): Traversable
     {
-        if (!$this->isSorted) {
-            usort($this->list, [$this->sorter, 'compare']);
-            $this->isSorted = true;
-        }
-
         return new ArrayIterator($this->list);
     }
 
@@ -74,7 +51,6 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     public function insert(PackedBox $item): void
     {
         $this->list[] = $item;
-        $this->isSorted = false;
     }
 
     /**
@@ -96,11 +72,6 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
      */
     public function top(): PackedBox
     {
-        if (!$this->isSorted) {
-            usort($this->list, [$this->sorter, 'compare']);
-            $this->isSorted = true;
-        }
-
         return reset($this->list);
     }
 

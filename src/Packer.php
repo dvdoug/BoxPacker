@@ -181,7 +181,7 @@ class Packer implements LoggerAwareInterface
      */
     public function doVolumePacking(bool $singlePassMode = false, bool $enforceSingleBox = false): PackedBoxList
     {
-        $packedBoxes = new PackedBoxList($this->packedBoxSorter);
+        $packedBoxes = new PackedBoxList();
 
         //Keep going until everything packed
         while ($this->items->count()) {
@@ -209,7 +209,7 @@ class Packer implements LoggerAwareInterface
                 $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
             } catch (NoBoxesAvailableException $e) {
                 if ($enforceSingleBox) {
-                    return new PackedBoxList($this->packedBoxSorter);
+                    return new PackedBoxList();
                 }
                 throw $e;
             }

@@ -97,7 +97,7 @@ class WeightRedistributor implements LoggerAwareInterface
         } while ($iterationSuccessful);
 
         //Combine back into a single list
-        $packedBoxes = new PackedBoxList($this->packedBoxSorter);
+        $packedBoxes = new PackedBoxList();
         $packedBoxes->insertFromArray($boxes);
 
         return $packedBoxes;
