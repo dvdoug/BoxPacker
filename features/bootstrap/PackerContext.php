@@ -36,8 +36,6 @@ class PackerContext implements Context
 
     protected PackedBoxList $packedBoxList;
 
-    protected string $packerClass = Packer::class;
-
     /**
      * Initializes context.
      *
@@ -126,7 +124,7 @@ class PackerContext implements Context
      */
     public function iDoAPacking(): void
     {
-        $packer = new $this->packerClass();
+        $packer = new Packer();
         $packer->setBoxes($this->boxList);
         $packer->setItems($this->itemList);
         $this->packedBoxList = $packer->pack();

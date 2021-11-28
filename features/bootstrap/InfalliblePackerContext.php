@@ -6,9 +6,9 @@
  */
 declare(strict_types=1);
 
-use DVDoug\BoxPacker\InfalliblePacker;
 use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\ItemList;
+use DVDoug\BoxPacker\Packer;
 use PHPUnit\Framework\Assert;
 
 /**
@@ -16,8 +16,6 @@ use PHPUnit\Framework\Assert;
  */
 class InfalliblePackerContext extends PackerContext
 {
-    protected string $packerClass = InfalliblePacker::class;
-
     protected ItemList $unpackedItemList;
 
     /**
@@ -25,7 +23,8 @@ class InfalliblePackerContext extends PackerContext
      */
     public function iDoAnInfalliblePacking(): void
     {
-        $packer = new InfalliblePacker();
+        $packer = new Packer();
+        $packer->throwOnUnpackableItem(false);
         $packer->setBoxes($this->boxList);
         $packer->setItems($this->itemList);
         $this->packedBoxList = $packer->pack();

@@ -36,6 +36,8 @@ class Packer implements LoggerAwareInterface
 
     protected PackedBoxSorter $packedBoxSorter;
 
+    protected bool $throwOnUnpackableItem = true;
+
     public function __construct()
     {
         $this->items = new ItemList();
@@ -120,6 +122,19 @@ class Packer implements LoggerAwareInterface
         $this->packedBoxSorter = $packedBoxSorter;
     }
 
+    public function throwOnUnpackableItem(bool $throwOnUnpackableItem): void
+    {
+        $this->throwOnUnpackableItem = $throwOnUnpackableItem;
+    }
+
+    /**
+     * Return the items that haven't been packed.
+     */
+    public function getUnpackedItems(): ItemList
+    {
+        return $this->items;
+    }
+
     /**
      * Pack items into boxes.
      */
@@ -168,20 +183,20 @@ class Packer implements LoggerAwareInterface
                 }
             }
 
-            try {
+            if (count($packedBoxesIteration) > 0) {
                 //Find best box of iteration, and remove packed items from unpacked list
-                $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
-            } catch (NoBoxesAvailableException $e) {
-                if ($enforceSingleBox) {
-                    return new PackedBoxList($this->packedBoxSorter);
-                }
-                throw $e;
+                usort($packedBoxesIteration, [$this->packedBoxSorter, 'compare']);
+                $bestBox = $packedBoxesIteration[0];
+
+                $this->items->removePackedItems($bestBox->getItems());
+
+                $packedBoxes->insert($bestBox);
+                --$this->boxesQtyAvailable[spl_object_id($bestBox->getBox())];
+            } elseif ($this->throwOnUnpackableItem) {
+                throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items);
+            } else {
+                break;
             }
-
-            $this->items->removePackedItems($bestBox->getItems());
-
-            $packedBoxes->insert($bestBox);
-            --$this->boxesQtyAvailable[spl_object_id($bestBox->getBox())];
         }
 
         return $packedBoxes;
@@ -214,19 +229,5 @@ class Packer implements LoggerAwareInterface
         }
 
         return array_merge($preferredBoxes, $otherBoxes);
-    }
-
-    /**
-     * @param PackedBox[] $packedBoxes
-     */
-    protected function findBestBoxFromIteration(array $packedBoxes): PackedBox
-    {
-        if (count($packedBoxes) === 0) {
-            throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items);
-        }
-
-        usort($packedBoxes, [$this->packedBoxSorter, 'compare']);
-
-        return $packedBoxes[0];
     }
 }

@@ -7,6 +7,10 @@
    one of the new `Rotation` enum values
  - Added new `generateVisualisationURL()` method to `PackedBox` and `PackedBoxList`. This will generate a custom URL for
    a visualisation you can access via the BoxPacker website
+ - Added `throwOnUnpackableItem()` to `Packer` to control if an exception is thrown (or not) if an unpackable item is
+   found (defaults to true, consistent with previous behaviour)
+ - Added `getUnpackedItems()` to `Packer` to retrieve the list of items that could not be packed (only applicable if
+   exceptions are disabled).
 ### Changed
  - Minimum PHP version is now 8.1
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
@@ -19,6 +23,8 @@
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface
+ - Removed `InfalliblePacker`. You can now get the same behaviour by calling `->throwOnUnpackableItem(false)` and
+   `->getUnpackedItems()` on the main `Packer` class
 
 ## [3.x - Unreleased] - 2021-xx-xx
 ### Added
