@@ -34,8 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "DVDoug\\BoxPacker\\": "src/",
-            "DVDoug\\BoxPacker\\Test\\": "tests/Test"
+            "DVDoug\\BoxPacker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DVDoug\\BoxPacker\\": "tests/"
         }
     },
     "extra": {
