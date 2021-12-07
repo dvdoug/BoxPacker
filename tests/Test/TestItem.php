@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker\Test;
 use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\Rotation;
 use JsonSerializable;
-use ReturnTypeWillChange;
 use stdClass;
 
 class TestItem implements Item, JsonSerializable
@@ -115,8 +114,7 @@ class TestItem implements Item, JsonSerializable
         return $this->allowedRotation;
     }
 
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize(): array
     {
         return [
             'description' => $this->description,

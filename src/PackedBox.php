@@ -12,7 +12,6 @@ use function iterator_to_array;
 use function json_encode;
 use JsonSerializable;
 use function max;
-use ReturnTypeWillChange;
 use function round;
 use function urlencode;
 
@@ -187,8 +186,7 @@ class PackedBox implements JsonSerializable
         $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
     }
 
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize(): array
     {
         return [
             'box' => [

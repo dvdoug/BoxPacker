@@ -15,7 +15,6 @@ use IteratorAggregate;
 use function json_encode;
 use JsonSerializable;
 use function reset;
-use ReturnTypeWillChange;
 use function round;
 use Traversable;
 use function urlencode;
@@ -162,8 +161,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
         return 'https://boxpacker.io/en/master/visualiser.html?packing=' . urlencode(json_encode($this));
     }
 
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize(): array
     {
         return $this->list;
     }

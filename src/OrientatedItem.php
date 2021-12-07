@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker;
 use function atan;
 use JsonSerializable;
 use function min;
-use ReturnTypeWillChange;
 use function sort;
 
 /**
@@ -116,8 +115,7 @@ class OrientatedItem implements JsonSerializable
         return $this->dimensionsAsArray === $itemDimensions;
     }
 
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize(): array
     {
         return [
             'item' => $this->item,

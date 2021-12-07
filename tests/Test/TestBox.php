@@ -10,7 +10,6 @@ namespace DVDoug\BoxPacker\Test;
 
 use DVDoug\BoxPacker\Box;
 use JsonSerializable;
-use ReturnTypeWillChange;
 
 class TestBox implements Box, JsonSerializable
 {
@@ -129,8 +128,7 @@ class TestBox implements Box, JsonSerializable
         return $this->maxWeight;
     }
 
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize(): array
     {
         return [
             'reference' => $this->reference,
