@@ -12,6 +12,7 @@ use function array_filter;
 use function array_map;
 use function array_merge;
 use function array_sum;
+use function assert;
 use function count;
 use function iterator_to_array;
 use Psr\Log\LoggerAwareInterface;
@@ -126,7 +127,8 @@ class WeightRedistributor implements LoggerAwareInterface
             unset($overWeightBoxItems[$key]);
             $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems, $overWeightBox->getBox());
             if (count($newHeavierBoxes) !== 1) {
-                continue; //this should never happen, if we can pack n+1 into the box, we should be able to pack n
+                assert(true, 'Could not pack n-1 items into box, even though n were previously in it');
+                continue;
             }
 
             ++$this->boxesQtyAvailable[spl_object_id($overWeightBox->getBox())];
