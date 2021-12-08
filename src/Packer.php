@@ -161,7 +161,7 @@ class Packer implements LoggerAwareInterface
      *
      * @throws NoBoxesAvailableException
      */
-    public function doVolumePacking(bool $singlePassMode = false, bool $enforceSingleBox = false): PackedBoxList
+    public function doVolumePacking(bool $enforceSingleBox = false): PackedBoxList
     {
         $packedBoxes = new PackedBoxList($this->packedBoxSorter);
 
@@ -173,7 +173,6 @@ class Packer implements LoggerAwareInterface
             foreach ($this->getBoxList($enforceSingleBox) as $box) {
                 $volumePacker = new VolumePacker($box, $this->items);
                 $volumePacker->setLogger($this->logger);
-                $volumePacker->setSinglePassMode($singlePassMode);
                 $packedBox = $volumePacker->pack();
                 if ($packedBox->getItems()->count()) {
                     $packedBoxesIteration[] = $packedBox;
