@@ -16,8 +16,8 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
-use function spl_object_id;
 use function usort;
+use WeakMap;
 
 /**
  * Actual packer.
@@ -32,7 +32,8 @@ class Packer implements LoggerAwareInterface
 
     protected BoxList $boxes;
 
-    protected array $boxesQtyAvailable = [];
+    /** @var WeakMap<Box, int> */
+    protected WeakMap $boxQuantitiesAvailable;
 
     protected PackedBoxSorter $packedBoxSorter;
 
@@ -43,6 +44,7 @@ class Packer implements LoggerAwareInterface
         $this->items = new ItemList();
         $this->boxes = new BoxList();
         $this->packedBoxSorter = new DefaultPackedBoxSorter();
+        $this->boxQuantitiesAvailable = new WeakMap();
 
         $this->logger = new NullLogger();
     }
@@ -98,7 +100,7 @@ class Packer implements LoggerAwareInterface
      */
     public function setBoxQuantity(Box $box, int $qty): void
     {
-        $this->boxesQtyAvailable[spl_object_id($box)] = $qty;
+        $this->boxQuantitiesAvailable[$box] = $qty;
     }
 
     /**
@@ -144,7 +146,7 @@ class Packer implements LoggerAwareInterface
 
         //If we have multiple boxes, try and optimise/even-out weight distribution
         if ($packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
-            $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxesQtyAvailable);
+            $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxQuantitiesAvailable);
             $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
@@ -191,7 +193,7 @@ class Packer implements LoggerAwareInterface
                 $this->items->removePackedItems($bestBox->getItems());
 
                 $packedBoxes->insert($bestBox);
-                --$this->boxesQtyAvailable[spl_object_id($bestBox->getBox())];
+                --$this->boxQuantitiesAvailable[$bestBox->getBox()];
             } elseif ($this->throwOnUnpackableItem) {
                 throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items);
             } else {
@@ -219,7 +221,7 @@ class Packer implements LoggerAwareInterface
         $preferredBoxes = [];
         $otherBoxes = [];
         foreach ($this->boxes as $box) {
-            if ($this->boxesQtyAvailable[spl_object_id($box)] > 0) {
+            if ($this->boxQuantitiesAvailable[$box] > 0) {
                 if ($box->getInnerWidth() * $box->getInnerLength() * $box->getInnerDepth() >= $itemVolume) {
                     $preferredBoxes[] = $box;
                 } elseif (!$enforceSingleBox) {
