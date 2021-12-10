@@ -7,6 +7,7 @@
    one of the new `Rotation` enum values
  - Added new `generateVisualisationURL()` method to `PackedBox` and `PackedBoxList`. This will generate a custom URL for
    a visualisation you can access via the BoxPacker website
+ - Added new `packAllPermutations()` method to `Packer` to calculate all possible box combinations
  - Added `throwOnUnpackableItem()` to `Packer` to control if an exception is thrown (or not) if an unpackable item is
    found (defaults to true, consistent with previous behaviour)
  - Added `getUnpackedItems()` to `Packer` to retrieve the list of items that could not be packed (only applicable if

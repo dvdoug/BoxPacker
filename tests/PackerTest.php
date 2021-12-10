@@ -1114,4 +1114,120 @@ class PackerTest extends TestCase
         self::assertCount(42, $packedBoxes);
         self::assertCount(62, $packer->getUnpackedItems());
     }
+
+    public function testAllPermutationsSimpleCase(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Box A', 36, 8, 3, 0, 36, 8, 3, 2));
+        $packer->addBox(new TestBox('Box B', 36, 8, 8, 0, 36, 8, 8, 2));
+        $packer->addItem(new TestItem('Item 1', 35, 7, 2, 1, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 2', 6, 5, 1, 1, Rotation::BestFit));
+
+        $permutations = $packer->packAllPermutations();
+        self::assertCount(2, $permutations);
+
+        $firstPermutation = $permutations[0];
+        self::assertCount(1, $firstPermutation); // 1 box
+        self::assertCount(2, $firstPermutation->top()->getItems());
+
+        $secondPermutation = $permutations[1];
+        self::assertCount(1, $secondPermutation); // 1 box
+        self::assertCount(2, $secondPermutation->top()->getItems());
+    }
+
+    /**
+     * Test that unlimited supply boxes are handled correctly.
+     */
+    public function testAllPermutationsUnlimitedSupplyBox(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100));
+        $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
+
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, Rotation::BestFit), 3);
+
+        $permutations = $packer->packAllPermutations();
+        self::assertCount(8, $permutations);
+    }
+
+    /**
+     * Test that limited supply boxes are handled correctly.
+     */
+    public function testAllPermutationsLimitedSupplyBox(): void
+    {
+        // as above, but limit light box to quantity 2
+        $packer = new Packer();
+        $packer->addBox(new LimitedSupplyTestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100, 2));
+        $packer->addBox(new TestBox('Heavy box', 100, 100, 100, 100, 100, 100, 100, 10000));
+
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, Rotation::BestFit), 3);
+
+        $permutations = $packer->packAllPermutations();
+        self::assertCount(7, $permutations);
+    }
+
+    /**
+     * Test that limited supply boxes are handled correctly.
+     */
+    public function testAllPermutationsNotEnoughLimitedSupplyBox(): void
+    {
+        // as above, but remove heavy box as an option
+        $this->expectException(NoBoxesAvailableException::class);
+        $packer = new Packer();
+        $packer->addBox(new LimitedSupplyTestBox('Light box', 100, 100, 100, 1, 100, 100, 100, 100, 2));
+        $packer->addItem(new TestItem('Item', 100, 100, 100, 75, Rotation::BestFit), 3);
+
+        $permutations = $packer->packAllPermutations();
+    }
+
+    public function testAllPermutationsPackThreeItemsOneDoesntFitInAnyBoxWhenNotThrowing(): void
+    {
+        $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
+        $box2 = new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000);
+
+        $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, Rotation::BestFit);
+        $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, Rotation::BestFit);
+        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, Rotation::BestFit);
+
+        $packer = new Packer();
+        $packer->throwOnUnpackableItem(false);
+        $packer->addBox($box1);
+        $packer->addBox($box2);
+        $packer->addItem($item1);
+        $packer->addItem($item2);
+        $packer->addItem($item3);
+
+        $permutations = $packer->packAllPermutations();
+        self::assertCount(1, $permutations);
+    }
+
+    public function testAllPermutationsTooLargeItemsHandledWhenNotThrowing(): void
+    {
+        $packer = new Packer();
+        $packer->throwOnUnpackableItem(false);
+        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
+        $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
+        $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, Rotation::BestFit));
+
+        $permutations = $packer->packAllPermutations();
+        self::assertCount(1, $permutations);
+        self::assertCount(1, $packer->getUnpackedItems());
+    }
+
+    public function testAllPermutationsUnpackableItemsHandledWhenNotThrowing(): void
+    {
+        $packer = new Packer();
+        $packer->throwOnUnpackableItem(false);
+        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
+        $packer->addBox(new LimitedSupplyTestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000, 0));
+        $packer->addItem(new TestItem('Item 1', 2500, 2500, 20, 2000, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 2', 25000, 2500, 20, 2000, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 3', 2500, 2500, 20, 2000, Rotation::BestFit));
+
+        $permutations = $packer->packAllPermutations();
+        self::assertCount(0, $permutations);
+        self::assertCount(3, $packer->getUnpackedItems());
+    }
 }
