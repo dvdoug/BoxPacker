@@ -85,7 +85,7 @@ class PackedItem implements JsonSerializable
      */
     public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): self
     {
-        return new static(
+        return new self(
             $orientatedItem->getItem(),
             $x,
             $y,

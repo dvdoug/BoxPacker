@@ -52,7 +52,7 @@ class ItemList implements Countable, IteratorAggregate
      */
     public static function fromArray(array $items, bool $preSorted = false): self
     {
-        $list = new static();
+        $list = new self();
         $list->list = array_reverse($items); // internal sort is largest at the end
         $list->isSorted = $preSorted;
 
