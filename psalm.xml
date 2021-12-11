@@ -16,14 +16,18 @@
 
     <issueHandlers>
 
-        <MissingConstructor errorLevel="suppress"/>
-        <UnsafeInstantiation errorLevel="suppress"/>
-
-        <InvalidReturnType>
+        <ArgumentTypeCoercion>
             <errorLevel type="suppress">
-                <file name="src/InfalliblePacker.php"/>
+                <referencedFunction name="max"/>
             </errorLevel>
-        </InvalidReturnType>
+
+        </ArgumentTypeCoercion>
+
+        <PossiblyNullArrayOffset>
+            <errorLevel type="suppress">
+                <file name="src/ItemList.php"/>
+            </errorLevel>
+        </PossiblyNullArrayOffset>
 
     </issueHandlers>
 
