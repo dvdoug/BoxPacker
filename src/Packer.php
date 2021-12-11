@@ -14,7 +14,7 @@ use function count;
 use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use function usort;
@@ -25,7 +25,7 @@ use WeakMap;
  */
 class Packer implements LoggerAwareInterface
 {
-    use LoggerAwareTrait;
+    private LoggerInterface $logger;
 
     protected int $maxBoxesToBalanceWeight = 12;
 
@@ -48,6 +48,11 @@ class Packer implements LoggerAwareInterface
         $this->boxQuantitiesAvailable = new WeakMap();
 
         $this->logger = new NullLogger();
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     /**
