@@ -14,7 +14,7 @@ However, BoxPacker also allows you to influence many of these decisions if you p
 
 Items
 -----
-You may wish to explicitly pack heavier items before larger ones. Or larger ones before heavier ones. Or try and keep
+You may wish to explicitly pack heavier items before larger ones. Or larger ones before heavier ones. Or prefer to keep
 items of a similar "group" together (whatever that might mean for your application). The ``ItemList`` class supports
 this via two methods.
 
@@ -55,6 +55,23 @@ Then, pass this to the ``ItemList`` constructor
 
     $sorter = new YourApplicationItemSorter();
     $itemList = new ItemList($sorter);
+
+Enforcing strict ordering
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Regardless of which of the above methods you use, BoxPacker's normal mode of operation is to respect the sort ordering
+*but not at the expense of packing density*. If an item in the list is too large to fit into a particular space,
+BoxPacker will temporarily skip over it and will try the next item in the list instead.
+
+This typically works well for ecommerce, but in some applications you may want your custom sort to be absolutely
+determinative. You can do this by calling ``beStrictAboutItemOrdering()``.
+
+.. code-block:: php
+
+    $packer = new Packer();
+    $packer->beStrictAboutItemOrdering(true); // or false to turn strict ordering off again
+
+    $volumePacker = new VolumePacker(...);
+    $volumePacker->beStrictAboutItemOrdering(true); // or false to turn strict ordering off again
 
 Box types
 ---------

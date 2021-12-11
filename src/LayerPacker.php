@@ -30,6 +30,8 @@ class LayerPacker implements LoggerAwareInterface
 
     private OrientatedItemFactory $orientatedItemFactory;
 
+    private bool $beStrictAboutItemOrdering = false;
+
     public function __construct(Box $box)
     {
         $this->box = $box;
@@ -52,6 +54,11 @@ class LayerPacker implements LoggerAwareInterface
     {
         $this->singlePassMode = $singlePassMode;
         $this->orientatedItemFactory->setSinglePassMode($singlePassMode);
+    }
+
+    public function beStrictAboutItemOrdering(bool $beStrict): void
+    {
+        $this->beStrictAboutItemOrdering = $beStrict;
     }
 
     /**
@@ -104,7 +111,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            if ($items->count() > 0) { // skip for now, move on to the next item
+            if (!$this->beStrictAboutItemOrdering && $items->count() > 0) { // skip for now, move on to the next item
                 $this->logger->debug("doesn't fit, skipping for now");
                 $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
@@ -124,7 +131,7 @@ class LayerPacker implements LoggerAwareInterface
                 $x = $startX;
                 $rowLength = 0;
                 $skippedItems[] = $itemToPack;
-                $items = ItemList::fromArray($skippedItems, true);
+                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                 $skippedItems = [];
                 $prevItem = null;
                 continue;
