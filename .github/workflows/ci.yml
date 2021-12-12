@@ -70,10 +70,6 @@ jobs:
       if: matrix.php-version != '8.1' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
 
-    - name: Remove Psalm if not called
-      if: matrix.php-version != '8.1' || matrix.dependencies != 'highest'
-      run: composer remove --dev --no-update "vimeo/psalm";
-
     - name: Install dependencies (low)
       if: matrix.dependencies == 'lowest'
       run: |
@@ -182,9 +178,6 @@ jobs:
 
     - name: Remove PHP-CS-Fixer
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
-
-    - name: Remove Psalm
-      run: composer remove --dev --no-update "vimeo/psalm";
 
     - name: Install dependencies (low)
       if: matrix.dependencies == 'lowest'

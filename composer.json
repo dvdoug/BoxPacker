@@ -19,10 +19,9 @@
     "require-dev": {
         "behat/behat": "^3.10",
         "dvdoug/behat-code-coverage": "^5.2.1",
-        "friendsofphp/php-cs-fixer": "^3.3",
+        "friendsofphp/php-cs-fixer": "^3.4",
         "monolog/monolog": "^2.3",
-        "phpunit/phpunit": "^9.5.9",
-        "vimeo/psalm": "^4.13"
+        "phpunit/phpunit": "^9.5.9"
     },
     "config": {
         "preferred-install": {
