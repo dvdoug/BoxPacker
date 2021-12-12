@@ -136,7 +136,7 @@ class VolumePacker implements LoggerAwareInterface
         $items = clone $this->items;
 
         while ($items->count() > 0) {
-            $layerStartDepth = static::getCurrentPackedDepth($layers);
+            $layerStartDepth = self::getCurrentPackedDepth($layers);
             $packedItemList = $this->getPackedItemList($layers);
 
             // do a preliminary layer pack to get the depth used

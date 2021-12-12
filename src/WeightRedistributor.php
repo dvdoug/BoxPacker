@@ -113,7 +113,7 @@ class WeightRedistributor implements LoggerAwareInterface
         $underWeightBoxItems = $underWeightBox->getItems()->asItemArray();
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
-            if (!static::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
+            if (!self::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
                 continue; // moving this item would harm more than help
             }
 
@@ -187,8 +187,8 @@ class WeightRedistributor implements LoggerAwareInterface
             return false;
         }
 
-        $oldVariance = static::calculateVariance($overWeightItemsWeight, $underWeightItemsWeight);
-        $newVariance = static::calculateVariance($overWeightItemsWeight - $overWeightItem->getWeight(), $underWeightItemsWeight + $overWeightItem->getWeight());
+        $oldVariance = self::calculateVariance($overWeightItemsWeight, $underWeightItemsWeight);
+        $newVariance = self::calculateVariance($overWeightItemsWeight - $overWeightItem->getWeight(), $underWeightItemsWeight + $overWeightItem->getWeight());
 
         return $newVariance < $oldVariance;
     }

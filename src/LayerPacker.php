@@ -115,7 +115,7 @@ class LayerPacker implements LoggerAwareInterface
                 $this->logger->debug("doesn't fit, skipping for now");
                 $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
-                while ($items->count() > 1 && static::isSameDimensions($itemToPack, $items->top())) {
+                while ($items->count() > 1 && self::isSameDimensions($itemToPack, $items->top())) {
                     $skippedItems[] = $items->extract();
                 }
                 continue;
