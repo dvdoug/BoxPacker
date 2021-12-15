@@ -97,9 +97,7 @@ class PackerContext implements Context
         $weight
     ): void {
         $item = new TestItem($itemName, $width, $length, $depth, $weight, Rotation::BestFit);
-        for ($i = 0; $i < $qty; ++$i) {
-            $this->itemList->insert($item);
-        }
+        $this->itemList->insert($item, $qty);
     }
 
     /**
@@ -114,9 +112,7 @@ class PackerContext implements Context
         $weight
     ): void {
         $item = new TestItem($itemName, $width, $length, $depth, $weight, Rotation::KeepFlat);
-        for ($i = 0; $i < $qty; ++$i) {
-            $this->itemList->insert($item);
-        }
+        $this->itemList->insert($item, $qty);
     }
 
     /**

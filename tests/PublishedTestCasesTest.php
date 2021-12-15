@@ -150,9 +150,7 @@ class PublishedTestCasesTest extends TestCase
                     (int) $itemDimensions[5],
                     (bool) $itemDimensions[6]
                 );
-                for ($c = 1; $c <= $itemDimensions[7]; ++$c) {
-                    $items->insert($item);
-                }
+                $items->insert($item, (int) $itemDimensions[7]);
             }
             $data[$problemId] = [$problemId, $box, $items, $itemTypeCount];
         }
