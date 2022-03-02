@@ -23,7 +23,7 @@ jobs:
           - "latest"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 2
 
@@ -140,7 +140,7 @@ jobs:
           - "latest"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: "Setup PHP"
       uses: "shivammathur/setup-php@v2"
