@@ -78,7 +78,7 @@ class LayerPacker implements LoggerAwareInterface
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
 
-            //skip items that will never fit e.g. too heavy
+            // skip items that will never fit e.g. too heavy
             if ($itemToPack->getWeight() > $remainingWeightAllowed) {
                 continue;
             }
@@ -93,8 +93,8 @@ class LayerPacker implements LoggerAwareInterface
                 $rowLength = max($rowLength, $packedItem->getLength());
                 $prevItem = $orientatedItem;
 
-                //Figure out if we can stack items on top of this rather than side by side
-                //e.g. when we've packed a tall item, and have just put a shorter one next to it.
+                // Figure out if we can stack items on top of this rather than side by side
+                // e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
                 if ($stackableDepth > 0) {
                     $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->getDepth(), $x + $packedItem->getWidth(), $y + $packedItem->getLength(), $stackableDepth, $stackableDepth, $considerStability);
@@ -122,7 +122,7 @@ class LayerPacker implements LoggerAwareInterface
             }
 
             if ($x > $startX) {
-                //Having now placed items, there is space *within the same row* along the length. Pack into that.
+                // Having now placed items, there is space *within the same row* along the length. Pack into that.
                 $this->logger->debug('No more fit in width wise, packing along remaining length');
                 $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $rowLength, $z, $widthForLayer, $lengthForLayer - $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
 
