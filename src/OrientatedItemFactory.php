@@ -114,7 +114,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     ): array {
         $permutations = $this->generatePermutations($item, $prevItem);
 
-        //remove any that simply don't fit
+        // remove any that simply don't fit
         $orientations = [];
         foreach ($permutations as $dimensions) {
             if ($dimensions[0] <= $widthLeft && $dimensions[1] <= $lengthLeft && $dimensions[2] <= $depthLeft) {
@@ -213,7 +213,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     private function generatePermutations(Item $item, ?OrientatedItem $prevItem): array
     {
-        //Special case items that are the same as what we just packed - keep orientation
+        // Special case items that are the same as what we just packed - keep orientation
         if ($prevItem && $prevItem->isSameDimensions($item)) {
             return [[$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()]];
         }
@@ -223,11 +223,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $l = $item->getLength();
         $d = $item->getDepth();
 
-        //simple 2D rotation
+        // simple 2D rotation
         $permutations[$w . '|' . $l . '|' . $d] = [$w, $l, $d];
         $permutations[$l . '|' . $w . '|' . $d] = [$l, $w, $d];
 
-        //add 3D rotation if we're allowed
+        // add 3D rotation if we're allowed
         if (!$item->getKeepFlat()) {
             $permutations[$w . '|' . $d . '|' . $l] = [$w, $d, $l];
             $permutations[$l . '|' . $d . '|' . $w] = [$l, $d, $w];

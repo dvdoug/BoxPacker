@@ -101,7 +101,7 @@ class OrientatedItemSorter implements LoggerAwareInterface
 
     public function __invoke(OrientatedItem $a, OrientatedItem $b)
     {
-        //Prefer exact fits in width/length/depth order
+        // Prefer exact fits in width/length/depth order
         $orientationAWidthLeft = $this->widthLeft - $a->getWidth();
         $orientationBWidthLeft = $this->widthLeft - $b->getWidth();
         $widthDecider = $this->exactFitDecider($orientationAWidthLeft, $orientationBWidthLeft);

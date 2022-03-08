@@ -18,7 +18,7 @@
     },
     "require-dev": {
         "behat/behat": "^3.7",
-        "friendsofphp/php-cs-fixer": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.7",
         "dvdoug/behat-code-coverage": "^5.0.1",
         "monolog/monolog": "^1.0||^2.0",
         "phpunit/phpunit": "^7.5.20||^8.5.21||^9.5.8"

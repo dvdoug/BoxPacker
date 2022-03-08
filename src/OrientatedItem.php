@@ -141,7 +141,7 @@ class OrientatedItem implements JsonSerializable
     }
 
     #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize()/* : mixed */
     {
         return [
             'item' => $this->item,

@@ -143,7 +143,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     }
 
     #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize()/* : mixed */
     {
         return $this->list;
     }

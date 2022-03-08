@@ -162,7 +162,7 @@ class Packer implements LoggerAwareInterface
     {
         $packedBoxes = $this->doVolumePacking();
 
-        //If we have multiple boxes, try and optimise/even-out weight distribution
+        // If we have multiple boxes, try and optimise/even-out weight distribution
         if (!$this->beStrictAboutItemOrdering && $packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
             $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxesQtyAvailable);
             $redistributor->setLogger($this->logger);
@@ -183,11 +183,11 @@ class Packer implements LoggerAwareInterface
     {
         $packedBoxes = new PackedBoxList();
 
-        //Keep going until everything packed
+        // Keep going until everything packed
         while ($this->items->count()) {
             $packedBoxesIteration = [];
 
-            //Loop through boxes starting with smallest, see what happens
+            // Loop through boxes starting with smallest, see what happens
             foreach ($this->getBoxList($enforceSingleBox) as $box) {
                 $volumePacker = new VolumePacker($box, $this->items);
                 $volumePacker->setLogger($this->logger);
@@ -197,7 +197,7 @@ class Packer implements LoggerAwareInterface
                 if ($packedBox->getItems()->count()) {
                     $packedBoxesIteration[] = $packedBox;
 
-                    //Have we found a single box that contains everything?
+                    // Have we found a single box that contains everything?
                     if ($packedBox->getItems()->count() === $this->items->count()) {
                         break;
                     }
@@ -205,7 +205,7 @@ class Packer implements LoggerAwareInterface
             }
 
             try {
-                //Find best box of iteration, and remove packed items from unpacked list
+                // Find best box of iteration, and remove packed items from unpacked list
                 $bestBox = $this->findBestBoxFromIteration($packedBoxesIteration);
             } catch (NoBoxesAvailableException $e) {
                 if ($enforceSingleBox) {

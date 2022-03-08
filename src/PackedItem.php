@@ -132,7 +132,7 @@ class PackedItem implements JsonSerializable
     }
 
     #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize()/* : mixed */
     {
         return [
             'x' => $this->x,

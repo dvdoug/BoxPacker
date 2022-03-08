@@ -213,7 +213,7 @@ class PackedBox implements JsonSerializable
     }
 
     #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize()/* : mixed */
     {
         return [
             'box' => [

@@ -98,7 +98,7 @@ class WorkingVolume implements Box, JsonSerializable
     }
 
     #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize()/* : mixed */
     {
         return [
             'reference' => $this->getReference(),

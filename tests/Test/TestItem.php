@@ -115,7 +115,7 @@ class TestItem implements Item, JsonSerializable
     }
 
     #[ReturnTypeWillChange]
-    public function jsonSerialize()/*: mixed*/
+    public function jsonSerialize()/* : mixed */
     {
         return [
             'description' => $this->description,
