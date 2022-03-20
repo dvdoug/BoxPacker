@@ -169,6 +169,7 @@ class WeightRedistributor implements LoggerAwareInterface
     private function doVolumeRepack(iterable $items, Box $currentBox): PackedBoxList
     {
         $packer = new Packer();
+        $packer->setLogger($this->logger);
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
         foreach ($this->boxes as $box) {
             $packer->setBoxQuantity($box, $this->boxesQtyAvailable[$box]);
