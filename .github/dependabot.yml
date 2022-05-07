@@ -6,5 +6,10 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every weekday
       interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/docs/visualiser"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase

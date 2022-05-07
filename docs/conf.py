@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'BoxPacker'
-copyright = u'2012-2021, Doug Wright'
+copyright = u'2012-2022, Doug Wright'
 author = u'Doug Wright'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -63,7 +63,7 @@ release = u'version 4'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -96,8 +96,6 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 html_js_files = [
-    'js/babylon.min.js',
-    'js/babylon.gui.min.js',
     'js/visualiser.js',
 ]
 
