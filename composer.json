@@ -20,7 +20,7 @@
         "behat/behat": "^3.10",
         "dvdoug/behat-code-coverage": "^5.2.1",
         "friendsofphp/php-cs-fixer": "^3.4",
-        "monolog/monolog": "^2.3",
+        "monolog/monolog": "^3.0",
         "phpunit/phpunit": "^9.5.9"
     },
     "config": {
