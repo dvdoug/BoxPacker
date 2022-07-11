@@ -11,13 +11,18 @@ namespace DVDoug\BoxPacker;
 use function array_merge;
 use function array_pop;
 use function count;
+
 use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
+
 use const PHP_INT_MAX;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+
 use function usort;
+
 use WeakMap;
 
 /**

@@ -9,8 +9,10 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestItem;
+
 use function json_decode;
 use function json_encode;
+
 use PHPUnit\Framework\TestCase;
 
 /**

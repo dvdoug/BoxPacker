@@ -15,11 +15,14 @@ use function array_sum;
 use function assert;
 use function count;
 use function iterator_to_array;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+
 use function usort;
+
 use WeakMap;
 
 /**

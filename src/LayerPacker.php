@@ -11,9 +11,11 @@ namespace DVDoug\BoxPacker;
 use function array_merge;
 use function iterator_to_array;
 use function max;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+
 use function sort;
 
 /**

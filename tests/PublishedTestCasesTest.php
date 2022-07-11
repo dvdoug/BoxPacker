@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\THPackTestItem;
+
 use function explode;
 use function fclose;
 use function feof;
@@ -18,7 +19,9 @@ use function fgets;
 use function fopen;
 use function ini_set;
 use function is_array;
+
 use PHPUnit\Framework\TestCase;
+
 use function trim;
 
 /*

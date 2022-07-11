@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
+
 use function usort;
 
 /**

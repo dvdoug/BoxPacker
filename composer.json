@@ -17,11 +17,11 @@
         "psr/log": "^1.0||^2.0||^3.0"
     },
     "require-dev": {
-        "behat/behat": "^3.10",
-        "dvdoug/behat-code-coverage": "^5.2.1",
-        "friendsofphp/php-cs-fixer": "^3.4",
-        "monolog/monolog": "^3.0",
-        "phpunit/phpunit": "^9.5.9"
+        "behat/behat": "^3.11",
+        "dvdoug/behat-code-coverage": "^5.2.2",
+        "friendsofphp/php-cs-fixer": "^3.9.2",
+        "monolog/monolog": "^3.1",
+        "phpunit/phpunit": "^9.5.21"
     },
     "config": {
         "preferred-install": {

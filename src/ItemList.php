@@ -12,15 +12,23 @@ use function array_key_last;
 use function array_pop;
 use function array_reverse;
 use function array_slice;
+
 use ArrayIterator;
+
 use function count;
+
 use Countable;
+
 use function current;
 use function end;
+
 use IteratorAggregate;
+
 use function key;
 use function prev;
+
 use Traversable;
+
 use function usort;
 
 /**

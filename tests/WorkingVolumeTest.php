@@ -10,6 +10,7 @@ namespace DVDoug\BoxPacker;
 
 use function json_decode;
 use function json_encode;
+
 use PHPUnit\Framework\TestCase;
 
 /**

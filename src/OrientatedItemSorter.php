@@ -10,7 +10,9 @@ namespace DVDoug\BoxPacker;
 
 use function max;
 use function min;
+
 use const PHP_INT_MAX;
+
 use Psr\Log\LoggerInterface;
 
 /**

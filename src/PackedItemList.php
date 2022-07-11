@@ -9,11 +9,15 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use function array_map;
+
 use ArrayIterator;
+
 use function count;
+
 use Countable;
 use IteratorAggregate;
 use Traversable;
+
 use function usort;
 
 /**

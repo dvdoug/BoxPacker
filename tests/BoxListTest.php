@@ -9,7 +9,9 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
+
 use function iterator_to_array;
+
 use PHPUnit\Framework\TestCase;
 
 /**

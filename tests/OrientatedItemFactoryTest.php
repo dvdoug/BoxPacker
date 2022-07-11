@@ -10,7 +10,9 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+
 use const PHP_INT_MAX;
+
 use PHPUnit\Framework\TestCase;
 
 class OrientatedItemFactoryTest extends TestCase

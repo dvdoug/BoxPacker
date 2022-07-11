@@ -10,9 +10,11 @@ namespace DVDoug\BoxPacker;
 
 use function array_filter;
 use function count;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+
 use function usort;
 
 /**

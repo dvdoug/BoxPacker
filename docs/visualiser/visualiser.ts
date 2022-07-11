@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const PACKING = urlParams.has('packing') ? JSON.parse(urlParams.get('packing')!) : DEMO_PACKING;
 
-    const ZOOM = 1;
+    const ZOOM = 0.1;
 
     const ITEM_COLOURS = [
         new Color3(1.0, 0.0, 0.0),

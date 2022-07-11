@@ -9,14 +9,21 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use ArrayIterator;
+
 use function count;
+
 use Countable;
 use IteratorAggregate;
+
 use function json_encode;
+
 use JsonSerializable;
+
 use function reset;
 use function round;
+
 use Traversable;
+
 use function urlencode;
 use function usort;
 

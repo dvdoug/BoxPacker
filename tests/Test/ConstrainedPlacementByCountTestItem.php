@@ -10,10 +10,12 @@ namespace DVDoug\BoxPacker\Test;
 
 use function array_filter;
 use function count;
+
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\PackedItem;
+
 use function iterator_to_array;
 
 class ConstrainedPlacementByCountTestItem extends TestItem implements ConstrainedPlacementItem
