@@ -19,7 +19,9 @@ use function usort;
  */
 class BoxList implements IteratorAggregate
 {
-    /** @var Box[] */
+    /**
+     * @var Box[]
+     */
     private array $list = [];
 
     private bool $isSorted = false;
@@ -34,8 +36,7 @@ class BoxList implements IteratorAggregate
     /**
      * Do a bulk create.
      *
-     * @param  Box[]   $boxes
-     * @return BoxList
+     * @param Box[] $boxes
      */
     public static function fromArray(array $boxes, bool $preSorted = false): self
     {

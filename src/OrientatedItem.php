@@ -8,10 +8,9 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function atan;
-
 use JsonSerializable;
 
+use function atan;
 use function min;
 use function sort;
 
@@ -30,10 +29,14 @@ class OrientatedItem implements JsonSerializable
 
     protected int $surfaceFootprint;
 
-    /** @var array<string, bool> */
+    /**
+     * @var array<string, bool>
+     */
     protected static array $stabilityCache = [];
 
-    /** @var int[] */
+    /**
+     * @var int[]
+     */
     protected array $dimensionsAsArray;
 
     public function __construct(Item $item, int $width, int $length, int $depth)

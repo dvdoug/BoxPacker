@@ -8,22 +8,19 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function array_merge;
-use function array_pop;
-use function count;
-
 use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
-
-use const PHP_INT_MAX;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use WeakMap;
 
+use function array_merge;
+use function array_pop;
+use function count;
 use function usort;
 
-use WeakMap;
+use const PHP_INT_MAX;
 
 /**
  * Actual packer.
@@ -38,7 +35,9 @@ class Packer implements LoggerAwareInterface
 
     protected BoxList $boxes;
 
-    /** @var WeakMap<Box, int> */
+    /**
+     * @var WeakMap<Box, int>
+     */
     protected WeakMap $boxQuantitiesAvailable;
 
     protected PackedBoxSorter $packedBoxSorter;

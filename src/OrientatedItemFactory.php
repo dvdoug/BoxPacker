@@ -8,13 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function array_filter;
-use function count;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+use function array_filter;
+use function count;
 use function usort;
 
 /**
@@ -29,7 +28,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     protected bool $singlePassMode = false;
 
-    /** @var array<string, bool> */
+    /**
+     * @var array<string, bool>
+     */
     protected static array $emptyBoxStableItemOrientationCache = [];
 
     public function __construct(Box $box)

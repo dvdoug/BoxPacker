@@ -8,27 +8,20 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use Traversable;
+
 use function array_key_last;
 use function array_pop;
 use function array_reverse;
 use function array_slice;
-
-use ArrayIterator;
-
 use function count;
-
-use Countable;
-
 use function current;
 use function end;
-
-use IteratorAggregate;
-
 use function key;
 use function prev;
-
-use Traversable;
-
 use function usort;
 
 /**
@@ -36,7 +29,9 @@ use function usort;
  */
 class ItemList implements Countable, IteratorAggregate
 {
-    /** @var Item[] */
+    /**
+     * @var Item[]
+     */
     private array $list = [];
 
     private bool $isSorted = false;
@@ -55,8 +50,7 @@ class ItemList implements Countable, IteratorAggregate
     /**
      * Do a bulk create.
      *
-     * @param  Item[]   $items
-     * @return ItemList
+     * @param Item[] $items
      */
     public static function fromArray(array $items, bool $preSorted = false): self
     {
@@ -148,7 +142,6 @@ class ItemList implements Countable, IteratorAggregate
 
     /**
      * @internal
-     * @return ItemList
      */
     public function topN(int $n): self
     {

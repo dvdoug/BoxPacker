@@ -14,12 +14,11 @@ use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\PackedBoxByReferenceSorter;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;
 
 use const PHP_INT_MAX;
-
-use PHPUnit\Framework\TestCase;
 
 class PackerTest extends TestCase
 {

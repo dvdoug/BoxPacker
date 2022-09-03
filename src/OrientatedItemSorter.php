@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use Psr\Log\LoggerInterface;
+
 use function max;
 use function min;
 
 use const PHP_INT_MAX;
-
-use Psr\Log\LoggerInterface;
 
 /**
  * Figure out best choice of orientations for an item and a given context.
@@ -23,7 +23,9 @@ class OrientatedItemSorter
 {
     private LoggerInterface $logger;
 
-    /** @var array<string, int> */
+    /**
+     * @var array<string, int>
+     */
     protected static array $lookaheadCache = [];
 
     private OrientatedItemFactory $orientatedItemFactory;

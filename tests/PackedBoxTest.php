@@ -10,11 +10,10 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
-
-use function json_encode;
-
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+
+use function json_encode;
 
 /**
  * @covers \DVDoug\BoxPacker\PackedBox

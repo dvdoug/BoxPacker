@@ -28,6 +28,9 @@ return $config->setRules(
             'separate' => 'none',
             'header' => "Box packing (3D bin packing, knapsack problem).\n\n@author Doug Wright",
         ],
+        'phpdoc_line_span' => true,
+        'phpdoc_to_comment' => false,
+        'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'none'],
     ]
 )
     ->setRiskyAllowed(true)

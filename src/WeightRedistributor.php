@@ -8,6 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
+use WeakMap;
+
 use function array_filter;
 use function array_map;
 use function array_merge;
@@ -15,15 +21,7 @@ use function array_sum;
 use function assert;
 use function count;
 use function iterator_to_array;
-
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
-
 use function usort;
-
-use WeakMap;
 
 /**
  * Actual packer.
@@ -35,7 +33,9 @@ class WeightRedistributor implements LoggerAwareInterface
 
     private BoxList $boxes;
 
-    /** @var WeakMap<Box, int> */
+    /**
+     * @var WeakMap<Box, int>
+     */
     private WeakMap $boxQuantitiesAvailable;
 
     private PackedBoxSorter $packedBoxSorter;

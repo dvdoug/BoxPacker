@@ -33,7 +33,9 @@ class PackedLayer
 
     private int $weight = 0;
 
-    /** @var PackedItem[] */
+    /**
+     * @var PackedItem[]
+     */
     protected array $items = [];
 
     /**

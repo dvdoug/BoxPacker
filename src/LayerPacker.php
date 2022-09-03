@@ -8,14 +8,13 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function array_merge;
-use function iterator_to_array;
-use function max;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+use function array_merge;
+use function iterator_to_array;
+use function max;
 use function sort;
 
 /**

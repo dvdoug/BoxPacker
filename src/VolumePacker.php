@@ -8,14 +8,13 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function array_map;
-use function count;
-use function max;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+use function array_map;
+use function count;
+use function max;
 use function reset;
 use function usort;
 
