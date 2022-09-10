@@ -16,10 +16,14 @@ use PHPUnit\Framework\Assert;
  */
 class InfalliblePackerContext extends PackerContext
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $packerClass = InfalliblePacker::class;
 
-    /** @var ItemList */
+    /**
+     * @var ItemList
+     */
     protected $unpackedItemList;
 
     /**

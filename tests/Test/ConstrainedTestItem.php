@@ -8,12 +8,13 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Test;
 
-use function array_filter;
-use function count;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedItem;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\PackedItemList;
+
+use function array_filter;
+use function count;
 use function iterator_to_array;
 
 class ConstrainedTestItem extends TestItem implements ConstrainedItem

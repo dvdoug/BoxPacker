@@ -8,11 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function array_filter;
-use function count;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
+
+use function array_filter;
+use function count;
 use function usort;
 
 /**
@@ -25,7 +26,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /** @var Box */
+    /**
+     * @var Box
+     */
     protected $box;
 
     /**

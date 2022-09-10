@@ -8,10 +8,11 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function iterator_to_array;
 use JsonSerializable;
-use function max;
 use ReturnTypeWillChange;
+
+use function iterator_to_array;
+use function max;
 use function round;
 
 /**

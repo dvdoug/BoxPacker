@@ -11,8 +11,9 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
-use function iterator_to_array;
 use PHPUnit\Framework\TestCase;
+
+use function iterator_to_array;
 
 class InfalliblePackerTest extends TestCase
 {

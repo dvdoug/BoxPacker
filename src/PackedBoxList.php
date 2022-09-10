@@ -9,14 +9,15 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
-use function reset;
 use ReturnTypeWillChange;
-use function round;
 use Traversable;
+
+use function count;
+use function reset;
+use function round;
 
 /**
  * List of packed boxes.

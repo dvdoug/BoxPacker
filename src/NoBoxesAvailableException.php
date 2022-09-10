@@ -17,7 +17,9 @@ use RuntimeException;
  */
 class NoBoxesAvailableException extends RuntimeException
 {
-    /** @var Item */
+    /**
+     * @var Item
+     */
     public $item;
 
     /**

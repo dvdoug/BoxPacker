@@ -26,22 +26,34 @@ use PHPUnit\Framework\Assert;
  */
 class PackerContext implements Context
 {
-    /** @var Box */
+    /**
+     * @var Box
+     */
     protected $box;
 
-    /** @var BoxList */
+    /**
+     * @var BoxList
+     */
     protected $boxList;
 
-    /** @var ItemList */
+    /**
+     * @var ItemList
+     */
     protected $itemList;
 
-    /** @var PackedBox */
+    /**
+     * @var PackedBox
+     */
     protected $packedBox;
 
-    /** @var PackedBoxList */
+    /**
+     * @var PackedBoxList
+     */
     protected $packedBoxList;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $packerClass = Packer::class;
 
     /**

@@ -8,17 +8,18 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
+use SplObjectStorage;
+
 use function array_filter;
 use function array_map;
 use function array_merge;
 use function array_sum;
 use function count;
 use function iterator_to_array;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
-use SplObjectStorage;
 use function usort;
 
 /**

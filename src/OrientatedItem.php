@@ -8,10 +8,11 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function atan;
 use JsonSerializable;
-use function min;
 use ReturnTypeWillChange;
+
+use function atan;
+use function min;
 use function sort;
 
 /**

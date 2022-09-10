@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
+
 use function usort;
 
 /**
@@ -48,8 +49,6 @@ class BoxList implements IteratorAggregate
      * Do a bulk create.
      *
      * @param Box[] $boxes
-     *
-     * @return BoxList
      */
     public static function fromArray(array $boxes, bool $preSorted = false): self
     {

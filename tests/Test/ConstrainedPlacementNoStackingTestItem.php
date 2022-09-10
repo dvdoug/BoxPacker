@@ -8,11 +8,12 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Test;
 
-use function array_filter;
 use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use DVDoug\BoxPacker\PackedItem;
 use DVDoug\BoxPacker\PackedItemList;
+
+use function array_filter;
 use function iterator_to_array;
 
 class ConstrainedPlacementNoStackingTestItem extends TestItem implements ConstrainedPlacementItem

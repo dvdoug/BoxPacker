@@ -8,11 +8,13 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use function max;
-use function min;
-use const PHP_INT_MAX;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+
+use function max;
+use function min;
+
+use const PHP_INT_MAX;
 
 /**
  * Figure out best choice of orientations for an item and a given context.
