@@ -164,6 +164,7 @@ class WeightRedistributor implements LoggerAwareInterface
     {
         $packer = new Packer();
         $packer->throwOnUnpackableItem(false);
+        $packer->setLogger($this->logger);
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
         foreach ($this->boxes as $box) {
             $packer->setBoxQuantity($box, $this->boxQuantitiesAvailable[$box]);
