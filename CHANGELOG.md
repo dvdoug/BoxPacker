@@ -1,6 +1,8 @@
 # Changelog
 
-## [3.x - Unreleased] - 2021-xx-xx
+## [3.x - Unreleased] - 2022-xx-xx
+
+## [3.10.0] - 2022-09-10
 ### Added
 - Added `ItemSorter`, `BoxSorter` and `PackedBoxSorter` to allow calling applications to have better control over
   sorting decisions
@@ -485,8 +487,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.x
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.10.0...3.x
 
+[3.10.0]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.10.0
 [3.9.4]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.9.4
 [3.9.3]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.9.3
 [3.9.2]: https://github.com/dvdoug/BoxPacker/compare/3.9.1...3.9.2
