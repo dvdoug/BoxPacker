@@ -27,7 +27,7 @@
  - Removed `InfalliblePacker`. You can now get the same behaviour by calling `->throwOnUnpackableItem(false)` and
    `->getUnpackedItems()` on the main `Packer` class
 
-## [3.x - Unreleased] - 2021-xx-xx
+## [3.10.0] - 2022-09-10
 ### Added
 - Added `ItemSorter`, `BoxSorter` and `PackedBoxSorter` to allow calling applications to have better control over
   sorting decisions
@@ -514,8 +514,7 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.x
-
+[3.10.0]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.10.0
 [3.9.4]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.9.4
 [3.9.3]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.9.3
 [3.9.2]: https://github.com/dvdoug/BoxPacker/compare/3.9.1...3.9.2
