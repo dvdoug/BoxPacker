@@ -41,6 +41,11 @@ class WorkingVolume implements Box, JsonSerializable
         return "Working Volume {$this->width}x{$this->length}x{$this->depth}";
     }
 
+    public function getType(): string
+    {
+        return "";
+    }
+
     public function getOuterWidth(): int
     {
         return $this->width;
@@ -81,10 +86,17 @@ class WorkingVolume implements Box, JsonSerializable
         return $this->maxWeight;
     }
 
+    public function setFlatBagDimensions($boxWidth, $boxLength, $boxDepth): bool
+    {
+        return true;
+    }
+    
+
     public function jsonSerialize(): array
     {
         return [
             'reference' => $this->getReference(),
+            'type' => $this->getType(),
             'width' => $this->width,
             'length' => $this->length,
             'depth' => $this->depth,

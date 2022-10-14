@@ -96,27 +96,43 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
-        $rotationsToTest = [false];
-        if (!$this->packAcrossWidthOnly && !$this->hasNoRotationItems) {
-            $rotationsToTest[] = true;
-        }
-
-        $boxPermutations = [];
-        foreach ($rotationsToTest as $rotation) {
-            if ($rotation) {
-                $boxWidth = $this->box->getInnerLength();
-                $boxLength = $this->box->getInnerWidth();
-            } else {
-                $boxWidth = $this->box->getInnerWidth();
-                $boxLength = $this->box->getInnerLength();
+        if($this->box->getType() !== 'FlatBag'){
+            $rotationsToTest = [false];
+            if (!$this->packAcrossWidthOnly && !$this->hasNoRotationItems) {
+                $rotationsToTest[] = true;
             }
-
-            $boxPermutation = $this->packRotation($boxWidth, $boxLength);
-            if ($boxPermutation->getItems()->count() === $this->items->count()) {
-                return $boxPermutation;
+    
+            $boxPermutations = [];
+            foreach ($rotationsToTest as $rotation) {
+                if ($rotation) {
+                    $boxWidth = $this->box->getInnerLength();
+                    $boxLength = $this->box->getInnerWidth();
+                } else {
+                    $boxWidth = $this->box->getInnerWidth();
+                    $boxLength = $this->box->getInnerLength();
+                }
+    
+                $boxPermutation = $this->packRotation($boxWidth, $boxLength);
+                if ($boxPermutation->getItems()->count() === $this->items->count()) {
+                    return $boxPermutation;
+                }
+    
+                $boxPermutations[] = $boxPermutation;
             }
+        }else{
+            $bagInitWidth = $this->box->getOuterWidth();
+            for($i = 1; $i <= 50; $i++){
+                $boxWidth = (int)round($bagInitWidth/100*(100-$i));
+                $boxLength = (int)round($bagInitWidth/100*$i);
+                $boxDepth = (int)round($this->box->getOuterDepth() - $boxLength);
+                $this->box->setFlatBagDimensions($boxWidth, $boxLength, $boxDepth);
+                $boxPermutation = $this->packRotation($boxWidth, $boxLength);
+                if ($boxPermutation->getItems()->count() === $this->items->count()) {
+                    return $boxPermutation;
+                }
 
-            $boxPermutations[] = $boxPermutation;
+                $boxPermutations[] = $boxPermutation;
+            }
         }
 
         usort($boxPermutations, static fn (PackedBox $a, PackedBox $b) => $b->getVolumeUtilisation() <=> $a->getVolumeUtilisation());

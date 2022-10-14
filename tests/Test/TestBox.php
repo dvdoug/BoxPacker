@@ -19,6 +19,11 @@ class TestBox implements Box, JsonSerializable
     private $reference;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * @var int
      */
     private $outerWidth;
@@ -63,6 +68,7 @@ class TestBox implements Box, JsonSerializable
      */
     public function __construct(
         string $reference,
+        string $type,
         int $outerWidth,
         int $outerLength,
         int $outerDepth,
@@ -73,19 +79,37 @@ class TestBox implements Box, JsonSerializable
         int $maxWeight
     ) {
         $this->reference = $reference;
-        $this->outerWidth = $outerWidth;
-        $this->outerLength = $outerLength;
-        $this->outerDepth = $outerDepth;
-        $this->emptyWeight = $emptyWeight;
-        $this->innerWidth = $innerWidth;
-        $this->innerLength = $innerLength;
-        $this->innerDepth = $innerDepth;
-        $this->maxWeight = $maxWeight;
+        $this->type = $type;
+        if($type !== 'FlatBag'){
+            $this->outerWidth = $outerWidth;
+            $this->outerLength = $outerLength;
+            $this->outerDepth = $outerDepth;
+            $this->emptyWeight = $emptyWeight;
+            $this->innerWidth = $innerWidth;
+            $this->innerLength = $innerLength;
+            $this->innerDepth = $innerDepth;
+            $this->maxWeight = $maxWeight;
+        }else{
+            $this->outerWidth = $outerWidth;
+            $this->outerLength = 0;
+            $this->outerDepth = $outerDepth;
+            $this->emptyWeight = $emptyWeight;
+            $this->innerWidth = 0;
+            $this->innerLength = 0;
+            $this->innerDepth = 0;
+            $this->maxWeight = $maxWeight;
+        }
+        
     }
 
     public function getReference(): string
     {
         return $this->reference;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     public function getOuterWidth(): int
@@ -123,6 +147,14 @@ class TestBox implements Box, JsonSerializable
         return $this->innerDepth;
     }
 
+    public function setFlatBagDimensions($innerWidth, $innerLength, $innerDepth): bool
+    {
+        $this->innerWidth = $innerWidth;
+        $this->innerLength = $innerLength;
+        $this->innerDepth = $innerDepth;
+        return true;
+    }
+
     public function getMaxWeight(): int
     {
         return $this->maxWeight;
@@ -132,6 +164,7 @@ class TestBox implements Box, JsonSerializable
     {
         return [
             'reference' => $this->reference,
+            'type' => $this->type,
             'innerWidth' => $this->innerWidth,
             'innerLength' => $this->innerLength,
             'innerDepth' => $this->innerDepth,

@@ -141,6 +141,9 @@ class PackedBox implements JsonSerializable
 
     public function getInnerVolume(): int
     {
+        if($this->box->getType() == 'FlatBag'){
+            return (int)round($this->box->getOuterWidth() * 0.65 * $this->box->getOuterWidth() * 0.25 *  ($this->box->getOuterDepth() - $this->box->getOuterWidth() * 0.35));
+        }
         return $this->box->getInnerWidth() * $this->box->getInnerLength() * $this->box->getInnerDepth();
     }
 
