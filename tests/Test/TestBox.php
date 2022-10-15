@@ -155,9 +155,23 @@ class TestBox implements Box, JsonSerializable
         return true;
     }
 
+    public function setInnerDepth($innerDepth): bool
+    {
+        $this->innerDepth = $innerDepth;
+        return true;
+    }
+
     public function getMaxWeight(): int
     {
         return $this->maxWeight;
+    }
+
+    public function getMaxVolume(): int
+    {
+        if($this->type == 'FlatBag'){
+            return (int)round($this->outerWidth * 0.65 * $this->outerWidth * 0.25 *  ($this->outerDepth - $this->outerWidth * 0.35));
+        }
+        return  $this->innerWidth * $this->innerLength * $this->innerDepth;
     }
 
     public function jsonSerialize(): array

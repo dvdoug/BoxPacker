@@ -90,7 +90,16 @@ class WorkingVolume implements Box, JsonSerializable
     {
         return true;
     }
-    
+
+    public function getMaxVolume(): int
+    {
+       return 0; 
+    }
+
+    public function setInnerDepth($depth): bool
+    {
+        return $this->innerDepth = $depth;
+    }
 
     public function jsonSerialize(): array
     {

@@ -15,13 +15,13 @@ class DefaultBoxSorter implements BoxSorter
         if($boxA->getType() !== 'FlatBag'){
             $boxAVolume = $boxA->getInnerWidth() * $boxA->getInnerLength() * $boxA->getInnerDepth();
         }else{
-            $boxAVolume = round($boxA->getOuterWidth() * 0.65 * $boxA->getOuterWidth() * 0.25 *  ($boxA->getOuterDepth() - $boxA->getOuterWidth() * 0.35));
+            $boxAVolume = (int)round($boxA->getOuterWidth() * 0.65 * $boxA->getOuterWidth() * 0.25 *  ($boxA->getOuterDepth() - $boxA->getOuterWidth() * 0.35));
         }
 
         if($boxB->getType() !== 'FlatBag'){
             $boxBVolume = $boxB->getInnerWidth() * $boxB->getInnerLength() * $boxB->getInnerDepth();
         }else{
-            $boxBVolume = round($boxB->getOuterWidth() * 0.65 * $boxB->getOuterWidth() * 0.25 *  ($boxB->getOuterDepth() - $boxB->getOuterWidth() * 0.35));
+            $boxBVolume = (int)round($boxB->getOuterWidth() * 0.65 * $boxB->getOuterWidth() * 0.25 *  ($boxB->getOuterDepth() - $boxB->getOuterWidth() * 0.35));
         }
        
         $volumeDecider = $boxAVolume <=> $boxBVolume; // try smallest box first

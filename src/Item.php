@@ -39,6 +39,11 @@ interface Item
     public function getWeight(): int;
 
     /**
+     * Item weight in mm3.
+     */
+    public function getVolume(): int;
+
+    /**
      * Possible item rotations allowed.
      */
     public function getAllowedRotation(): Rotation;

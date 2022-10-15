@@ -109,6 +109,11 @@ class TestItem implements Item, JsonSerializable
         return $this->weight;
     }
 
+    public function getVolume(): int
+    {
+        return (int)round($this->width * $this->length * $this->depth);
+    }
+
     public function getAllowedRotation(): Rotation
     {
         return $this->allowedRotation;

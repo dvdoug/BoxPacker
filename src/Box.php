@@ -64,7 +64,17 @@ interface Box
     public function getMaxWeight(): int;
 
     /**
+     * Max weight the packaging can hold in g.
+     */
+    public function getMaxVolume(): int;
+
+    /**
      * Set Bag Dimensions
      */
     public function setFlatBagDimensions($boxWidth, $boxLength, $boxDepth): bool;
+
+    /**
+     * Set Bag Dimensions
+     */
+    public function setInnerDepth($depth): bool;
 }

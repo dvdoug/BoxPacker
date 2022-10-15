@@ -31,13 +31,17 @@ class PackerTest extends TestCase
         * but for real code you would probably pass in objects retrieved from a database instead
         */
         // $packer->addBox(new TestBox('Le petite box', 'FlatBag', 300, 300, 10, 10, 296, 296, 8, 1000));
-        $packer->addBox(new TestBox('Le grande box', 'FlatBag', 490, 0, 800, 0, 0, 0, 0, 10000));
+        $packer->addBox(new LimitedSupplyTestBox('Le grande box', 'Box', 100, 100, 300, 0, 0, 0, 0, 10000, 3));
+        $packer->addBox(new LimitedSupplyTestBox('Le petit bag', 'FlatBag', 490, 0, 800, 0, 0, 0, 0, 10000, 1));
+        $packer->addBox(new LimitedSupplyTestBox('Le grand bag', 'FlatBag', 500, 0, 700, 0, 0, 0, 0, 10000, 2));
+        
 
         /*
         * Add items to be packed - e.g. from shopping cart stored in user session. Again, the dimensional information
         * (and keep-flat requirement) would normally come from a DB
         */
-        $packer->addItem(new TestItem('Item 1', 250, 200, 500, 200, Rotation::BestFit), 1); // item, quantity
+        $packer->addItem(new TestItem('Item 1', 400, 200, 200, 200, Rotation::BestFit), 2); // item, quantity
+        $packer->addItem(new TestItem('Item 3', 90, 200, 150, 200, Rotation::BestFit), 5); // item, quantity
         // $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, Rotation::BestFit), 2);
         // $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, Rotation::BestFit), 1);
 
