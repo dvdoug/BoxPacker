@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use JsonSerializable;
+use Stringable;
 
 use function atan;
 use function min;
@@ -17,17 +18,9 @@ use function sort;
 /**
  * An item to be packed.
  */
-class OrientatedItem implements JsonSerializable
+class OrientatedItem implements JsonSerializable, Stringable
 {
-    protected Item $item;
-
-    protected int $width;
-
-    protected int $length;
-
-    protected int $depth;
-
-    protected int $surfaceFootprint;
+    protected readonly int $surfaceFootprint;
 
     /**
      * @var array<string, bool>
@@ -39,12 +32,12 @@ class OrientatedItem implements JsonSerializable
      */
     protected array $dimensionsAsArray;
 
-    public function __construct(Item $item, int $width, int $length, int $depth)
-    {
-        $this->item = $item;
-        $this->width = $width;
-        $this->length = $length;
-        $this->depth = $depth;
+    public function __construct(
+        protected Item $item,
+        protected int $width,
+        protected int $length,
+        protected int $depth
+    ) {
         $this->surfaceFootprint = $width * $length;
 
         $this->dimensionsAsArray = [$width, $length, $depth];

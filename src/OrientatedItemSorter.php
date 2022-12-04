@@ -21,49 +21,25 @@ use const PHP_INT_MAX;
  */
 class OrientatedItemSorter
 {
-    private LoggerInterface $logger;
-
     /**
      * @var array<string, int>
      */
     protected static array $lookaheadCache = [];
 
-    private OrientatedItemFactory $orientatedItemFactory;
-
-    private bool $singlePassMode;
-
-    private int $widthLeft;
-
-    private int $lengthLeft;
-
-    private int $depthLeft;
-
-    private int $rowLength;
-
-    private int $x;
-
-    private int $y;
-
-    private int $z;
-
-    private ItemList $nextItems;
-
-    private PackedItemList $prevPackedItemList;
-
-    public function __construct(OrientatedItemFactory $factory, bool $singlePassMode, int $widthLeft, int $lengthLeft, int $depthLeft, ItemList $nextItems, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList, LoggerInterface $logger)
-    {
-        $this->orientatedItemFactory = $factory;
-        $this->singlePassMode = $singlePassMode;
-        $this->widthLeft = $widthLeft;
-        $this->lengthLeft = $lengthLeft;
-        $this->depthLeft = $depthLeft;
-        $this->nextItems = $nextItems;
-        $this->rowLength = $rowLength;
-        $this->x = $x;
-        $this->y = $y;
-        $this->z = $z;
-        $this->prevPackedItemList = $prevPackedItemList;
-        $this->logger = $logger;
+    public function __construct(
+        private readonly OrientatedItemFactory $orientatedItemFactory,
+        private readonly bool $singlePassMode,
+        private readonly int $widthLeft,
+        private readonly int $lengthLeft,
+        private readonly int $depthLeft,
+        private readonly ItemList $nextItems,
+        private readonly int $rowLength,
+        private readonly int $x,
+        private readonly int $y,
+        private readonly int $z,
+        private readonly PackedItemList $prevPackedItemList,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function __invoke(OrientatedItem $a, OrientatedItem $b): int

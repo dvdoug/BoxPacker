@@ -16,24 +16,12 @@ use JsonSerializable;
  */
 class WorkingVolume implements Box, JsonSerializable
 {
-    private int $width;
-
-    private int $length;
-
-    private int $depth;
-
-    private int $maxWeight;
-
     public function __construct(
-        int $width,
-        int $length,
-        int $depth,
-        int $maxWeight
+        private readonly int $width,
+        private readonly int $length,
+        private readonly int $depth,
+        private readonly int $maxWeight
     ) {
-        $this->width = $width;
-        $this->length = $length;
-        $this->depth = $depth;
-        $this->maxWeight = $maxWeight;
     }
 
     public function getReference(): string

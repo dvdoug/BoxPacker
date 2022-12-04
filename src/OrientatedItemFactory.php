@@ -24,8 +24,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
 {
     protected LoggerInterface $logger;
 
-    protected Box $box;
-
     protected bool $singlePassMode = false;
 
     /**
@@ -33,9 +31,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
      */
     protected static array $emptyBoxStableItemOrientationCache = [];
 
-    public function __construct(Box $box)
+    public function __construct(protected Box $box)
     {
-        $this->box = $box;
         $this->logger = new NullLogger();
     }
 
