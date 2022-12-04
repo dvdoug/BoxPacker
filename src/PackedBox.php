@@ -21,13 +21,9 @@ use function urlencode;
  */
 class PackedBox implements JsonSerializable
 {
-    protected Box $box;
-
-    protected PackedItemList $items;
-
     protected int $itemWeight = 0;
 
-    protected float $volumeUtilisation;
+    protected readonly float $volumeUtilisation;
 
     /**
      * Get box used.
@@ -176,11 +172,8 @@ class PackedBox implements JsonSerializable
         return 'https://boxpacker.io/en/master/visualiser.html?packing=' . urlencode(json_encode($this));
     }
 
-    public function __construct(Box $box, PackedItemList $packedItemList)
+    public function __construct(protected Box $box, protected PackedItemList $items)
     {
-        $this->box = $box;
-        $this->items = $packedItemList;
-
         foreach ($this->items as $item) {
             $this->itemWeight += $item->getItem()->getWeight();
         }

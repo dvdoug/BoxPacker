@@ -25,25 +25,22 @@ class VolumePacker implements LoggerAwareInterface
 {
     protected LoggerInterface $logger;
 
-    protected Box $box;
-
     protected ItemList $items;
 
     protected bool $singlePassMode = false;
 
     protected bool $packAcrossWidthOnly = false;
 
-    private LayerPacker $layerPacker;
+    private readonly LayerPacker $layerPacker;
 
     protected bool $beStrictAboutItemOrdering = false;
 
-    private bool $hasConstrainedItems = false;
+    private readonly bool $hasConstrainedItems;
 
-    private bool $hasNoRotationItems = false;
+    private readonly bool $hasNoRotationItems;
 
-    public function __construct(Box $box, ItemList $items)
+    public function __construct(protected Box $box, ItemList $items)
     {
-        $this->box = $box;
         $this->items = clone $items;
 
         $this->logger = new NullLogger();

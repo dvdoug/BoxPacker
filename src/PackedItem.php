@@ -15,29 +15,15 @@ use JsonSerializable;
  */
 class PackedItem implements JsonSerializable
 {
-    protected int $x;
-
-    protected int $y;
-
-    protected int $z;
-
-    protected Item $item;
-
-    protected int $width;
-
-    protected int $length;
-
-    protected int $depth;
-
-    public function __construct(Item $item, int $x, int $y, int $z, int $width, int $length, int $depth)
-    {
-        $this->item = $item;
-        $this->x = $x;
-        $this->y = $y;
-        $this->z = $z;
-        $this->width = $width;
-        $this->length = $length;
-        $this->depth = $depth;
+    public function __construct(
+        protected Item $item,
+        protected int $x,
+        protected int $y,
+        protected int $z,
+        protected int $width,
+        protected int $length,
+        protected int $depth
+    ) {
     }
 
     public function getX(): int
