@@ -26,11 +26,8 @@ class BoxList implements IteratorAggregate
 
     private bool $isSorted = false;
 
-    private BoxSorter $sorter;
-
-    public function __construct(?BoxSorter $sorter = null)
+    public function __construct(private readonly BoxSorter $sorter = new DefaultBoxSorter())
     {
-        $this->sorter = $sorter ?: new DefaultBoxSorter();
     }
 
     /**
@@ -53,7 +50,7 @@ class BoxList implements IteratorAggregate
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this->sorter, 'compare']);
+            usort($this->list, $this->sorter->compare(...));
             $this->isSorted = true;
         }
 

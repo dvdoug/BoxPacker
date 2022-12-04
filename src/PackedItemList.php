@@ -43,7 +43,7 @@ class PackedItemList implements Countable, IteratorAggregate
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
-            usort($this->list, [$this, 'compare']);
+            usort($this->list, $this->compare(...));
             $this->isSorted = true;
         }
 
