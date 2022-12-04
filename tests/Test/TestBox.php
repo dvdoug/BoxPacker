@@ -14,73 +14,19 @@ use JsonSerializable;
 class TestBox implements Box, JsonSerializable
 {
     /**
-     * @var string
-     */
-    private $reference;
-
-    /**
-     * @var int
-     */
-    private $outerWidth;
-
-    /**
-     * @var int
-     */
-    private $outerLength;
-
-    /**
-     * @var int
-     */
-    private $outerDepth;
-
-    /**
-     * @var int
-     */
-    private $emptyWeight;
-
-    /**
-     * @var int
-     */
-    private $innerWidth;
-
-    /**
-     * @var int
-     */
-    private $innerLength;
-
-    /**
-     * @var int
-     */
-    private $innerDepth;
-
-    /**
-     * @var int
-     */
-    private $maxWeight;
-
-    /**
      * TestBox constructor.
      */
     public function __construct(
-        string $reference,
-        int $outerWidth,
-        int $outerLength,
-        int $outerDepth,
-        int $emptyWeight,
-        int $innerWidth,
-        int $innerLength,
-        int $innerDepth,
-        int $maxWeight
+        private readonly string $reference,
+        private readonly int $outerWidth,
+        private readonly int $outerLength,
+        private readonly int $outerDepth,
+        private readonly int $emptyWeight,
+        private readonly int $innerWidth,
+        private readonly int $innerLength,
+        private readonly int $innerDepth,
+        private readonly int $maxWeight
     ) {
-        $this->reference = $reference;
-        $this->outerWidth = $outerWidth;
-        $this->outerLength = $outerLength;
-        $this->outerDepth = $outerDepth;
-        $this->emptyWeight = $emptyWeight;
-        $this->innerWidth = $innerWidth;
-        $this->innerLength = $innerLength;
-        $this->innerDepth = $innerDepth;
-        $this->maxWeight = $maxWeight;
     }
 
     public function getReference(): string

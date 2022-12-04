@@ -16,67 +16,26 @@ use stdClass;
 class TestItem implements Item, JsonSerializable
 {
     /**
-     * @var string
+     * Test objects that recurse.
      */
-    private $description;
-
-    /**
-     * @var int
-     */
-    private $width;
-
-    /**
-     * @var int
-     */
-    private $length;
-
-    /**
-     * @var int
-     */
-    private $depth;
-
-    /**
-     * @var int
-     */
-    private $weight;
-
-    /**
-     * @var Rotation
-     */
-    private $allowedRotation;
+    private readonly stdClass $a;
 
     /**
      * Test objects that recurse.
-     *
-     * @var stdClass
      */
-    private $a;
-
-    /**
-     * Test objects that recurse.
-     *
-     * @var stdClass
-     */
-    private $b;
+    private readonly stdClass $b;
 
     /**
      * TestItem constructor.
      */
     public function __construct(
-        string $description,
-        int $width,
-        int $length,
-        int $depth,
-        int $weight,
-        Rotation $allowedRotation
+        private readonly string $description,
+        private readonly int $width,
+        private readonly int $length,
+        private readonly int $depth,
+        private readonly int $weight,
+        private readonly Rotation $allowedRotation
     ) {
-        $this->description = $description;
-        $this->width = $width;
-        $this->length = $length;
-        $this->depth = $depth;
-        $this->weight = $weight;
-        $this->allowedRotation = $allowedRotation;
-
         $this->a = new stdClass();
         $this->b = new stdClass();
 

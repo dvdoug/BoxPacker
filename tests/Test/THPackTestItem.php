@@ -16,64 +16,17 @@ use DVDoug\BoxPacker\Rotation;
 class THPackTestItem implements ConstrainedPlacementItem
 {
     /**
-     * @var string
-     */
-    private $description;
-
-    /**
-     * @var int
-     */
-    private $width;
-
-    /**
-     * @var int
-     */
-    private $length;
-
-    /**
-     * @var int
-     */
-    private $depth;
-
-    /**
-     * @var int
-     */
-    private $weight;
-
-    /**
-     * @var bool
-     */
-    private $widthAllowedVertical;
-
-    /**
-     * @var bool
-     */
-    private $lengthAllowedVertical;
-
-    /**
-     * @var bool
-     */
-    private $depthAllowedVertical;
-
-    /**
      * TestItem constructor.
      */
     public function __construct(
-        string $description,
-        int $width,
-        bool $widthAllowedVertical,
-        int $length,
-        bool $lengthAllowedVertical,
-        int $depth,
-        bool $depthAllowedVertical
+        private readonly string $description,
+        private readonly int $width,
+        private readonly bool $widthAllowedVertical,
+        private readonly int $length,
+        private readonly bool $lengthAllowedVertical,
+        private readonly int $depth,
+        private readonly bool $depthAllowedVertical
     ) {
-        $this->description = $description;
-        $this->width = $width;
-        $this->widthAllowedVertical = $widthAllowedVertical;
-        $this->length = $length;
-        $this->lengthAllowedVertical = $lengthAllowedVertical;
-        $this->depth = $depth;
-        $this->depthAllowedVertical = $depthAllowedVertical;
     }
 
     public function getDescription(): string
