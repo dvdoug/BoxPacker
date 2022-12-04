@@ -15,7 +15,6 @@ use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use WeakMap;
 
-use function array_merge;
 use function array_pop;
 use function count;
 use function usort;
@@ -74,7 +73,7 @@ class Packer implements LoggerAwareInterface
      * Set a list of items all at once.
      * @param iterable<Item>|ItemList $items
      */
-    public function setItems(iterable $items): void
+    public function setItems(iterable|ItemList $items): void
     {
         if ($items instanceof ItemList) {
             $this->items = clone $items;
@@ -205,7 +204,7 @@ class Packer implements LoggerAwareInterface
 
             if (count($packedBoxesIteration) > 0) {
                 // Find best box of iteration, and remove packed items from unpacked list
-                usort($packedBoxesIteration, [$this->packedBoxSorter, 'compare']);
+                usort($packedBoxesIteration, $this->packedBoxSorter->compare(...));
                 $bestBox = $packedBoxesIteration[0];
 
                 $this->items->removePackedItems($bestBox->getItems());
@@ -321,6 +320,6 @@ class Packer implements LoggerAwareInterface
 
         $this->logger->log(LogLevel::INFO, 'Box search pattern complete', ['preferredBoxCount' => count($preferredBoxes), 'otherBoxCount' => count($otherBoxes)]);
 
-        return array_merge($preferredBoxes, $otherBoxes);
+        return [...$preferredBoxes, ...$otherBoxes];
     }
 }
