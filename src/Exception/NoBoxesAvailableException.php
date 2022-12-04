@@ -13,12 +13,11 @@ use DVDoug\BoxPacker\ItemList;
 use RuntimeException;
 
 /**
- * Class NoBoxesAvailableException
  * Exception used when an item cannot be packed into any box.
  */
 class NoBoxesAvailableException extends RuntimeException
 {
-    public function __construct(string $message, private ItemList $itemList)
+    public function __construct(string $message, private readonly ItemList $itemList)
     {
         parent::__construct($message);
     }
