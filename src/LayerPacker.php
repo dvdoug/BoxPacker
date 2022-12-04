@@ -25,17 +25,14 @@ class LayerPacker implements LoggerAwareInterface
 {
     private LoggerInterface $logger;
 
-    private Box $box;
-
     private bool $singlePassMode = false;
 
-    private OrientatedItemFactory $orientatedItemFactory;
+    private readonly OrientatedItemFactory $orientatedItemFactory;
 
     private bool $beStrictAboutItemOrdering = false;
 
-    public function __construct(Box $box)
+    public function __construct(private readonly Box $box)
     {
-        $this->box = $box;
         $this->logger = new NullLogger();
 
         $this->orientatedItemFactory = new OrientatedItemFactory($this->box);

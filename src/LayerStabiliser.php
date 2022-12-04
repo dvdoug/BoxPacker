@@ -25,7 +25,7 @@ class LayerStabiliser
     {
         // first re-order according to footprint
         $stabilisedLayers = [];
-        usort($packedLayers, [$this, 'compare']);
+        usort($packedLayers, $this->compare(...));
 
         // then for each item in the layer, re-calculate each item's z position
         $currentZ = 0;
