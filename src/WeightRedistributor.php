@@ -31,23 +31,14 @@ class WeightRedistributor implements LoggerAwareInterface
 {
     private LoggerInterface $logger;
 
-    private BoxList $boxes;
-
-    /**
-     * @var WeakMap<Box, int>
-     */
-    private WeakMap $boxQuantitiesAvailable;
-
-    private PackedBoxSorter $packedBoxSorter;
-
     /**
      * @param WeakMap<Box, int> $boxQuantitiesAvailable
      */
-    public function __construct(BoxList $boxList, PackedBoxSorter $packedBoxSorter, WeakMap $boxQuantitiesAvailable)
-    {
-        $this->boxes = $boxList;
-        $this->packedBoxSorter = $packedBoxSorter;
-        $this->boxQuantitiesAvailable = $boxQuantitiesAvailable;
+    public function __construct(
+        private readonly BoxList $boxes,
+        private readonly PackedBoxSorter $packedBoxSorter,
+        private WeakMap $boxQuantitiesAvailable
+    ) {
         $this->logger = new NullLogger();
     }
 
@@ -79,9 +70,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
                     $iterationSuccessful = $this->equaliseWeight($boxA, $boxB, $targetWeight);
                     if ($iterationSuccessful) {
-                        $boxes = array_filter($boxes, static function (?PackedBox $box) { // remove any now-empty boxes from the list
-                            return $box instanceof PackedBox;
-                        });
+                        $boxes = array_filter($boxes, static fn (?PackedBox $box) => $box instanceof PackedBox); // remove any now-empty boxes from the list
                         break 2;
                     }
                 }
