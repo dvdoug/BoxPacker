@@ -2,6 +2,11 @@
 
 ## [3.x - Unreleased] - 2022-xx-xx
 
+### Changed
+- Calling `json_encode()` on a `PackedBox` or `PackedItem` now additionally serialises the entire underlying
+  `Box`/`Item` where those objects also implement `JsonSerializable`. Previously the serialisation only included the
+  key values from the `Box`/`Item` interfaces themselves.
+
 ## [3.10.0] - 2022-09-10
 ### Added
 - Added `ItemSorter`, `BoxSorter` and `PackedBoxSorter` to allow calling applications to have better control over

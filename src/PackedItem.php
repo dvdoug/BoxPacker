@@ -11,6 +11,9 @@ namespace DVDoug\BoxPacker;
 use JsonSerializable;
 use ReturnTypeWillChange;
 
+use function array_merge;
+use function is_array;
+
 /**
  * A packed item.
  *
@@ -131,6 +134,17 @@ class PackedItem implements JsonSerializable
     #[ReturnTypeWillChange]
     public function jsonSerialize()/* : mixed */
     {
+        $userValues = [];
+
+        if ($this->item instanceof JsonSerializable) {
+            $userSerialisation = $this->item->jsonSerialize();
+            if (is_array($userSerialisation)) {
+                $userValues = $userSerialisation;
+            } else {
+                $userValues = ['extra' => $userSerialisation];
+            }
+        }
+
         return [
             'x' => $this->x,
             'y' => $this->y,
@@ -138,13 +152,16 @@ class PackedItem implements JsonSerializable
             'width' => $this->width,
             'length' => $this->length,
             'depth' => $this->depth,
-            'item' => [
-                'description' => $this->item->getDescription(),
-                'width' => $this->item->getWidth(),
-                'length' => $this->item->getLength(),
-                'depth' => $this->item->getDepth(),
-                'keepFlat' => $this->item->getKeepFlat(),
-            ],
+            'item' => array_merge(
+                $userValues,
+                [
+                    'description' => $this->item->getDescription(),
+                    'width' => $this->item->getWidth(),
+                    'length' => $this->item->getLength(),
+                    'depth' => $this->item->getDepth(),
+                    'keepFlat' => $this->item->getKeepFlat(),
+                ]
+            ),
         ];
     }
 }

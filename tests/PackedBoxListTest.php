@@ -190,6 +190,6 @@ class PackedBoxListTest extends TestCase
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);
 
-        self::assertJsonStringEqualsJsonString('[{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"keepFlat":true}}]}]', json_encode($packedBoxList));
+        self::assertJsonStringEqualsJsonString('[{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20,"maxWeight":10,"emptyWeight":10},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"keepFlat":true,"weight":10}}]}]', json_encode($packedBoxList));
     }
 }
