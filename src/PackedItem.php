@@ -10,6 +10,8 @@ namespace DVDoug\BoxPacker;
 
 use JsonSerializable;
 
+use function is_iterable;
+
 /**
  * A packed item.
  */
@@ -81,6 +83,17 @@ class PackedItem implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        $userValues = [];
+
+        if ($this->item instanceof JsonSerializable) {
+            $userSerialisation = $this->item->jsonSerialize();
+            if (is_iterable($userSerialisation)) {
+                $userValues = $userSerialisation;
+            } else {
+                $userValues = ['extra' => $userSerialisation];
+            }
+        }
+
         return [
             'x' => $this->x,
             'y' => $this->y,
@@ -89,6 +102,7 @@ class PackedItem implements JsonSerializable
             'length' => $this->length,
             'depth' => $this->depth,
             'item' => [
+                ...$userValues,
                 'description' => $this->item->getDescription(),
                 'width' => $this->item->getWidth(),
                 'length' => $this->item->getLength(),

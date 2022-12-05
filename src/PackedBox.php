@@ -15,6 +15,7 @@ use function json_encode;
 use function max;
 use function round;
 use function urlencode;
+use function is_iterable;
 
 /**
  * A "box" with items.
@@ -182,8 +183,20 @@ class PackedBox implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        $userValues = [];
+
+        if ($this->box instanceof JsonSerializable) {
+            $userSerialisation = $this->box->jsonSerialize();
+            if (is_iterable($userSerialisation)) {
+                $userValues = $userSerialisation;
+            } else {
+                $userValues = ['extra' => $userSerialisation];
+            }
+        }
+
         return [
             'box' => [
+                ...$userValues,
                 'reference' => $this->box->getReference(),
                 'innerWidth' => $this->box->getInnerWidth(),
                 'innerLength' => $this->box->getInnerLength(),

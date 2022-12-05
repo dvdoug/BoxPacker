@@ -15,6 +15,8 @@ use stdClass;
 
 class TestItem implements Item, JsonSerializable
 {
+    private mixed $jsonSerializeOverride = null;
+
     /**
      * Test objects that recurse.
      */
@@ -73,8 +75,12 @@ class TestItem implements Item, JsonSerializable
         return $this->allowedRotation;
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): mixed
     {
+        if (isset($this->jsonSerializeOverride)) {
+            return $this->jsonSerializeOverride;
+        }
+
         return [
             'description' => $this->description,
             'width' => $this->width,
@@ -83,5 +89,10 @@ class TestItem implements Item, JsonSerializable
             'weight' => $this->weight,
             'allowedRotation' => $this->allowedRotation,
         ];
+    }
+
+    public function setJsonSerializeOverride(mixed $override): void
+    {
+        $this->jsonSerializeOverride = $override;
     }
 }

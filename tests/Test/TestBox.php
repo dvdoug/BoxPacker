@@ -13,6 +13,8 @@ use JsonSerializable;
 
 class TestBox implements Box, JsonSerializable
 {
+    private mixed $jsonSerializeOverride = null;
+
     /**
      * TestBox constructor.
      */
@@ -74,8 +76,12 @@ class TestBox implements Box, JsonSerializable
         return $this->maxWeight;
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): mixed
     {
+        if (isset($this->jsonSerializeOverride)) {
+            return $this->jsonSerializeOverride;
+        }
+
         return [
             'reference' => $this->reference,
             'innerWidth' => $this->innerWidth,
@@ -84,5 +90,10 @@ class TestBox implements Box, JsonSerializable
             'emptyWeight' => $this->emptyWeight,
             'maxWeight' => $this->maxWeight,
         ];
+    }
+
+    public function setJsonSerializeOverride(mixed $override): void
+    {
+        $this->jsonSerializeOverride = $override;
     }
 }

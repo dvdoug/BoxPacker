@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
@@ -85,10 +86,7 @@ class PackedBoxTest extends TestCase
         self::assertEquals(30, $cachedValue->getValue($packedBox));
     }
 
-    /**
-     * Test JSON representation.
-     */
-    public function testJsonSerialize(): void
+    public function testJsonSerializeWithBoxSupportingJsonSerializeIterable(): void
     {
         $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
         $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, Rotation::KeepFlat), 4, 10, 10);
@@ -98,7 +96,34 @@ class PackedBoxTest extends TestCase
 
         $packedBox = new PackedBox($box, $boxItems);
 
-        self::assertJsonStringEqualsJsonString('{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"allowedRotation":2}}]}', json_encode($packedBox));
+        self::assertJsonStringEqualsJsonString('{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20,"emptyWeight": 10,"maxWeight": 10},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"allowedRotation":2,"weight": 10}}]}', json_encode($packedBox));
+    }
+
+    public function testJsonSerializeWithBoxSupportingJsonSerializeNonIterable(): void
+    {
+        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
+        $box->setJsonSerializeOverride('some custom thing');
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, Rotation::KeepFlat), 4, 10, 10);
+
+        $boxItems = new PackedItemList();
+        $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
+
+        $packedBox = new PackedBox($box, $boxItems);
+
+        self::assertJsonStringEqualsJsonString('{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20,"extra":"some custom thing"},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"allowedRotation":2,"weight": 10}}]}', json_encode($packedBox));
+    }
+
+    public function testJsonSerializeWithBoxNotSupportingJsonSerialize(): void
+    {
+        $box = new LimitedSupplyTestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10, 1);
+        $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, Rotation::KeepFlat), 4, 10, 10);
+
+        $boxItems = new PackedItemList();
+        $boxItems->insert(PackedItem::fromOrientatedItem($item, 0, 0, 0));
+
+        $packedBox = new PackedBox($box, $boxItems);
+
+        self::assertJsonStringEqualsJsonString('{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"allowedRotation":2,"weight": 10}}]}', json_encode($packedBox));
     }
 
     /**
@@ -114,6 +139,6 @@ class PackedBoxTest extends TestCase
 
         $packedBox = new PackedBox($box, $boxItems);
 
-        self::assertEquals('https://boxpacker.io/en/master/visualiser.html?packing=%7B%22box%22%3A%7B%22reference%22%3A%22Box%22%2C%22innerWidth%22%3A10%2C%22innerLength%22%3A10%2C%22innerDepth%22%3A20%7D%2C%22items%22%3A%5B%7B%22x%22%3A0%2C%22y%22%3A0%2C%22z%22%3A0%2C%22width%22%3A4%2C%22length%22%3A10%2C%22depth%22%3A10%2C%22item%22%3A%7B%22description%22%3A%22Item%22%2C%22width%22%3A4%2C%22length%22%3A10%2C%22depth%22%3A10%2C%22allowedRotation%22%3A2%7D%7D%5D%7D', $packedBox->generateVisualisationURL());
+        self::assertEquals('https://boxpacker.io/en/master/visualiser.html?packing=%7B%22box%22%3A%7B%22reference%22%3A%22Box%22%2C%22innerWidth%22%3A10%2C%22innerLength%22%3A10%2C%22innerDepth%22%3A20%2C%22emptyWeight%22%3A10%2C%22maxWeight%22%3A10%7D%2C%22items%22%3A%5B%7B%22x%22%3A0%2C%22y%22%3A0%2C%22z%22%3A0%2C%22width%22%3A4%2C%22length%22%3A10%2C%22depth%22%3A10%2C%22item%22%3A%7B%22description%22%3A%22Item%22%2C%22width%22%3A4%2C%22length%22%3A10%2C%22depth%22%3A10%2C%22weight%22%3A10%2C%22allowedRotation%22%3A2%7D%7D%5D%7D', $packedBox->generateVisualisationURL());
     }
 }

@@ -21,6 +21,9 @@
    `->getBox()` and `->getItems()`
  - `NoBoxesAvailableException` now has a `getAffectedItems()` method instead of `getItem()`. This should allow
    improved handling of the exception inside calling applications when multiple items cannot be packed
+ - Calling `json_encode()` on a `PackedBox` or `PackedItem` now additionally serialises the entire underlying
+   `Box`/`Item` where those objects also implement `JsonSerializable`. Previously the serialisation only included the
+   key values from the `Box`/`Item` interfaces themselves.
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface
