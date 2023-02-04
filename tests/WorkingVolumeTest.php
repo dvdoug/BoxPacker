@@ -8,14 +8,13 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 use function json_decode;
 use function json_encode;
 
-/**
- * @covers \DVDoug\BoxPacker\WorkingVolume
- */
+#[CoversClass(WorkingVolume::class)]
 class WorkingVolumeTest extends TestCase
 {
     private WorkingVolume $volume;

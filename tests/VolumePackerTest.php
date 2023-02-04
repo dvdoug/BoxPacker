@@ -12,6 +12,7 @@ use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function array_fill;
@@ -327,8 +328,8 @@ class VolumePackerTest extends TestCase
 
     /**
      * From issue #172.
-     * @group efficiency
      */
+    #[Group('efficiency')]
     public function testIssue172A(): void
     {
         $box = new TestBox('Box', 800, 1200, 1300, 0, 800, 1200, 1300, 500000);

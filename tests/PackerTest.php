@@ -14,6 +14,7 @@ use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\PackedBoxByReferenceSorter;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;
@@ -210,8 +211,8 @@ class PackerTest extends TestCase
 
     /**
      * From issue #182.
-     * @group efficiency
      */
+    #[Group('efficiency')]
     public function testIssue182A(): void
     {
         $packer = new Packer();
@@ -389,8 +390,8 @@ class PackerTest extends TestCase
 
     /**
      * From PR #198, tests with an atypically large number of boxes.
-     * @group efficiency
      */
+    #[Group('efficiency')]
     public function testNumberOfBoxesTorture(): void
     {
         $packer = new Packer();
@@ -678,8 +679,8 @@ class PackerTest extends TestCase
 
     /**
      * From issue #182.
-     * @group efficiency
      */
+    #[Group('efficiency')]
     public function testIssue182B(): void
     {
         $packer = new Packer();

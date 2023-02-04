@@ -19,10 +19,7 @@ use function iterator_to_array;
 
 class ConstrainedPlacementByCountTestItem extends TestItem implements ConstrainedPlacementItem
 {
-    /**
-     * @var int
-     */
-    public static $limit = 3;
+    public static int $limit = 3;
 
     /**
      * Hook for user implementation of item-specific constraints, e.g. max <x> batteries per box.

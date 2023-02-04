@@ -9,14 +9,13 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 use function json_decode;
 use function json_encode;
 
-/**
- * @covers \DVDoug\BoxPacker\OrientatedItem
- */
+#[CoversClass(OrientatedItem::class)]
 class OrientatedItemTest extends TestCase
 {
     public function testSerialize(): void

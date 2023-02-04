@@ -11,13 +11,13 @@ namespace DVDoug\BoxPacker;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;
 
-/**
- * @covers \DVDoug\BoxPacker\WeightRedistributor
- */
+#[CoversClass(WeightRedistributor::class)]
 class WeightRedistributorTest extends TestCase
 {
     /**
@@ -38,8 +38,8 @@ class WeightRedistributorTest extends TestCase
 
     /**
      * From issue #166.
-     * @group efficiency
      */
+    #[Group('efficiency')]
     public function testIssue166(): void
     {
         $packer = new Packer();

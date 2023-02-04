@@ -13,10 +13,7 @@ use DVDoug\BoxPacker\PackedBoxSorter;
 
 class PackedBoxByReferenceSorter implements PackedBoxSorter
 {
-    /**
-     * @var string
-     */
-    public static $reference = '';
+    public static string $reference = '';
 
     public function compare(PackedBox $boxA, PackedBox $boxB): int
     {

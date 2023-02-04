@@ -10,21 +10,20 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
 use function fgetcsv;
 use function fopen;
 
-/**
- * @coversNothing
- */
+#[CoversNothing]
 class EfficiencyTest extends TestCase
 {
-    /**
-     * @dataProvider getSamples
-     * @group efficiency
-     */
+    #[DataProvider('getSamples')]
+    #[Group('efficiency')]
     public function testCanPackRepresentativeLargerSamples(
         array $boxes,
         array $items,
@@ -95,7 +94,7 @@ class EfficiencyTest extends TestCase
         self::assertEquals($expectedWeightVariance3D, $packedBoxes3D->getWeightVariance());
     }
 
-    public function getSamples(): array
+    public static function getSamples(): array
     {
         $expected = ['2D' => [], '3D' => []];
 

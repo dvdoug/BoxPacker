@@ -9,13 +9,12 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;
 
-/**
- * @covers \DVDoug\BoxPacker\ItemList
- */
+#[CoversClass(ItemList::class)]
 class ItemListTest extends TestCase
 {
     /**

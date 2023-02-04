@@ -10,13 +10,12 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 use function json_encode;
 
-/**
- * @covers \DVDoug\BoxPacker\PackedBoxList
- */
+#[CoversClass(PackedBoxList::class)]
 class PackedBoxListTest extends TestCase
 {
     /**

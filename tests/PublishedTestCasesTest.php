@@ -10,6 +10,8 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\THPackTestItem;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function explode;
@@ -58,19 +60,18 @@ class PublishedTestCasesTest extends TestCase
     /**
      * H.T. Loh & A.Y.C. Nee, 1992, A packing algorithm for hexahedral
      * boxes, Proc. Industrial Automation 92 Conf. Singapore, 115-126.
-     *
-     * @dataProvider lohAndNeeData
-     * @group efficiency
      */
+    #[DataProvider('lohAndNeeData')]
+    #[Group('efficiency')]
     public function testLohAndNee($problem, $box, $items): void
     {
-        $this->runPublishedTestcase($problem, $box, $items);
+        self::runPublishedTestcase($problem, $box, $items);
     }
 
-    public function lohAndNeeData(): array
+    public static function lohAndNeeData(): array
     {
         $data = [];
-        $fileData = $this->thpackDecode('thpack8.txt');
+        $fileData = self::thpackDecode('thpack8.txt');
         foreach ($fileData as &$problem) {
             $problem[0] = "Loh and Nee #{$problem[0]}";
             $data[$problem[0]] = $problem;
@@ -82,21 +83,20 @@ class PublishedTestCasesTest extends TestCase
     /**
      * E.E. Bischoff and M.S.W. Ratcliff, "Issues in the development of
      *  Approaches to Container Loading", OMEGA, vol.23, no.4, (1995).
-     *
-     * @dataProvider bischoffData
-     * @group efficiency
      */
+    #[DataProvider('bischoffData')]
+    #[Group('efficiency')]
     public function testBischoff($problem, $box, $items): void
     {
-        $this->runPublishedTestcase($problem, $box, $items);
+        self::runPublishedTestcase($problem, $box, $items);
     }
 
-    public function bischoffData(): array
+    public static function bischoffData(): array
     {
         $data = [];
 
         for ($i = 1; $i <= 7; ++$i) {
-            $fileData = $this->thpackDecode("thpack{$i}.txt");
+            $fileData = self::thpackDecode("thpack{$i}.txt");
             foreach ($fileData as &$problem) {
                 $problem[0] = "Bischoff #{$problem[3]}-{$problem[0]}";
                 $data[$problem[0]] = $problem;
@@ -106,7 +106,7 @@ class PublishedTestCasesTest extends TestCase
         return $data;
     }
 
-    public function runPublishedTestcase($problem, Box $box, ItemList $items): void
+    public static function runPublishedTestcase($problem, Box $box, ItemList $items): void
     {
         $packer = new VolumePacker($box, $items);
         $packedBox = $packer->pack();
@@ -116,7 +116,7 @@ class PublishedTestCasesTest extends TestCase
         self::assertEquals(self::$expectedResults[$problem], $volumeUtilisation);
     }
 
-    protected function thpackDecode($filename): array
+    protected static function thpackDecode($filename): array
     {
         $data = [];
 
