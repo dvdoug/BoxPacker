@@ -21,14 +21,18 @@
    `->getBox()` and `->getItems()`
  - `NoBoxesAvailableException` now has a `getAffectedItems()` method instead of `getItem()`. This should allow
    improved handling of the exception inside calling applications when multiple items cannot be packed
- - Calling `json_encode()` on a `PackedBox` or `PackedItem` now additionally serialises the entire underlying
-   `Box`/`Item` where those objects also implement `JsonSerializable`. Previously the serialisation only included the
-   key values from the `Box`/`Item` interfaces themselves.
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface
  - Removed `InfalliblePacker`. You can now get the same behaviour by calling `->throwOnUnpackableItem(false)` and
    `->getUnpackedItems()` on the main `Packer` class
+
+
+## [3.11.0] - 2023-02-04
+### Changed
+- Calling `json_encode()` on a `PackedBox` or `PackedItem` now additionally serialises the entire underlying
+  `Box`/`Item` where those objects also implement `JsonSerializable`. Previously the serialisation only included the
+  key values from the `Box`/`Item` interfaces themselves.
 
 ## [3.10.0] - 2022-09-10
 ### Added
@@ -517,6 +521,7 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
+[3.11.0]: https://github.com/dvdoug/BoxPacker/compare/3.10.0...3.11.0
 [3.10.0]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.10.0
 [3.9.4]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.9.4
 [3.9.3]: https://github.com/dvdoug/BoxPacker/compare/3.9.2...3.9.3
