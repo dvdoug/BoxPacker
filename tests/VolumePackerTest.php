@@ -482,4 +482,35 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(4, $packedBox->getItems());
     }
+
+    public function testIssue240(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Le petite box', 220, 540, 1, 0, 220, 540, 1, 0);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('1-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('2-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('3-60x100', 100, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('4-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('5-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('6-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('7-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('8-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('9-60x160', 160, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('10-80x50', 50, 80, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('11-80x60', 60, 80, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('12-80x110', 110, 80, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('13-90x160', 160, 90, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('14-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('15-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('16-60x100', 100, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('17-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('18-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(18, $packedBox->getItems());
+    }
 }
