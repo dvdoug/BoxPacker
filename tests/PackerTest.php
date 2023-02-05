@@ -1118,6 +1118,18 @@ class PackerTest extends TestCase
         self::assertCount(62, $packer->getUnpackedItems());
     }
 
+    public function testIssue334(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Medium box', 600, 400, 400, 5000, 600, 400, 400, 18000000));
+        $packer->addItem(new TestItem('TEST001', 130, 130, 240, 250000, Rotation::BestFit), 18);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
     public function testCustomPackedBoxSorterIsUsed(): void
     {
         PackedBoxByReferenceSorter::$reference = 'Box #1';
