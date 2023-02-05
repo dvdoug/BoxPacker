@@ -1118,6 +1118,28 @@ class PackerTest extends TestCase
         self::assertCount(62, $packer->getUnpackedItems());
     }
 
+    public function testIssue298(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->addBox(new TestBox('20 Feet', 6058, 2438, 2591, 2200, 5758, 2352, 2385, 24000));
+        $packer->addItem(new TestItem('Item 1', 1480, 1140, 1140, 1, Rotation::KeepFlat), 3);
+        $packer->addItem(new TestItem('Item 2', 1480, 1140, 750, 1, Rotation::KeepFlat), 19);
+        $packer->addItem(new TestItem('Item 3', 2240, 1480, 1200, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 4', 2240, 1480, 1300, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 5', 2240, 1480, 1480, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 6', 2240, 1480, 1600, 1, Rotation::KeepFlat), 6);
+        $packer->addItem(new TestItem('Item 7', 2240, 1480, 2240, 1, Rotation::KeepFlat), 8);
+        $packer->addItem(new TestItem('Item 8', 2240, 1480, 750, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 9', 250, 180, 150, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 10', 2600, 260, 1400, 1, Rotation::KeepFlat), 7);
+        $packer->addItem(new TestItem('Item 11', 400, 350, 230, 1, Rotation::KeepFlat), 2);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(6, $packedBoxes);
+    }
+
     public function testIssue334(): void
     {
         $this->markTestSkipped();
