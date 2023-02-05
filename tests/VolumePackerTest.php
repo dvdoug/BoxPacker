@@ -513,4 +513,24 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(18, $packedBox->getItems());
     }
+
+    public function testIssue264(): void
+    {
+        foreach ([Rotation::KeepFlat, Rotation::BestFit] as $rotation) {
+            $this->markTestSkipped();
+            $box = new TestBox('Small', 160, 130, 70, 0, 160, 130, 70, 100000);
+
+            $items = new ItemList();
+            $items->insert(new TestItem('Item 1', 105, 70, 14, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 2', 152, 101, 5, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 3', 80, 70, 50, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 4', 97, 71, 28, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 5', 95, 70, 28, 0, $rotation), 1);
+
+            $volumePacker = new VolumePacker($box, $items);
+            $packedBox = $volumePacker->pack();
+
+            self::assertCount(5, $packedBox->getItems());
+        }
+    }
 }
