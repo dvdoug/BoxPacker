@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@babylonjs/core": "^5.44.0",
+    "@babylonjs/core": "^5.47.1",
     "@babylonjs/gui": "^5.35.1"
   },
   "devDependencies": {
