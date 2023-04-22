@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let hl = new HighlightLayer("hl1", scene);
 
         const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        advancedTexture.useInvalidateRectOptimization = false;
 
         // draw **BoxPacker** axes (y/z are flipped compared to Babylon)
         const showAxis = function (xSize: number, ySize: number, zSize: number, xPos: number) {
