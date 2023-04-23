@@ -26,6 +26,8 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     protected bool $singlePassMode = false;
 
+    protected bool $boxIsRotated = false;
+
     /**
      * @var array<string, bool>
      */
@@ -44,6 +46,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
     public function setSinglePassMode(bool $singlePassMode): void
     {
         $this->singlePassMode = $singlePassMode;
+    }
+
+    public function setBoxIsRotated(bool $boxIsRotated): void
+    {
+        $this->boxIsRotated = $boxIsRotated;
     }
 
     /**
@@ -121,7 +128,16 @@ class OrientatedItemFactory implements LoggerAwareInterface
                 /** @var ConstrainedPlacementItem $constrainedItem */
                 $constrainedItem = $i->getItem();
 
-                return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
+                if ($this->boxIsRotated) {
+                    $rotatedPrevPackedItemList = new PackedItemList();
+                    foreach ($prevPackedItemList as $prevPackedItem) {
+                        $rotatedPrevPackedItemList->insert(new PackedItem($prevPackedItem->getItem(), $prevPackedItem->getY(), $prevPackedItem->getX(), $prevPackedItem->getZ(), $prevPackedItem->getLength(), $prevPackedItem->getWidth(), $prevPackedItem->getDepth()));
+                    }
+
+                    return $constrainedItem->canBePacked(new PackedBox($this->box, $rotatedPrevPackedItemList), $y, $x, $z, $i->getLength(), $i->getWidth(), $i->getDepth());
+                } else {
+                    return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
+                }
             });
         }
 

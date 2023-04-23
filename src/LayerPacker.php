@@ -31,6 +31,8 @@ class LayerPacker implements LoggerAwareInterface
 
     private bool $beStrictAboutItemOrdering = false;
 
+    private bool $isBoxRotated = false;
+
     public function __construct(private readonly Box $box)
     {
         $this->logger = new NullLogger();
@@ -52,6 +54,12 @@ class LayerPacker implements LoggerAwareInterface
     {
         $this->singlePassMode = $singlePassMode;
         $this->orientatedItemFactory->setSinglePassMode($singlePassMode);
+    }
+
+    public function setBoxIsRotated(bool $boxIsRotated): void
+    {
+        $this->isBoxRotated = $boxIsRotated;
+        $this->orientatedItemFactory->setBoxIsRotated($boxIsRotated);
     }
 
     public function beStrictAboutItemOrdering(bool $beStrict): void

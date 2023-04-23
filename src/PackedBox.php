@@ -16,6 +16,9 @@ use function max;
 use function round;
 use function urlencode;
 use function is_iterable;
+use function count;
+use function array_pop;
+use function assert;
 
 /**
  * A "box" with items.
@@ -179,6 +182,7 @@ class PackedBox implements JsonSerializable
             $this->itemWeight += $item->getItem()->getWeight();
         }
         $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
+        $this->assertPackingCompliesWithRealWorld();
     }
 
     public function jsonSerialize(): array
@@ -204,5 +208,34 @@ class PackedBox implements JsonSerializable
             ],
             'items' => iterator_to_array($this->items),
         ];
+    }
+
+    /**
+     * Validate that all items are placed solely within the confines of the box, and that no two items are placed
+     * into the same physical space.
+     */
+    private function assertPackingCompliesWithRealWorld(): void
+    {
+        /** @var PackedItem[] $itemsToCheck */
+        $itemsToCheck = iterator_to_array($this->items);
+        while (count($itemsToCheck) > 0) {
+            $itemToCheck = array_pop($itemsToCheck);
+
+            assert($itemToCheck->getX() >= 0);
+            assert($itemToCheck->getX() + $itemToCheck->getWidth() <= $this->box->getInnerWidth());
+            assert($itemToCheck->getY() >= 0);
+            assert($itemToCheck->getY() + $itemToCheck->getLength() <= $this->box->getInnerLength());
+            assert($itemToCheck->getZ() >= 0);
+            assert($itemToCheck->getZ() + $itemToCheck->getDepth() <= $this->box->getInnerDepth());
+
+            foreach ($itemsToCheck as $otherItem) {
+                $hasXOverlap = $itemToCheck->getX() < ($otherItem->getX() + $otherItem->getWidth()) && $otherItem->getX() < ($itemToCheck->getX() + $itemToCheck->getWidth());
+                $hasYOverlap = $itemToCheck->getY() < ($otherItem->getY() + $otherItem->getLength()) && $otherItem->getY() < ($itemToCheck->getY() + $itemToCheck->getLength());
+                $hasZOverlap = $itemToCheck->getZ() < ($otherItem->getZ() + $otherItem->getDepth()) && $otherItem->getZ() < ($itemToCheck->getZ() + $itemToCheck->getDepth());
+
+                $hasOverlap = $hasXOverlap && $hasYOverlap && $hasZOverlap;
+                assert(!$hasOverlap);
+            }
+        }
     }
 }

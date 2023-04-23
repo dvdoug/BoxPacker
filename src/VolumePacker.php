@@ -129,6 +129,7 @@ class VolumePacker implements LoggerAwareInterface
     private function packRotation(int $boxWidth, int $boxLength): PackedBox
     {
         $this->logger->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
+        $this->layerPacker->setBoxIsRotated($this->box->getInnerWidth() !== $boxWidth);
 
         $layers = [];
         $items = clone $this->items;
