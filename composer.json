@@ -21,7 +21,7 @@
         "dvdoug/behat-code-coverage": "^5.3",
         "friendsofphp/php-cs-fixer": "^3.14",
         "monolog/monolog": "^3.2",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.1"
     },
     "config": {
         "preferred-install": {

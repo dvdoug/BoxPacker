@@ -20,11 +20,13 @@
     </testsuite>
   </testsuites>
 
-  <coverage pathCoverage="true">
+  <source>
     <include>
       <directory suffix=".php">src</directory>
     </include>
+  </source>
 
+  <coverage pathCoverage="true">
     <report>
       <text outputFile="php://stdout" showUncoveredFiles="true"/>
       <html outputDirectory="build/coverage-phpunit"/>
