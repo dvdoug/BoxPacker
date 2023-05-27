@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Test;
 
-use DVDoug\BoxPacker\Box;
 use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\PackedItem;
@@ -38,9 +37,9 @@ class ConstrainedPlacementNoStackingTestItem extends TestItem implements Constra
         /** @var PackedItem $alreadyPacked */
         foreach ($alreadyPackedType as $alreadyPacked) {
             if (
-                $alreadyPacked->getZ() + $alreadyPacked->getDepth() === $proposedZ &&
-                $proposedX >= $alreadyPacked->getX() && $proposedX <= ($alreadyPacked->getX() + $alreadyPacked->getWidth()) &&
-                $proposedY >= $alreadyPacked->getY() && $proposedY <= ($alreadyPacked->getY() + $alreadyPacked->getLength())) {
+                $alreadyPacked->getZ() + $alreadyPacked->getDepth() === $proposedZ
+                && $proposedX >= $alreadyPacked->getX() && $proposedX <= ($alreadyPacked->getX() + $alreadyPacked->getWidth())
+                && $proposedY >= $alreadyPacked->getY() && $proposedY <= ($alreadyPacked->getY() + $alreadyPacked->getLength())) {
                 return false;
             }
         }
