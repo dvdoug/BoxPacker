@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@babylonjs/core": "^6.5.0",
-    "@babylonjs/gui": "^6.0.0"
+    "@babylonjs/gui": "^6.5.1"
   },
   "devDependencies": {
     "ts-loader": "^9.4.3",
