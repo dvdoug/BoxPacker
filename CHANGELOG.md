@@ -18,7 +18,7 @@
  - The signature of the `canBePacked` method on the `ConstrainedPlacementItem` interface has been changed to replace the
    first two arguments(`Box $box`, `PackedItemList $alreadyPackedItems`) with `PackedBox $packedBox`. This allows
    callbacks to make use of the helper methods provided on `PackedBox`. Access to the box and items can be done via
-   `->getBox()` and `->getItems()`
+   `$packedBox->getBox()` and `$packedBox->getItems()`
  - `NoBoxesAvailableException` now has a `getAffectedItems()` method instead of `getItem()`. This should allow
    improved handling of the exception inside calling applications when multiple items cannot be packed
 ### Removed
