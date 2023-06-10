@@ -15,11 +15,6 @@ Requirements
 ------------
 BoxPacker v3 is compatible with PHP 7.1+
 
-.. note::
-
-    Still running an older version of PHP? No problem! BoxPacker v2 is compatible with PHP 5.4 and up, is just as
-    production-ready, and is actively maintained.
-
 Versioning
 ----------
 BoxPacker follows `Semantic Versioning`_. For details about differences between releases please see `What's new`_
