@@ -1121,7 +1121,6 @@ class PackerTest extends TestCase
 
     public function testIssue298(): void
     {
-        $this->markTestSkipped();
         $packer = new Packer();
         $packer->addBox(new TestBox('20 Feet', 6058, 2438, 2591, 2200, 5758, 2352, 2385, 24000));
         $packer->addItem(new TestItem('Item 1', 1480, 1140, 1140, 1, Rotation::KeepFlat), 3);
