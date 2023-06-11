@@ -182,7 +182,7 @@ class PackedBox implements JsonSerializable
             $this->itemWeight += $item->getItem()->getWeight();
         }
         $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
-        $this->assertPackingCompliesWithRealWorld();
+        assert($this->assertPackingCompliesWithRealWorld());
     }
 
     public function jsonSerialize(): array
@@ -214,7 +214,7 @@ class PackedBox implements JsonSerializable
      * Validate that all items are placed solely within the confines of the box, and that no two items are placed
      * into the same physical space.
      */
-    private function assertPackingCompliesWithRealWorld(): void
+    private function assertPackingCompliesWithRealWorld(): bool
     {
         /** @var PackedItem[] $itemsToCheck */
         $itemsToCheck = iterator_to_array($this->items);
@@ -237,5 +237,7 @@ class PackedBox implements JsonSerializable
                 assert(!$hasOverlap);
             }
         }
+
+        return true;
     }
 }
