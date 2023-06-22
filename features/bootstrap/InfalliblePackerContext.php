@@ -6,7 +6,6 @@
  */
 declare(strict_types=1);
 
-use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\ItemList;
 use DVDoug\BoxPacker\Packer;
 use PHPUnit\Framework\Assert;
