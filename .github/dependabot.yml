@@ -13,6 +13,14 @@ updates:
     schedule:
       interval: "daily"
     versioning-strategy: increase
+    groups:
+      babylon:
+        patterns:
+          - "@babylonjs*"
+      webpack:
+        patterns:
+          - "webpack*"
+          - "ts-loader"
 
   - package-ecosystem: "pip"
     directory: "/docs"
