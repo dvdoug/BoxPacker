@@ -1,3 +1,2 @@
-# RTD pins these by default to ancient versions
-sphinx ~= 6.2
+# RTD pins by default to ancient versions
 sphinx-rtd-theme ~= 1.2
