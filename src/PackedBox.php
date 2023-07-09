@@ -14,11 +14,16 @@ use function iterator_to_array;
 use function json_encode;
 use function max;
 use function round;
-use function urlencode;
 use function is_iterable;
 use function count;
 use function array_pop;
 use function assert;
+use function rawurlencode;
+
+use const JSON_THROW_ON_ERROR;
+use const JSON_NUMERIC_CHECK;
+use const JSON_UNESCAPED_UNICODE;
+use const JSON_UNESCAPED_SLASHES;
 
 /**
  * A "box" with items.
@@ -173,7 +178,7 @@ class PackedBox implements JsonSerializable
      */
     public function generateVisualisationURL(): string
     {
-        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . urlencode(json_encode($this));
+        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . rawurlencode(json_encode($this, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     public function __construct(protected Box $box, protected PackedItemList $items)
