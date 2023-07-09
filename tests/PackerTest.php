@@ -1152,6 +1152,61 @@ class PackerTest extends TestCase
         self::assertCount(1, $packedBoxes);
     }
 
+    public function testIssue275A(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::KeepFlat), 5);
+        $packer->addItem(new TestItem('height 47', 590, 390, 470, 10890, Rotation::KeepFlat), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::KeepFlat), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275B(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::BestFit), 5);
+        $packer->addItem(new TestItem('height 47', 590, 390, 470, 10890, Rotation::BestFit), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::BestFit), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275C(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::KeepFlat), 5);
+        $packer->addItem(new TestItem('height 47', 590, 470, 390, 10890, Rotation::KeepFlat), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::KeepFlat), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275D(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::BestFit), 5);
+        $packer->addItem(new TestItem('height 47', 590, 470, 390, 10890, Rotation::BestFit), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::BestFit), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
     public function testCustomPackedBoxSorterIsUsed(): void
     {
         PackedBoxByReferenceSorter::$reference = 'Box #1';
