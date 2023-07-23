@@ -79,6 +79,11 @@ class OrientatedItemFactory implements LoggerAwareInterface
                     'lengthLeft' => $lengthLeft,
                     'depthLeft' => $depthLeft,
                 ],
+                'position' => [
+                    'x' => $x,
+                    'y' => $y,
+                    'z' => $z,
+                ],
             ]
         );
 
