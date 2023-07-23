@@ -1207,6 +1207,22 @@ class PackerTest extends TestCase
         self::assertCount(1, $packedBoxes);
     }
 
+    public function testIssue538(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('Stock 5 Single Wall', 30, 45, 30, 0, 30, 45, 30, 15000));
+        $packer->addItem(new TestItem('Whatsanamie', 5, 5, 30, 100, Rotation::BestFit), 3);
+        $packer->addItem(new TestItem('Whatzit', 8, 5, 1, 100, Rotation::BestFit), 4);
+        $packer->addItem(new TestItem('Widget', 1, 3, 3, 100, Rotation::BestFit), 50);
+        $packer->addItem(new TestItem('Kajigger', 30, 25, 25, 100, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Doohickey', 8, 10, 20, 100, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Gadget', 15, 20, 5, 100, Rotation::KeepFlat), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
     public function testCustomPackedBoxSorterIsUsed(): void
     {
         PackedBoxByReferenceSorter::$reference = 'Box #1';
