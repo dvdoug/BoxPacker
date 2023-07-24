@@ -110,12 +110,13 @@ class LayerPacker implements LoggerAwareInterface
                 $x += $packedItem->getWidth();
                 $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
+                // might be space available lengthwise across the width of this item, up to the current layer length
+                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->getWidth(), $y + $packedItem->getLength(), $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
+
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
-                // might be space available lengthwise across the width of this item, up to the current layer length
-                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->getWidth(), $y + $packedItem->getLength(), $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
 
                 continue;
             }
