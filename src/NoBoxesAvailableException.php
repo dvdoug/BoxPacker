@@ -12,19 +12,12 @@ namespace DVDoug\BoxPacker;
 use RuntimeException;
 
 /**
- * Class NoBoxesAvailableException
  * Exception used when an item cannot be packed into any box.
  */
 class NoBoxesAvailableException extends RuntimeException
 {
-    /**
-     * @var Item
-     */
-    public $item;
+    public Item $item;
 
-    /**
-     * NoBoxesAvailableException constructor.
-     */
     public function __construct(string $message, Item $item)
     {
         $this->item = $item;

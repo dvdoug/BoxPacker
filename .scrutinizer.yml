@@ -15,13 +15,13 @@ build:
   environment:
     # Languages
     php:
-      version: "7.4"
+      version: "8.1"
       ini:
         memory_limit: "-1"
 
   dependencies:
     override:
-      - 'composer update --no-interaction --prefer-dist --ignore-platform-reqs'
+      - 'composer update --no-interaction --prefer-dist'
 
   tests:
     override:

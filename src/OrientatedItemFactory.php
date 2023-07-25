@@ -19,24 +19,18 @@ use function usort;
 /**
  * Figure out orientations for an item and a given set of dimensions.
  *
- * @author Doug Wright
  * @internal
  */
 class OrientatedItemFactory implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var Box
-     */
-    protected $box;
+    protected Box $box;
 
     /**
      * Whether the packer is in single-pass mode.
-     *
-     * @var bool
      */
-    protected $singlePassMode = false;
+    protected bool $singlePassMode = false;
 
     /**
      * @var bool[]
@@ -205,9 +199,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         $stableOrientations = array_filter(
             $orientations,
-            static function (OrientatedItem $orientation) {
-                return $orientation->isStable();
-            }
+            static fn (OrientatedItem $orientation) => $orientation->isStable()
         );
         static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations) > 0;
 

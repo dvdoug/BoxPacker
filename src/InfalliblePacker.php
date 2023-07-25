@@ -12,19 +12,11 @@ use function count;
 
 /**
  * A version of the packer that swallows internal exceptions.
- *
- * @author Doug Wright
  */
 class InfalliblePacker extends Packer
 {
-    /**
-     * @var ItemList
-     */
-    protected $unpackedItems;
+    protected ItemList $unpackedItems;
 
-    /**
-     * InfalliblePacker constructor.
-     */
     public function __construct()
     {
         $this->unpackedItems = new ItemList();

@@ -22,8 +22,6 @@ use const PHP_INT_MAX;
 
 /**
  * Actual packer.
- *
- * @author Doug Wright
  */
 class Packer implements LoggerAwareInterface
 {
@@ -31,41 +29,21 @@ class Packer implements LoggerAwareInterface
 
     /**
      * Number of boxes at which balancing weight is deemed not worth it.
-     *
-     * @var int
      */
-    protected $maxBoxesToBalanceWeight = 12;
+    protected int $maxBoxesToBalanceWeight = 12;
+
+    protected ItemList $items;
+
+    protected BoxList $boxes;
 
     /**
-     * List of items to be packed.
-     *
-     * @var ItemList
+     * @var SplObjectStorage<Box, int>
      */
-    protected $items;
+    protected SplObjectStorage $boxesQtyAvailable;
 
-    /**
-     * List of box sizes available to pack items into.
-     *
-     * @var BoxList
-     */
-    protected $boxes;
+    protected PackedBoxSorter $packedBoxSorter;
 
-    /**
-     * Quantities available of each box type.
-     *
-     * @var SplObjectStorage
-     */
-    protected $boxesQtyAvailable;
-
-    /**
-     * @var PackedBoxSorter
-     */
-    protected $packedBoxSorter;
-
-    /**
-     * @var bool
-     */
-    private $beStrictAboutItemOrdering = false;
+    private bool $beStrictAboutItemOrdering = false;
 
     public function __construct()
     {

@@ -25,7 +25,6 @@ use function usort;
 /**
  * Actual packer.
  *
- * @author Doug Wright
  * @internal
  */
 class WeightRedistributor implements LoggerAwareInterface
@@ -34,10 +33,8 @@ class WeightRedistributor implements LoggerAwareInterface
 
     /**
      * List of box sizes available to pack items into.
-     *
-     * @var BoxList
      */
-    private $boxes;
+    private BoxList $boxes;
 
     /**
      * Quantities available of each box type.
@@ -46,14 +43,8 @@ class WeightRedistributor implements LoggerAwareInterface
      */
     private $boxesQtyAvailable;
 
-    /**
-     * @var PackedBoxSorter
-     */
-    private $packedBoxSorter;
+    private PackedBoxSorter $packedBoxSorter;
 
-    /**
-     * Constructor.
-     */
     public function __construct(BoxList $boxList, PackedBoxSorter $packedBoxSorter, SplObjectStorage $boxQuantitiesAvailable)
     {
         $this->boxes = $boxList;
@@ -73,9 +64,7 @@ class WeightRedistributor implements LoggerAwareInterface
         /** @var PackedBox[] $boxes */
         $boxes = iterator_to_array($originalBoxes);
 
-        usort($boxes, static function (PackedBox $boxA, PackedBox $boxB) {
-            return $boxB->getWeight() <=> $boxA->getWeight();
-        });
+        usort($boxes, static fn (PackedBox $boxA, PackedBox $boxB) => $boxB->getWeight() <=> $boxA->getWeight());
 
         do {
             $iterationSuccessful = false;
@@ -188,8 +177,8 @@ class WeightRedistributor implements LoggerAwareInterface
      */
     private static function wouldRepackActuallyHelp(array $overWeightBoxItems, Item $overWeightItem, array $underWeightBoxItems, float $targetWeight): bool
     {
-        $overWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $overWeightBoxItems));
-        $underWeightItemsWeight = array_sum(array_map(static function (Item $item) {return $item->getWeight(); }, $underWeightBoxItems));
+        $overWeightItemsWeight = array_sum(array_map(static fn (Item $item) => $item->getWeight(), $overWeightBoxItems));
+        $underWeightItemsWeight = array_sum(array_map(static fn (Item $item) => $item->getWeight(), $underWeightBoxItems));
 
         if ($overWeightItem->getWeight() + $underWeightItemsWeight > $targetWeight) {
             return false;

@@ -7,7 +7,6 @@
 declare(strict_types=1);
 
 use DVDoug\BoxPacker\InfalliblePacker;
-use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\ItemList;
 use PHPUnit\Framework\Assert;
 
@@ -16,15 +15,9 @@ use PHPUnit\Framework\Assert;
  */
 class InfalliblePackerContext extends PackerContext
 {
-    /**
-     * @var string
-     */
-    protected $packerClass = InfalliblePacker::class;
+    protected string $packerClass = InfalliblePacker::class;
 
-    /**
-     * @var ItemList
-     */
-    protected $unpackedItemList;
+    protected ItemList $unpackedItemList;
 
     /**
      * @When I do an infallible packing
@@ -47,7 +40,6 @@ class InfalliblePackerContext extends PackerContext
     ): void {
         $foundItems = 0;
 
-        /** @var Item $unpackedItem */
         foreach ($this->unpackedItemList as $unpackedItem) {
             if ($unpackedItem->getDescription() === $itemType) {
                 ++$foundItems;

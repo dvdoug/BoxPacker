@@ -19,38 +19,28 @@ use function is_array;
 
 /**
  * A "box" with items.
- *
- * @author Doug Wright
  */
 class PackedBox implements JsonSerializable
 {
     /**
      * Box used.
-     *
-     * @var Box
      */
-    protected $box;
+    protected Box $box;
 
     /**
      * Items in the box.
-     *
-     * @var PackedItemList
      */
-    protected $items;
+    protected PackedItemList $items;
 
     /**
      * Total weight of items in the box.
-     *
-     * @var int
      */
-    protected $itemWeight;
+    protected int $itemWeight = 0;
 
     /**
      * Volume used for items as % of box.
-     *
-     * @var float
      */
-    protected $volumeUtilisation;
+    protected float $volumeUtilisation;
 
     /**
      * Get box used.
@@ -85,16 +75,6 @@ class PackedBox implements JsonSerializable
      */
     public function getItemWeight(): int
     {
-        if ($this->itemWeight !== null) {
-            return $this->itemWeight;
-        }
-
-        $this->itemWeight = 0;
-        /** @var PackedItem $item */
-        foreach ($this->items as $item) {
-            $this->itemWeight += $item->getItem()->getWeight();
-        }
-
         return $this->itemWeight;
     }
 
@@ -129,7 +109,6 @@ class PackedBox implements JsonSerializable
     {
         $maxWidth = 0;
 
-        /** @var PackedItem $item */
         foreach ($this->items as $item) {
             $maxWidth = max($maxWidth, $item->getX() + $item->getWidth());
         }
@@ -144,7 +123,6 @@ class PackedBox implements JsonSerializable
     {
         $maxLength = 0;
 
-        /** @var PackedItem $item */
         foreach ($this->items as $item) {
             $maxLength = max($maxLength, $item->getY() + $item->getLength());
         }
@@ -159,7 +137,6 @@ class PackedBox implements JsonSerializable
     {
         $maxDepth = 0;
 
-        /** @var PackedItem $item */
         foreach ($this->items as $item) {
             $maxDepth = max($maxDepth, $item->getZ() + $item->getDepth());
         }
@@ -204,13 +181,14 @@ class PackedBox implements JsonSerializable
         return $this->volumeUtilisation;
     }
 
-    /**
-     * Constructor.
-     */
     public function __construct(Box $box, PackedItemList $packedItemList)
     {
         $this->box = $box;
         $this->items = $packedItemList;
+
+        foreach ($this->items as $item) {
+            $this->itemWeight += $item->getItem()->getWeight();
+        }
 
         $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
     }

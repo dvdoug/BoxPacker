@@ -41,9 +41,9 @@ class ConstrainedPlacementNoStackingTestItem extends TestItem implements Constra
         /** @var PackedItem $alreadyPacked */
         foreach ($alreadyPackedType as $alreadyPacked) {
             if (
-                $alreadyPacked->getZ() + $alreadyPacked->getDepth() === $proposedZ &&
-                $proposedX >= $alreadyPacked->getX() && $proposedX <= ($alreadyPacked->getX() + $alreadyPacked->getWidth()) &&
-                $proposedY >= $alreadyPacked->getY() && $proposedY <= ($alreadyPacked->getY() + $alreadyPacked->getLength())) {
+                $alreadyPacked->getZ() + $alreadyPacked->getDepth() === $proposedZ
+                && $proposedX >= $alreadyPacked->getX() && $proposedX <= ($alreadyPacked->getX() + $alreadyPacked->getWidth())
+                && $proposedY >= $alreadyPacked->getY() && $proposedY <= ($alreadyPacked->getY() + $alreadyPacked->getLength())) {
                 return false;
             }
         }

@@ -16,49 +16,23 @@ use function is_array;
 
 /**
  * A packed item.
- *
- * @author Doug Wright
  */
 class PackedItem implements JsonSerializable
 {
-    /**
-     * @var int
-     */
-    protected $x;
+    protected int $x;
 
-    /**
-     * @var int
-     */
-    protected $y;
+    protected int $y;
 
-    /**
-     * @var int
-     */
-    protected $z;
+    protected int $z;
 
-    /**
-     * @var Item
-     */
-    protected $item;
+    protected Item $item;
 
-    /**
-     * @var int
-     */
-    protected $width;
+    protected int $width;
 
-    /**
-     * @var int
-     */
-    protected $length;
+    protected int $length;
 
-    /**
-     * @var int
-     */
-    protected $depth;
+    protected int $depth;
 
-    /**
-     * PackedItem constructor.
-     */
     public function __construct(Item $item, int $x, int $y, int $z, int $width, int $length, int $depth)
     {
         $this->item = $item;
@@ -112,7 +86,7 @@ class PackedItem implements JsonSerializable
 
     public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): self
     {
-        return new static(
+        return new self(
             $orientatedItem->getItem(),
             $x,
             $y,

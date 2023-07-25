@@ -10,8 +10,6 @@ namespace DVDoug\BoxPacker;
 
 /**
  * A "box" (or envelope?) to pack items into.
- *
- * @author Doug Wright
  */
 interface Box
 {

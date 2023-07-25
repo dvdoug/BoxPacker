@@ -19,9 +19,6 @@ jobs:
           - "8.1"
           - "8.0"
           - "7.4"
-          - "7.3"
-          - "7.2"
-          - "7.1"
 
         dependencies:
           - "highest"
@@ -29,7 +26,7 @@ jobs:
           - "latest"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 2
 
@@ -38,7 +35,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-version }}
         coverage: "xdebug"
-        tools: composer:v2, cs2pr
+        tools: cs2pr
         ini-values: "error_reporting=E_ALL, display_errors=On"
       env:
         COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,10 +55,10 @@ jobs:
 
     - name: Get composer cache directory
       id: composercache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Set up build cache
-      uses: "actions/cache@v2"
+      uses: "actions/cache@v3"
       with:
         path: |
           ${{ steps.composercache.outputs.dir }}
@@ -73,14 +70,8 @@ jobs:
           php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}
 
     - name: Remove PHP-CS-Fixer if not called
-      if: matrix.php-version != '8.0' || matrix.dependencies != 'highest'
+      if: matrix.php-version != '8.1' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
-
-    - name: Fix min version for PHP8
-      if: matrix.php-version == '8.0' || matrix.php-version == '8.1'
-      run: |
-        composer require --dev --no-update "dvdoug/behat-code-coverage ^5.2";
-        composer require --dev --no-update "behat/behat ^3.8";
 
     - name: Install dependencies (low)
       if: matrix.dependencies == 'lowest'
@@ -110,7 +101,7 @@ jobs:
 
     - name: PHPUnit
       run: |
-        if [ "${{ matrix.php-version }}" = "8.0" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+        if [ "${{ matrix.php-version }}" = "8.1" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
           php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
           composer global require scrutinizer/ocular;
           ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-phpunit/clover.xml;
@@ -120,7 +111,7 @@ jobs:
 
     - name: Behat
       run: |
-        if [ "${{ matrix.php-version }}" = "8.0" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+        if [ "${{ matrix.php-version }}" = "8.1" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
           php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
           ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage-behat/clover.xml;
         else
@@ -128,7 +119,7 @@ jobs:
         fi;
 
     - name: Check code style
-      if: matrix.php-version == '8.0' && matrix.dependencies == 'highest'
+      if: matrix.php-version == '8.1' && matrix.dependencies == 'highest'
       run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --allow-risky=yes --format=checkstyle | cs2pr
 
 
@@ -144,9 +135,6 @@ jobs:
           - "8.1"
           - "8.0"
           - "7.4"
-          - "7.3"
-          - "7.2"
-          - "7.1"
 
         dependencies:
           - "highest"
@@ -154,14 +142,13 @@ jobs:
           - "latest"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: "Setup PHP"
       uses: "shivammathur/setup-php@v2"
       with:
         php-version: ${{ matrix.php-version }}
         coverage: "none"
-        tools: composer:v2
         ini-values: "opcache.enable=1, opcache.enable_cli=1, opcache.jit=1205, opcache.jit_buffer_size=128M, error_reporting=E_ALL, display_errors=On"
       env:
         COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,10 +168,10 @@ jobs:
 
     - name: Get composer cache directory
       id: composercache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Set up build cache
-      uses: "actions/cache@v2"
+      uses: "actions/cache@v3"
       with:
         path: |
           ${{ steps.composercache.outputs.dir }}

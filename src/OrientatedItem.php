@@ -17,49 +17,29 @@ use function sort;
 
 /**
  * An item to be packed.
- *
- * @author Doug Wright
  */
 class OrientatedItem implements JsonSerializable
 {
-    /**
-     * @var Item
-     */
-    protected $item;
+    protected Item $item;
 
-    /**
-     * @var int
-     */
-    protected $width;
+    protected int $width;
 
-    /**
-     * @var int
-     */
-    protected $length;
+    protected int $length;
 
-    /**
-     * @var int
-     */
-    protected $depth;
+    protected int $depth;
 
-    /**
-     * @var int
-     */
-    protected $surfaceFootprint;
+    protected int $surfaceFootprint;
 
     /**
      * @var bool[]
      */
-    protected static $stabilityCache = [];
+    protected static array $stabilityCache = [];
 
     /**
-     * @var array
+     * @var int[]
      */
-    protected $dimensionsAsArray;
+    protected array $dimensionsAsArray;
 
-    /**
-     * Constructor.
-     */
     public function __construct(Item $item, int $width, int $length, int $depth)
     {
         $this->item = $item;

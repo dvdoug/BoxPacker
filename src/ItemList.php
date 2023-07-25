@@ -24,42 +24,26 @@ use function key;
 use function prev;
 use function usort;
 
-use const PHP_VERSION_ID;
-
 /**
  * List of items to be packed, ordered by volume.
- *
- * @author Doug Wright
  */
 class ItemList implements Countable, IteratorAggregate
 {
     /**
-     * List containing items.
-     *
      * @var Item[]
      */
-    private $list = [];
+    private array $list = [];
 
-    /**
-     * Has this list already been sorted?
-     *
-     * @var bool
-     */
-    private $isSorted = false;
+    private bool $isSorted = false;
 
-    /**
-     * @var ItemSorter
-     */
-    private $sorter;
+    private ItemSorter $sorter;
 
     /**
      * Does this list contain constrained items?
-     *
-     * @var bool
      */
-    private $hasConstrainedItems;
+    private ?bool $hasConstrainedItems = null;
 
-    public function __construct(?ItemSorter $sorter = null)
+    public function __construct(ItemSorter $sorter = null)
     {
         $this->sorter = $sorter ?: new DefaultItemSorter();
     }
@@ -71,7 +55,7 @@ class ItemList implements Countable, IteratorAggregate
      */
     public static function fromArray(array $items, bool $preSorted = false): self
     {
-        $list = new static();
+        $list = new self();
         $list->list = array_reverse($items); // internal sort is largest at the end
         $list->isSorted = $preSorted;
 
@@ -84,7 +68,10 @@ class ItemList implements Countable, IteratorAggregate
             $this->list[] = $item;
         }
         $this->isSorted = false;
-        $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
+
+        if (isset($this->hasConstrainedItems)) { // normally lazy evaluated, override if that's already been done
+            $this->hasConstrainedItems = $this->hasConstrainedItems || $item instanceof ConstrainedPlacementItem;
+        }
     }
 
     /**
@@ -147,10 +134,6 @@ class ItemList implements Countable, IteratorAggregate
             $this->isSorted = true;
         }
 
-        if (PHP_VERSION_ID < 70300) {
-            return array_slice($this->list, -1, 1)[0];
-        }
-
         return $this->list[array_key_last($this->list)];
     }
 
@@ -173,7 +156,7 @@ class ItemList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return Traversable|Item[]
+     * @return Traversable<Item>
      */
     public function getIterator(): Traversable
     {

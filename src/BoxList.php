@@ -16,31 +16,19 @@ use function usort;
 
 /**
  * List of boxes available to put items into, ordered by volume.
- *
- * @author Doug Wright
  */
 class BoxList implements IteratorAggregate
 {
     /**
-     * List containing boxes.
-     *
      * @var Box[]
      */
-    private $list = [];
+    private array $list = [];
 
-    /**
-     * Has this list already been sorted?
-     *
-     * @var bool
-     */
-    private $isSorted = false;
+    private bool $isSorted = false;
 
-    /**
-     * @var BoxSorter
-     */
-    private $sorter;
+    private BoxSorter $sorter;
 
-    public function __construct(?BoxSorter $sorter = null)
+    public function __construct(BoxSorter $sorter = null)
     {
         $this->sorter = $sorter ?: new DefaultBoxSorter();
     }
@@ -52,7 +40,7 @@ class BoxList implements IteratorAggregate
      */
     public static function fromArray(array $boxes, bool $preSorted = false): self
     {
-        $list = new static();
+        $list = new self();
         $list->list = $boxes;
         $list->isSorted = $preSorted;
 
@@ -60,7 +48,7 @@ class BoxList implements IteratorAggregate
     }
 
     /**
-     * @return Traversable|Box[]
+     * @return Traversable<Box>
      */
     public function getIterator(): Traversable
     {

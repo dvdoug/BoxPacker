@@ -1,2 +1,2 @@
-docker build -t sphinxrtd .
-docker run -it --rm --name sphinx -v ${PWD}/..:/code -w="/code/docs" sphinxrtd make html
+pip install --user -r requirements.txt --upgrade --upgrade-strategy eager
+python -m sphinx . _build -E -a

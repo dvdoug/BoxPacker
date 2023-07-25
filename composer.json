@@ -3,7 +3,7 @@
     "description": "An implementation of the 3D (actually 4D) bin packing/knapsack problem (aka creating parcels by putting items into boxes)",
     "keywords": ["packing","binpacking","bin packing","knapsack","box","boxpacking","parcel","parcelpacking","shipping","packaging","boxes", "container"],
     "type": "library",
-    "homepage": "http://boxpacker.io/",
+    "homepage": "https://boxpacker.io/",
     "authors": [
         {
             "name": "Doug Wright",
@@ -12,16 +12,16 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.1||^8.0",
+        "php": "^7.4||^8.0",
         "ext-json": "*",
         "psr/log": "^1.0||^2.0||^3.0"
     },
     "require-dev": {
-        "behat/behat": "^3.7",
-        "friendsofphp/php-cs-fixer": "^3.7",
-        "dvdoug/behat-code-coverage": "^5.0.1",
-        "monolog/monolog": "^1.0||^2.0",
-        "phpunit/phpunit": "^7.5.20||^8.5.21||^9.5.8"
+        "behat/behat": "^3.13",
+        "friendsofphp/php-cs-fixer": "^3.22.0",
+        "dvdoug/behat-code-coverage": "^5.3.1",
+        "monolog/monolog": "^2.9.1||^3.4",
+        "phpunit/phpunit": "^9.6.10||^10.2"
     },
     "config": {
         "preferred-install": {
@@ -33,8 +33,12 @@
     },
     "autoload": {
         "psr-4": {
-            "DVDoug\\BoxPacker\\": "src/",
-            "DVDoug\\BoxPacker\\Test\\": "tests/Test"
+            "DVDoug\\BoxPacker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DVDoug\\BoxPacker\\": "tests/"
         }
     }
 }

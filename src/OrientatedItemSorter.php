@@ -19,7 +19,6 @@ use const PHP_INT_MAX;
 /**
  * Figure out best choice of orientations for an item and a given context.
  *
- * @author Doug Wright
  * @internal
  */
 class OrientatedItemSorter implements LoggerAwareInterface
@@ -29,62 +28,29 @@ class OrientatedItemSorter implements LoggerAwareInterface
     /**
      * @var int[]
      */
-    protected static $lookaheadCache = [];
+    protected static array $lookaheadCache = [];
 
-    /**
-     * @var OrientatedItemFactory
-     */
-    private $orientatedItemFactory;
+    private OrientatedItemFactory $orientatedItemFactory;
 
-    /**
-     * @var bool
-     */
-    private $singlePassMode;
+    private bool $singlePassMode;
 
-    /**
-     * @var int
-     */
-    private $widthLeft;
+    private int $widthLeft;
 
-    /**
-     * @var int
-     */
-    private $lengthLeft;
+    private int $lengthLeft;
 
-    /**
-     * @var int
-     */
-    private $depthLeft;
+    private int $depthLeft;
 
-    /**
-     * @var int
-     */
-    private $rowLength;
+    private int $rowLength;
 
-    /**
-     * @var int
-     */
-    private $x;
+    private int $x;
 
-    /**
-     * @var int
-     */
-    private $y;
+    private int $y;
 
-    /**
-     * @var int
-     */
-    private $z;
+    private int $z;
 
-    /**
-     * @var ItemList
-     */
-    private $nextItems;
+    private ItemList $nextItems;
 
-    /**
-     * @var PackedItemList
-     */
-    private $prevPackedItemList;
+    private PackedItemList $prevPackedItemList;
 
     public function __construct(OrientatedItemFactory $factory, bool $singlePassMode, int $widthLeft, int $lengthLeft, int $depthLeft, ItemList $nextItems, int $rowLength, int $x, int $y, int $z, PackedItemList $prevPackedItemList)
     {

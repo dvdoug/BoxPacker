@@ -12,6 +12,7 @@ default:
 
   extensions:
     DVDoug\Behat\CodeCoverage\Extension:
+      cache: build/php-code-coverage-cache
       filter:
         include:
           directories:

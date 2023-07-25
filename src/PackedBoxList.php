@@ -18,26 +18,37 @@ use Traversable;
 use function count;
 use function reset;
 use function round;
+use function usort;
 
 /**
  * List of packed boxes.
- *
- * @author Doug Wright
  */
 class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
 {
     /**
-     * List containing boxes.
-     *
      * @var PackedBox[]
      */
-    private $list = [];
+    private array $list = [];
+
+    private bool $isSorted = false;
+
+    private PackedBoxSorter $sorter;
+
+    public function __construct(PackedBoxSorter $sorter = null)
+    {
+        $this->sorter = $sorter ?: new DefaultPackedBoxSorter();
+    }
 
     /**
-     * @return Traversable|PackedBox[]
+     * @return Traversable<PackedBox>
      */
     public function getIterator(): Traversable
     {
+        if (!$this->isSorted) {
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->isSorted = true;
+        }
+
         return new ArrayIterator($this->list);
     }
 
@@ -52,6 +63,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     public function insert(PackedBox $item): void
     {
         $this->list[] = $item;
+        $this->isSorted = false;
     }
 
     /**
@@ -73,6 +85,11 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
      */
     public function top(): PackedBox
     {
+        if (!$this->isSorted) {
+            usort($this->list, [$this->sorter, 'compare']);
+            $this->isSorted = true;
+        }
+
         return reset($this->list);
     }
 
@@ -83,7 +100,6 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     {
         $meanWeight = 0;
 
-        /** @var PackedBox $box */
         foreach ($this->list as $box) {
             $meanWeight += $box->getWeight();
         }
@@ -98,7 +114,6 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
     {
         $meanWeight = 0;
 
-        /** @var PackedBox $box */
         foreach ($this->list as $box) {
             $meanWeight += $box->getItemWeight();
         }
@@ -114,7 +129,6 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
         $mean = $this->getMeanWeight();
 
         $weightVariance = 0;
-        /** @var PackedBox $box */
         foreach ($this->list as $box) {
             $weightVariance += ($box->getWeight() - $mean) ** 2;
         }
@@ -130,11 +144,9 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
         $itemVolume = 0;
         $boxVolume = 0;
 
-        /** @var PackedBox $box */
         foreach ($this as $box) {
             $boxVolume += $box->getInnerVolume();
 
-            /** @var PackedItem $item */
             foreach ($box->getItems() as $item) {
                 $itemVolume += ($item->getItem()->getWidth() * $item->getItem()->getLength() * $item->getItem()->getDepth());
             }

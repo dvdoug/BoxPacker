@@ -1,6 +1,8 @@
 # Changelog
 
 ## [3.x - Unreleased] - 2023-xx-xx
+### Removed
+- Support for PHP 7.1, 7.2 and 7.3
 
 ## [3.11.0] - 2023-02-04
 ### Changed

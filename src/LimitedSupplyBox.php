@@ -10,8 +10,6 @@ namespace DVDoug\BoxPacker;
 
 /**
  * A "box" (or envelope?) to pack items into with limited supply.
- *
- * @author Doug Wright
  */
 interface LimitedSupplyBox extends Box
 {

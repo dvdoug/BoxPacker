@@ -18,10 +18,7 @@ use function json_encode;
  */
 class WorkingVolumeTest extends TestCase
 {
-    /**
-     * @var WorkingVolume
-     */
-    private $volume;
+    private WorkingVolume $volume;
 
     protected function setUp(): void
     {

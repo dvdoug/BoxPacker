@@ -21,44 +21,19 @@ use function sort;
  * Layer packer.
  *
  * @internal
- * @author Doug Wright
  */
 class LayerPacker implements LoggerAwareInterface
 {
-    /**
-     * The logger instance.
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * Box to pack items into.
-     *
-     * @var Box
-     */
-    private $box;
+    private Box $box;
 
-    /**
-     * Whether the packer is in single-pass mode.
-     *
-     * @var bool
-     */
-    private $singlePassMode = false;
+    private bool $singlePassMode = false;
 
-    /**
-     * @var OrientatedItemFactory
-     */
-    private $orientatedItemFactory;
+    private OrientatedItemFactory $orientatedItemFactory;
 
-    /**
-     * @var bool
-     */
-    private $beStrictAboutItemOrdering = false;
+    private bool $beStrictAboutItemOrdering = false;
 
-    /**
-     * Constructor.
-     */
     public function __construct(Box $box)
     {
         $this->box = $box;
