@@ -135,9 +135,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 20, 69, 20, 0, Rotation::KeepFlat);
         $itemList = new ItemList();
-        for ($i = 0; $i < 23; ++$i) {
-            $itemList->insert($item);
-        }
+        $itemList->insert($item, 23);
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
@@ -153,9 +151,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('165x225x25Box', 165, 225, 25, 0, 165, 225, 25, 100);
         $item = new TestItem('20x69x20Item', 69, 20, 20, 0, Rotation::KeepFlat);
         $itemList = new ItemList();
-        for ($i = 0; $i < 23; ++$i) {
-            $itemList->insert($item);
-        }
+        $itemList->insert($item, 23);
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
@@ -172,9 +168,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('40x70x30InternalBox', 40, 70, 30, 0, 40, 70, 30, 1000);
         $item = new TestItem('30x10x30item', 30, 10, 30, 0, Rotation::KeepFlat);
         $itemList = new ItemList();
-        for ($i = 0; $i < 9; ++$i) {
-            $itemList->insert($item);
-        }
+        $itemList->insert($item, 9);
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
@@ -218,9 +212,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
         $item = new TestItem('Item', 6, 12, 20, 100, Rotation::BestFit);
         $itemList = new ItemList();
-        for ($i = 0; $i < 12; ++$i) {
-            $itemList->insert($item);
-        }
+        $itemList->insert($item, 12);
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
@@ -230,9 +222,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 27, 37, 22, 100, 25, 36, 21, 15000);
         $item = new TestItem('Item', 6, 12, 20, 100, Rotation::KeepFlat);
         $itemList = new ItemList();
-        for ($i = 0; $i < 12; ++$i) {
-            $itemList->insert($item);
-        }
+        $itemList->insert($item, 12);
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
@@ -248,10 +238,8 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 250, 1360, 260, 0, 250, 1360, 260, 30000);
         $itemList = new ItemList();
         $item = new TestItem('Item', 90, 200, 200, 150, Rotation::KeepFlat);
+        $itemList->insert($item, 14);
 
-        for ($i = 0; $i < 14; ++$i) {
-            $itemList->insert($item);
-        }
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
 
@@ -300,23 +288,17 @@ class VolumePackerTest extends TestCase
         $item2 = new TestItem('Item 2', 95, 75, 95, 0, Rotation::KeepFlat);
 
         $itemList = new ItemList();
-        for ($i = 0; $i < 6; ++$i) {
-            $itemList->insert($item1);
-        }
-        for ($i = 0; $i < 3; ++$i) {
-            $itemList->insert($item2);
-        }
+        $itemList->insert($item1, 6);
+        $itemList->insert($item2, 3);
+
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
         self::assertCount(9, $packedBox->getItems());
 
         $itemList = new ItemList();
-        for ($i = 0; $i < 6; ++$i) {
-            $itemList->insert($item1);
-        }
-        for ($i = 0; $i < 2; ++$i) {
-            $itemList->insert($item2);
-        }
+        $itemList->insert($item1, 6);
+        $itemList->insert($item2, 2);
+
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
         self::assertCount(8, $packedBox->getItems());
@@ -392,14 +374,10 @@ class VolumePackerTest extends TestCase
 
         $items = new ItemList();
         $item = new TestItem('Larger', 10, 5, 8, 0, Rotation::BestFit);
-        for ($i = 0; $i < 10; ++$i) {
-            $items->insert($item);
-        }
+        $items->insert($item, 10);
 
-        for ($i = 0; $i < 5; ++$i) {
-            $item = new TestItem('Smaller', 5, 5, 3, 0, Rotation::BestFit);
-            $items->insert($item);
-        }
+        $item = new TestItem('Smaller', 5, 5, 3, 0, Rotation::BestFit);
+        $items->insert($item, 5);
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
@@ -416,9 +394,7 @@ class VolumePackerTest extends TestCase
 
         $items = new ItemList();
         $item = new TestItem('Item', 10, 5, 8, 0, Rotation::BestFit);
-        for ($i = 0; $i < 10; ++$i) {
-            $items->insert($item);
-        }
+        $items->insert($item, 10);
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
@@ -434,9 +410,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 25, 25, 20, 0, 25, 25, 20, 1000);
         $items = new ItemList();
         $item = new TestItem('Item', 5, 6, 20, 20, Rotation::KeepFlat);
-        for ($i = 0; $i < 20; ++$i) {
-            $items->insert($item);
-        }
+        $items->insert($item, 20);
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
@@ -446,9 +420,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 25, 25, 20, 0, 25, 25, 20, 1000);
         $items = new ItemList();
         $item = new TestItem('Item', 20, 5, 6, 20, Rotation::BestFit);
-        for ($i = 0; $i < 20; ++$i) {
-            $items->insert($item);
-        }
+        $items->insert($item, 20);
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
@@ -464,9 +436,7 @@ class VolumePackerTest extends TestCase
         $box = new TestBox('Box', 40, 40, 40, 0, 40, 40, 40, 1000);
         $items = new ItemList();
         $item = new TestItem('Item', 35, 35, 5, 20, Rotation::BestFit);
-        for ($i = 0; $i < 10; ++$i) {
-            $items->insert($item);
-        }
+        $items->insert($item, 10);
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
@@ -483,9 +453,7 @@ class VolumePackerTest extends TestCase
         $items = new ItemList();
         $items->insert(new TestItem('Item 1', 150, 150, 150, 1, Rotation::BestFit));
         $item2 = new TestItem('Item 2', 50, 50, 50, 1, Rotation::BestFit);
-        for ($i = 0; $i < 37; ++$i) {
-            $items->insert($item2);
-        }
+        $items->insert($item2, 37);
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
