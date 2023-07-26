@@ -50,7 +50,7 @@
 
 ## [3.9.2] - 2021-07-04
 ### Added
-- Optional second parameter `$qty` to `ItemList->insert`
+- Optional second parameter `$qty` to `ItemList->insert()`
 ### Fixed
 - Fixed issue where available width for an item could be miscalculated
 ### Changed
@@ -74,7 +74,7 @@
 
 ## [3.8.0] - 2021-01-26
 ### Added
-- Added `fromArray` helper method to `BoxList` to make bulk add easier [bram123]
+- Added `fromArray()` helper method to `BoxList` to make bulk add easier [bram123]
 
 ## [3.7.0] - 2021-01-01
 ### Added
@@ -187,7 +187,7 @@
  - Added method to set threshold at which weight redistribution is disabled  
 ### Changed
  - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
- - `ConstrainedItem->canBePackedInBox` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
+ - `ConstrainedItem->canBePackedInBox()` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - `BoxList`, `ItemList`, `PackedBoxList` have been altered to implement the `Traversable` interface rather than extend `SplHeap` directly so that any future changes to the internals will not need an API change  
  - Minimum PHP version is now 7.1
 ### Removed
