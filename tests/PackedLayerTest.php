@@ -15,7 +15,7 @@ class PackedLayerTest extends TestCase
 {
     public function testGetters(): void
     {
-        $packedItem = new PackedItem(new TestItem('Item', 11, 22, 33, 43, false), 4, 5, 6, 33, 11, 22);
+        $packedItem = new PackedItem(new TestItem('Item', 11, 22, 33, 43, Rotation::BestFit), 4, 5, 6, 33, 11, 22);
         $packedLayer = new PackedLayer();
         $packedLayer->insert($packedItem);
         self::assertSame(4, $packedLayer->getStartX());

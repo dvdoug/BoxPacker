@@ -27,7 +27,7 @@ class WeightRedistributorTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 1, 1, 3, 0, 1, 1, 3, 3));
-        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, false), 4);
+        $packer->addItem(new TestItem('Item', 1, 1, 1, 1, Rotation::BestFit), 4);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -43,7 +43,7 @@ class WeightRedistributorTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Pallet', 42, 42, 42, 0, 42, 42, 42, 1120));
-        $packer->addItem(new ConstrainedPlacementNoStackingTestItem('Item', 8, 7, 7, 36, false), 84);
+        $packer->addItem(new ConstrainedPlacementNoStackingTestItem('Item', 8, 7, 7, 36, Rotation::BestFit), 84);
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
@@ -58,8 +58,8 @@ class WeightRedistributorTest extends TestCase
     {
         $packer = new Packer();
         $packer->addBox(new TestBox('Box', 370, 375, 60, 140, 364, 374, 40, 3000));
-        $packer->addItem(new TestItem('Item 1', 230, 330, 6, 320, true), 2);
-        $packer->addItem(new TestItem('Item 2', 210, 297, 8, 300, true), 4);
+        $packer->addItem(new TestItem('Item 1', 230, 330, 6, 320, Rotation::KeepFlat), 2);
+        $packer->addItem(new TestItem('Item 2', 210, 297, 8, 300, Rotation::KeepFlat), 4);
 
         $packedBoxes = $packer->pack();
 

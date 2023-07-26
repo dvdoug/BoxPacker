@@ -25,10 +25,10 @@ class ItemListTest extends TestCase
      */
     public function testDimensionalSorting(): void
     {
-        $item1 = new TestItem('Small', 20, 20, 2, 100, true);
-        $item2 = new TestItem('Large', 200, 200, 20, 1000, true);
-        $item3 = new TestItem('Medium', 100, 100, 10, 500, true);
-        $item4 = new TestItem('Medium Heavy', 100, 100, 10, 501, true);
+        $item1 = new TestItem('Small', 20, 20, 2, 100, Rotation::BestFit);
+        $item2 = new TestItem('Large', 200, 200, 20, 1000, Rotation::BestFit);
+        $item3 = new TestItem('Medium', 100, 100, 10, 500, Rotation::BestFit);
+        $item4 = new TestItem('Medium Heavy', 100, 100, 10, 501, Rotation::BestFit);
 
         $list = new ItemList();
         $list->insert($item1);
@@ -46,10 +46,10 @@ class ItemListTest extends TestCase
      */
     public function testKeepingItemsOfSameTypeTogether(): void
     {
-        $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
-        $item2 = new TestItem('Item B', 20, 20, 2, 100, true);
-        $item3 = new TestItem('Item A', 20, 20, 2, 100, true);
-        $item4 = new TestItem('Item B', 20, 20, 2, 100, true);
+        $item1 = new TestItem('Item A', 20, 20, 2, 100, Rotation::BestFit);
+        $item2 = new TestItem('Item B', 20, 20, 2, 100, Rotation::BestFit);
+        $item3 = new TestItem('Item A', 20, 20, 2, 100, Rotation::BestFit);
+        $item4 = new TestItem('Item B', 20, 20, 2, 100, Rotation::BestFit);
 
         $list = new ItemList();
         $list->insert($item1);
@@ -69,15 +69,15 @@ class ItemListTest extends TestCase
         $itemList = new ItemList();
         self::assertCount(0, $itemList);
 
-        $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
+        $item1 = new TestItem('Item A', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item1);
         self::assertCount(1, $itemList);
 
-        $item2 = new TestItem('Item B', 20, 20, 2, 100, true);
+        $item2 = new TestItem('Item B', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item2);
         self::assertCount(2, $itemList);
 
-        $item3 = new TestItem('Item C', 20, 20, 2, 100, true);
+        $item3 = new TestItem('Item C', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item3);
         self::assertCount(3, $itemList);
 
@@ -91,7 +91,7 @@ class ItemListTest extends TestCase
     public function testTop(): void
     {
         $itemList = new ItemList();
-        $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
+        $item1 = new TestItem('Item A', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item1);
 
         self::assertEquals($item1, $itemList->top());
@@ -105,13 +105,13 @@ class ItemListTest extends TestCase
     {
         $itemList = new ItemList();
 
-        $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
+        $item1 = new TestItem('Item A', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item1);
 
-        $item2 = new TestItem('Item B', 20, 20, 2, 100, true);
+        $item2 = new TestItem('Item B', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item2);
 
-        $item3 = new TestItem('Item C', 20, 20, 2, 100, true);
+        $item3 = new TestItem('Item C', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item3);
 
         $top2 = $itemList->topN(2);
@@ -127,7 +127,7 @@ class ItemListTest extends TestCase
     public function testExtract(): void
     {
         $itemList = new ItemList();
-        $item1 = new TestItem('Item A', 20, 20, 2, 100, true);
+        $item1 = new TestItem('Item A', 20, 20, 2, 100, Rotation::BestFit);
         $itemList->insert($item1);
 
         self::assertEquals($item1, $itemList->extract());

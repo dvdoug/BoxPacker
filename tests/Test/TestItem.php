@@ -68,14 +68,14 @@ class TestItem implements Item, JsonSerializable
         int $length,
         int $depth,
         int $weight,
-        bool $keepFlat
+        int $allowedRotation
     ) {
         $this->description = $description;
         $this->width = $width;
         $this->length = $length;
         $this->depth = $depth;
         $this->weight = $weight;
-        $this->keepFlat = $keepFlat;
+        $this->keepFlat = $allowedRotation <= 2;
 
         $this->a = new stdClass();
         $this->b = new stdClass();
