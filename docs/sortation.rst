@@ -1,3 +1,5 @@
+.. _sortation:
+
 Sortation
 =========
 

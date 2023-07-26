@@ -9,7 +9,6 @@ BoxPacker gives you full control of how (or if) an individual item may be rotate
 
 Best fit
 ^^^^^^^^
-
 To allow an item to be placed in any orientation.
 
 .. code-block:: php
@@ -27,7 +26,6 @@ To allow an item to be placed in any orientation.
 
 Keep flat
 ^^^^^^^^^
-
 For items that must be shipped "flat" or "this way up".
 
 .. code-block:: php

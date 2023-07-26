@@ -40,6 +40,7 @@ Packing a set of items into a given set of box types
 .. code-block:: php
 
     <?php
+        use DVDoug\BoxPacker\Rotation;
         use DVDoug\BoxPacker\Packer;
         use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
         use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
@@ -50,16 +51,70 @@ Packing a set of items into a given set of box types
          * Add choices of box type - in this example the dimensions are passed in directly via constructor,
          * but for real code you would probably pass in objects retrieved from a database instead
          */
-        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
-        $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
+        $packer->addBox(
+            new TestBox(
+                reference: 'Le petite box',
+                outerWidth: 300,
+                outerLength: 300,
+                outerDepth: 10,
+                emptyWeight: 10,
+                innerWidth: 296,
+                innerLength: 296,
+                innerDepth: 8,
+                maxWeight: 1000
+            )
+        );
+        $packer->addBox(
+            new TestBox(
+                reference: 'Le grande box',
+                outerWidth: 3000,
+                outerLength: 3000,
+                outerDepth: 100,
+                emptyWeight: 100,
+                innerWidth: 2960,
+                innerLength: 2960,
+                innerDepth: 80,
+                maxWeight: 10000
+            )
+        );
 
         /*
          * Add items to be packed - e.g. from shopping cart stored in user session. Again, the dimensional information
          * (and keep-flat requirement) would normally come from a DB
          */
-        $packer->addItem(new TestItem('Item 1', 250, 250, 12, 200, true), 1); // item, quantity
-        $packer->addItem(new TestItem('Item 2', 250, 250, 12, 200, true), 2);
-        $packer->addItem(new TestItem('Item 3', 250, 250, 24, 200, false), 1);
+        $packer->addItem(
+            item: new TestItem(
+                description: 'Item 1',
+                width: 250,
+                length: 250,
+                depth: 12,
+                weight: 200,
+                allowedRotation: Rotation::KeepFlat
+            ),
+            qty: 1
+        );
+        $packer->addItem(
+            item: new TestItem(
+                description: 'Item 2',
+                width: 250,
+                length: 250,
+                depth: 12,
+                weight: 200,
+                allowedRotation: Rotation::KeepFlat
+            ),
+            qty: 2
+        );
+        $packer->addItem(
+            item: new TestItem(
+                description: 'Item 3',
+                width: 250,
+                length: 250,
+                depth: 24,
+                weight: 200,
+                allowedRotation: Rotation::BestFit
+            ),
+            qty: 1
+        );
 
         $packedBoxes = $packer->pack();
 
@@ -81,15 +136,57 @@ Does a set of items fit into a particular box
 .. code-block:: php
 
     <?php
+        use DVDoug\BoxPacker\Rotation;
+        use DVDoug\BoxPacker\Packer;
+        use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
+        use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
+
         /*
          * To just see if a selection of items will fit into one specific box
          */
-        $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+        $box = new TestBox(
+            reference: 'Le box',
+            outerWidth: 300,
+            outerLength: 300,
+            outerDepth: 10,
+            emptyWeight: 10,
+            innerWidth: 296,
+            innerLength: 296,
+            innerDepth: 8,
+            maxWeight: 1000
+        );
 
         $items = new ItemList();
-        $items->insert(new TestItem('Item 1', 297, 296, 2, 200, false));
-        $items->insert(new TestItem('Item 2', 297, 296, 2, 500, false));
-        $items->insert(new TestItem('Item 3', 296, 296, 4, 290, false));
+        $items->insert(
+            new TestItem(
+                description: 'Item 1',
+                width: 297,
+                length: 296,
+                depth: 2,
+                weight: 200,
+                allowedRotation: Rotation::BestFit
+            )
+        );
+        $items->insert(
+            new TestItem(
+                description: 'Item 2',
+                width: 297,
+                length: 296,
+                depth: 2,
+                weight: 500,
+                allowedRotation: Rotation::BestFit
+            )
+        );
+        $items->insert(
+            new TestItem(
+                description: 'Item 3',
+                width: 296,
+                length: 296,
+                depth: 4,
+                weight: 290,
+                allowedRotation: Rotation::BestFit
+            )
+        );
 
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack(); //$packedBox->getItems() contains the items that fit
