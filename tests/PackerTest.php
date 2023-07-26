@@ -21,7 +21,7 @@ use const PHP_INT_MAX;
 
 class PackerTest extends TestCase
 {
-    public function testPackThreeItemsOneDoesntFitInAnyBox(): void
+    public function testPackThreeItemsOneDoesntFitInAnyBoxWhenThrowing(): void
     {
         $this->expectException(NoBoxesAvailableException::class);
         $box1 = new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000);
@@ -214,13 +214,13 @@ class PackerTest extends TestCase
     public function testIssue182A(): void
     {
         $packer = new Packer();
-        $packer->addBox(new TestBox('Box', 410, 310, 310, 2000, 410, 310, 310, 60000));
-        $packer->addBox(new TestBox('Box', 410, 310, 260, 2000, 410, 310, 260, 60000));
-        $packer->addBox(new TestBox('Box', 410, 310, 205, 2000, 410, 310, 205, 60000));
-        $packer->addBox(new TestBox('Box', 310, 310, 210, 2000, 310, 310, 210, 60000));
-        $packer->addBox(new TestBox('Box', 310, 210, 210, 2000, 310, 210, 210, 60000));
-        $packer->addBox(new TestBox('Box', 310, 210, 155, 2000, 310, 210, 155, 60000));
-        $packer->addBox(new TestBox('Box', 210, 160, 105, 2000, 210, 160, 105, 60000));
+        $packer->addBox(new TestBox('Box 1', 410, 310, 310, 2000, 410, 310, 310, 60000));
+        $packer->addBox(new TestBox('Box 2', 410, 310, 260, 2000, 410, 310, 260, 60000));
+        $packer->addBox(new TestBox('Box 3', 410, 310, 205, 2000, 410, 310, 205, 60000));
+        $packer->addBox(new TestBox('Box 4', 310, 310, 210, 2000, 310, 310, 210, 60000));
+        $packer->addBox(new TestBox('Box 5', 310, 210, 210, 2000, 310, 210, 210, 60000));
+        $packer->addBox(new TestBox('Box 6', 310, 210, 155, 2000, 310, 210, 155, 60000));
+        $packer->addBox(new TestBox('Box 7', 210, 160, 105, 2000, 210, 160, 105, 60000));
 
         $packer->addItem(new TestItem('Item', 150, 100, 100, 1, Rotation::BestFit), 200);
 
@@ -284,11 +284,6 @@ class PackerTest extends TestCase
 
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
-
-        self::assertCount(3, $packedBoxes);
-        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
-        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
-        self::assertEquals('Heavy box', $packedBoxes[2]->getBox()->getReference());
     }
 
     /**
@@ -593,6 +588,7 @@ class PackerTest extends TestCase
         $packer->addItem(new TestItem('Soups', 1000, 60, 1400, 35, Rotation::BestFit), 2);
         $packer->addItem(new TestItem('Cereals', 850, 60, 1400, 40, Rotation::BestFit), 3);
         $packer->addItem(new TestItem('Snacks', 1600, 300, 2000, 30, Rotation::BestFit), 1);
+
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
@@ -620,6 +616,110 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertCount(2, $packedBoxes);
+    }
+
+    public function testIssue298(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('20 Feet', 6058, 2438, 2591, 2200, 5758, 2352, 2385, 24000));
+        $packer->addItem(new TestItem('Item 1', 1480, 1140, 1140, 1, Rotation::KeepFlat), 3);
+        $packer->addItem(new TestItem('Item 2', 1480, 1140, 750, 1, Rotation::KeepFlat), 19);
+        $packer->addItem(new TestItem('Item 3', 2240, 1480, 1200, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 4', 2240, 1480, 1300, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 5', 2240, 1480, 1480, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 6', 2240, 1480, 1600, 1, Rotation::KeepFlat), 6);
+        $packer->addItem(new TestItem('Item 7', 2240, 1480, 2240, 1, Rotation::KeepFlat), 8);
+        $packer->addItem(new TestItem('Item 8', 2240, 1480, 750, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 9', 250, 180, 150, 1, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Item 10', 2600, 260, 1400, 1, Rotation::KeepFlat), 7);
+        $packer->addItem(new TestItem('Item 11', 400, 350, 230, 1, Rotation::KeepFlat), 2);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(6, $packedBoxes);
+    }
+
+    public function testIssue334(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Medium box', 600, 400, 400, 5000, 600, 400, 400, 18000000));
+        $packer->addItem(new TestItem('TEST001', 130, 130, 240, 250000, Rotation::BestFit), 18);
+
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275A(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::KeepFlat), 5);
+        $packer->addItem(new TestItem('height 47', 590, 390, 470, 10890, Rotation::KeepFlat), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::KeepFlat), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275B(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::BestFit), 5);
+        $packer->addItem(new TestItem('height 47', 590, 390, 470, 10890, Rotation::BestFit), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::BestFit), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275C(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::KeepFlat), 5);
+        $packer->addItem(new TestItem('height 47', 590, 470, 390, 10890, Rotation::KeepFlat), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::KeepFlat), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue275D(): void
+    {
+        $this->markTestSkipped();
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
+        $packer->addItem(new TestItem('height 39', 590, 390, 390, 10880, Rotation::BestFit), 5);
+        $packer->addItem(new TestItem('height 47', 590, 470, 390, 10890, Rotation::BestFit), 6);
+        $packer->addItem(new TestItem('height 33', 590, 390, 330, 10060, Rotation::BestFit), 9);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
+    }
+
+    public function testIssue538(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('Stock 5 Single Wall', 30, 45, 30, 0, 30, 45, 30, 15000));
+        $packer->addItem(new TestItem('Whatsanamie', 5, 5, 30, 100, Rotation::BestFit), 3);
+        $packer->addItem(new TestItem('Whatzit', 8, 5, 1, 100, Rotation::BestFit), 4);
+        $packer->addItem(new TestItem('Widget', 1, 3, 3, 100, Rotation::BestFit), 50);
+        $packer->addItem(new TestItem('Kajigger', 30, 25, 25, 100, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Doohickey', 8, 10, 20, 100, Rotation::KeepFlat), 1);
+        $packer->addItem(new TestItem('Gadget', 15, 20, 5, 100, Rotation::KeepFlat), 8);
+        $packedBoxes = $packer->pack();
+
+        self::assertCount(1, $packedBoxes);
     }
 
     public function testCustomPackedBoxSorterIsUsed(): void

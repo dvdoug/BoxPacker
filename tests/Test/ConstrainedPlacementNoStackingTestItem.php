@@ -33,9 +33,7 @@ class ConstrainedPlacementNoStackingTestItem extends TestItem implements Constra
     ): bool {
         $alreadyPackedType = array_filter(
             iterator_to_array($alreadyPackedItems, false),
-            function (PackedItem $item) {
-                return $item->getItem()->getDescription() === $this->getDescription();
-            }
+            fn (PackedItem $item) => $item->getItem()->getDescription() === $this->getDescription()
         );
 
         /** @var PackedItem $alreadyPacked */

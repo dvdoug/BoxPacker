@@ -34,6 +34,8 @@ class LayerPacker implements LoggerAwareInterface
 
     private bool $beStrictAboutItemOrdering = false;
 
+    private bool $isBoxRotated = false;
+
     public function __construct(Box $box)
     {
         $this->box = $box;
@@ -56,6 +58,12 @@ class LayerPacker implements LoggerAwareInterface
     {
         $this->singlePassMode = $singlePassMode;
         $this->orientatedItemFactory->setSinglePassMode($singlePassMode);
+    }
+
+    public function setBoxIsRotated(bool $boxIsRotated): void
+    {
+        $this->isBoxRotated = $boxIsRotated;
+        $this->orientatedItemFactory->setBoxIsRotated($boxIsRotated);
     }
 
     public function beStrictAboutItemOrdering(bool $beStrict): void
@@ -106,10 +114,14 @@ class LayerPacker implements LoggerAwareInterface
                 $x += $packedItem->getWidth();
                 $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
+                // might be space available lengthwise across the width of this item, up to the current layer length
+                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->getWidth(), $y + $packedItem->getLength(), $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
+
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
                     $skippedItems = [];
                 }
+
                 continue;
             }
 
@@ -117,17 +129,13 @@ class LayerPacker implements LoggerAwareInterface
                 $this->logger->debug("doesn't fit, skipping for now");
                 $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
-                while ($items->count() > 1 && static::isSameDimensions($itemToPack, $items->top())) {
+                while ($items->count() > 1 && self::isSameDimensions($itemToPack, $items->top())) {
                     $skippedItems[] = $items->extract();
                 }
                 continue;
             }
 
             if ($x > $startX) {
-                // Having now placed items, there is space *within the same row* along the length. Pack into that.
-                $this->logger->debug('No more fit in width wise, packing along remaining length');
-                $layer->merge($this->packLayer($items, $packedItemList, $x, $y + $rowLength, $z, $widthForLayer, $lengthForLayer - $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
-
                 $this->logger->debug('No more fit in width wise, resetting for new row');
                 $y += $rowLength;
                 $x = $startX;

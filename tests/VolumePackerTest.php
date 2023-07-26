@@ -458,6 +458,223 @@ class VolumePackerTest extends TestCase
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
 
-        self::assertCount(32, $packedBox->getItems());
+        self::assertCount(38, $packedBox->getItems());
+    }
+
+    public function testIssue214(): void
+    {
+        $this->markTestSkipped();
+        foreach ([Rotation::KeepFlat, Rotation::BestFit] as $rotation) {
+            $box = new TestBox('A Box', 279, 215, 139, 10, 279, 215, 139, 100000);
+
+            $items = new ItemList();
+            $items->insert(new TestItem('Item A-1', 160, 160, 64, 1, $rotation));
+            $items->insert(new TestItem('Item A-2', 160, 160, 64, 1, $rotation));
+            $items->insert(new TestItem('Item B-1', 203, 114, 51, 1, $rotation));
+            $items->insert(new TestItem('Item B-2', 203, 114, 51, 1, $rotation));
+
+            $volumePacker = new VolumePacker($box, $items);
+            $packedBox = $volumePacker->pack();
+
+            self::assertCount(4, $packedBox->getItems());
+        }
+    }
+
+    public function testIssue227(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Box', 160, 180, 160, 0, 160, 180, 160, 1000);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Item', 42, 100, 70, 1, Rotation::BestFit), 11);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(4, $packedBox->getItems());
+    }
+
+    public function testIssue230(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Truck', 220, 210, 230, 0, 220, 210, 230, 1200);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Pallet', 80, 120, 140, 90, Rotation::KeepFlat), 4);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(4, $packedBox->getItems());
+    }
+
+    public function testIssue240(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Le petite box', 220, 540, 1, 0, 220, 540, 1, 0);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('1-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('2-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('3-60x100', 100, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('4-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('5-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('6-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('7-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('8-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('9-60x160', 160, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('10-80x50', 50, 80, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('11-80x60', 60, 80, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('12-80x110', 110, 80, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('13-90x160', 160, 90, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('14-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('15-60x80', 80, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('16-60x100', 100, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('17-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+        $items->insert(new TestItem('18-60x120', 120, 60, 1, 0, Rotation::KeepFlat), 1);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(18, $packedBox->getItems());
+    }
+
+    public function testIssue264(): void
+    {
+        foreach ([Rotation::KeepFlat, Rotation::BestFit] as $rotation) {
+            $this->markTestSkipped();
+            $box = new TestBox('Small', 160, 130, 70, 0, 160, 130, 70, 100000);
+
+            $items = new ItemList();
+            $items->insert(new TestItem('Item 1', 105, 70, 14, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 2', 152, 101, 5, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 3', 80, 70, 50, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 4', 97, 71, 28, 0, $rotation), 1);
+            $items->insert(new TestItem('Item 5', 95, 70, 28, 0, $rotation), 1);
+
+            $volumePacker = new VolumePacker($box, $items);
+            $packedBox = $volumePacker->pack();
+
+            self::assertCount(5, $packedBox->getItems());
+        }
+    }
+
+    public function testIssue268(): void
+    {
+        foreach ([Rotation::KeepFlat, Rotation::BestFit] as $rotation) {
+            $this->markTestSkipped();
+            $box = new TestBox('Box', 280, 175, 180, 0, 280, 175, 180, 100000);
+
+            $items = new ItemList();
+            $items->insert(new TestItem('Item', 140, 35, 30, 0, $rotation), 60);
+
+            $volumePacker = new VolumePacker($box, $items);
+            $packedBox = $volumePacker->pack();
+
+            self::assertCount(60, $packedBox->getItems());
+        }
+    }
+
+    public function testIssue272(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Box', 725, 725, 650, 0, 725, 725, 650, 100000);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Item', 260, 260, 460, 0, Rotation::BestFit), 6);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(6, $packedBox->getItems());
+    }
+
+    public function testIssue348(): void
+    {
+        $box = new TestBox('18x14x8', 180, 140, 80, 0, 180, 140, 80, 100);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Product1', 45, 20, 35, 17, Rotation::BestFit), 2);
+        $items->insert(new TestItem('Product2', 175, 70, 70, 26, Rotation::BestFit), 1);
+        $items->insert(new TestItem('Product3', 155, 70, 70, 20, Rotation::BestFit), 1);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(4, $packedBox->getItems());
+    }
+
+    public function testIssue366(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Pallet', 250, 160, 1, 0, 250, 160, 1, 100);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Product1', 30, 70, 1, 1, Rotation::BestFit), 18);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(18, $packedBox->getItems());
+    }
+
+    public function testIssue465A(): void
+    {
+        $box = new TestBox('Container', 60, 90, 1, 0, 60, 90, 1, 0);
+        $t = new TestItem('T', 30, 60, 1, 0, Rotation::KeepFlat);
+        $x = new TestItem('X', 30, 30, 1, 0, Rotation::KeepFlat);
+        $l = new TestItem('L', 15, 30, 1, 0, Rotation::KeepFlat);
+        $s = new TestItem('S', 15, 30, 1, 0, Rotation::KeepFlat);
+
+        $items = new ItemList();
+        $items->insert($t);
+        $items->insert($t);
+        $items->insert($x);
+        $items->insert($l);
+        $items->insert($s);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(5, $packedBox->getItems());
+    }
+
+    public function testIssue465B(): void
+    {
+        $box = new TestBox('Container', 60, 90, 1, 0, 60, 90, 1, 0);
+        $h = new TestItem('H', 45, 60, 1, 0, Rotation::KeepFlat);
+        $q = new TestItem('Q', 45, 30, 1, 0, Rotation::KeepFlat);
+        $l = new TestItem('L', 15, 30, 1, 0, Rotation::KeepFlat);
+
+        $items = new ItemList();
+        $items->insert($h);
+        $items->insert($q);
+        $items->insert($l);
+        $items->insert($l);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(4, $packedBox->getItems());
+    }
+
+    public function testIssue465C(): void
+    {
+        $box = new TestBox('Container', 60, 90, 1, 0, 60, 90, 1, 0);
+        $h = new TestItem('H', 45, 60, 1, 0, Rotation::KeepFlat);
+        $q = new TestItem('Q', 45, 30, 1, 0, Rotation::KeepFlat);
+        $x = new TestItem('X', 30, 30, 1, 0, Rotation::KeepFlat);
+        $l = new TestItem('L', 15, 30, 1, 0, Rotation::KeepFlat);
+
+        $items = new ItemList();
+        $items->insert($h);
+        $items->insert($q);
+        $items->insert($x);
+        $items->insert($l);
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+
+        self::assertCount(4, $packedBox->getItems());
     }
 }

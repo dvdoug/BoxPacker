@@ -144,6 +144,7 @@ class VolumePacker implements LoggerAwareInterface
     private function packRotation(int $boxWidth, int $boxLength): PackedBox
     {
         $this->logger->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
+        $this->layerPacker->setBoxIsRotated($this->box->getInnerWidth() !== $boxWidth);
 
         /** @var PackedLayer[] $layers */
         $layers = [];
@@ -160,11 +161,12 @@ class VolumePacker implements LoggerAwareInterface
                 break;
             }
 
-            if ($preliminaryLayer->getDepth() === $preliminaryLayer->getItems()[0]->getDepth()) { // preliminary === final
+            $preliminaryLayerDepth = $preliminaryLayer->getDepth();
+            if ($preliminaryLayerDepth === $preliminaryLayer->getItems()[0]->getDepth()) { // preliminary === final
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { // redo with now-known-depth so that we can stack to that height from the first item
-                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayer->getDepth(), true);
+                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayerDepth, true);
             }
         }
 
@@ -208,6 +210,8 @@ class VolumePacker implements LoggerAwareInterface
      * Swap back width/length of the packed items to match orientation of the box if needed.
      *
      * @param PackedLayer[] $oldLayers
+     *
+     * @return PackedLayer[]
      */
     private function correctLayerRotation(array $oldLayers, int $boxWidth): array
     {

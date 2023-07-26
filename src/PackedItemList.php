@@ -23,17 +23,12 @@ use function usort;
 class PackedItemList implements Countable, IteratorAggregate
 {
     /**
-     * List containing items.
-     *
      * @var PackedItem[]
      */
     private array $list = [];
 
     private int $weight = 0;
 
-    /**
-     * Has this list already been sorted?
-     */
     private bool $isSorted = false;
 
     public function insert(PackedItem $item): void
@@ -43,7 +38,7 @@ class PackedItemList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return Traversable|PackedItem[]
+     * @return Traversable<PackedItem>
      */
     public function getIterator(): Traversable
     {

@@ -11,32 +11,13 @@ namespace DVDoug\BoxPacker;
 use function max;
 use function min;
 
-use const PHP_INT_MAX;
-
 /**
  * A packed layer.
- *
  * @internal
  */
 class PackedLayer
 {
-    private int $startX = PHP_INT_MAX;
-
-    private int $endX = 0;
-
-    private int $startY = PHP_INT_MAX;
-
-    private int $endY = 0;
-
-    private int $startZ = PHP_INT_MAX;
-
-    private int $endZ = 0;
-
-    private int $weight = 0;
-
     /**
-     * Items packed into this layer.
-     *
      * @var PackedItem[]
      */
     protected array $items = [];
@@ -47,13 +28,6 @@ class PackedLayer
     public function insert(PackedItem $packedItem): void
     {
         $this->items[] = $packedItem;
-        $this->weight += $packedItem->getItem()->getWeight();
-        $this->startX = min($this->startX, $packedItem->getX());
-        $this->endX = max($this->endX, $packedItem->getX() + $packedItem->getWidth());
-        $this->startY = min($this->startY, $packedItem->getY());
-        $this->endY = max($this->endY, $packedItem->getY() + $packedItem->getLength());
-        $this->startZ = min($this->startZ, $packedItem->getZ());
-        $this->endZ = max($this->endZ, $packedItem->getZ() + $packedItem->getDepth());
     }
 
     /**
@@ -78,58 +52,150 @@ class PackedLayer
 
     public function getStartX(): int
     {
-        return $this->startX;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $values = [];
+        foreach ($this->items as $item) {
+            $values[] = $item->getX();
+        }
+
+        return min($values);
     }
 
     public function getEndX(): int
     {
-        return $this->endX;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $values = [];
+        foreach ($this->items as $item) {
+            $values[] = $item->getX() + $item->getWidth();
+        }
+
+        return max($values);
     }
 
     public function getWidth(): int
     {
-        return $this->endX ? $this->endX - $this->startX : 0;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $start = [];
+        $end = [];
+        foreach ($this->items as $item) {
+            $start[] = $item->getX();
+            $end[] = $item->getX() + $item->getWidth();
+        }
+
+        return max($end) - min($start);
     }
 
     public function getStartY(): int
     {
-        return $this->startY;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $values = [];
+        foreach ($this->items as $item) {
+            $values[] = $item->getY();
+        }
+
+        return min($values);
     }
 
     public function getEndY(): int
     {
-        return $this->endY;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $values = [];
+        foreach ($this->items as $item) {
+            $values[] = $item->getY() + $item->getLength();
+        }
+
+        return max($values);
     }
 
     public function getLength(): int
     {
-        return $this->endY ? $this->endY - $this->startY : 0;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $start = [];
+        $end = [];
+        foreach ($this->items as $item) {
+            $start[] = $item->getY();
+            $end[] = $item->getY() + $item->getLength();
+        }
+
+        return max($end) - min($start);
     }
 
     public function getStartZ(): int
     {
-        return $this->startZ;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $values = [];
+        foreach ($this->items as $item) {
+            $values[] = $item->getZ();
+        }
+
+        return min($values);
     }
 
     public function getEndZ(): int
     {
-        return $this->endZ;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $values = [];
+        foreach ($this->items as $item) {
+            $values[] = $item->getZ() + $item->getDepth();
+        }
+
+        return max($values);
     }
 
     public function getDepth(): int
     {
-        return $this->endZ ? $this->endZ - $this->startZ : 0;
+        if (!$this->items) {
+            return 0;
+        }
+
+        $start = [];
+        $end = [];
+        foreach ($this->items as $item) {
+            $start[] = $item->getZ();
+            $end[] = $item->getZ() + $item->getDepth();
+        }
+
+        return max($end) - min($start);
     }
 
     public function getWeight(): int
     {
-        return $this->weight;
+        $weight = 0;
+        foreach ($this->items as $item) {
+            $weight += $item->getItem()->getWeight();
+        }
+
+        return $weight;
     }
 
     public function merge(self $otherLayer): void
     {
         foreach ($otherLayer->items as $packedItem) {
-            $this->insert($packedItem);
+            $this->items[] = $packedItem;
         }
     }
 }

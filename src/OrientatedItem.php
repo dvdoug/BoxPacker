@@ -31,7 +31,7 @@ class OrientatedItem implements JsonSerializable
     protected int $surfaceFootprint;
 
     /**
-     * @var bool[]
+     * @var array<string, bool>
      */
     protected static array $stabilityCache = [];
 

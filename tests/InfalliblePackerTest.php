@@ -13,8 +13,6 @@ use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\TestCase;
 
-use function iterator_to_array;
-
 class InfalliblePackerTest extends TestCase
 {
     public function testTooLargeItemsHandled(): void
@@ -483,9 +481,9 @@ class InfalliblePackerTest extends TestCase
         $packer->addItem(new TestItem('417', 305, 521, 108, 2976, Rotation::BestFit));
         $packer->addItem(new TestItem('418', 305, 521, 108, 2976, Rotation::BestFit));
 
-        /** @var PackedBox[] $packedBoxes */
-        $packedBoxes = iterator_to_array($packer->pack(), false);
+        $packedBoxes = $packer->pack();
 
-        self::assertCount(42, $packedBoxes);
+        self::assertCount(43, $packedBoxes);
+        self::assertCount(62, $packer->getUnpackedItems());
     }
 }

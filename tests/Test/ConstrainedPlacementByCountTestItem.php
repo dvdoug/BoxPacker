@@ -19,10 +19,7 @@ use function iterator_to_array;
 
 class ConstrainedPlacementByCountTestItem extends TestItem implements ConstrainedPlacementItem
 {
-    /**
-     * @var int
-     */
-    public static $limit = 3;
+    public static int $limit = 3;
 
     /**
      * Hook for user implementation of item-specific constraints, e.g. max <x> batteries per box.
@@ -39,9 +36,7 @@ class ConstrainedPlacementByCountTestItem extends TestItem implements Constraine
     ): bool {
         $alreadyPackedType = array_filter(
             iterator_to_array($alreadyPackedItems, false),
-            function (PackedItem $item) {
-                return $item->getItem()->getDescription() === $this->getDescription();
-            }
+            fn (PackedItem $item) => $item->getItem()->getDescription() === $this->getDescription()
         );
 
         return count($alreadyPackedType) + 1 <= static::$limit;
