@@ -13,7 +13,6 @@ use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 
 use function json_encode;
 
@@ -62,9 +61,9 @@ class PackedBoxTest extends TestCase
     }
 
     /**
-     * Test that caching of weight calculation works correctly.
+     * Test that weight calculation works correctly.
      */
-    public function testWeightCalcCaching(): void
+    public function testWeightCalc(): void
     {
         $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
         $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, Rotation::BestFit), 4, 10, 10);
@@ -75,14 +74,6 @@ class PackedBoxTest extends TestCase
         $packedBox = new PackedBox($box, $boxItems);
 
         self::assertEquals(10, $packedBox->getItemWeight());
-
-        // inspect cache, then poke at the value and see if it's returned correctly
-        $cachedValue = new ReflectionProperty($packedBox, 'itemWeight');
-        $cachedValue->setAccessible(true);
-        self::assertEquals(10, $cachedValue->getValue($packedBox));
-
-        $cachedValue->setValue($packedBox, 30);
-        self::assertEquals(30, $cachedValue->getValue($packedBox));
     }
 
     public function testJsonSerializeWithBoxSupportingJsonSerializeIterable(): void

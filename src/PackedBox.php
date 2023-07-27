@@ -30,7 +30,7 @@ use const JSON_UNESCAPED_SLASHES;
  */
 class PackedBox implements JsonSerializable
 {
-    protected int $itemWeight = 0;
+    protected readonly int $itemWeight;
 
     protected readonly float $volumeUtilisation;
 
@@ -67,6 +67,14 @@ class PackedBox implements JsonSerializable
      */
     public function getItemWeight(): int
     {
+        if (!isset($this->itemWeight)) {
+            $itemWeight = 0;
+            foreach ($this->items as $item) {
+                $itemWeight += $item->getItem()->getWeight();
+            }
+            $this->itemWeight = $itemWeight;
+        }
+
         return $this->itemWeight;
     }
 
@@ -170,6 +178,10 @@ class PackedBox implements JsonSerializable
      */
     public function getVolumeUtilisation(): float
     {
+        if (!isset($this->volumeUtilisation)) {
+            $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
+        }
+
         return $this->volumeUtilisation;
     }
 
@@ -183,10 +195,6 @@ class PackedBox implements JsonSerializable
 
     public function __construct(protected Box $box, protected PackedItemList $items)
     {
-        foreach ($this->items as $item) {
-            $this->itemWeight += $item->getItem()->getWeight();
-        }
-        $this->volumeUtilisation = round($this->getUsedVolume() / ($this->getInnerVolume() ?: 1) * 100, 1);
         assert($this->assertPackingCompliesWithRealWorld());
     }
 

@@ -29,12 +29,15 @@ class PackedItemList implements Countable, IteratorAggregate
 
     private int $weight = 0;
 
+    private int $volume = 0;
+
     private bool $isSorted = false;
 
     public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
         $this->weight += $item->getItem()->getWeight();
+        $this->volume += $item->getVolume();
     }
 
     /**
@@ -75,13 +78,7 @@ class PackedItemList implements Countable, IteratorAggregate
      */
     public function getVolume(): int
     {
-        $volume = 0;
-
-        foreach ($this->list as $item) {
-            $volume += $item->getVolume();
-        }
-
-        return $volume;
+        return $this->volume;
     }
 
     /**
