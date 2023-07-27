@@ -20,7 +20,7 @@ use function sort;
  */
 class OrientatedItem implements JsonSerializable, Stringable
 {
-    protected readonly int $surfaceFootprint;
+    public readonly int $surfaceFootprint;
 
     /**
      * @var array<string, bool>
@@ -33,55 +33,15 @@ class OrientatedItem implements JsonSerializable, Stringable
     protected array $dimensionsAsArray;
 
     public function __construct(
-        protected Item $item,
-        protected int $width,
-        protected int $length,
-        protected int $depth
+        public readonly Item $item,
+        public readonly int $width,
+        public readonly int $length,
+        public readonly int $depth
     ) {
         $this->surfaceFootprint = $width * $length;
 
         $this->dimensionsAsArray = [$width, $length, $depth];
         sort($this->dimensionsAsArray);
-    }
-
-    /**
-     * Item.
-     */
-    public function getItem(): Item
-    {
-        return $this->item;
-    }
-
-    /**
-     * Item width in mm in it's packed orientation.
-     */
-    public function getWidth(): int
-    {
-        return $this->width;
-    }
-
-    /**
-     * Item length in mm in it's packed orientation.
-     */
-    public function getLength(): int
-    {
-        return $this->length;
-    }
-
-    /**
-     * Item depth in mm in it's packed orientation.
-     */
-    public function getDepth(): int
-    {
-        return $this->depth;
-    }
-
-    /**
-     * Calculate the surface footprint of the current orientation.
-     */
-    public function getSurfaceFootprint(): int
-    {
-        return $this->surfaceFootprint;
     }
 
     /**

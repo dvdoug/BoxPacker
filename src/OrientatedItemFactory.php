@@ -161,7 +161,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
         // Divide possible orientations into stable (low centre of gravity) and unstable (high centre of gravity)
         foreach ($possibleOrientations as $orientation) {
-            if ($orientation->isStable() || $this->box->getInnerDepth() === $orientation->getDepth()) {
+            if ($orientation->isStable() || $this->box->getInnerDepth() === $orientation->depth) {
                 $stableOrientations[] = $orientation;
             } else {
                 $unstableOrientations[] = $orientation;
@@ -234,7 +234,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
     {
         // Special case items that are the same as what we just packed - keep orientation
         if ($prevItem && $prevItem->isSameDimensions($item)) {
-            return [[$prevItem->getWidth(), $prevItem->getLength(), $prevItem->getDepth()]];
+            return [[$prevItem->width, $prevItem->length, $prevItem->depth]];
         }
 
         $permutations = [];

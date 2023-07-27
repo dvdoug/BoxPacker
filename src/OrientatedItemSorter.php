@@ -45,22 +45,22 @@ class OrientatedItemSorter
     public function __invoke(OrientatedItem $a, OrientatedItem $b): int
     {
         // Prefer exact fits in width/length/depth order
-        $orientationAWidthLeft = $this->widthLeft - $a->getWidth();
-        $orientationBWidthLeft = $this->widthLeft - $b->getWidth();
+        $orientationAWidthLeft = $this->widthLeft - $a->width;
+        $orientationBWidthLeft = $this->widthLeft - $b->width;
         $widthDecider = $this->exactFitDecider($orientationAWidthLeft, $orientationBWidthLeft);
         if ($widthDecider !== 0) {
             return $widthDecider;
         }
 
-        $orientationALengthLeft = $this->lengthLeft - $a->getLength();
-        $orientationBLengthLeft = $this->lengthLeft - $b->getLength();
+        $orientationALengthLeft = $this->lengthLeft - $a->length;
+        $orientationBLengthLeft = $this->lengthLeft - $b->length;
         $lengthDecider = $this->exactFitDecider($orientationALengthLeft, $orientationBLengthLeft);
         if ($lengthDecider !== 0) {
             return $lengthDecider;
         }
 
-        $orientationADepthLeft = $this->depthLeft - $a->getDepth();
-        $orientationBDepthLeft = $this->depthLeft - $b->getDepth();
+        $orientationADepthLeft = $this->depthLeft - $a->depth;
+        $orientationBDepthLeft = $this->depthLeft - $b->depth;
         $depthDecider = $this->exactFitDecider($orientationADepthLeft, $orientationBDepthLeft);
         if ($depthDecider !== 0) {
             return $depthDecider;
@@ -76,7 +76,7 @@ class OrientatedItemSorter
         $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
         $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
 
-        return $orientationAMinGap <=> $orientationBMinGap ?: $a->getSurfaceFootprint() <=> $b->getSurfaceFootprint();
+        return $orientationAMinGap <=> $orientationBMinGap ?: $a->surfaceFootprint <=> $b->surfaceFootprint;
     }
 
     private function lookAheadDecider(OrientatedItem $a, OrientatedItem $b, int $orientationAWidthLeft, int $orientationBWidthLeft): int
@@ -114,7 +114,7 @@ class OrientatedItemSorter
             return 0;
         }
 
-        $currentRowLength = max($prevItem->getLength(), $this->rowLength);
+        $currentRowLength = max($prevItem->length, $this->rowLength);
 
         $itemsToPack = $this->nextItems->topN(8); // cap lookahead as this gets recursive and slow
 
@@ -122,9 +122,9 @@ class OrientatedItemSorter
             '|' .
             $this->lengthLeft .
             '|' .
-            $prevItem->getWidth() .
+            $prevItem->width .
             '|' .
-            $prevItem->getLength() .
+            $prevItem->length .
             '|' .
             $currentRowLength .
             '|'
@@ -144,7 +144,7 @@ class OrientatedItemSorter
         }
 
         if (!isset(static::$lookaheadCache[$cacheKey])) {
-            $tempBox = new WorkingVolume($this->widthLeft - $prevItem->getWidth(), $currentRowLength, $this->depthLeft, PHP_INT_MAX);
+            $tempBox = new WorkingVolume($this->widthLeft - $prevItem->width, $currentRowLength, $this->depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setSinglePassMode(true);
             $remainingRowPacked = $tempPacker->pack();

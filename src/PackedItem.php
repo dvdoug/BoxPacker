@@ -71,13 +71,13 @@ class PackedItem implements JsonSerializable
     public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): self
     {
         return new self(
-            $orientatedItem->getItem(),
+            $orientatedItem->item,
             $x,
             $y,
             $z,
-            $orientatedItem->getWidth(),
-            $orientatedItem->getLength(),
-            $orientatedItem->getDepth()
+            $orientatedItem->width,
+            $orientatedItem->length,
+            $orientatedItem->depth,
         );
     }
 
