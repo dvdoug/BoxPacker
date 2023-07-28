@@ -116,6 +116,21 @@ Packing a set of items into a given set of box types
             qty: 1
         );
 
+        $packedBoxes = $packer->pack();
+
+        echo "These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL;
+        foreach ($packedBoxes as $packedBox) {
+            $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+            echo "This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL;
+            echo "The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL;
+
+            echo "The items in this box are:" . PHP_EOL;
+            $packedItems = $packedBox->items;
+            foreach ($packedItems as $packedItem) { // $packedItem->item is your own item object, in this case TestItem
+                echo $packedItem->item->getDescription() . PHP_EOL;
+            }
+        }
+
 Does a set of items fit into a particular box
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: php
@@ -174,4 +189,10 @@ Does a set of items fit into a particular box
         );
 
         $volumePacker = new VolumePacker($box, $items);
-        $packedBox = $volumePacker->pack(); //$packedBox->getItems() contains the items that fit
+        $packedBox = $volumePacker->pack(); //$packedBox->items contains the items that fit
+
+        echo "The items in this box are:" . PHP_EOL;
+        $packedItems = $packedBox->items;
+        foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object, in this case TestItem
+            echo $packedItem->item->getDescription() . PHP_EOL;
+        }

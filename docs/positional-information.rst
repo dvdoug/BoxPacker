@@ -21,11 +21,11 @@ Example:
 
         // assuming packing already took place
         foreach ($packedBoxes as $packedBox) {
-            $packedItems = $packedBox->getItems();
-            foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object
-                echo $packedItem->getItem()->getDescription() .  ' was packed at co-ordinate ' ;
-                echo '(' . $packedItem->getX() . ', ' . $packedItem->getY() . ', ' . $packedItem->getZ() . ') with ';
-                echo 'l' . $packedItem->getLength() . ', w' . $packedItem->getWidth() . ', d' . $packedItem->getDepth();
+            $packedItems = $packedBox->items;
+            foreach ($packedItems as $packedItem) { // $packedItem->item is your own item object
+                echo $packedItem->item->getDescription() .  ' was packed at co-ordinate ' ;
+                echo '(' . $packedItem->x . ', ' . $packedItem->y . ', ' . $packedItem->z . ') with ';
+                echo 'w' . $packedItem->width . ', l' . $packedItem->length . ', d' . $packedItem->depth;
                 echo PHP_EOL;
             }
         }

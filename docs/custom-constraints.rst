@@ -42,8 +42,8 @@ Example - only allow 2 batteries per box
                 int $depth
             ): bool {
                 $batteriesPacked = 0;
-                foreach ($packedBox->getItems() as $packedItem) {
-                  if ($packedItem->getItem() instanceof LithiumBattery) {
+                foreach ($packedBox->items as $packedItem) {
+                  if ($packedItem->item instanceof LithiumBattery) {
                       $batteriesPacked++;
                   }
                 }
@@ -90,18 +90,18 @@ Example - don't allow batteries to be stacked
                 int $depth
             ): bool {
                 $alreadyPackedType = array_filter(
-                    iterator_to_array($packedBox->getItems(), false),
+                    iterator_to_array($packedBox->items, false),
                     function (PackedItem $item) {
-                        return $item->getItem()->getDescription() === 'Battery';
+                        return $item->item->getDescription() === 'Battery';
                     }
                 );
 
                 /** @var PackedItem $alreadyPacked */
                 foreach ($alreadyPackedType as $alreadyPacked) {
                     if (
-                        $alreadyPacked->getZ() + $alreadyPacked->getDepth() === $proposedZ &&
-                        $proposedX >= $alreadyPacked->getX() && $proposedX <= ($alreadyPacked->getX() + $alreadyPacked->getWidth()) &&
-                        $proposedY >= $alreadyPacked->getY() && $proposedY <= ($alreadyPacked->getY() + $alreadyPacked->getLength())) {
+                        $alreadyPacked->z + $alreadyPacked->depth === $proposedZ &&
+                        $proposedX >= $alreadyPacked->x && $proposedX <= ($alreadyPacked->x + $alreadyPacked->width) &&
+                        $proposedY >= $alreadyPacked->y && $proposedY <= ($alreadyPacked->y + $alreadyPacked->length)) {
                         return false;
                     }
                 }
