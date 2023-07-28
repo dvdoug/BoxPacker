@@ -96,22 +96,22 @@ class LayerPacker implements LoggerAwareInterface
                 $layer->insert($packedItem);
                 $packedItemList->insert($packedItem);
 
-                $rowLength = max($rowLength, $packedItem->getLength());
+                $rowLength = max($rowLength, $packedItem->length);
                 $prevItem = $orientatedItem;
 
                 // Figure out if we can stack items on top of this rather than side by side
                 // e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->getDepth();
+                $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->depth;
                 if ($stackableDepth > 0) {
-                    $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->getDepth(), $x + $packedItem->getWidth(), $y + $packedItem->getLength(), $stackableDepth, $stackableDepth, $considerStability);
+                    $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->depth, $x + $packedItem->width, $y + $packedItem->length, $stackableDepth, $stackableDepth, $considerStability);
                     $layer->merge($stackedLayer);
                 }
 
-                $x += $packedItem->getWidth();
+                $x += $packedItem->width;
                 $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
                 // might be space available lengthwise across the width of this item, up to the current layer length
-                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->getWidth(), $y + $packedItem->getLength(), $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
+                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
 
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);

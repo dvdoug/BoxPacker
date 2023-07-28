@@ -17,55 +17,17 @@ use function is_iterable;
  */
 class PackedItem implements JsonSerializable
 {
+    public readonly int $volume;
+
     public function __construct(
-        protected Item $item,
-        protected int $x,
-        protected int $y,
-        protected int $z,
-        protected int $width,
-        protected int $length,
-        protected int $depth
+        public readonly Item $item,
+        public readonly int $x,
+        public readonly int $y,
+        public readonly int $z,
+        public readonly int $width,
+        public readonly int $length,
+        public readonly int $depth
     ) {
-    }
-
-    public function getX(): int
-    {
-        return $this->x;
-    }
-
-    public function getY(): int
-    {
-        return $this->y;
-    }
-
-    public function getZ(): int
-    {
-        return $this->z;
-    }
-
-    public function getItem(): Item
-    {
-        return $this->item;
-    }
-
-    public function getWidth(): int
-    {
-        return $this->width;
-    }
-
-    public function getLength(): int
-    {
-        return $this->length;
-    }
-
-    public function getDepth(): int
-    {
-        return $this->depth;
-    }
-
-    public function getVolume(): int
-    {
-        return $this->width * $this->length * $this->depth;
     }
 
     public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): self

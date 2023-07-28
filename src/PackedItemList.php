@@ -36,8 +36,8 @@ class PackedItemList implements Countable, IteratorAggregate
     public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
-        $this->weight += $item->getItem()->getWeight();
-        $this->volume += $item->getVolume();
+        $this->weight += $item->item->getWeight();
+        $this->volume += $item->width * $item->length * $item->depth;
     }
 
     /**
@@ -70,7 +70,7 @@ class PackedItemList implements Countable, IteratorAggregate
      */
     public function asItemArray(): array
     {
-        return array_map(fn (PackedItem $packedItem) => $packedItem->getItem(), $this->list);
+        return array_map(fn (PackedItem $packedItem) => $packedItem->item, $this->list);
     }
 
     /**
@@ -91,9 +91,9 @@ class PackedItemList implements Countable, IteratorAggregate
 
     private function compare(PackedItem $itemA, PackedItem $itemB): int
     {
-        $itemAVolume = $itemA->getItem()->getWidth() * $itemA->getItem()->getLength() * $itemA->getItem()->getDepth();
-        $itemBVolume = $itemB->getItem()->getWidth() * $itemB->getItem()->getLength() * $itemB->getItem()->getDepth();
+        $itemAVolume = $itemA->item->getWidth() * $itemA->item->getLength() * $itemA->item->getDepth();
+        $itemBVolume = $itemB->item->getWidth() * $itemB->item->getLength() * $itemB->item->getDepth();
 
-        return ($itemBVolume <=> $itemAVolume) ?: ($itemB->getItem()->getWeight() <=> $itemA->getItem()->getWeight());
+        return ($itemBVolume <=> $itemAVolume) ?: ($itemB->item->getWeight() <=> $itemA->item->getWeight());
     }
 }

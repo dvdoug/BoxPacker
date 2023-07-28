@@ -58,7 +58,7 @@ class PackedLayer
 
         $values = [];
         foreach ($this->items as $item) {
-            $values[] = $item->getX();
+            $values[] = $item->x;
         }
 
         return min($values);
@@ -72,7 +72,7 @@ class PackedLayer
 
         $values = [];
         foreach ($this->items as $item) {
-            $values[] = $item->getX() + $item->getWidth();
+            $values[] = $item->x + $item->width;
         }
 
         return max($values);
@@ -87,8 +87,8 @@ class PackedLayer
         $start = [];
         $end = [];
         foreach ($this->items as $item) {
-            $start[] = $item->getX();
-            $end[] = $item->getX() + $item->getWidth();
+            $start[] = $item->x;
+            $end[] = $item->x + $item->width;
         }
 
         return max($end) - min($start);
@@ -102,7 +102,7 @@ class PackedLayer
 
         $values = [];
         foreach ($this->items as $item) {
-            $values[] = $item->getY();
+            $values[] = $item->y;
         }
 
         return min($values);
@@ -116,7 +116,7 @@ class PackedLayer
 
         $values = [];
         foreach ($this->items as $item) {
-            $values[] = $item->getY() + $item->getLength();
+            $values[] = $item->y + $item->length;
         }
 
         return max($values);
@@ -131,8 +131,8 @@ class PackedLayer
         $start = [];
         $end = [];
         foreach ($this->items as $item) {
-            $start[] = $item->getY();
-            $end[] = $item->getY() + $item->getLength();
+            $start[] = $item->y;
+            $end[] = $item->y + $item->length;
         }
 
         return max($end) - min($start);
@@ -146,7 +146,7 @@ class PackedLayer
 
         $values = [];
         foreach ($this->items as $item) {
-            $values[] = $item->getZ();
+            $values[] = $item->z;
         }
 
         return min($values);
@@ -160,7 +160,7 @@ class PackedLayer
 
         $values = [];
         foreach ($this->items as $item) {
-            $values[] = $item->getZ() + $item->getDepth();
+            $values[] = $item->z + $item->depth;
         }
 
         return max($values);
@@ -175,8 +175,8 @@ class PackedLayer
         $start = [];
         $end = [];
         foreach ($this->items as $item) {
-            $start[] = $item->getZ();
-            $end[] = $item->getZ() + $item->getDepth();
+            $start[] = $item->z;
+            $end[] = $item->z + $item->depth;
         }
 
         return max($end) - min($start);
@@ -186,7 +186,7 @@ class PackedLayer
     {
         $weight = 0;
         foreach ($this->items as $item) {
-            $weight += $item->getItem()->getWeight();
+            $weight += $item->item->getWeight();
         }
 
         return $weight;

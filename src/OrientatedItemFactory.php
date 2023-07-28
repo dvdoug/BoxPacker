@@ -131,17 +131,17 @@ class OrientatedItemFactory implements LoggerAwareInterface
         if ($item instanceof ConstrainedPlacementItem && !$this->box instanceof WorkingVolume) {
             $orientations = array_filter($orientations, function (OrientatedItem $i) use ($x, $y, $z, $prevPackedItemList): bool {
                 /** @var ConstrainedPlacementItem $constrainedItem */
-                $constrainedItem = $i->getItem();
+                $constrainedItem = $i->item;
 
                 if ($this->boxIsRotated) {
                     $rotatedPrevPackedItemList = new PackedItemList();
                     foreach ($prevPackedItemList as $prevPackedItem) {
-                        $rotatedPrevPackedItemList->insert(new PackedItem($prevPackedItem->getItem(), $prevPackedItem->getY(), $prevPackedItem->getX(), $prevPackedItem->getZ(), $prevPackedItem->getLength(), $prevPackedItem->getWidth(), $prevPackedItem->getDepth()));
+                        $rotatedPrevPackedItemList->insert(new PackedItem($prevPackedItem->item, $prevPackedItem->y, $prevPackedItem->x, $prevPackedItem->z, $prevPackedItem->length, $prevPackedItem->width, $prevPackedItem->depth));
                     }
 
-                    return $constrainedItem->canBePacked(new PackedBox($this->box, $rotatedPrevPackedItemList), $y, $x, $z, $i->getLength(), $i->getWidth(), $i->getDepth());
+                    return $constrainedItem->canBePacked(new PackedBox($this->box, $rotatedPrevPackedItemList), $y, $x, $z, $i->length, $i->width, $i->depth);
                 } else {
-                    return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->getWidth(), $i->getLength(), $i->getDepth());
+                    return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->width, $i->length, $i->depth);
                 }
             });
         }

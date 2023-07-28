@@ -26,29 +26,29 @@ class OrientatedItemFactoryTest extends TestCase
 
         self::assertCount(6, $orientations);
 
-        self::assertEquals(1, $orientations[0]->getWidth());
-        self::assertEquals(2, $orientations[0]->getLength());
-        self::assertEquals(3, $orientations[0]->getDepth());
+        self::assertEquals(1, $orientations[0]->width);
+        self::assertEquals(2, $orientations[0]->length);
+        self::assertEquals(3, $orientations[0]->depth);
 
-        self::assertEquals(2, $orientations[1]->getWidth());
-        self::assertEquals(1, $orientations[1]->getLength());
-        self::assertEquals(3, $orientations[1]->getDepth());
+        self::assertEquals(2, $orientations[1]->width);
+        self::assertEquals(1, $orientations[1]->length);
+        self::assertEquals(3, $orientations[1]->depth);
 
-        self::assertEquals(1, $orientations[2]->getWidth());
-        self::assertEquals(3, $orientations[2]->getLength());
-        self::assertEquals(2, $orientations[2]->getDepth());
+        self::assertEquals(1, $orientations[2]->width);
+        self::assertEquals(3, $orientations[2]->length);
+        self::assertEquals(2, $orientations[2]->depth);
 
-        self::assertEquals(2, $orientations[3]->getWidth());
-        self::assertEquals(3, $orientations[3]->getLength());
-        self::assertEquals(1, $orientations[3]->getDepth());
+        self::assertEquals(2, $orientations[3]->width);
+        self::assertEquals(3, $orientations[3]->length);
+        self::assertEquals(1, $orientations[3]->depth);
 
-        self::assertEquals(3, $orientations[4]->getWidth());
-        self::assertEquals(1, $orientations[4]->getLength());
-        self::assertEquals(2, $orientations[4]->getDepth());
+        self::assertEquals(3, $orientations[4]->width);
+        self::assertEquals(1, $orientations[4]->length);
+        self::assertEquals(2, $orientations[4]->depth);
 
-        self::assertEquals(3, $orientations[5]->getWidth());
-        self::assertEquals(2, $orientations[5]->getLength());
-        self::assertEquals(1, $orientations[5]->getDepth());
+        self::assertEquals(3, $orientations[5]->width);
+        self::assertEquals(2, $orientations[5]->length);
+        self::assertEquals(1, $orientations[5]->depth);
     }
 
     public function testKeepFlat(): void
@@ -61,13 +61,13 @@ class OrientatedItemFactoryTest extends TestCase
 
         self::assertCount(2, $orientations);
 
-        self::assertEquals(1, $orientations[0]->getWidth());
-        self::assertEquals(2, $orientations[0]->getLength());
-        self::assertEquals(3, $orientations[0]->getDepth());
+        self::assertEquals(1, $orientations[0]->width);
+        self::assertEquals(2, $orientations[0]->length);
+        self::assertEquals(3, $orientations[0]->depth);
 
-        self::assertEquals(2, $orientations[1]->getWidth());
-        self::assertEquals(1, $orientations[1]->getLength());
-        self::assertEquals(3, $orientations[1]->getDepth());
+        self::assertEquals(2, $orientations[1]->width);
+        self::assertEquals(1, $orientations[1]->length);
+        self::assertEquals(3, $orientations[1]->depth);
     }
 
     public function testNoRotate(): void
@@ -80,8 +80,8 @@ class OrientatedItemFactoryTest extends TestCase
 
         self::assertCount(1, $orientations);
 
-        self::assertEquals(1, $orientations[0]->getWidth());
-        self::assertEquals(2, $orientations[0]->getLength());
-        self::assertEquals(3, $orientations[0]->getDepth());
+        self::assertEquals(1, $orientations[0]->width);
+        self::assertEquals(2, $orientations[0]->length);
+        self::assertEquals(3, $orientations[0]->depth);
     }
 }

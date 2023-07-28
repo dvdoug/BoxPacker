@@ -146,7 +146,7 @@ class VolumePacker implements LoggerAwareInterface
             }
 
             $preliminaryLayerDepth = $preliminaryLayer->getDepth();
-            if ($preliminaryLayerDepth === $preliminaryLayer->getItems()[0]->getDepth()) { // preliminary === final
+            if ($preliminaryLayerDepth === $preliminaryLayer->getItems()[0]->depth) { // preliminary === final
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { // redo with now-known-depth so that we can stack to that height from the first item
@@ -207,7 +207,7 @@ class VolumePacker implements LoggerAwareInterface
         foreach ($oldLayers as $originalLayer) {
             $newLayer = new PackedLayer();
             foreach ($originalLayer->getItems() as $item) {
-                $packedItem = new PackedItem($item->getItem(), $item->getY(), $item->getX(), $item->getZ(), $item->getLength(), $item->getWidth(), $item->getDepth());
+                $packedItem = new PackedItem($item->item, $item->y, $item->x, $item->z, $item->length, $item->width, $item->depth);
                 $newLayer->insert($packedItem);
             }
             $newLayers[] = $newLayer;

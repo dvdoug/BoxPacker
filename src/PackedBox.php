@@ -70,7 +70,7 @@ class PackedBox implements JsonSerializable
         if (!isset($this->itemWeight)) {
             $itemWeight = 0;
             foreach ($this->items as $item) {
-                $itemWeight += $item->getItem()->getWeight();
+                $itemWeight += $item->item->getWeight();
             }
             $this->itemWeight = $itemWeight;
         }
@@ -110,7 +110,7 @@ class PackedBox implements JsonSerializable
         $maxWidth = 0;
 
         foreach ($this->items as $item) {
-            $maxWidth = max($maxWidth, $item->getX() + $item->getWidth());
+            $maxWidth = max($maxWidth, $item->x + $item->width);
         }
 
         return $maxWidth;
@@ -124,7 +124,7 @@ class PackedBox implements JsonSerializable
         $maxLength = 0;
 
         foreach ($this->items as $item) {
-            $maxLength = max($maxLength, $item->getY() + $item->getLength());
+            $maxLength = max($maxLength, $item->y + $item->length);
         }
 
         return $maxLength;
@@ -138,7 +138,7 @@ class PackedBox implements JsonSerializable
         $maxDepth = 0;
 
         foreach ($this->items as $item) {
-            $maxDepth = max($maxDepth, $item->getZ() + $item->getDepth());
+            $maxDepth = max($maxDepth, $item->z + $item->depth);
         }
 
         return $maxDepth;
@@ -193,7 +193,7 @@ class PackedBox implements JsonSerializable
         return 'https://boxpacker.io/en/master/visualiser.html?packing=' . rawurlencode(json_encode($this, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
-    public function __construct(protected Box $box, protected PackedItemList $items)
+    public function __construct(public readonly Box $box, public readonly PackedItemList $items)
     {
         assert($this->assertPackingCompliesWithRealWorld());
     }
@@ -234,17 +234,17 @@ class PackedBox implements JsonSerializable
         while (count($itemsToCheck) > 0) {
             $itemToCheck = array_pop($itemsToCheck);
 
-            assert($itemToCheck->getX() >= 0);
-            assert($itemToCheck->getX() + $itemToCheck->getWidth() <= $this->box->getInnerWidth());
-            assert($itemToCheck->getY() >= 0);
-            assert($itemToCheck->getY() + $itemToCheck->getLength() <= $this->box->getInnerLength());
-            assert($itemToCheck->getZ() >= 0);
-            assert($itemToCheck->getZ() + $itemToCheck->getDepth() <= $this->box->getInnerDepth());
+            assert($itemToCheck->x >= 0);
+            assert($itemToCheck->x + $itemToCheck->width <= $this->box->getInnerWidth());
+            assert($itemToCheck->y >= 0);
+            assert($itemToCheck->y + $itemToCheck->length <= $this->box->getInnerLength());
+            assert($itemToCheck->z >= 0);
+            assert($itemToCheck->z + $itemToCheck->depth <= $this->box->getInnerDepth());
 
             foreach ($itemsToCheck as $otherItem) {
-                $hasXOverlap = $itemToCheck->getX() < ($otherItem->getX() + $otherItem->getWidth()) && $otherItem->getX() < ($itemToCheck->getX() + $itemToCheck->getWidth());
-                $hasYOverlap = $itemToCheck->getY() < ($otherItem->getY() + $otherItem->getLength()) && $otherItem->getY() < ($itemToCheck->getY() + $itemToCheck->getLength());
-                $hasZOverlap = $itemToCheck->getZ() < ($otherItem->getZ() + $otherItem->getDepth()) && $otherItem->getZ() < ($itemToCheck->getZ() + $itemToCheck->getDepth());
+                $hasXOverlap = $itemToCheck->x < ($otherItem->x + $otherItem->width) && $otherItem->x < ($itemToCheck->x + $itemToCheck->width);
+                $hasYOverlap = $itemToCheck->y < ($otherItem->y + $otherItem->length) && $otherItem->y < ($itemToCheck->y + $itemToCheck->length);
+                $hasZOverlap = $itemToCheck->z < ($otherItem->z + $otherItem->depth) && $otherItem->z < ($itemToCheck->z + $itemToCheck->depth);
 
                 $hasOverlap = $hasXOverlap && $hasYOverlap && $hasZOverlap;
                 assert(!$hasOverlap);

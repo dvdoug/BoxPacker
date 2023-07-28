@@ -100,7 +100,7 @@ class ItemList implements Countable, IteratorAggregate
         foreach ($packedItemList as $packedItem) {
             end($this->list);
             do {
-                if (current($this->list) === $packedItem->getItem()) {
+                if (current($this->list) === $packedItem->item) {
                     unset($this->list[key($this->list)]);
 
                     break;

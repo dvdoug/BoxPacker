@@ -31,15 +31,15 @@ class ConstrainedPlacementNoStackingTestItem extends TestItem implements Constra
     ): bool {
         $alreadyPackedType = array_filter(
             iterator_to_array($packedBox->getItems(), false),
-            fn (PackedItem $item) => $item->getItem()->getDescription() === $this->getDescription()
+            fn (PackedItem $item) => $item->item->getDescription() === $this->getDescription()
         );
 
         /** @var PackedItem $alreadyPacked */
         foreach ($alreadyPackedType as $alreadyPacked) {
             if (
-                $alreadyPacked->getZ() + $alreadyPacked->getDepth() === $proposedZ
-                && $proposedX >= $alreadyPacked->getX() && $proposedX <= ($alreadyPacked->getX() + $alreadyPacked->getWidth())
-                && $proposedY >= $alreadyPacked->getY() && $proposedY <= ($alreadyPacked->getY() + $alreadyPacked->getLength())) {
+                $alreadyPacked->z + $alreadyPacked->depth === $proposedZ
+                && $proposedX >= $alreadyPacked->x && $proposedX <= ($alreadyPacked->x + $alreadyPacked->width)
+                && $proposedY >= $alreadyPacked->y && $proposedY <= ($alreadyPacked->y + $alreadyPacked->length)) {
                 return false;
             }
         }

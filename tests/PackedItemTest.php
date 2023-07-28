@@ -18,15 +18,6 @@ use function json_encode;
 #[CoversClass(PackedItem::class)]
 class PackedItemTest extends TestCase
 {
-    /**
-     * Test volume calculation.
-     */
-    public function testVolumeCalculation(): void
-    {
-        $packedItem = new PackedItem(new TestItem('Item', 1, 1, 0, 0, Rotation::BestFit), 0, 0, 0, 3, 5, 7);
-        self::assertSame(105, $packedItem->getVolume());
-    }
-
     public function testJsonSerializeWithItemSupportingJsonSerializeIterable(): void
     {
         $item = new TestItem('Item', 1, 2, 3, 10, Rotation::BestFit);
