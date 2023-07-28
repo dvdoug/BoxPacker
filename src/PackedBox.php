@@ -35,22 +35,6 @@ class PackedBox implements JsonSerializable
     protected readonly float $volumeUtilisation;
 
     /**
-     * Get box used.
-     */
-    public function getBox(): Box
-    {
-        return $this->box;
-    }
-
-    /**
-     * Get items packed.
-     */
-    public function getItems(): PackedItemList
-    {
-        return $this->items;
-    }
-
-    /**
      * Get packed weight.
      *
      * @return int weight in grams

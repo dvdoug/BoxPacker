@@ -12,7 +12,7 @@ class DefaultPackedBoxSorter implements PackedBoxSorter
 {
     public function compare(PackedBox $boxA, PackedBox $boxB): int
     {
-        $choice = $boxB->getItems()->count() <=> $boxA->getItems()->count();
+        $choice = $boxB->items->count() <=> $boxA->items->count();
 
         if ($choice === 0) {
             $choice = $boxB->getVolumeUtilisation() <=> $boxA->getVolumeUtilisation();

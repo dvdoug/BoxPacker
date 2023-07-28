@@ -145,7 +145,7 @@ class PackerContext implements Context
         $foundBoxes = 0;
 
         foreach ($this->packedBoxList as $packedBox) {
-            if ($packedBox->getBox()->getReference() === $boxType) {
+            if ($packedBox->box->getReference() === $boxType) {
                 ++$foundBoxes;
             }
         }
@@ -162,8 +162,8 @@ class PackerContext implements Context
     ): void {
         $foundItems = 0;
 
-        foreach ($this->packedBox->getItems() as $packedItem) {
-            if ($packedItem->getItem()->getDescription() === $itemType) {
+        foreach ($this->packedBox->items as $packedItem) {
+            if ($packedItem->item->getDescription() === $itemType) {
                 ++$foundItems;
             }
         }

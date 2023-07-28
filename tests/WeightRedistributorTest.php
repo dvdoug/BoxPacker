@@ -32,8 +32,8 @@ class WeightRedistributorTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertCount(2, $packedBoxes[0]->getItems());
-        self::assertCount(2, $packedBoxes[1]->getItems());
+        self::assertCount(2, $packedBoxes[0]->items);
+        self::assertCount(2, $packedBoxes[1]->items);
     }
 
     /**
@@ -50,9 +50,9 @@ class WeightRedistributorTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(3, $packedBoxes);
-        self::assertCount(28, $packedBoxes[0]->getItems());
-        self::assertCount(28, $packedBoxes[1]->getItems());
-        self::assertCount(28, $packedBoxes[2]->getItems());
+        self::assertCount(28, $packedBoxes[0]->items);
+        self::assertCount(28, $packedBoxes[1]->items);
+        self::assertCount(28, $packedBoxes[2]->items);
     }
 
     public function testWeightDistributionWorks(): void

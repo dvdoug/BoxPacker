@@ -32,8 +32,8 @@ class PackedBoxTest extends TestCase
 
         $packedBox = new PackedBox($box, $packedItemList);
 
-        self::assertEquals($box, $packedBox->getBox());
-        self::assertEquals($packedItemList, $packedBox->getItems());
+        self::assertEquals($box, $packedBox->box);
+        self::assertEquals($packedItemList, $packedBox->items);
         self::assertEquals(460, $packedBox->getWeight());
         self::assertEquals(134, $packedBox->getRemainingWidth());
         self::assertEquals(44, $packedBox->getRemainingLength());

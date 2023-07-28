@@ -75,12 +75,12 @@ class EfficiencyTest extends TestCase
 
         $packedItemCount2D = 0;
         foreach ($packedBoxes2D as $packedBox) {
-            $packedItemCount2D += $packedBox->getItems()->count();
+            $packedItemCount2D += $packedBox->items->count();
         }
 
         $packedItemCount3D = 0;
         foreach ($packedBoxes3D as $packedBox) {
-            $packedItemCount3D += $packedBox->getItems()->count();
+            $packedItemCount3D += $packedBox->items->count();
         }
 
         self::assertCount($expectedBoxes2D, $packedBoxes2D);

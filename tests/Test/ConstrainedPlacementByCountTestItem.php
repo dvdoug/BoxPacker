@@ -33,7 +33,7 @@ class ConstrainedPlacementByCountTestItem extends TestItem implements Constraine
         int $depth
     ): bool {
         $alreadyPackedType = array_filter(
-            iterator_to_array($packedBox->getItems(), false),
+            iterator_to_array($packedBox->items, false),
             fn (PackedItem $item) => $item->item->getDescription() === $this->getDescription()
         );
 

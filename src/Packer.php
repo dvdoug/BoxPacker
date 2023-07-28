@@ -191,11 +191,11 @@ class Packer implements LoggerAwareInterface
                 $volumePacker->setLogger($this->logger);
                 $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                 $packedBox = $volumePacker->pack();
-                if ($packedBox->getItems()->count()) {
+                if ($packedBox->items->count()) {
                     $packedBoxesIteration[] = $packedBox;
 
                     // Have we found a single box that contains everything?
-                    if ($packedBox->getItems()->count() === $this->items->count()) {
+                    if ($packedBox->items->count() === $this->items->count()) {
                         $this->logger->log(LogLevel::DEBUG, "Single box found for remaining {$this->items->count()} items");
                         break;
                     }
@@ -207,10 +207,10 @@ class Packer implements LoggerAwareInterface
                 usort($packedBoxesIteration, $this->packedBoxSorter->compare(...));
                 $bestBox = $packedBoxesIteration[0];
 
-                $this->items->removePackedItems($bestBox->getItems());
+                $this->items->removePackedItems($bestBox->items);
 
                 $packedBoxes->insert($bestBox);
-                --$this->boxQuantitiesAvailable[$bestBox->getBox()];
+                --$this->boxQuantitiesAvailable[$bestBox->box];
             } elseif ($this->throwOnUnpackableItem) {
                 throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items);
             } else {
@@ -242,7 +242,7 @@ class Packer implements LoggerAwareInterface
             $wipPermutation = array_pop($wipPermutations);
             $remainingBoxQuantities = clone $boxQuantitiesAvailable;
             foreach ($wipPermutation['permutation'] as $packedBox) {
-                --$remainingBoxQuantities[$packedBox->getBox()];
+                --$remainingBoxQuantities[$packedBox->box];
             }
             if ($wipPermutation['itemsLeft']->count() === 0) {
                 $completedPermutations[] = $wipPermutation['permutation'];
@@ -255,7 +255,7 @@ class Packer implements LoggerAwareInterface
                     $volumePacker = new VolumePacker($box, $wipPermutation['itemsLeft']);
                     $volumePacker->setLogger($this->logger);
                     $packedBox = $volumePacker->pack();
-                    if ($packedBox->getItems()->count()) {
+                    if ($packedBox->items->count()) {
                         $additionalPermutationsForThisPermutation[] = $packedBox;
                     }
                 }
@@ -266,7 +266,7 @@ class Packer implements LoggerAwareInterface
                     $newPermutation = clone $wipPermutation['permutation'];
                     $newPermutation->insert($additionalPermutationForThisPermutation);
                     $itemsRemainingOnPermutation = clone $wipPermutation['itemsLeft'];
-                    $itemsRemainingOnPermutation->removePackedItems($additionalPermutationForThisPermutation->getItems());
+                    $itemsRemainingOnPermutation->removePackedItems($additionalPermutationForThisPermutation->items);
                     $wipPermutations[] = ['permutation' => $newPermutation, 'itemsLeft' => $itemsRemainingOnPermutation];
                 }
             } elseif ($this->throwOnUnpackableItem) {
@@ -283,7 +283,7 @@ class Packer implements LoggerAwareInterface
 
         foreach ($completedPermutations as $completedPermutation) {
             foreach ($completedPermutation as $packedBox) {
-                $this->items->removePackedItems($packedBox->getItems());
+                $this->items->removePackedItems($packedBox->items);
             }
         }
 

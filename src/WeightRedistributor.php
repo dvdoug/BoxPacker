@@ -101,15 +101,15 @@ class WeightRedistributor implements LoggerAwareInterface
             $underWeightBox = $boxA;
         }
 
-        $overWeightBoxItems = $overWeightBox->getItems()->asItemArray();
-        $underWeightBoxItems = $underWeightBox->getItems()->asItemArray();
+        $overWeightBoxItems = $overWeightBox->items->asItemArray();
+        $underWeightBoxItems = $underWeightBox->items->asItemArray();
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
             if (!self::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
                 continue; // moving this item would harm more than help
             }
 
-            $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]), $underWeightBox->getBox());
+            $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]), $underWeightBox->box);
             if ($newLighterBoxes->count() !== 1) {
                 continue; // only want to move this item if it still fits in a single box
             }
@@ -119,23 +119,23 @@ class WeightRedistributor implements LoggerAwareInterface
             if (count($overWeightBoxItems) === 1) { // sometimes a repack can be efficient enough to eliminate a box
                 $boxB = $newLighterBoxes->top();
                 $boxA = null;
-                --$this->boxQuantitiesAvailable[$underWeightBox->getBox()];
-                ++$this->boxQuantitiesAvailable[$overWeightBox->getBox()];
+                --$this->boxQuantitiesAvailable[$underWeightBox->box];
+                ++$this->boxQuantitiesAvailable[$overWeightBox->box];
 
                 return true;
             }
 
             unset($overWeightBoxItems[$key]);
-            $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems, $overWeightBox->getBox());
+            $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems, $overWeightBox->box);
             if (count($newHeavierBoxes) !== 1) {
                 assert(true, 'Could not pack n-1 items into box, even though n were previously in it');
                 continue;
             }
 
-            ++$this->boxQuantitiesAvailable[$overWeightBox->getBox()];
-            ++$this->boxQuantitiesAvailable[$underWeightBox->getBox()];
-            --$this->boxQuantitiesAvailable[$newHeavierBoxes->top()->getBox()];
-            --$this->boxQuantitiesAvailable[$newLighterBoxes->top()->getBox()];
+            ++$this->boxQuantitiesAvailable[$overWeightBox->box];
+            ++$this->boxQuantitiesAvailable[$underWeightBox->box];
+            --$this->boxQuantitiesAvailable[$newHeavierBoxes->top()->box];
+            --$this->boxQuantitiesAvailable[$newLighterBoxes->top()->box];
             $underWeightBox = $boxB = $newLighterBoxes->top();
             $overWeightBox = $boxA = $newHeavierBoxes->top();
 

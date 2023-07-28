@@ -149,14 +149,14 @@ class OrientatedItemSorter
             $tempPacker->setSinglePassMode(true);
             $remainingRowPacked = $tempPacker->pack();
 
-            $itemsToPack->removePackedItems($remainingRowPacked->getItems());
+            $itemsToPack->removePackedItems($remainingRowPacked->items);
 
             $tempBox = new WorkingVolume($this->widthLeft, $this->lengthLeft - $currentRowLength, $this->depthLeft, PHP_INT_MAX);
             $tempPacker = new VolumePacker($tempBox, $itemsToPack);
             $tempPacker->setSinglePassMode(true);
             $nextRowsPacked = $tempPacker->pack();
 
-            $itemsToPack->removePackedItems($nextRowsPacked->getItems());
+            $itemsToPack->removePackedItems($nextRowsPacked->items);
 
             $packedCount = $this->nextItems->count() - $itemsToPack->count();
             $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);

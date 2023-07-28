@@ -80,8 +80,8 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertCount(2, $packedBoxes[0]->getItems());
-        self::assertCount(2, $packedBoxes[1]->getItems());
+        self::assertCount(2, $packedBoxes[0]->items);
+        self::assertCount(2, $packedBoxes[1]->items);
 
         // same items, but with redistribution turned off - expecting 3+1 based on pure fit
         $packer = new Packer();
@@ -92,8 +92,8 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
-        self::assertCount(3, $packedBoxes[0]->getItems());
-        self::assertCount(1, $packedBoxes[1]->getItems());
+        self::assertCount(3, $packedBoxes[0]->items);
+        self::assertCount(1, $packedBoxes[1]->items);
     }
 
     /**
@@ -164,7 +164,7 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
         self::assertCount(1, $packedBoxes);
-        self::assertEquals('Box A', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Box A', $packedBoxes[0]->box->getReference());
     }
 
     /**
@@ -206,7 +206,7 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(1, $packedBoxes);
-        self::assertEquals('Small', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Small', $packedBoxes[0]->box->getReference());
     }
 
     /**
@@ -247,9 +247,9 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(3, $packedBoxes);
-        self::assertEquals('Light box', $packedBoxes[0]->getBox()->getReference());
-        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
-        self::assertEquals('Light box', $packedBoxes[2]->getBox()->getReference());
+        self::assertEquals('Light box', $packedBoxes[0]->box->getReference());
+        self::assertEquals('Light box', $packedBoxes[1]->box->getReference());
+        self::assertEquals('Light box', $packedBoxes[2]->box->getReference());
     }
 
     /**
@@ -268,9 +268,9 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(3, $packedBoxes);
-        self::assertEquals('Heavy box', $packedBoxes[0]->getBox()->getReference());
-        self::assertEquals('Light box', $packedBoxes[1]->getBox()->getReference());
-        self::assertEquals('Light box', $packedBoxes[2]->getBox()->getReference());
+        self::assertEquals('Heavy box', $packedBoxes[0]->box->getReference());
+        self::assertEquals('Light box', $packedBoxes[1]->box->getReference());
+        self::assertEquals('Light box', $packedBoxes[2]->box->getReference());
     }
 
     /**
@@ -640,7 +640,7 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
-        self::assertCount(2, $packedBoxes->top()->getItems());
+        self::assertCount(2, $packedBoxes->top()->items);
         self::assertCount(1, $packer->getUnpackedItems());
     }
 
@@ -657,7 +657,7 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
-        self::assertCount(2, $packedBoxes->top()->getItems());
+        self::assertCount(2, $packedBoxes->top()->items);
         self::assertCount(1, $packer->getUnpackedItems());
     }
 
@@ -1234,7 +1234,7 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack());
 
         self::assertCount(2, $packedBoxes);
-        self::assertEquals('Box #1', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Box #1', $packedBoxes[0]->box->getReference());
 
         PackedBoxByReferenceSorter::$reference = 'Box #2';
         $packer = new Packer();
@@ -1245,7 +1245,7 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack());
 
         self::assertCount(2, $packedBoxes);
-        self::assertEquals('Box #2', $packedBoxes[0]->getBox()->getReference());
+        self::assertEquals('Box #2', $packedBoxes[0]->box->getReference());
     }
 
     public function testAllPermutationsSimpleCase(): void
@@ -1261,11 +1261,11 @@ class PackerTest extends TestCase
 
         $firstPermutation = $permutations[0];
         self::assertCount(1, $firstPermutation); // 1 box
-        self::assertCount(2, $firstPermutation->top()->getItems());
+        self::assertCount(2, $firstPermutation->top()->items);
 
         $secondPermutation = $permutations[1];
         self::assertCount(1, $secondPermutation); // 1 box
-        self::assertCount(2, $secondPermutation->top()->getItems());
+        self::assertCount(2, $secondPermutation->top()->items);
     }
 
     /**

@@ -17,9 +17,9 @@ class PackedBoxByReferenceSorter implements PackedBoxSorter
 
     public function compare(PackedBox $boxA, PackedBox $boxB): int
     {
-        if ($boxA->getBox()->getReference() === static::$reference) {
+        if ($boxA->box->getReference() === static::$reference) {
             return -1;
-        } elseif ($boxB->getBox()->getReference() === static::$reference) {
+        } elseif ($boxB->box->getReference() === static::$reference) {
             return 1;
         }
 
