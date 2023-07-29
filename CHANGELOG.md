@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.x - Unreleased] - 2022-xx-xx
+## [4.x - Unreleased] - 2024-xx-xx
 ### Added
  - Added new enumeration `Rotation` with values `Never`, `KeepFlat` and `BestFit`
  - Added new `getAllowedRotation()` method to the `Item` interface to replace `getKeepFlat()`. This should return
@@ -27,6 +27,11 @@
  - Removed `InfalliblePacker`. You can now get the same behaviour by calling `->throwOnUnpackableItem(false)` and
    `->getUnpackedItems()` on the main `Packer` class
 
+## [3.12.0] - 2023-07-30
+### Changed
+- Improved efficiency in packing
+### Removed
+- Support for PHP 7.1, 7.2 and 7.3
 
 ## [3.11.0] - 2023-02-04
 ### Changed
@@ -521,6 +526,7 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
+[3.12.0]: https://github.com/dvdoug/BoxPacker/compare/3.11.0...3.12.0
 [3.11.0]: https://github.com/dvdoug/BoxPacker/compare/3.10.0...3.11.0
 [3.10.0]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.10.0
 [3.9.4]: https://github.com/dvdoug/BoxPacker/compare/3.9.3...3.9.4
