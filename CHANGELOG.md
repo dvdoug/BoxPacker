@@ -12,6 +12,7 @@
    found (defaults to true, consistent with previous behaviour)
  - Added `getUnpackedItems()` to `Packer` to retrieve the list of items that could not be packed (only applicable if
    exceptions are disabled).
+
 ### Changed
  - Minimum PHP version is now 8.1
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
@@ -21,6 +22,7 @@
    `$packedBox->getBox()` and `$packedBox->getItems()`
  - `NoBoxesAvailableException` now has a `getAffectedItems()` method instead of `getItem()`. This should allow
    improved handling of the exception inside calling applications when multiple items cannot be packed
+
 ### Removed
  - Removed deprecated `ConstrainedItem`. You should use `ConstrainedPlacementItem` as a replacement
  - Removed `getKeepFlat()` from the `Item` interface
@@ -30,6 +32,7 @@
 ## [3.12.0] - 2023-07-30
 ### Changed
 - Improved efficiency in packing
+
 ### Removed
 - Support for PHP 7.1, 7.2 and 7.3
 
@@ -56,8 +59,10 @@
 ## [3.9.2] - 2021-07-04
 ### Added
 - Optional second parameter `$qty` to `ItemList->insert()`
+
 ### Fixed
 - Fixed issue where available width for an item could be miscalculated
+
 ### Changed
 - Improved memory usage
 
@@ -65,6 +70,7 @@
 ## [3.9.1] - 2021-05-05
 ### Fixed
 - Fixed issue where available width for an item could be miscalculated at the far end of a box
+
 ### Changed
 - Improved efficiency in packing in the vertical direction
 
@@ -74,6 +80,7 @@
   than top-loaded (e.g. truck loading)
 - Added ``getWeight()`` helper method to ``PackedItemList``
 - Experimental visualisation tool has been added to the repo. All aspects of the tool are subject to change.
+
 ### Changed
 - Improved efficiency in packing
 
@@ -86,6 +93,7 @@
 - Added `getVolume()` helper method to `PackedItemList`
 
 ## [3.6.2] - 2020-09-28
+
 ### Added
  - Support for PHP 8.0
 
@@ -99,6 +107,7 @@
  - Improved efficiency in packing and weight distribution
  - Major internal refactoring. The public-facing API did not change in any incompatible ways, but if you extended any of the `@internal` classes or made use of `@internal` methods you may be affected.
  - Bail out earlier in the packing process where an item doesn't fit [colinmollenhour]
+
 ### Fixed
  - Fixed potential issue where internal sort consistency wasn't always correct
  - Fixed potential issue where custom constraints might not be fully respected
@@ -117,9 +126,11 @@
 ### Added
  - Added a new interface `LimitedSupplyBox extends Box` for situations where there are restrictions on the number of a box type available for packing `Item`s into. The interface contains 1 additional method `getQuantityAvailable()`.
  - Added new exception `NoBoxesAvailableException` which is thrown when an item cannot be packed due to suitable boxes not being available (e.g. when the new functionality is used and the quantity available is insufficient). The existing `ItemTooLargeException` which is thrown when an item is too large to fit into any of the supplied box types at all (regardless of quantity) still exists, and now extends from `NoBoxesAvailableException` as a special case
+
 ### Changed
  - Improved efficiency in packing and weight distribution
  - The `ItemList` passed to `VolumePacker`'s constructor is now cloned before usage, leaving the passed-in object unaffected. Previously this was used as a working dataset. The new behaviour aligns with the existing behaviour of `Packer` 
+
 ### Fixed
  - Fixed issue where internal sort consistency wasn't always correct
  - Some debug-level logging wasn't logging correctly
@@ -131,16 +142,19 @@
 ## [3.4.0] - 2019-09-09
 ### Added
  - Added ability to specify that items are pre-sorted when creating an `ItemList` from an array
+
 ### Changed
  - Significant speed improvements when dealing with a large number of items
 
 ## [3.3.0] - 2019-07-14
 ### Added
  - Added `ConstrainedPlacementItem` as a more powerful version of `ConstrainedItem`
+
 ### Changed
  - Improved box selection for certain cases
  - Speed improvements
  - Increased detail in debug-level logging
+
 ### Deprecated
  - `ConstrainedItem` is now deprecated. Use `ConstrainedPlacementItem` instead
 
@@ -155,6 +169,7 @@
 ## [3.2.0] - 2018-11-12
 ### Added
  - Added `getVolume()` helper method to `PackedItem` [Cosmologist]
+
 ### Changed
  - Improved item orientation selection for better packing
  - Minor refactorings for code clarity
@@ -175,6 +190,7 @@
 ## [3.1.0] - 2018-02-19
 ### Added
  - Optional 'Infallible' mode of packing to not throw an exception on error (e.g. item too large) but to continue packing the other items
+
 ### Changed
  - Improved stability algorithm
  - Improved box selection for certain cases
@@ -183,6 +199,7 @@
 ## [3.0.1] - 2018-01-01
 ### Added
  - Declare ``PackedBoxList`` as implementing `Countable`
+
 ### Changed
  - Improved item orientation selection for better packing
 
@@ -190,11 +207,13 @@
 ### Added
  - Introduced `PackedItem`s which are a wrapper around `Item`s with positional and dimensional information (x, y, z co-ordinates of corner closest to origin, width/length/depth as packed)
  - Added method to set threshold at which weight redistribution is disabled  
+
 ### Changed
  - `PackedBox` now contains a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - `ConstrainedItem->canBePackedInBox()` now takes a `PackedItemList` of `PackedItem`s (rather than an `ItemList` of `Item`s)
  - `BoxList`, `ItemList`, `PackedBoxList` have been altered to implement the `Traversable` interface rather than extend `SplHeap` directly so that any future changes to the internals will not need an API change  
  - Minimum PHP version is now 7.1
+
 ### Removed
  - HHVM support now that project has a stated goal of no longer targeting PHP7 compatibility
 
@@ -217,6 +236,7 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
  - Improved efficiency in packing and weight distribution
  - Major internal refactoring. The public-facing API did not change in any incompatible ways, but if you extended any of the `@internal` classes or made use of `@internal` methods you may be affected.
  - Bail out earlier in the packing process where an item doesn't fit [colinmollenhour]
+
 ### Fixed
  - Fixed potential issue where custom constraints might not be fully respected
  - Avoid divide by zero error when a box is specified to have a depth of 0mm (e.g. 2D packing)
@@ -233,6 +253,7 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ### Changed
  - Improved efficiency in packing and weight distribution
  - The `ItemList` passed to `VolumePacker`'s constructor is now cloned before usage, leaving the passed-in object unaffected. Previously this was used as a working dataset. The new behaviour aligns with the existing behaviour of `Packer` 
+
 ### Fixed
  - Fixed issue where internal sort consistency wasn't always correct
  - Some debug-level logging wasn't logging correctly
@@ -248,16 +269,19 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ## [2.6.0] - 2019-07-14
 ### Added
  - Added `ConstrainedPlacementItem` as a more powerful version of `ConstrainedItem`
+
 ### Changed
  - Improved box selection for certain cases
  - Speed improvements
  - Increased detail in debug-level logging
+
 ### Deprecated
  - `ConstrainedItem` is now deprecated. Use `ConstrainedPlacementItem` instead
 
 ## [2.5.0] - 2018-11-20
 ### Added
  - Backported positional data support from v3 via new `getPackedItems()` method on `PackedBox`
+
 ### Fixed
  - Fixed divide by zero warning when attempting to pack an item with 0 depth
 
@@ -299,6 +323,7 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ## [2.4.0] - 2017-08-14
 ### Changed
  - Significant reworking of core packing logic to clarify concepts used
+
 ### Fixed
  - Fixed issue where `getUsed[Width|Length|Depth]()` could sometimes return an incorrect value
 
@@ -315,6 +340,7 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ## [2.3.0] - 2017-04-09
 ### Added
  - Add callback system for more complex constraints e.g. max number of hazardous items in a box. To take advantage of the additional flexibility, implement BoxPacker\ConstrainedItem rather than BoxPacker\Item
+
 ### Changed
  - Some internal refactoring
 
@@ -330,6 +356,7 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ## [2.1.0] - 2017-01-07
 ### Added
  - Added `getUsed[Width|Length|Depth]()` on PackedBoxes to allow for better visibility into space utilisation
+
 ### Changed
  - Equal distribution of weight is now turned off when the number of boxes becomes large as it provides very little to no benefit at that scale and is slow to calculate
  - Various optimisations and internal refactorings
@@ -341,6 +368,7 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ## [2.0.1] - 2016-09-20
 ### Added
  - Pass on the logger instance from the main Packer class into the helpers
+
 ### Changed
  - Allow unit tests to run with standalone PHPUnit
 
@@ -348,8 +376,10 @@ v2 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 There are no bugfixes or packing logic changes in v2.0 compared to the v1.5.3 release - the bump in version number is purely because the interface changed slightly.
 ### Added
  - Added a method to the Item interface to specify whether the item should be kept flat or not - this does not do anything yet, but adding now to avoid another major version bump later.
+
 ### Changed
  - Various refactorings to split out large functions into more readable pieces
+
 ### Removed
  - Removed `Packer->packIntoBox()`, `Packer->packBox()` and `Packer->redistributeWeight()`
 
@@ -383,10 +413,12 @@ v1 of BoxPacker is in maintenance mode only, all users are encouraged to update 
 ## [1.7.0] - 2019-07-14
 ### Added
  - Added `ConstrainedPlacementItem` as a more powerful version of `ConstrainedItem`
+
 ### Changed
  - Improved box selection for certain cases
  - Speed improvements
  - Increased detail in debug-level logging
+
 ### Deprecated
  - `ConstrainedItem` is now deprecated. Use `ConstrainedPlacementItem` instead
 
@@ -437,6 +469,7 @@ API-compatible backport of 2.4.0. All features present except 3D packing.
  - Added callback system for more complex constraints e.g. max number of hazardous items in a box. To take advantage of the additional flexibility, implement BoxPacker\ConstrainedItem rather than BoxPacker\Item
  - A specific `ItemTooLargeException` exception is now thrown when an item cannot fit inside any boxes rather than a generic `\RuntimeException`
  - Pass on the logger instance from the main Packer class into the helpers
+
 ### Changed
  - Significant reworking of core packing logic to clarify concepts used and split out large functions into more readable pieces
  - Test classes refactored to be autoloadable and for unit tests to runnable with standalone PHPUnit
@@ -457,8 +490,10 @@ API-compatible backport of 2.4.0. All features present except 3D packing.
 ## [1.5] - 2015-10-13
 ### Added
  - Added method for retrieving the volume utilisation of a packed box
+
 ### Changed
  - Previously, when encountering an item that would not fit in the current box under evaluation, the algorithm would declare the box full and open a new one. Now it will continue to pack any remaining smaller items into the current box before moving on.
+
 ### Fixed
  - Boxes and items with large volumes were sometimes not sorted properly because of issues with integer overflow inside SplMinHeap. This could lead to suboptimal results. [IBBoard]
 
@@ -481,12 +516,14 @@ API-compatible backport of 2.4.0. All features present except 3D packing.
 ## [1.2] - 2014-05-31
 ### Added
  - Expose remaining space information on a packed box
+
 ### Fixed
  - Fixed bug that preferred less-optimal solutions in some cases
 
 ## [1.1] - 2014-03-30
 ### Added
  - Support for HHVM
+
 ### Changed
  - Tweaked algorithm to allow limited lookahead when dealing with identical objects to better optimise placement
  - Misc internal refactoring and optimisations
@@ -498,6 +535,7 @@ API-compatible backport of 2.4.0. All features present except 3D packing.
 ## [1.0] - 2013-11-28
 ### Added
  - Generated solutions now have a second pass where multiple boxes are involved, in order to redistribute weight more evenly
+
 ### Removed
  - PHP 5.3 support
 
@@ -513,6 +551,7 @@ API-compatible backport of 2.4.0. All features present except 3D packing.
 ## [0.2] - 2013-08-01
 ### Added
  - Supports solutions using multiple boxes
+
 ### Changed
  - API should be stable now - no plans to change it
  - Generated solutions may not be optimal, but should be correct

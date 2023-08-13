@@ -17,8 +17,8 @@ build:
   jobs:
     post_install:
       # Build visualiser
-      - cd docs/visualiser && npm ci
-      - cd docs/visualiser && npx webpack build
+      - cd visualiser && npm ci
+      - cd visualiser && npx webpack build
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:

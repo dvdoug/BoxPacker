@@ -9,7 +9,7 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "npm"
-    directory: "/docs/visualiser"
+    directory: "/visualiser"
     schedule:
       interval: "daily"
     versioning-strategy: increase

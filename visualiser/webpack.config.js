@@ -5,7 +5,7 @@ module.exports = {
     app: './visualiser.ts'
   },
   output: {
-    path: path.resolve(__dirname, '../_static/js'),
+    path: path.resolve(__dirname, '../docs/_static/js'),
     filename: 'visualiser.js'
   },
   resolve: {

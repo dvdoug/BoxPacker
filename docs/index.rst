@@ -34,4 +34,4 @@ BoxPacker is licensed under the `MIT license`_.
     custom-constraints
     used-remaining-space
     all-permutations
-    whatsnew
+    changelog
