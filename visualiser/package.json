@@ -1,12 +1,19 @@
 {
+  "name": "boxpacker-visualiser",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@babylonjs/core": "^6.18.0",
     "@babylonjs/gui": "^6.18.0"
   },
   "devDependencies": {
-    "ts-loader": "^9.4.4",
     "typescript": "^5.2.2",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "vite": "^4.4.9"
   }
 }
