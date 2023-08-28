@@ -7,6 +7,7 @@
 
 import {ActionManager} from "@babylonjs/core/Actions/actionManager"
 import {AdvancedDynamicTexture} from "@babylonjs/gui/2D/advancedDynamicTexture";
+import "@babylonjs/core/Animations/animatable";
 import {Animation} from "@babylonjs/core/Animations/animation";
 import {ArcRotateCamera} from "@babylonjs/core/Cameras/arcRotateCamera";
 import "@babylonjs/core/Rendering/boundingBoxRenderer";
@@ -15,8 +16,10 @@ import {Control} from "@babylonjs/gui/2D/controls/control";
 import {CreateBox} from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import {CreateLines} from "@babylonjs/core/Meshes/Builders/linesBuilder";
 import {CreatePlane} from "@babylonjs/core/Meshes/Builders/planeBuilder";
+import "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
 import {DynamicTexture} from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import {Engine} from "@babylonjs/core/Engines/engine";
+import {ExecuteCodeAction} from "@babylonjs/core/Actions/directActions";
 import {HemisphericLight} from "@babylonjs/core/Lights/hemisphericLight";
 import {HighlightLayer} from "@babylonjs/core/Layers/highlightLayer";
 import {Rectangle} from "@babylonjs/gui/2D/controls/rectangle";
@@ -24,9 +27,6 @@ import {Scene} from "@babylonjs/core/scene";
 import {StandardMaterial} from "@babylonjs/core/Materials/standardMaterial";
 import {TextBlock} from "@babylonjs/gui/2D/controls/textBlock";
 import {Vector3} from "@babylonjs/core/Maths/math.vector";
-
-// https://forum.babylonjs.com/t/executecodeaction-is-not-working-on-meshes-when-imported-es6-style/7002
-import {ExecuteCodeAction} from "./workaroundbabylonimportbug";
 
 document.addEventListener("DOMContentLoaded", function () {
 
