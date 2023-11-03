@@ -1,6 +1,10 @@
-# Auto detect text files and perform LF normalization
 * text=auto eol=lf
-
 *.pdf -text
 *.PDF -text
 *.xlsx -text
+
+/docs export-ignore
+/features export-ignore
+/visualiser export-ignore
+/.* export-ignore
+/*.dist export-ignore
