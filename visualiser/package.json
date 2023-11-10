@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babylonjs/core": "^6.18.0",
-    "@babylonjs/gui": "^6.18.0"
+    "@babylonjs/core": "^6.29.0",
+    "@babylonjs/gui": "^6.29.0"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
