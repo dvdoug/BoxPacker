@@ -13,6 +13,12 @@ updates:
     schedule:
       interval: "daily"
     versioning-strategy: increase
+    ignore:
+      # only alert on major bumps
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     groups:
       babylon:
         patterns:
