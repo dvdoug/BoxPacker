@@ -18,8 +18,15 @@ use function count;
 use function json_encode;
 use function reset;
 use function round;
-use function urlencode;
 use function usort;
+use function array_map;
+use function iterator_to_array;
+use function spl_object_id;
+
+use const JSON_THROW_ON_ERROR;
+use const JSON_NUMERIC_CHECK;
+use const JSON_UNESCAPED_UNICODE;
+use const JSON_UNESCAPED_SLASHES;
 
 /**
  * List of packed boxes.
@@ -158,7 +165,38 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
      */
     public function generateVisualisationURL(): string
     {
-        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . urlencode(json_encode($this));
+        $items = [];
+        foreach ($this->list as $packedBox) {
+            $items = [...$items, ...$packedBox->items->asItemArray()];
+        }
+        $dedupedItems = $splIdToIntMap = [];
+        $splIdIndex = 0;
+        foreach ($items as $item) {
+            if (!isset($splIdToIntMap[spl_object_id($item)])) {
+                $splIdToIntMap[spl_object_id($item)] = $splIdIndex++;
+            }
+            $dedupedItems[$splIdToIntMap[spl_object_id($item)]] = $item;
+        }
+
+        foreach ($dedupedItems as $item) {
+            $data['items'][$splIdToIntMap[spl_object_id($item)]] = [$item->getDescription(), $item->getWidth(), $item->getLength(), $item->getDepth()];
+        }
+
+        $data['boxes'] = [];
+        foreach ($this->list as $packedBox) {
+            $data['boxes'][] = [
+                $packedBox->box->getReference(),
+                $packedBox->box->getInnerWidth(),
+                $packedBox->box->getInnerLength(),
+                $packedBox->box->getInnerDepth(),
+                array_map(
+                    fn (PackedItem $item) => [$splIdToIntMap[spl_object_id($item->item)], $item->x, $item->y, $item->z, $item->width, $item->length, $item->depth],
+                    iterator_to_array($packedBox->items)
+                ),
+            ];
+        }
+
+        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . json_encode($data, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     public function jsonSerialize(): array

@@ -18,7 +18,8 @@ use function is_iterable;
 use function count;
 use function array_pop;
 use function assert;
-use function rawurlencode;
+use function array_map;
+use function spl_object_id;
 
 use const JSON_THROW_ON_ERROR;
 use const JSON_NUMERIC_CHECK;
@@ -174,7 +175,31 @@ class PackedBox implements JsonSerializable
      */
     public function generateVisualisationURL(): string
     {
-        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . rawurlencode(json_encode($this, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $dedupedItems = $splIdToIntMap = [];
+        $splIdIndex = 0;
+        foreach ($this->items->asItemArray() as $item) {
+            if (!isset($splIdToIntMap[spl_object_id($item)])) {
+                $splIdToIntMap[spl_object_id($item)] = $splIdIndex++;
+            }
+            $dedupedItems[$splIdToIntMap[spl_object_id($item)]] = $item;
+        }
+
+        foreach ($dedupedItems as $item) {
+            $data['items'][$splIdToIntMap[spl_object_id($item)]] = [$item->getDescription(), $item->getWidth(), $item->getLength(), $item->getDepth()];
+        }
+
+        $data['boxes'][] = [
+            $this->box->getReference(),
+            $this->box->getInnerWidth(),
+            $this->box->getInnerLength(),
+            $this->box->getInnerDepth(),
+            array_map(
+                fn (PackedItem $item) => [$splIdToIntMap[spl_object_id($item->item)], $item->x, $item->y, $item->z, $item->width, $item->length, $item->depth],
+                iterator_to_array($this->items)
+            ),
+        ];
+
+        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . json_encode($data, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     public function __construct(public readonly Box $box, public readonly PackedItemList $items)
