@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let packedBoxKey in packingData) {
             showAxis(ZOOM * packingData[packedBoxKey].box.innerWidth, ZOOM * packingData[packedBoxKey].box.innerLength, ZOOM * packingData[packedBoxKey].box.innerDepth, boxPlacementX);
 
-            const box = CreateBox(
+            const drawnBox = CreateBox(
                 "box",
                 {
                     width: ZOOM * packingData[packedBoxKey].box.innerWidth,
@@ -180,18 +180,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     height: ZOOM * packingData[packedBoxKey].box.innerDepth,
                 }
             );
-            hl.addExcludedMesh(box);
+            hl.addExcludedMesh(drawnBox);
             let material = new StandardMaterial("material", scene);
             material.alpha = 0; // make box faces invisible
-            box.material = material;
-            box.showBoundingBox = true; // but show edges
+            drawnBox.material = material;
+            drawnBox.showBoundingBox = true; // but show edges
             // Babylon positions the centre of the box at (0,0,0) so compensate for that as BoxPacker measures from the corner
-            box.position.x = boxPlacementX + ZOOM * packingData[packedBoxKey].box.innerWidth / 2;
-            box.position.z = ZOOM * packingData[packedBoxKey].box.innerLength / 2;
-            box.position.y = ZOOM * packingData[packedBoxKey].box.innerDepth / 2;
+            drawnBox.position.x = boxPlacementX + ZOOM * packingData[packedBoxKey].box.innerWidth / 2;
+            drawnBox.position.z = ZOOM * packingData[packedBoxKey].box.innerLength / 2;
+            drawnBox.position.y = ZOOM * packingData[packedBoxKey].box.innerDepth / 2;
 
             for (let itemsKey = 0; itemsKey < packingData[packedBoxKey].items.length; itemsKey++) {
-                let item = CreateBox(
+                let drawnItem = CreateBox(
                     "item" + itemsKey,
                     {
                         width: ZOOM * packingData[packedBoxKey].items[itemsKey].width,
@@ -202,11 +202,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 let material = new StandardMaterial("material", scene);
                 material.diffuseColor = ITEM_COLOURS[itemsKey % 28];
                 material.alpha = 0.7;
-                item.material = material;
+                drawnItem.material = material;
                 // Babylon positions the centre of the item at (0,0,0) not a corner so compensate for that
-                item.position.x = boxPlacementX + ZOOM * packingData[packedBoxKey].items[itemsKey].width / 2 + ZOOM * packingData[packedBoxKey].items[itemsKey].x;
-                item.position.z = ZOOM * packingData[packedBoxKey].items[itemsKey].length / 2 + ZOOM * packingData[packedBoxKey].items[itemsKey].y;
-                item.position.y = ZOOM * packingData[packedBoxKey].items[itemsKey].depth / 2 + ZOOM * packingData[packedBoxKey].items[itemsKey].z;
+                drawnItem.position.x = boxPlacementX + ZOOM * packingData[packedBoxKey].items[itemsKey].width / 2 + ZOOM * packingData[packedBoxKey].items[itemsKey].x;
+                drawnItem.position.z = ZOOM * packingData[packedBoxKey].items[itemsKey].length / 2 + ZOOM * packingData[packedBoxKey].items[itemsKey].y;
+                drawnItem.position.y = ZOOM * packingData[packedBoxKey].items[itemsKey].depth / 2 + ZOOM * packingData[packedBoxKey].items[itemsKey].z;
 
                 let rect1 = new Rectangle();
                 advancedTexture.addControl(rect1);
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 rect1.scaleX = 0;
                 rect1.scaleY = 0;
                 rect1.cornerRadius = 10
-                rect1.linkWithMesh(item);
+                rect1.linkWithMesh(drawnItem);
 
                 let text1 = new TextBlock();
                 text1.text = "Box: " + packingData[packedBoxKey].box.reference;
@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 text1.paddingLeft = "20px";
                 text1.paddingRight = "20px";
 
-                item.actionManager = new ActionManager(scene);
+                drawnItem.actionManager = new ActionManager(scene);
 
                 let scaleXAnimation = new Animation("myAnimation", "scaleX", 30, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
                 let scaleYAnimation = new Animation("myAnimation", "scaleY", 30, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -269,13 +269,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 scaleYAnimation.setKeys(keys);
                 (<any>rect1).animations = [scaleXAnimation, scaleYAnimation];
 
-                item.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, function () {
-                    hl.addMesh(item, Color3.Green());
+                drawnItem.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, function () {
+                    hl.addMesh(drawnItem, Color3.Green());
                     scene.beginAnimation(rect1, 0, 10, false);
                 }));
                 //if hover is over remove highlight of the mesh
-                item.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
-                    hl.removeMesh(item);
+                drawnItem.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
+                    hl.removeMesh(drawnItem);
                     scene.beginAnimation(rect1, 10, 0, false);
                 }));
 
