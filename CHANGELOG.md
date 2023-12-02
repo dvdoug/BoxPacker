@@ -2,6 +2,10 @@
 
 ## [3.x - Unreleased] - 2023-xx-xx
 
+## [3.12.1] - 2023-12-02
+### Fixed
+- Restored ability to copy/paste the samples from the docs into a non-dev installation
+
 ## [3.12.0] - 2023-07-30
 ### Changed
 - Improved efficiency in packing
@@ -499,8 +503,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.12.0...3.x
+[3.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.12.1...3.x
 
+[3.12.1]: https://github.com/dvdoug/BoxPacker/compare/3.12.0...3.12.1
 [3.12.0]: https://github.com/dvdoug/BoxPacker/compare/3.11.0...3.12.0
 [3.11.0]: https://github.com/dvdoug/BoxPacker/compare/3.10.0...3.11.0
 [3.10.0]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.10.0
