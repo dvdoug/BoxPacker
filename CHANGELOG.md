@@ -29,6 +29,10 @@
  - Removed `InfalliblePacker`. You can now get the same behaviour by calling `->throwOnUnpackableItem(false)` and
    `->getUnpackedItems()` on the main `Packer` class
 
+## [3.12.1] - 2023-12-02
+### Fixed
+- Restored ability to copy/paste the samples from the docs into a non-dev installation
+
 ## [3.12.0] - 2023-07-30
 ### Changed
 - Improved efficiency in packing
@@ -565,6 +569,7 @@ Initial release
 
 [4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/3.x...master
 
+[3.12.1]: https://github.com/dvdoug/BoxPacker/compare/3.12.0...3.12.1
 [3.12.0]: https://github.com/dvdoug/BoxPacker/compare/3.11.0...3.12.0
 [3.11.0]: https://github.com/dvdoug/BoxPacker/compare/3.10.0...3.11.0
 [3.10.0]: https://github.com/dvdoug/BoxPacker/compare/3.9.4...3.10.0
