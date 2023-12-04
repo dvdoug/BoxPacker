@@ -14,13 +14,13 @@ use JsonSerializable;
  * Class WorkingVolume.
  * @internal
  */
-class WorkingVolume implements Box, JsonSerializable
+readonly class WorkingVolume implements Box, JsonSerializable
 {
     public function __construct(
-        private readonly int $width,
-        private readonly int $length,
-        private readonly int $depth,
-        private readonly int $maxWeight
+        private int $width,
+        private int $length,
+        private int $depth,
+        private int $maxWeight
     ) {
     }
 

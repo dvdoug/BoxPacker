@@ -15,7 +15,7 @@ build:
   environment:
     # Languages
     php:
-      version: "8.1"
+      version: "8.2"
       ini:
         memory_limit: "-1"
 

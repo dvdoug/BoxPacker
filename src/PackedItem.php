@@ -15,18 +15,18 @@ use function is_iterable;
 /**
  * A packed item.
  */
-class PackedItem implements JsonSerializable
+readonly class PackedItem implements JsonSerializable
 {
-    public readonly int $volume;
+    public int $volume;
 
     public function __construct(
-        public readonly Item $item,
-        public readonly int $x,
-        public readonly int $y,
-        public readonly int $z,
-        public readonly int $width,
-        public readonly int $length,
-        public readonly int $depth
+        public Item $item,
+        public int $x,
+        public int $y,
+        public int $z,
+        public int $width,
+        public int $length,
+        public int $depth
     ) {
     }
 

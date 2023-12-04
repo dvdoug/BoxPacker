@@ -14,7 +14,7 @@
    exceptions are disabled).
 
 ### Changed
- - Minimum PHP version is now 8.1
+ - Minimum PHP version is now 8.2
  - Exceptions are now in the `DVDoug\BoxPacker\Exception` namespace (previously `DVDoug\BoxPacker`)
  - The signature of the `canBePacked` method on the `ConstrainedPlacementItem` interface has been changed to replace the
    first two arguments(`Box $box`, `PackedItemList $alreadyPackedItems`) with `PackedBox $packedBox`. This allows
