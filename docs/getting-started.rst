@@ -138,6 +138,8 @@ Does a set of items fit into a particular box
     <?php
         use DVDoug\BoxPacker\Rotation;
         use DVDoug\BoxPacker\Packer;
+        use DVDoug\BoxPacker\ItemList;
+        use DVDoug\BoxPacker\VolumePacker;
         use DVDoug\BoxPacker\Test\TestBox;  // use your own `Box` implementation
         use DVDoug\BoxPacker\Test\TestItem; // use your own `Item` implementation
 
