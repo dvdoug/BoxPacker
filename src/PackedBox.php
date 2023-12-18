@@ -236,7 +236,7 @@ readonly class PackedBox implements JsonSerializable
      * Validate that all items are placed solely within the confines of the box, and that no two items are placed
      * into the same physical space.
      */
-    private function assertPackingCompliesWithRealWorld(): bool
+    private function assertPackingCompliesWithRealWorld(): true
     {
         /** @var PackedItem[] $itemsToCheck */
         $itemsToCheck = iterator_to_array($this->items);
