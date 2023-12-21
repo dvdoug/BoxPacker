@@ -35,8 +35,8 @@ class VolumePackerTest extends TestCase
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
 
-        self::assertEquals(60, $packedBox->getUsedWidth());
-        self::assertEquals(14, $packedBox->getUsedLength());
+        self::assertEquals(70, $packedBox->getUsedWidth());
+        self::assertEquals(12, $packedBox->getUsedLength());
         self::assertEquals(2, $packedBox->getUsedDepth());
     }
 
@@ -553,7 +553,6 @@ class VolumePackerTest extends TestCase
 
     public function testIssue272(): void
     {
-        $this->markTestSkipped();
         $box = new TestBox('Box', 725, 725, 650, 0, 725, 725, 650, 100000);
 
         $items = new ItemList();
@@ -656,7 +655,6 @@ class VolumePackerTest extends TestCase
 
     public function testIssue583(): void
     {
-        $this->markTestSkipped();
         $box = new TestBox('Example box', 380, 380, 140, 0, 380, 380, 140, 0);
 
         $itemList = new ItemList();
@@ -665,7 +663,6 @@ class VolumePackerTest extends TestCase
 
         $packer = new VolumePacker($box, $itemList);
         $packedBox = $packer->pack();
-        echo $packedBox->generateVisualisationURL();
 
         self::assertCount(2, $packedBox->items);
     }

@@ -91,12 +91,18 @@ class VolumePacker implements LoggerAwareInterface
      */
     public function pack(): PackedBox
     {
+        $orientatedItemFactory = new OrientatedItemFactory($this->box);
+        $orientatedItemFactory->setLogger($this->logger);
         $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
+        // Sometimes "space available" decisions depend on orientation of the box, so try both ways
         $rotationsToTest = [false];
         if (!$this->packAcrossWidthOnly && !$this->hasNoRotationItems) {
             $rotationsToTest[] = true;
         }
+
+        // The orientation of the first item can have an outsized effect on the rest of the placement, so special-case
+        // that and try everything
 
         $boxPermutations = [];
         foreach ($rotationsToTest as $rotation) {
@@ -108,12 +114,19 @@ class VolumePacker implements LoggerAwareInterface
                 $boxLength = $this->box->getInnerLength();
             }
 
-            $boxPermutation = $this->packRotation($boxWidth, $boxLength);
-            if ($boxPermutation->items->count() === $this->items->count()) {
-                return $boxPermutation;
+            $specialFirstItemOrientations = [null];
+            if (!$this->singlePassMode) {
+                $specialFirstItemOrientations = $orientatedItemFactory->getPossibleOrientations($this->items->top(), null, $boxWidth, $boxLength, $this->box->getInnerDepth(), 0, 0, 0, new PackedItemList()) ?: [null];
             }
 
-            $boxPermutations[] = $boxPermutation;
+            foreach ($specialFirstItemOrientations as $firstItemOrientation) {
+                $boxPermutation = $this->packRotation($boxWidth, $boxLength, $firstItemOrientation);
+                if ($boxPermutation->items->count() === $this->items->count()) {
+                    return $boxPermutation;
+                }
+
+                $boxPermutations[] = $boxPermutation;
+            }
         }
 
         usort($boxPermutations, static fn (PackedBox $a, PackedBox $b) => $b->getVolumeUtilisation() <=> $a->getVolumeUtilisation());
@@ -126,7 +139,7 @@ class VolumePacker implements LoggerAwareInterface
      *
      * @return PackedBox packed box
      */
-    private function packRotation(int $boxWidth, int $boxLength): PackedBox
+    private function packRotation(int $boxWidth, int $boxLength, ?OrientatedItem $firstItemOrientation): PackedBox
     {
         $this->logger->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
         $this->layerPacker->setBoxIsRotated($this->box->getInnerWidth() !== $boxWidth);
@@ -138,9 +151,13 @@ class VolumePacker implements LoggerAwareInterface
             $layerStartDepth = self::getCurrentPackedDepth($layers);
             $packedItemList = $this->getPackedItemList($layers);
 
+            if ($packedItemList->count() > 0) {
+                $firstItemOrientation = null;
+            }
+
             // do a preliminary layer pack to get the depth used
             $preliminaryItems = clone $items;
-            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, true);
+            $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, true, $firstItemOrientation);
             if (count($preliminaryLayer->getItems()) === 0) {
                 break;
             }
@@ -150,7 +167,7 @@ class VolumePacker implements LoggerAwareInterface
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { // redo with now-known-depth so that we can stack to that height from the first item
-                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayerDepth, true);
+                $layers[] = $this->layerPacker->packLayer($items, $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, $preliminaryLayerDepth, true, $firstItemOrientation);
             }
         }
 
@@ -159,10 +176,10 @@ class VolumePacker implements LoggerAwareInterface
 
             // having packed layers, there may be tall, narrow gaps at the ends that can be utilised
             $maxLayerWidth = max(array_map(static fn (PackedLayer $layer) => $layer->getEndX(), $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $maxLayerWidth, 0, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $maxLayerWidth, 0, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false, null);
 
             $maxLayerLength = max(array_map(static fn (PackedLayer $layer) => $layer->getEndY(), $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, $maxLayerLength, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false);
+            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, $maxLayerLength, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false, null);
         }
 
         $layers = $this->correctLayerRotation($layers, $boxWidth);

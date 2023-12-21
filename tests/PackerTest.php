@@ -107,8 +107,8 @@ class PackerTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertCount(1, $packedBoxes);
-        self::assertEquals(26, $packedBoxes->top()->getUsedWidth());
-        self::assertEquals(15, $packedBoxes->top()->getUsedLength());
+        self::assertEquals(30, $packedBoxes->top()->getUsedWidth());
+        self::assertEquals(13, $packedBoxes->top()->getUsedLength());
         self::assertEquals(8, $packedBoxes->top()->getUsedDepth());
     }
 

@@ -70,7 +70,7 @@ class LayerPacker implements LoggerAwareInterface
     /**
      * Pack items into an individual vertical layer.
      */
-    public function packLayer(ItemList &$items, PackedItemList $packedItemList, int $startX, int $startY, int $startZ, int $widthForLayer, int $lengthForLayer, int $depthForLayer, int $guidelineLayerDepth, bool $considerStability): PackedLayer
+    public function packLayer(ItemList &$items, PackedItemList $packedItemList, int $startX, int $startY, int $startZ, int $widthForLayer, int $lengthForLayer, int $depthForLayer, int $guidelineLayerDepth, bool $considerStability, ?OrientatedItem $firstItem): PackedLayer
     {
         $layer = new PackedLayer();
         $x = $startX;
@@ -89,7 +89,12 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthForLayer - $y, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
+            if ($firstItem instanceof OrientatedItem && $firstItem->item === $itemToPack) {
+                $orientatedItem = $firstItem;
+                $firstItem = null;
+            } else {
+                $orientatedItem = $this->orientatedItemFactory->getBestOrientation($itemToPack, $prevItem, $items, $widthForLayer - $x, $lengthForLayer - $y, $depthForLayer, $rowLength, $x, $y, $z, $packedItemList, $considerStability);
+            }
 
             if ($orientatedItem instanceof OrientatedItem) {
                 $packedItem = PackedItem::fromOrientatedItem($orientatedItem, $x, $y, $z);
@@ -103,7 +108,7 @@ class LayerPacker implements LoggerAwareInterface
                 // e.g. when we've packed a tall item, and have just put a shorter one next to it.
                 $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->depth;
                 if ($stackableDepth > 0) {
-                    $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->depth, $x + $packedItem->width, $y + $packedItem->length, $stackableDepth, $stackableDepth, $considerStability);
+                    $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->depth, $x + $packedItem->width, $y + $packedItem->length, $stackableDepth, $stackableDepth, $considerStability, null);
                     $layer->merge($stackedLayer);
                 }
 
@@ -111,7 +116,7 @@ class LayerPacker implements LoggerAwareInterface
                 $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
                 // might be space available lengthwise across the width of this item, up to the current layer length
-                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability));
+                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability, null));
 
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
