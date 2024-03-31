@@ -32,10 +32,10 @@ class TestItem implements Item, JsonSerializable
      */
     public function __construct(
         private readonly string $description,
-        private readonly int $width,
-        private readonly int $length,
-        private readonly int $depth,
-        private readonly int $weight,
+        private readonly float $width,
+        private readonly float $length,
+        private readonly float $depth,
+        private readonly float $weight,
         private readonly Rotation $allowedRotation
     ) {
         $this->a = new stdClass();
