@@ -20,14 +20,14 @@ class TestBox implements Box, JsonSerializable
      */
     public function __construct(
         private readonly string $reference,
-        private readonly int $outerWidth,
-        private readonly int $outerLength,
-        private readonly int $outerDepth,
-        private readonly int $emptyWeight,
-        private readonly int $innerWidth,
-        private readonly int $innerLength,
-        private readonly int $innerDepth,
-        private readonly int $maxWeight
+        private readonly float $outerWidth,
+        private readonly float $outerLength,
+        private readonly float $outerDepth,
+        private readonly float $emptyWeight,
+        private readonly float $innerWidth,
+        private readonly float $innerLength,
+        private readonly float $innerDepth,
+        private readonly float $maxWeight
     ) {
     }
 
