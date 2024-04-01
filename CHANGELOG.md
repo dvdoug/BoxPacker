@@ -2,6 +2,10 @@
 
 ## [4.x - Unreleased] - 2024-xx-xx
 
+## [4.0.1] - 2024-04-01
+### Changed
+- Improved efficiency in packing
+
 ## [4.0.0] - 2023-12-04
 ### Added
  - Added new enumeration `Rotation` with values `Never`, `KeepFlat` and `BestFit`
