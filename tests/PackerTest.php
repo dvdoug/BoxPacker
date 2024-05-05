@@ -1223,6 +1223,59 @@ class PackerTest extends TestCase
         self::assertCount(1, $packedBoxes);
     }
 
+    public function testIssue608Default(): void
+    {
+        $packer = new Packer();
+        $w = 400;
+        while ($w <= 2360) {
+            $packer->addBox(new TestBox('Box120 ' . $w, $w, 285, 120, 1200, $w, 285, 120, 25000));
+            $packer->addBox(new TestBox('Box160 ' . $w, $w, 285, 160, 1200, $w, 285, 160, 25000));
+            $packer->addBox(new TestBox('Box250 ' . $w, $w, 285, 250, 1200, $w, 285, 250, 25000));
+            $w += 10;
+        }
+
+        $packer->addItem(new TestItem('mountings', 282, 110, 160, 500, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 50mm', 2260, 218, 80, 1380, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 35mm ', 1585, 192, 60, 5050, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 50mm', 1175, 218, 80, 5190, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 35mm', 1028, 191, 60, 3210, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 35mm', 1028, 192, 60, 3200, Rotation::BestFit), 1);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack());
+
+        self::assertCount(2, $packedBoxes);
+        self::assertEquals('Box120 2060', $packedBoxes[0]->box->getReference());
+        self::assertEquals('Box250 2260', $packedBoxes[1]->box->getReference());
+    }
+
+    public function testIssue608NoWeightRedistribution(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $w = 400;
+        while ($w <= 2360) {
+            $packer->addBox(new TestBox('Box120 ' . $w, $w, 285, 120, 1200, $w, 285, 120, 25000));
+            $packer->addBox(new TestBox('Box160 ' . $w, $w, 285, 160, 1200, $w, 285, 160, 25000));
+            $packer->addBox(new TestBox('Box250 ' . $w, $w, 285, 250, 1200, $w, 285, 250, 25000));
+            $w += 10;
+        }
+
+        $packer->addItem(new TestItem('mountings', 282, 110, 160, 500, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 50mm', 2260, 218, 80, 1380, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 35mm ', 1585, 192, 60, 5050, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 50mm', 1175, 218, 80, 5190, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 35mm', 1028, 191, 60, 3210, Rotation::BestFit), 1);
+        $packer->addItem(new TestItem('blind 35mm', 1028, 192, 60, 3200, Rotation::BestFit), 1);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack());
+
+        self::assertCount(2, $packedBoxes);
+        self::assertEquals('Box250 2260', $packedBoxes[0]->box->getReference());
+        self::assertEquals('Box120 400', $packedBoxes[1]->box->getReference());
+    }
+
     public function testCustomPackedBoxSorterIsUsed(): void
     {
         PackedBoxByReferenceSorter::$reference = 'Box #1';
