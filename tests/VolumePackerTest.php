@@ -680,4 +680,19 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(29, $packedBox->items);
     }
+
+    public function testIssue609(): void
+    {
+        $this->markTestSkipped();
+        $box = new TestBox('Le petite box', 340, 350, 30, 80, 220, 310, 26, 2000);
+
+        $itemList = new ItemList();
+        $itemList->insert(new TestItem('CD', 130, 140, 10, 100, Rotation::BestFit), 4);
+        $itemList->insert(new TestItem('Cassette', 70, 110, 17, 100, Rotation::BestFit), 2);
+
+        $packer = new VolumePacker($box, $itemList);
+        $packedBox = $packer->pack();
+
+        self::assertCount(6, $packedBox->items);
+    }
 }
