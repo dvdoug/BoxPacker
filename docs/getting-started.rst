@@ -120,7 +120,7 @@ Packing a set of items into a given set of box types
 
         echo "These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL;
         foreach ($packedBoxes as $packedBox) {
-            $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+            $boxType = $packedBox->box; // your own box object, in this case TestBox
             echo "This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL;
             echo "The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL;
 
