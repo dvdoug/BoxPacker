@@ -5,28 +5,8 @@
  */
 "use strict";
 
-import { ActionManager } from "@babylonjs/core/Actions/actionManager";
-import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
-import "@babylonjs/core/Animations/animatable";
-import { Animation } from "@babylonjs/core/Animations/animation";
-import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
-import "@babylonjs/core/Rendering/boundingBoxRenderer";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
-import { Control } from "@babylonjs/gui/2D/controls/control";
-import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
-import { CreateLines } from "@babylonjs/core/Meshes/Builders/linesBuilder";
-import { CreatePlane } from "@babylonjs/core/Meshes/Builders/planeBuilder";
-import "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
-import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
-import { Engine } from "@babylonjs/core/Engines/engine";
-import { ExecuteCodeAction } from "@babylonjs/core/Actions/directActions";
-import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { HighlightLayer } from "@babylonjs/core/Layers/highlightLayer";
-import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
-import { Scene } from "@babylonjs/core/scene";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import * as BABYLON from "@babylonjs/core/Legacy/legacy";
+import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from "@babylonjs/gui";
 
 document.addEventListener("DOMContentLoaded", function () {
     const DEMO_PACKING = {
@@ -120,55 +100,55 @@ document.addEventListener("DOMContentLoaded", function () {
     const ZOOM = 0.1;
 
     const ITEM_COLOURS = [
-        new Color3(1.0, 0.0, 0.0),
-        new Color3(0.0, 1.0, 0.0),
-        new Color3(0.0, 0.0, 1.0),
-        new Color3(1.0, 1.0, 0.0),
-        new Color3(0.0, 1.0, 1.0),
-        new Color3(1.0, 0.0, 1.0),
-        new Color3(1.0, 1.0, 1.0),
+        new BABYLON.Color3(1.0, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 1.0, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 1.0),
+        new BABYLON.Color3(1.0, 1.0, 0.0),
+        new BABYLON.Color3(0.0, 1.0, 1.0),
+        new BABYLON.Color3(1.0, 0.0, 1.0),
+        new BABYLON.Color3(1.0, 1.0, 1.0),
 
-        new Color3(0.8, 0.0, 0.0),
-        new Color3(0.0, 0.8, 0.0),
-        new Color3(0.0, 0.0, 0.8),
-        new Color3(0.8, 0.8, 0.0),
-        new Color3(0.0, 0.8, 0.8),
-        new Color3(0.8, 0.0, 0.8),
-        new Color3(0.8, 0.8, 0.8),
+        new BABYLON.Color3(0.8, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 0.8, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 0.8),
+        new BABYLON.Color3(0.8, 0.8, 0.0),
+        new BABYLON.Color3(0.0, 0.8, 0.8),
+        new BABYLON.Color3(0.8, 0.0, 0.8),
+        new BABYLON.Color3(0.8, 0.8, 0.8),
 
-        new Color3(0.6, 0.0, 0.0),
-        new Color3(0.0, 0.6, 0.0),
-        new Color3(0.0, 0.0, 0.6),
-        new Color3(0.6, 0.6, 0.0),
-        new Color3(0.0, 0.6, 0.6),
-        new Color3(0.6, 0.0, 0.6),
-        new Color3(0.6, 0.6, 0.6),
+        new BABYLON.Color3(0.6, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 0.6, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 0.6),
+        new BABYLON.Color3(0.6, 0.6, 0.0),
+        new BABYLON.Color3(0.0, 0.6, 0.6),
+        new BABYLON.Color3(0.6, 0.0, 0.6),
+        new BABYLON.Color3(0.6, 0.6, 0.6),
 
-        new Color3(0.4, 0.0, 0.0),
-        new Color3(0.0, 0.4, 0.0),
-        new Color3(0.0, 0.0, 0.4),
-        new Color3(0.4, 0.4, 0.0),
-        new Color3(0.0, 0.4, 0.4),
-        new Color3(0.4, 0.0, 0.4),
-        new Color3(0.4, 0.4, 0.4),
+        new BABYLON.Color3(0.4, 0.0, 0.0),
+        new BABYLON.Color3(0.0, 0.4, 0.0),
+        new BABYLON.Color3(0.0, 0.0, 0.4),
+        new BABYLON.Color3(0.4, 0.4, 0.0),
+        new BABYLON.Color3(0.0, 0.4, 0.4),
+        new BABYLON.Color3(0.4, 0.0, 0.4),
+        new BABYLON.Color3(0.4, 0.4, 0.4),
     ];
 
     const createScene = () => {
-        const scene = new Scene(engine);
+        const scene = new BABYLON.Scene(engine);
 
         /*
          * Light equally from above and below. If was just boxes could use emissiveColor on the items and skip lighting
          * altogether, but we also draw axes, and they need to be lit.
          */
-        const light = new HemisphericLight(
+        const light = new BABYLON.HemisphericLight(
             "hemisphere",
-            new Vector3(0, 1, 0),
+            new BABYLON.Vector3(0, 1, 0),
             scene,
         );
-        light.groundColor = new Color3(1, 1, 1);
+        light.groundColor = new BABYLON.Color3(1, 1, 1);
 
         // Add the highlight layer.
-        let hl = new HighlightLayer("hl1", scene);
+        let hl = new BABYLON.HighlightLayer("hl1", scene);
 
         const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
         advancedTexture.useInvalidateRectOptimization = false;
@@ -181,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
             xPos: number,
         ) {
             let makeTextPlane = function (text: string, color: string, size: number) {
-                let dynamicTexture = new DynamicTexture(
+                let dynamicTexture = new BABYLON.DynamicTexture(
                     "DynamicTexture",
                     50,
                     scene,
@@ -197,63 +177,63 @@ document.addEventListener("DOMContentLoaded", function () {
                     "transparent",
                     true,
                 );
-                let plane = <any>CreatePlane("TextPlane", { size: size }, scene);
-                let material = new StandardMaterial("TextPlaneMaterial", scene);
+                let plane = <any>BABYLON.CreatePlane("TextPlane", { size: size }, scene);
+                let material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
                 material.backFaceCulling = false;
-                material.specularColor = new Color3(0, 0, 0);
+                material.specularColor = new BABYLON.Color3(0, 0, 0);
                 material.diffuseTexture = dynamicTexture;
                 plane.material = material;
                 return plane;
             };
 
-            let axisX = CreateLines(
+            let axisX = BABYLON.CreateLines(
                 "axisX",
                 {
                     points: [
-                        new Vector3(xPos, 0, 0),
-                        new Vector3(xPos + xSize, 0, 0),
-                        new Vector3(xPos + xSize * 0.95, 0.05 * xSize, 0),
-                        new Vector3(xPos + xSize, 0, 0),
-                        new Vector3(xPos + xSize * 0.95, -0.05 * xSize, 0),
+                        new BABYLON.Vector3(xPos, 0, 0),
+                        new BABYLON.Vector3(xPos + xSize, 0, 0),
+                        new BABYLON.Vector3(xPos + xSize * 0.95, 0.05 * xSize, 0),
+                        new BABYLON.Vector3(xPos + xSize, 0, 0),
+                        new BABYLON.Vector3(xPos + xSize * 0.95, -0.05 * xSize, 0),
                     ],
                 },
                 scene,
             );
-            axisX.color = new Color3(1, 0, 0);
+            axisX.color = new BABYLON.Color3(1, 0, 0);
             let xChar = makeTextPlane("X", "red", xSize / 10);
-            xChar.position = new Vector3(0.9 * xSize + xPos, -0.05 * xSize, 0);
-            let axisY = CreateLines(
+            xChar.position = new BABYLON.Vector3(0.9 * xSize + xPos, -0.05 * xSize, 0);
+            let axisY = BABYLON.CreateLines(
                 "axisY",
                 {
                     points: [
-                        new Vector3(xPos, 0, 0),
-                        new Vector3(xPos, zSize, 0),
-                        new Vector3(xPos - 0.05 * zSize, zSize * 0.95, 0),
-                        new Vector3(xPos, zSize, 0),
-                        new Vector3(xPos + 0.05 * zSize, zSize * 0.95, 0),
+                        new BABYLON.Vector3(xPos, 0, 0),
+                        new BABYLON.Vector3(xPos, zSize, 0),
+                        new BABYLON.Vector3(xPos - 0.05 * zSize, zSize * 0.95, 0),
+                        new BABYLON.Vector3(xPos, zSize, 0),
+                        new BABYLON.Vector3(xPos + 0.05 * zSize, zSize * 0.95, 0),
                     ],
                 },
                 scene,
             );
-            axisY.color = new Color3(0, 1, 0);
+            axisY.color = new BABYLON.Color3(0, 1, 0);
             let yChar = makeTextPlane("Z", "green", zSize / 10);
-            yChar.position = new Vector3(xPos, 0.9 * zSize, -0.05 * zSize);
-            let axisZ = CreateLines(
+            yChar.position = new BABYLON.Vector3(xPos, 0.9 * zSize, -0.05 * zSize);
+            let axisZ = BABYLON.CreateLines(
                 "axisZ",
                 {
                     points: [
-                        new Vector3(xPos, 0, 0),
-                        new Vector3(xPos, 0, ySize),
-                        new Vector3(xPos, -0.05 * ySize, ySize * 0.95),
-                        new Vector3(xPos, 0, ySize),
-                        new Vector3(xPos, 0.05 * ySize, ySize * 0.95),
+                        new BABYLON.Vector3(xPos, 0, 0),
+                        new BABYLON.Vector3(xPos, 0, ySize),
+                        new BABYLON.Vector3(xPos, -0.05 * ySize, ySize * 0.95),
+                        new BABYLON.Vector3(xPos, 0, ySize),
+                        new BABYLON.Vector3(xPos, 0.05 * ySize, ySize * 0.95),
                     ],
                 },
                 scene,
             );
-            axisZ.color = new Color3(0, 0, 1);
+            axisZ.color = new BABYLON.Color3(0, 0, 1);
             let zChar = makeTextPlane("Y", "blue", ySize / 10);
-            zChar.position = new Vector3(xPos, 0.05 * ySize, 0.9 * ySize);
+            zChar.position = new BABYLON.Vector3(xPos, 0.05 * ySize, 0.9 * ySize);
         };
 
         let boxPlacementX = 0;
@@ -266,13 +246,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 boxPlacementX,
             );
 
-            const drawnBox = CreateBox(`Box #${index}`, {
+            const drawnBox = BABYLON.CreateBox(`Box #${index}`, {
                 width: ZOOM * packedBox.width,
                 depth: ZOOM * packedBox.length,
                 height: ZOOM * packedBox.depth,
             });
             hl.addExcludedMesh(drawnBox);
-            let material = new StandardMaterial("material", scene);
+            let material = new BABYLON.StandardMaterial("material", scene);
             material.alpha = 0; // make box faces invisible
             drawnBox.material = material;
             drawnBox.showBoundingBox = true; // but show edges
@@ -282,12 +262,12 @@ document.addEventListener("DOMContentLoaded", function () {
             drawnBox.position.y = (ZOOM * packedBox.depth) / 2;
 
             packedBox.packedItems.forEach((packedItem: PackedItem, index) => {
-                let drawnItem = CreateBox(`Item #${index}`, {
+                let drawnItem = BABYLON.CreateBox(`Item #${index}`, {
                     width: ZOOM * packedItem.width,
                     depth: ZOOM * packedItem.length,
                     height: ZOOM * packedItem.depth,
                 });
-                let material = new StandardMaterial("material", scene);
+                let material = new BABYLON.StandardMaterial("material", scene);
                 material.diffuseColor = ITEM_COLOURS[index % 28];
                 material.alpha = 0.7;
                 drawnItem.material = material;
@@ -353,21 +333,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 text1.paddingLeft = "20px";
                 text1.paddingRight = "20px";
 
-                drawnItem.actionManager = new ActionManager(scene);
+                drawnItem.actionManager = new BABYLON.ActionManager(scene);
 
-                let scaleXAnimation = new Animation(
+                let scaleXAnimation = new BABYLON.Animation(
                     "myAnimation",
                     "scaleX",
                     30,
-                    Animation.ANIMATIONTYPE_FLOAT,
-                    Animation.ANIMATIONLOOPMODE_CONSTANT,
+                    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                    BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
                 );
-                let scaleYAnimation = new Animation(
+                let scaleYAnimation = new BABYLON.Animation(
                     "myAnimation",
                     "scaleY",
                     30,
-                    Animation.ANIMATIONTYPE_FLOAT,
-                    Animation.ANIMATIONLOOPMODE_CONSTANT,
+                    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                    BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
                 );
 
                 let keys = [];
@@ -385,17 +365,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 (<any>rect1).animations = [scaleXAnimation, scaleYAnimation];
 
                 drawnItem.actionManager.registerAction(
-                    new ExecuteCodeAction(
-                        ActionManager.OnPointerOverTrigger,
+                    new BABYLON.ExecuteCodeAction(
+                        BABYLON.ActionManager.OnPointerOverTrigger,
                         function () {
-                            hl.addMesh(drawnItem, Color3.Green());
+                            hl.addMesh(drawnItem, BABYLON.Color3.Green());
                             scene.beginAnimation(rect1, 0, 10, false);
                         },
                     ),
                 );
                 //if hover is over remove highlight of the mesh
                 drawnItem.actionManager.registerAction(
-                    new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
+                    new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function () {
                         hl.removeMesh(drawnItem);
                         scene.beginAnimation(rect1, 10, 0, false);
                     }),
@@ -405,12 +385,12 @@ document.addEventListener("DOMContentLoaded", function () {
             boxPlacementX += 2 * ZOOM * packedBox.width;
         });
 
-        const camera = new ArcRotateCamera(
+        const camera = new BABYLON.ArcRotateCamera(
             "ArcRotateCamera",
             -0.8 * Math.PI,
             0.5 * Math.PI,
             ZOOM * packedBoxes[0].depth * 2.5,
-            new Vector3(0, (ZOOM * packedBoxes[0].depth) / 2, 0),
+            new BABYLON.Vector3(0, (ZOOM * packedBoxes[0].depth) / 2, 0),
             scene,
         );
         camera.panningSensibility = 100;
@@ -419,8 +399,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return scene;
     };
 
-    const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement; // Get the canvas element
-    const engine = new Engine(canvas, true, { stencil: true }); // Generate the BABYLON 3D engine
+    const canvas = document.getElementById("renderCanvas") as unknown as HTMLCanvasElement; // Get the canvas element
+    const engine = new BABYLON.Engine(canvas, true, { stencil: true }); // Generate the BABYLON 3D engine
     document
         .getElementById("makeFullscreen")
         ?.addEventListener("click", function () {
