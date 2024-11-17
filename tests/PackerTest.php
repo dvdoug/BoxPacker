@@ -1416,4 +1416,44 @@ class PackerTest extends TestCase
         self::assertCount(0, $permutations);
         self::assertCount(3, $packer->getUnpackedItems());
     }
+
+    /**
+     * From issue #620.
+     */
+    #[Group('efficiency')]
+    public function testIssue620(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+
+        for ($i = 0; $i < 100; ++$i) {
+            $box = new TestBox(
+                reference: 'box ' . $i,
+                outerWidth: $i * 10,
+                outerLength: $i * 10,
+                outerDepth: $i * 10,
+                emptyWeight: 1,
+                innerWidth: $i * 10,
+                innerLength: $i * 10,
+                innerDepth: $i * 10,
+                maxWeight: 10000
+            );
+            $packer->addBox($box);
+        }
+
+        $item = new TestItem(
+            description: 'item 1',
+            width: 100,
+            length: 100,
+            depth: 100,
+            weight: 100,
+            allowedRotation: Rotation::BestFit
+        );
+        $packer->addItem($item, 500);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(6, $packedBoxes);
+    }
 }
