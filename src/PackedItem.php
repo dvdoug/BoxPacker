@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Box packing (3D bin packing, knapsack problem).
  *
