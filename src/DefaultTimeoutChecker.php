@@ -11,6 +11,8 @@ namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Exception\TimeoutException;
 
+use function microtime;
+
 class DefaultTimeoutChecker implements TimeoutChecker
 {
     private float $startTime;
@@ -21,12 +23,12 @@ class DefaultTimeoutChecker implements TimeoutChecker
 
     public function start(?float $startTime = null): void
     {
-        $this->startTime = $startTime ?? \microtime(true);
+        $this->startTime = $startTime ?? microtime(true);
     }
 
     public function throwOnTimeout(?float $currentTime = null, string $message = 'Exceeded the timeout'): void
     {
-        $spentTime = ($currentTime ?? \microtime(true)) - $this->startTime;
+        $spentTime = ($currentTime ?? microtime(true)) - $this->startTime;
         $isTimeout = $spentTime >= $this->timeout;
         if ($isTimeout) {
             throw new TimeoutException($message, $spentTime, $this->timeout);

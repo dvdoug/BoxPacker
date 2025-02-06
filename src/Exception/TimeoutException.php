@@ -12,7 +12,7 @@ namespace DVDoug\BoxPacker\Exception;
 use RuntimeException;
 
 /**
- * Exception used when the timeout occurred
+ * Exception used when the timeout occurred.
  */
 class TimeoutException extends RuntimeException
 {
