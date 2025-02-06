@@ -2,6 +2,10 @@
 
 ## [4.x - Unreleased] - 2024-xx-xx
 
+## [4.1.0] - 2025-02-06
+### Added
+- A mechanism to allow a proactive timeout on v. large packings rather than run to completion
+
 ## [4.0.1] - 2024-04-01
 ### Changed
 - Improved efficiency in packing
@@ -578,8 +582,10 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/4.0.0..master
+[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/4.1.0..master
 
+[4.1.0]: https://github.com/dvdoug/BoxPacker/compare/4.0.1..4.1.0
+[4.0.1]: https://github.com/dvdoug/BoxPacker/compare/4.0.0..4.0.1
 [4.0.0]: https://github.com/dvdoug/BoxPacker/compare/3.12.1..4.0.0
 [3.12.1]: https://github.com/dvdoug/BoxPacker/compare/3.12.0..3.12.1
 [3.12.0]: https://github.com/dvdoug/BoxPacker/compare/3.11.0..3.12.0
