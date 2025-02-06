@@ -38,7 +38,8 @@ class WeightRedistributor implements LoggerAwareInterface
     public function __construct(
         private readonly BoxList $boxes,
         private readonly PackedBoxSorter $packedBoxSorter,
-        private WeakMap $boxQuantitiesAvailable
+        private WeakMap $boxQuantitiesAvailable,
+        private readonly ?TimeoutChecker $timeoutChecker,
     ) {
         $this->logger = new NullLogger();
     }
@@ -106,6 +107,7 @@ class WeightRedistributor implements LoggerAwareInterface
         $underWeightBoxItems = $underWeightBox->items->asItemArray();
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
+            $this->timeoutChecker?->throwOnTimeout();
             if (!self::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
                 continue; // moving this item would harm more than help
             }

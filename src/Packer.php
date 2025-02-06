@@ -46,6 +46,8 @@ class Packer implements LoggerAwareInterface
 
     private bool $beStrictAboutItemOrdering = false;
 
+    protected ?TimeoutChecker $timeoutChecker = null;
+
     public function __construct()
     {
         $this->items = new ItemList();
@@ -136,6 +138,11 @@ class Packer implements LoggerAwareInterface
         $this->packedBoxSorter = $packedBoxSorter;
     }
 
+    public function setTimeoutChecker(TimeoutChecker $timeoutChecker): void
+    {
+        $this->timeoutChecker = $timeoutChecker;
+    }
+
     public function throwOnUnpackableItem(bool $throwOnUnpackableItem): void
     {
         $this->throwOnUnpackableItem = $throwOnUnpackableItem;
@@ -160,12 +167,12 @@ class Packer implements LoggerAwareInterface
     public function pack(): PackedBoxList
     {
         $this->logger->log(LogLevel::INFO, '[PACKING STARTED]');
-
+        $this->timeoutChecker?->start();
         $packedBoxes = $this->doBasicPacking();
 
         // If we have multiple boxes, try and optimise/even-out weight distribution
         if (!$this->beStrictAboutItemOrdering && $packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
-            $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxQuantitiesAvailable);
+            $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxQuantitiesAvailable, $this->timeoutChecker);
             $redistributor->setLogger($this->logger);
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
@@ -188,6 +195,7 @@ class Packer implements LoggerAwareInterface
 
             // Loop through boxes starting with smallest, see what happens
             foreach ($this->getBoxList($enforceSingleBox) as $box) {
+                $this->timeoutChecker?->throwOnTimeout();
                 $volumePacker = new VolumePacker($box, $this->items);
                 $volumePacker->setLogger($this->logger);
                 $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
@@ -232,6 +240,7 @@ class Packer implements LoggerAwareInterface
     public function packAllPermutations(): array
     {
         $this->logger->log(LogLevel::INFO, '[PACKING STARTED (all permutations)]');
+        $this->timeoutChecker?->start();
 
         $boxQuantitiesAvailable = clone $this->boxQuantitiesAvailable;
 
@@ -252,6 +261,7 @@ class Packer implements LoggerAwareInterface
 
             $additionalPermutationsForThisPermutation = [];
             foreach ($this->boxes as $box) {
+                $this->timeoutChecker?->throwOnTimeout();
                 if ($remainingBoxQuantities[$box] > 0) {
                     $volumePacker = new VolumePacker($box, $wipPermutation['itemsLeft']);
                     $volumePacker->setLogger($this->logger);
