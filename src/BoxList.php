@@ -60,6 +60,7 @@ class BoxList implements IteratorAggregate
 
     public function insert(Box $item): void
     {
+        $this->isSorted = false;
         $this->list[] = $item;
     }
 }
