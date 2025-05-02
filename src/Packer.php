@@ -48,14 +48,18 @@ class Packer implements LoggerAwareInterface
 
     protected ?TimeoutChecker $timeoutChecker = null;
 
-    public function __construct()
-    {
-        $this->items = new ItemList();
-        $this->boxes = new BoxList();
-        $this->packedBoxSorter = new DefaultPackedBoxSorter();
+    public function __construct(
+        ItemList $items = new ItemList(),
+        BoxList $boxes = new BoxList(),
+        PackedBoxSorter $packedBoxSorter = new DefaultPackedBoxSorter(),
+        LoggerInterface $logger = new NullLogger(),
+    ) {
+        $this->items = $items;
+        $this->boxes = $boxes;
+        $this->packedBoxSorter = $packedBoxSorter;
         $this->boxQuantitiesAvailable = new WeakMap();
 
-        $this->logger = new NullLogger();
+        $this->logger = $logger;
     }
 
     public function setLogger(LoggerInterface $logger): void
