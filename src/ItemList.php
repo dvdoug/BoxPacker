@@ -43,7 +43,7 @@ class ItemList implements Countable, IteratorAggregate
      */
     private ?bool $hasConstrainedItems = null;
 
-    public function __construct(ItemSorter $sorter = null)
+    public function __construct(?ItemSorter $sorter = null)
     {
         $this->sorter = $sorter ?: new DefaultItemSorter();
     }

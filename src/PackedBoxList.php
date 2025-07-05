@@ -34,7 +34,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
 
     private PackedBoxSorter $sorter;
 
-    public function __construct(PackedBoxSorter $sorter = null)
+    public function __construct(?PackedBoxSorter $sorter = null)
     {
         $this->sorter = $sorter ?: new DefaultPackedBoxSorter();
     }

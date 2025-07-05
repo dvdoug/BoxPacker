@@ -2,6 +2,10 @@
 
 ## [3.x - Unreleased] - 2023-xx-xx
 
+## [3.12.2] - 2025-07-05
+### Fixed
+- Addressed several deprecations for PHP 8.4.
+
 ## [3.12.1] - 2023-12-02
 ### Fixed
 - Restored ability to copy/paste the samples from the docs into a non-dev installation

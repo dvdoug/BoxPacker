@@ -28,7 +28,7 @@ class BoxList implements IteratorAggregate
 
     private BoxSorter $sorter;
 
-    public function __construct(BoxSorter $sorter = null)
+    public function __construct(?BoxSorter $sorter = null)
     {
         $this->sorter = $sorter ?: new DefaultBoxSorter();
     }
