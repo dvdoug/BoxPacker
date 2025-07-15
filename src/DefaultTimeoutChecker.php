@@ -17,7 +17,7 @@ class DefaultTimeoutChecker implements TimeoutChecker
 {
     private float $startTime;
 
-    public function __construct(readonly private float $timeout)
+    public function __construct(private readonly float $timeout)
     {
     }
 

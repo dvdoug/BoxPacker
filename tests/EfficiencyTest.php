@@ -148,12 +148,12 @@ class EfficiencyTest extends TestCase
                             'weight' => (int) $data[6],
                         ],
                     ],
-                    'expected2D' => (int) $expected['2D'][$data[0]]['boxes'],
-                    'expected3D' => (int) $expected['3D'][$data[0]]['boxes'],
-                    'weightVariance2D' => (float) $expected['2D'][$data[0]]['weightVariance'],
-                    'weightVariance3D' => (float) $expected['3D'][$data[0]]['weightVariance'],
-                    'volumeUtilisation2D' => (float) $expected['2D'][$data[0]]['utilisation'],
-                    'volumeUtilisation3D' => (float) $expected['3D'][$data[0]]['utilisation'],
+                    'expectedBoxes2D' => (int) $expected['2D'][$data[0]]['boxes'],
+                    'expectedBoxes3D' => (int) $expected['3D'][$data[0]]['boxes'],
+                    'expectedWeightVariance2D' => (float) $expected['2D'][$data[0]]['weightVariance'],
+                    'expectedWeightVariance3D' => (float) $expected['3D'][$data[0]]['weightVariance'],
+                    'expectedVolumeUtilisation2D' => (float) $expected['2D'][$data[0]]['utilisation'],
+                    'expectedVolumeUtilisation3D' => (float) $expected['3D'][$data[0]]['utilisation'],
                 ];
             }
         }

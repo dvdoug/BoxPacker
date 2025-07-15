@@ -75,7 +75,7 @@ class PublishedTestCasesTest extends TestCase
         $fileData = self::thpackDecode('thpack8.txt');
         foreach ($fileData as &$problem) {
             $problem[0] = "Loh and Nee #{$problem[0]}";
-            $data[$problem[0]] = $problem;
+            $data[$problem[0]] = [$problem[0], $problem[1], $problem[2]];
         }
 
         return $data;
@@ -100,7 +100,7 @@ class PublishedTestCasesTest extends TestCase
             $fileData = self::thpackDecode("thpack{$i}.txt");
             foreach ($fileData as &$problem) {
                 $problem[0] = "Bischoff #{$problem[3]}-{$problem[0]}";
-                $data[$problem[0]] = $problem;
+                $data[$problem[0]] = [$problem[0], $problem[1], $problem[2]];
             }
         }
 
