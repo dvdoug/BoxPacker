@@ -1226,7 +1226,7 @@ class PackerTest extends TestCase
     }
 
     /**
-     * Issue 638 make sure not to exceed weight limit when packing additional items
+     * Issue 638 make sure not to exceed weight limit when packing additional items.
      */
     public function testIssue638(): void
     {
