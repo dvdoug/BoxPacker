@@ -1225,6 +1225,24 @@ class PackerTest extends TestCase
         self::assertCount(1, $packedBoxes);
     }
 
+    /**
+     * Issue 638 make sure not to exceed weight limit when packing additional items
+     */
+    public function testIssue638(): void
+    {
+        $packer = new Packer();
+        $packer->setMaxBoxesToBalanceWeight(0);
+        $packer->addBox(new TestBox('Paddys Box', 576, 766, 418, 0, 576, 766, 418, 31500));
+        $packer->addItem(new TestItem('Mac', 250, 500, 350, 12842, Rotation::BestFit), 2);
+        $packer->addItem(new TestItem('Charlie', 165, 160, 262, 5375, Rotation::BestFit), 60);
+        $packedBoxes = $packer->pack();
+
+        /** @var PackedBox $packedBox */
+        foreach ($packedBoxes as $packedBox) {
+            self::assertTrue($packedBox->getWeight() <= $packedBox->box->getMaxWeight());
+        }
+    }
+
     public function testIssue608Default(): void
     {
         $packer = new Packer();
