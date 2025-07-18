@@ -80,13 +80,12 @@ class LayerPacker implements LoggerAwareInterface
         $rowLength = 0;
         $prevItem = null;
         $skippedItems = [];
-        $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight();
 
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
 
             // skip items that will never fit e.g. too heavy
-            if ($itemToPack->getWeight() > $remainingWeightAllowed) {
+            if ($itemToPack->getWeight() > ($this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight())) {
                 continue;
             }
 
@@ -114,7 +113,6 @@ class LayerPacker implements LoggerAwareInterface
                 }
 
                 $x += $packedItem->width;
-                $remainingWeightAllowed = $this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight(); // remember may have packed additional items
 
                 // might be space available lengthwise across the width of this item, up to the current layer length
                 $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability, null));
