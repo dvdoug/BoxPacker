@@ -1493,4 +1493,48 @@ class PackerTest extends TestCase
         /** @var PackedBox[] $packedBoxes */
         $packedBoxes = iterator_to_array($packer->pack(), false);
     }
+
+    public function testBoxListIsSorted(): void
+    {
+        $packer = new Packer();
+        $packer->setBoxes(new BoxList());
+        $packer->addBox(new TestBox(
+            reference: 'big box',
+            outerWidth: 3,
+            outerLength: 3,
+            outerDepth: 3,
+            emptyWeight: 0,
+            innerWidth: 3,
+            innerLength: 3,
+            innerDepth: 3,
+            maxWeight: 10000
+        ));
+        $packer->addBox(new TestBox(
+            reference: 'expected box',
+            outerWidth: 2,
+            outerLength: 2,
+            outerDepth: 2,
+            emptyWeight: 0,
+            innerWidth: 2,
+            innerLength: 2,
+            innerDepth: 2,
+            maxWeight: 10000
+        ));
+
+        $item = new TestItem(
+            description: 'item',
+            width: 1,
+            length: 1,
+            depth: 1,
+            weight: 1,
+            allowedRotation: Rotation::BestFit
+        );
+        $packer->addItem($item, 1);
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(1, $packedBoxes);
+        self::assertSame('expected box', $packedBoxes[0]->box->getReference());
+    }
 }
