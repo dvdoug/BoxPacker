@@ -2,6 +2,12 @@
 
 ## [4.x - Unreleased] - 2025-xx-xx
 
+## [4.1.1] - 2025-07-21
+### Fixed
+- In some cases the maximum weight of a box was not respected
+- Sometimes boxes were not ordered canonically
+- Visualisation links did not encode the query params
+
 ## [4.1.0] - 2025-02-06
 ### Added
 - A mechanism to allow a proactive timeout on v. large packings rather than run to completion
@@ -582,8 +588,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/4.1.0..master
+[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/4.1.1..master
 
+[4.1.1]: https://github.com/dvdoug/BoxPacker/compare/4.1.0..4.1.1
 [4.1.0]: https://github.com/dvdoug/BoxPacker/compare/4.0.1..4.1.0
 [4.0.1]: https://github.com/dvdoug/BoxPacker/compare/4.0.0..4.0.1
 [4.0.0]: https://github.com/dvdoug/BoxPacker/compare/3.12.1..4.0.0
