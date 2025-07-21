@@ -130,6 +130,6 @@ class PackedBoxTest extends TestCase
 
         $packedBox = new PackedBox($box, $boxItems);
 
-        self::assertEquals('https://boxpacker.io/en/master/visualiser.html?packing={"items":[["Item",4,10,10]],"boxes":[["Box",10,10,20,[[0,0,0,0,4,10,10]]]]}', $packedBox->generateVisualisationURL());
+        self::assertEquals('https://boxpacker.io/en/master/visualiser.html?packing=%7B%22items%22%3A%5B%5B%22Item%22%2C4%2C10%2C10%5D%5D%2C%22boxes%22%3A%5B%5B%22Box%22%2C10%2C10%2C20%2C%5B%5B0%2C0%2C0%2C0%2C4%2C10%2C10%5D%5D%5D%5D%7D', $packedBox->generateVisualisationURL());
     }
 }

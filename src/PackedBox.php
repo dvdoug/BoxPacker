@@ -21,6 +21,7 @@ use function array_pop;
 use function assert;
 use function array_map;
 use function spl_object_id;
+use function rawurlencode;
 
 use const JSON_THROW_ON_ERROR;
 use const JSON_NUMERIC_CHECK;
@@ -200,7 +201,7 @@ readonly class PackedBox implements JsonSerializable
             ),
         ];
 
-        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . json_encode($data, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . rawurlencode(json_encode($data, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     public function __construct(public Box $box, public PackedItemList $items)
