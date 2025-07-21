@@ -100,7 +100,7 @@ class EfficiencyTest extends TestCase
         $expected = ['2D' => [], '3D' => []];
 
         $expected2DData = fopen(__DIR__ . '/data/expected.csv', 'rb');
-        while ($data = fgetcsv($expected2DData)) {
+        while ($data = fgetcsv($expected2DData, escape: '')) {
             $expected['2D'][$data[0]] = ['boxes' => $data[1], 'weightVariance' => $data[2], 'utilisation' => $data[3]];
             $expected['3D'][$data[0]] = ['boxes' => $data[4], 'weightVariance' => $data[5], 'utilisation' => $data[6]];
         }
@@ -108,7 +108,7 @@ class EfficiencyTest extends TestCase
 
         $boxes = [];
         $boxData = fopen(__DIR__ . '/data/boxes.csv', 'rb');
-        while ($data = fgetcsv($boxData)) {
+        while ($data = fgetcsv($boxData, escape: '')) {
             $boxes[] = new TestBox(
                 $data[0],
                 (int) $data[1],
@@ -125,7 +125,7 @@ class EfficiencyTest extends TestCase
 
         $tests = [];
         $itemData = fopen(__DIR__ . '/data/items.csv', 'rb');
-        while ($data = fgetcsv($itemData)) {
+        while ($data = fgetcsv($itemData, escape: '')) {
             if (isset($tests[$data[0]])) {
                 $tests[$data[0]]['items'][] = [
                     'qty' => (int) $data[1],
