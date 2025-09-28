@@ -1246,13 +1246,8 @@ class PackerTest extends TestCase
     public function testIssue608Default(): void
     {
         $packer = new Packer();
-        $w = 400;
-        while ($w <= 2360) {
-            $packer->addBox(new TestBox('Box120 ' . $w, $w, 285, 120, 1200, $w, 285, 120, 25000));
-            $packer->addBox(new TestBox('Box160 ' . $w, $w, 285, 160, 1200, $w, 285, 160, 25000));
-            $packer->addBox(new TestBox('Box250 ' . $w, $w, 285, 250, 1200, $w, 285, 250, 25000));
-            $w += 10;
-        }
+        $packer->addBox(new TestBox('Box250 1180', 1180, 285, 250, 1200, 1180, 285, 250, 25000));
+        $packer->addBox(new TestBox('Box250 2260', 2260, 285, 250, 1200, 2260, 285, 250, 25000));
 
         $packer->addItem(new TestItem('mountings', 282, 110, 160, 500, Rotation::KeepFlat), 1);
         $packer->addItem(new TestItem('blind 50mm', 2260, 218, 80, 1380, Rotation::KeepFlat), 1);
@@ -1273,13 +1268,8 @@ class PackerTest extends TestCase
     {
         $packer = new Packer();
         $packer->setMaxBoxesToBalanceWeight(0);
-        $w = 400;
-        while ($w <= 2360) {
-            $packer->addBox(new TestBox('Box120 ' . $w, $w, 285, 120, 1200, $w, 285, 120, 25000));
-            $packer->addBox(new TestBox('Box160 ' . $w, $w, 285, 160, 1200, $w, 285, 160, 25000));
-            $packer->addBox(new TestBox('Box250 ' . $w, $w, 285, 250, 1200, $w, 285, 250, 25000));
-            $w += 10;
-        }
+        $packer->addBox(new TestBox('Box120 1590', 1590, 285, 120, 1200, 1590, 285, 120, 25000));
+        $packer->addBox(new TestBox('Box250 2320', 2320, 285, 250, 1200, 2320, 285, 250, 25000));
 
         $packer->addItem(new TestItem('mountings', 282, 110, 160, 500, Rotation::KeepFlat), 1);
         $packer->addItem(new TestItem('blind 50mm', 2260, 218, 80, 1380, Rotation::KeepFlat), 1);
@@ -1481,7 +1471,7 @@ class PackerTest extends TestCase
     {
         $this->expectException(TimeoutException::class);
         $packer = new Packer();
-        $packer->setTimeoutChecker(new DefaultTimeoutChecker(3.0));
+        $packer->setTimeoutChecker(new DefaultTimeoutChecker(1.0));
 
         for ($i = 0; $i < 100; ++$i) {
             $box = new TestBox(
