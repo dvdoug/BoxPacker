@@ -69,7 +69,7 @@ jobs:
           php-${{ matrix.php-version }}-deps-${{ matrix.dependencies }}
 
     - name: Remove PHP-CS-Fixer if not called
-      if: matrix.php-version != '8.2' || matrix.dependencies != 'highest'
+      if: matrix.php-version != '8.4' || matrix.dependencies != 'highest'
       run: composer remove --dev --no-update "friendsofphp/php-cs-fixer";
 
     - name: Install dependencies (low)
@@ -100,7 +100,7 @@ jobs:
 
     - name: PHPUnit
       run: |
-        if [ "${{ matrix.php-version }}" = "8.2" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+        if [ "${{ matrix.php-version }}" = "8.4" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
           php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency;
         else
           php -dmemory_limit=-1 vendor/phpunit/phpunit/phpunit --exclude-group=efficiency --no-coverage;
@@ -108,14 +108,14 @@ jobs:
 
     - name: Behat
       run: |
-        if [ "${{ matrix.php-version }}" = "8.2" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
+        if [ "${{ matrix.php-version }}" = "8.4" ] && [ "${{ matrix.dependencies }}" = "highest" ]; then
           php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict;
         else
           php -dmemory_limit=-1 vendor/behat/behat/bin/behat --strict --no-coverage;
         fi;
 
     - name: Check code style
-      if: matrix.php-version == '8.2' && matrix.dependencies == 'highest'
+      if: matrix.php-version == '8.4' && matrix.dependencies == 'highest'
       run: vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --allow-risky=yes --format=checkstyle | cs2pr
 
 

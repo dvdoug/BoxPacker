@@ -256,6 +256,8 @@ document.addEventListener("DOMContentLoaded", function () {
             material.alpha = 0; // make box faces invisible
             drawnBox.material = material;
             drawnBox.showBoundingBox = true; // but show edges
+            scene.getBoundingBoxRenderer().frontColor = new BABYLON.Color3(1, 1, 1);
+            scene.getBoundingBoxRenderer().backColor = new BABYLON.Color3(1, 1, 1);
             // Babylon positions the centre of the box at (0,0,0) so compensate for that as BoxPacker measures from the corner
             drawnBox.position.x = boxPlacementX + (ZOOM * packedBox.width) / 2;
             drawnBox.position.z = (ZOOM * packedBox.length) / 2;
