@@ -141,9 +141,9 @@ class OrientatedItemFactory implements LoggerAwareInterface
                     }
 
                     return $constrainedItem->canBePacked(new PackedBox($this->box, $rotatedPrevPackedItemList), $y, $x, $z, $i->length, $i->width, $i->depth);
-                } else {
-                    return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->width, $i->length, $i->depth);
                 }
+
+                return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->width, $i->length, $i->depth);
             });
         }
 

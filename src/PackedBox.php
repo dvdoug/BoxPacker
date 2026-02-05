@@ -196,7 +196,7 @@ readonly class PackedBox implements JsonSerializable
             $this->box->getInnerLength(),
             $this->box->getInnerDepth(),
             array_map(
-                fn (PackedItem $item) => [$splIdToIntMap[spl_object_id($item->item)], $item->x, $item->y, $item->z, $item->width, $item->length, $item->depth],
+                static fn (PackedItem $item) => [$splIdToIntMap[spl_object_id($item->item)], $item->x, $item->y, $item->z, $item->width, $item->length, $item->depth],
                 iterator_to_array($this->items)
             ),
         ];

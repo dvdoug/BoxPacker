@@ -71,7 +71,7 @@ class PackedItemList implements Countable, IteratorAggregate
      */
     public function asItemArray(): array
     {
-        return array_map(fn (PackedItem $packedItem) => $packedItem->item, $this->list);
+        return array_map(static fn (PackedItem $packedItem) => $packedItem->item, $this->list);
     }
 
     /**

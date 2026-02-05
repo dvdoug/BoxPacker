@@ -192,7 +192,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
                 $packedBox->box->getInnerLength(),
                 $packedBox->box->getInnerDepth(),
                 array_map(
-                    fn (PackedItem $item) => [$splIdToIntMap[spl_object_id($item->item)], $item->x, $item->y, $item->z, $item->width, $item->length, $item->depth],
+                    static fn (PackedItem $item) => [$splIdToIntMap[spl_object_id($item->item)], $item->x, $item->y, $item->z, $item->width, $item->length, $item->depth],
                     iterator_to_array($packedBox->items)
                 ),
             ];
