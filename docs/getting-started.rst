@@ -28,6 +28,7 @@ you may already have at least some of these defined. ::
           |------------/
                width
 
+
 If you do happen to have methods defined with those names already, **and they are incompatible with the interface expectations**,
 then this will be only case where some kind of wrapper object would be needed.
 
@@ -195,6 +196,6 @@ Does a set of items fit into a particular box
 
         echo "The items in this box are:" . PHP_EOL;
         $packedItems = $packedBox->items;
-        foreach ($packedItems as $packedItem) { // $packedItem->getItem() is your own item object, in this case TestItem
+        foreach ($packedItems as $packedItem) { // $packedItem->item is your own item object, in this case TestItem
             echo $packedItem->item->getDescription() . PHP_EOL;
         }

@@ -37,7 +37,7 @@ First, create your own implementation of the ``ItemSorter`` interface implementi
     /**
      * A callback to be used with usort(), implementing logic to determine which Item is a higher priority for packing.
      */
-    YourApplicationItemSorter implements DVDoug\BoxPacker\ItemSorter
+    class YourApplicationItemSorter implements DVDoug\BoxPacker\ItemSorter
     {
         /**
          * Return -1 if $itemA is preferred, 1 if $itemB is preferred or 0 if neither is preferred.
@@ -98,7 +98,7 @@ First, create your own implementation of the ``BoxSorter`` interface implementin
     /**
      * A callback to be used with usort(), implementing logic to determine which Box is "better".
      */
-    YourApplicationBoxSorter implements DVDoug\BoxPacker\BoxSorter
+    class YourApplicationBoxSorter implements DVDoug\BoxPacker\BoxSorter
     {
         /**
          * Return -1 if $boxA is "best", 1 if $boxB is "best" or 0 if neither is "best".
@@ -137,7 +137,7 @@ First, create your own implementation of the ``PackedBoxSorter`` interface imple
     /**
      * A callback to be used with usort(), implementing logic to determine which PackedBox is "better".
      */
-    YourApplicationPackedBoxSorter implements DVDoug\BoxPacker\PackedBoxSorter
+    class YourApplicationPackedBoxSorter implements DVDoug\BoxPacker\PackedBoxSorter
     {
         /**
          * Return -1 if $boxA is "best", 1 if $boxB is "best" or 0 if neither is "best".
