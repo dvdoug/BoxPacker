@@ -24,7 +24,7 @@ updates:
         patterns:
           - "@babylonjs*"
 
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/docs"
     schedule:
       interval: "daily"
