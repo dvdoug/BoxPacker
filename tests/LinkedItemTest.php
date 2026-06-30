@@ -17,6 +17,8 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;
+use function array_filter;
+use function spl_object_id;
 
 class LinkedItemTest extends TestCase
 {
@@ -138,6 +140,7 @@ class LinkedItemTest extends TestCase
                     return true;
                 }
             }
+
             return false;
         });
         $groupBBoxes = array_filter($packedBoxes, static function (PackedBox $box): bool {
@@ -146,6 +149,7 @@ class LinkedItemTest extends TestCase
                     return true;
                 }
             }
+
             return false;
         });
 
