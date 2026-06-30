@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 
 use ArrayIterator;
 use Countable;
+use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
 
@@ -41,6 +42,11 @@ class ItemList implements Countable, IteratorAggregate
 
     private ?bool $hasNoRotationItems = null;
 
+    /**
+     * @var array<string, int>
+     */
+    private array $linkedGroupCounts = [];
+
     public function __construct(private readonly ItemSorter $sorter = new DefaultItemSorter())
     {
     }
@@ -56,11 +62,22 @@ class ItemList implements Countable, IteratorAggregate
         $list->list = array_reverse($items); // internal sort is largest at the end
         $list->isSorted = $preSorted;
 
+        foreach ($items as $item) {
+            if ($item instanceof LinkedItem) {
+                $group = $item->getLinkedItemGroup();
+                $list->linkedGroupCounts[$group] = ($list->linkedGroupCounts[$group] ?? 0) + 1;
+            }
+        }
+
         return $list;
     }
 
     public function insert(Item $item, int $qty = 1): void
     {
+        if ($item instanceof LinkedItem && $item->getLinkedItemGroup() === '') {
+            throw new InvalidArgumentException("Item '{$item->getDescription()}' has an empty linked item group, which is not allowed");
+        }
+
         for ($i = 0; $i < $qty; ++$i) {
             $this->list[] = $item;
         }
@@ -72,6 +89,11 @@ class ItemList implements Countable, IteratorAggregate
 
         if (isset($this->hasNoRotationItems)) { // normally lazy evaluated, override if that's already been done
             $this->hasNoRotationItems = $this->hasNoRotationItems || $item->getAllowedRotation() === Rotation::Never;
+        }
+
+        if ($item instanceof LinkedItem) {
+            $group = $item->getLinkedItemGroup();
+            $this->linkedGroupCounts[$group] = ($this->linkedGroupCounts[$group] ?? 0) + $qty;
         }
     }
 
@@ -90,6 +112,12 @@ class ItemList implements Countable, IteratorAggregate
         do {
             if (current($this->list) === $item) {
                 unset($this->list[key($this->list)]);
+                if ($item instanceof LinkedItem) {
+                    $group = $item->getLinkedItemGroup();
+                    if (--$this->linkedGroupCounts[$group] === 0) {
+                        unset($this->linkedGroupCounts[$group]);
+                    }
+                }
 
                 return;
             }
@@ -103,6 +131,12 @@ class ItemList implements Countable, IteratorAggregate
             do {
                 if (current($this->list) === $packedItem->item) {
                     unset($this->list[key($this->list)]);
+                    if ($packedItem->item instanceof LinkedItem) {
+                        $group = $packedItem->item->getLinkedItemGroup();
+                        if (--$this->linkedGroupCounts[$group] === 0) {
+                            unset($this->linkedGroupCounts[$group]);
+                        }
+                    }
 
                     break;
                 }
@@ -152,6 +186,13 @@ class ItemList implements Countable, IteratorAggregate
         $topNList = new self();
         $topNList->list = array_slice($this->list, -$n, $n);
         $topNList->isSorted = true;
+
+        foreach ($topNList->list as $item) {
+            if ($item instanceof LinkedItem) {
+                $group = $item->getLinkedItemGroup();
+                $topNList->linkedGroupCounts[$group] = ($topNList->linkedGroupCounts[$group] ?? 0) + 1;
+            }
+        }
 
         return $topNList;
     }
@@ -212,5 +253,25 @@ class ItemList implements Countable, IteratorAggregate
         }
 
         return $this->hasNoRotationItems;
+    }
+
+    /**
+     * Does this list contain items that must be packed in the same box as other items.
+     */
+    public function hasLinkedItems(): bool
+    {
+        return count($this->linkedGroupCounts) > 0;
+    }
+
+    /**
+     * Get a map of linked group identifier => count of items in this list belonging to that group.
+     *
+     * @internal
+     *
+     * @return array<string, int>
+     */
+    public function getLinkedGroupCounts(): array
+    {
+        return $this->linkedGroupCounts;
     }
 }

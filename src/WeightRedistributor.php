@@ -108,6 +108,11 @@ class WeightRedistributor implements LoggerAwareInterface
 
         foreach ($overWeightBoxItems as $key => $overWeightItem) {
             $this->timeoutChecker?->throwOnTimeout();
+
+            if ($overWeightItem instanceof LinkedItem) {
+                continue; // cannot move individual linked group members; weight balance is secondary to group integrity
+            }
+
             if (!self::wouldRepackActuallyHelp($overWeightBoxItems, $overWeightItem, $underWeightBoxItems, $targetWeight)) {
                 continue; // moving this item would harm more than help
             }

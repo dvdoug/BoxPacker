@@ -204,6 +204,10 @@ class Packer implements LoggerAwareInterface
                 $volumePacker->setLogger($this->logger);
                 $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                 $packedBox = $volumePacker->pack();
+                $linkedGroupConstraint = new LinkedGroupPackingConstraint();
+                $linkedGroupConstraint->setLogger($this->logger);
+                $linkedGroupConstraint->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
+                $packedBox = $linkedGroupConstraint->enforceConstraint($packedBox, $this->items);
                 if ($packedBox->items->count()) {
                     $packedBoxesIteration[] = $packedBox;
 
@@ -270,6 +274,9 @@ class Packer implements LoggerAwareInterface
                     $volumePacker = new VolumePacker($box, $wipPermutation['itemsLeft']);
                     $volumePacker->setLogger($this->logger);
                     $packedBox = $volumePacker->pack();
+                    $linkedGroupConstraint = new LinkedGroupPackingConstraint();
+                    $linkedGroupConstraint->setLogger($this->logger);
+                    $packedBox = $linkedGroupConstraint->enforceConstraint($packedBox, $wipPermutation['itemsLeft']);
                     if ($packedBox->items->count()) {
                         $additionalPermutationsForThisPermutation[] = $packedBox;
                     }
