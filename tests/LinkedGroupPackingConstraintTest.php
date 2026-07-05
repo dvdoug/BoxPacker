@@ -33,8 +33,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $volumePacker = new VolumePacker($box, $items);
         $candidate = $volumePacker->pack();
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $items);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $items);
 
         self::assertSame(
             $candidate,
@@ -66,8 +66,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($item1);
         $remainingItems->insert($item2);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         self::assertSame($candidate, $result, 'Candidate must be returned unchanged when no partial groups exist');
     }
@@ -97,8 +97,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($linked1);
         $remainingItems->insert($linked2);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         self::assertSame($candidate, $result, 'Candidate must be unchanged when no linked items were packed in it');
     }
@@ -125,8 +125,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($groupA1);
         $remainingItems->insert($groupA2);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         self::assertSame($box, $result->box, 'Box reference must be preserved');
         self::assertCount(0, $result->items, 'Result must be empty when all candidate items belong to a partial group');
@@ -165,8 +165,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($groupB2);
         $remainingItems->insert($regular);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         $packedItemObjects = [];
         foreach ($result->items as $packedItem) {
@@ -203,8 +203,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($item2);
         $remainingItems->insert($standalone);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         $packedItemObjects = [];
         foreach ($result->items as $packedItem) {
@@ -244,8 +244,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($groupB1);
         $remainingItems->insert($groupB2);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         $packedItemObjects = [];
         foreach ($result->items as $packedItem) {
@@ -298,8 +298,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($groupC1);
         $remainingItems->insert($groupC2);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         $packedItemObjects = [];
         foreach ($result->items as $packedItem) {
@@ -365,8 +365,8 @@ class LinkedGroupPackingConstraintTest extends TestCase
         $remainingItems->insert($groupC1);
         $remainingItems->insert($groupC2);
 
-        $constraint = new LinkedGroupPackingConstraint();
-        $result = $constraint->enforceConstraint($candidate, $remainingItems);
+        $enforcer = new LinkedItemGroupEnforcer();
+        $result = $enforcer->enforceConstraint($candidate, $remainingItems);
 
         $packedItemObjects = [];
         foreach ($result->items as $packedItem) {

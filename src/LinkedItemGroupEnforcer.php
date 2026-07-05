@@ -25,7 +25,7 @@ use function count;
  * was already excluded on an earlier pass. The loop terminates because the set of
  * excluded groups can only grow, and the eligible item list can only shrink.
  */
-class LinkedGroupPackingConstraint
+class LinkedItemGroupEnforcer
 {
     private LoggerInterface $logger;
 
@@ -84,15 +84,15 @@ class LinkedGroupPackingConstraint
     private function findIncompleteLinkedGroups(PackedBox $candidate, ItemList $items, array $alreadyExcluded): array
     {
         $linkedGroupCounts = $items->getLinkedGroupCounts();
-        $IncompleteLinkedGroups = [];
+        $incompleteLinkedGroups = [];
 
         foreach ($candidate->items->getLinkedGroupCounts() as $groupId => $packedCount) {
             if (!isset($alreadyExcluded[$groupId]) && $packedCount < ($linkedGroupCounts[$groupId] ?? 0)) {
-                $IncompleteLinkedGroups[$groupId] = true;
+                $incompleteLinkedGroups[$groupId] = true;
             }
         }
 
-        return $IncompleteLinkedGroups;
+        return $incompleteLinkedGroups;
     }
 
     /**
