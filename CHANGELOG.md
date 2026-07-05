@@ -1,6 +1,10 @@
 # Changelog
 
-## [4.x - Unreleased] - 2025-xx-xx
+## [4.x - Unreleased] - 2026-xx-xx
+
+## [4.2.0] - 2026-07-05
+### Added
+- A mechanism to allow forcing certain items to be packed together [RubenKluft]
 
 ## [4.1.1] - 2025-07-21
 ### Fixed
@@ -588,8 +592,9 @@ Initial release
  - Experimental code to get a feel for how calculations can best be implemented
  - Only works if all items fit into a single box (so not production ready at all)
 
-[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/4.1.1..master
+[4.x - Unreleased]: https://github.com/dvdoug/BoxPacker/compare/4.2.0..master
 
+[4.2.0]: https://github.com/dvdoug/BoxPacker/compare/4.1.1..4.2.0
 [4.1.1]: https://github.com/dvdoug/BoxPacker/compare/4.1.0..4.1.1
 [4.1.0]: https://github.com/dvdoug/BoxPacker/compare/4.0.1..4.1.0
 [4.0.1]: https://github.com/dvdoug/BoxPacker/compare/4.0.0..4.0.1
