@@ -34,11 +34,20 @@ class PackedItemList implements Countable, IteratorAggregate
 
     private bool $isSorted = false;
 
+    /**
+     * @var array<string, int>
+     */
+    private array $linkedGroupCounts = [];
+
     public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
         $this->weight += $item->item->getWeight();
         $this->volume += $item->width * $item->length * $item->depth;
+        if ($item->item instanceof LinkedItem) {
+            $group = $item->item->getLinkedItemGroup();
+            $this->linkedGroupCounts[$group] = ($this->linkedGroupCounts[$group] ?? 0) + 1;
+        }
     }
 
     /**
@@ -88,6 +97,18 @@ class PackedItemList implements Countable, IteratorAggregate
     public function getWeight(): int
     {
         return $this->weight;
+    }
+
+    /**
+     * Get a map of linked group identifier => count of items in this list belonging to that group.
+     *
+     * @internal
+     *
+     * @return array<string, int>
+     */
+    public function getLinkedGroupCounts(): array
+    {
+        return $this->linkedGroupCounts;
     }
 
     private function compare(PackedItem $itemA, PackedItem $itemB): int

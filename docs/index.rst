@@ -28,6 +28,7 @@ BoxPacker is licensed under the `MIT license`_.
     positional-information
     limited-supply-boxes
     custom-constraints
+    linked-items
     used-remaining-space
     all-permutations
     changelog
