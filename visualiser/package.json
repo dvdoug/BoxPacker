@@ -13,7 +13,7 @@
     "@babylonjs/gui": "^7.54.3"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "vite": "^6.4.2"
   }
 }
