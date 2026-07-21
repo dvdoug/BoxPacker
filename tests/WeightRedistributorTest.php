@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\ConstrainedPlacementNoStackingTestItem;
+use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -66,5 +67,36 @@ class WeightRedistributorTest extends TestCase
         $packedBoxes = $packer->pack();
 
         self::assertEquals(0, $packedBoxes->getWeightVariance());
+    }
+
+    /**
+     * Test to ensure no items are silently dropped during weight redistribution.
+     */
+    public function testWeightRedistributionDoesNotSilentlyDropItems(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new LimitedSupplyTestBox('Box', 29, 29, 29, 0, 29, 29, 29, 68, 2));
+
+        $packer->addItem(new TestItem('Item 0', 10, 10, 10, 2, Rotation::BestFit), 2);
+        $packer->addItem(new TestItem('Item 1', 10, 10, 10, 3, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 2', 10, 10, 10, 4, Rotation::BestFit));
+        $packer->addItem(new TestItem('Item 3', 10, 10, 10, 8, Rotation::BestFit), 5);
+        $packer->addItem(new TestItem('Item 4', 10, 10, 10, 18, Rotation::BestFit), 3);
+
+        // packer initially packs 6 items into each box,
+        // the imbalance in weights will be attempted to be corrected by the WeightRedistributor
+        $packedBoxes = $packer->pack();
+        self::assertCount(2, $packedBoxes);
+
+        $packedItemCount = 0;
+        foreach ($packedBoxes as $packedBox) {
+            $packedItemCount += $packedBox->items->count();
+        }
+
+        self::assertSame(
+            12,
+            $packedItemCount + $packer->getUnpackedItems()->count(),
+            'No items should be lost during weight redistribution'
+        );
     }
 }

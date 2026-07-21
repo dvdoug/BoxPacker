@@ -1,7 +1,9 @@
 # Changelog
 
 ## [4.x - Unreleased] - 2026-xx-xx
-
+### Fixed
+- In some rare cases `WeightRedistributor` would silently drop items
+ 
 ## [4.2.0] - 2026-07-05
 ### Added
 - A mechanism to allow forcing certain items to be packed together [RubenKluft]
