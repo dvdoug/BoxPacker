@@ -56,6 +56,13 @@ Then, pass this to the ``ItemList`` constructor
     $sorter = new YourApplicationItemSorter();
     $itemList = new ItemList($sorter);
 
+.. note::
+
+    If any of your items implement ``LinkedItem`` (see :doc:`linked-items`), your custom sorter should keep members
+    of the same linked group adjacent to each other, the same way the default sorter does. Otherwise the packer is
+    more likely to have to defer or exclude a linked group that would otherwise have fit, because its members were
+    never offered to the layer packer together.
+
 Enforcing strict ordering
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 Regardless of which of the above methods you use, BoxPacker's normal mode of operation is to respect the sort ordering
