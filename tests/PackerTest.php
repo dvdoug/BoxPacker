@@ -13,6 +13,7 @@ use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use DVDoug\BoxPacker\Exception\TimeoutException;
 use DVDoug\BoxPacker\Test\ConstrainedPlacementByCountTestItem;
 use DVDoug\BoxPacker\Test\LimitedSupplyTestBox;
+use DVDoug\BoxPacker\Test\LinkedTestItem;
 use DVDoug\BoxPacker\Test\PackedBoxByReferenceSorter;
 use DVDoug\BoxPacker\Test\TestBox;
 use DVDoug\BoxPacker\Test\TestItem;
@@ -192,6 +193,38 @@ class PackerTest extends TestCase
         $packedBoxes = iterator_to_array($packer->pack(), false);
 
         self::assertCount(2, $packedBoxes);
+    }
+
+    /**
+     * Regression test: with several linked item groups of near-identical size/weight competing
+     * for space, the default item order should keep members of the same linked group contiguous.
+     *
+     * Without this, the greedy layer packer can fill a box with partial members of several
+     * different groups instead of one complete group. LinkedItemGroupEnforcer then discards
+     * all of them (since none are complete), and if every candidate box suffers the same fate,
+     * no box is ever selected - even though a complete group would fit.
+     */
+    public function testLinkedItemGroupsAreNotFragmentedAcrossCandidateBoxes(): void
+    {
+        $packer = new Packer();
+        $packer->addBox(new TestBox('Small box', 24, 16, 10, 0, 24, 16, 10, 3000));
+        $packer->addBox(new TestBox('Medium box', 22, 21, 10, 0, 22, 21, 10, 3000));
+
+        for ($i = 0; $i < 4; ++$i) {
+            $packer->addItem(new LinkedTestItem('g' . $i . '-a', 10, 10, 10, 7, Rotation::BestFit, 'group-' . $i));
+            $packer->addItem(new LinkedTestItem('g' . $i . '-b', 10, 11, 10, 3, Rotation::BestFit, 'group-' . $i));
+        }
+
+        /** @var PackedBox[] $packedBoxes */
+        $packedBoxes = iterator_to_array($packer->pack(), false);
+
+        self::assertCount(2, $packedBoxes);
+
+        $packedItemCount = 0;
+        foreach ($packedBoxes as $packedBox) {
+            $packedItemCount += $packedBox->items->count();
+        }
+        self::assertSame(8, $packedItemCount, 'All 4 linked groups (8 items) should be packed');
     }
 
     /**

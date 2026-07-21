@@ -3,6 +3,7 @@
 ## [4.x - Unreleased] - 2026-xx-xx
 ### Fixed
 - In some rare cases `WeightRedistributor` would silently drop items
+- Sort linked items to give them the best chance of being packed together, to prevent no boxes being found due to the items being out of order.
  
 ## [4.2.0] - 2026-07-05
 ### Added
