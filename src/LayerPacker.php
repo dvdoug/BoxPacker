@@ -74,6 +74,12 @@ class LayerPacker implements LoggerAwareInterface
     public function packLayer(ItemList &$items, PackedItemList $packedItemList, int $startX, int $startY, int $startZ, int $widthForLayer, int $lengthForLayer, int $depthForLayer, int $guidelineLayerDepth, bool $considerStability, ?OrientatedItem $firstItem): PackedLayer
     {
         $layer = new PackedLayer();
+
+        // No usable space at all in this region
+        if ($widthForLayer - $startX <= 0 || $lengthForLayer - $startY <= 0 || $depthForLayer <= 0) {
+            return $layer;
+        }
+
         $x = $startX;
         $y = $startY;
         $z = $startZ;
