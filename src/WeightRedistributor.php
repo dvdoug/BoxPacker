@@ -117,9 +117,8 @@ class WeightRedistributor implements LoggerAwareInterface
                 continue; // moving this item would harm more than help
             }
 
-            $packableItems = array_merge($underWeightBoxItems, [$overWeightItem]);
-            $newLighterBoxes = $this->doVolumeRepack($packableItems, $underWeightBox->box);
-            if ($this->isEverythingPacked($newLighterBoxes, $packableItems) === false) {
+            $newLighterBoxes = $this->doVolumeRepack(array_merge($underWeightBoxItems, [$overWeightItem]), $underWeightBox->box);
+            if ($newLighterBoxes->count() !== 1) {
                 continue; // only want to move this item if it still fits in a single box
             }
 
@@ -136,7 +135,7 @@ class WeightRedistributor implements LoggerAwareInterface
 
             unset($overWeightBoxItems[$key]);
             $newHeavierBoxes = $this->doVolumeRepack($overWeightBoxItems, $overWeightBox->box);
-            if ($this->isEverythingPacked($newHeavierBoxes, $overWeightBoxItems) === false) {
+            if (count($newHeavierBoxes) !== 1) {
                 assert(true, 'Could not pack n-1 items into box, even though n were previously in it');
                 continue;
             }
@@ -152,20 +151,6 @@ class WeightRedistributor implements LoggerAwareInterface
         }
 
         return $anyIterationSuccessful;
-    }
-
-    private function isEverythingPacked(PackedBoxList $result, array $expectedItems): bool
-    {
-        if ($result->count() !== 1) {
-            return false;
-        }
-
-        $packedItems = [];
-        foreach ($result->top()->items as $packedItem) {
-            $packedItems[] = $packedItem->item;
-        }
-
-        return count($packedItems) === count($expectedItems);
     }
 
     /**
@@ -184,7 +169,12 @@ class WeightRedistributor implements LoggerAwareInterface
         $packer->setBoxQuantity($currentBox, $this->boxQuantitiesAvailable[$currentBox] + 1);
         $packer->setItems($items);
 
-        return $packer->doBasicPacking(true);
+        $packedBoxes = $packer->doBasicPacking(true);
+        if ($packedBoxes->count() !== 1 || $packer->getUnpackedItems()->count() !== 0) {
+            return new PackedBoxList($this->packedBoxSorter);
+        }
+
+        return $packedBoxes;
     }
 
     /**
