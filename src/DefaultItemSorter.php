@@ -13,8 +13,8 @@ class DefaultItemSorter implements ItemSorter
 {
     public function compare(Item $itemA, Item $itemB): int
     {
-        $groupA = $itemA instanceof LinkedItem ? $itemA->getLinkedItemGroup() : '';
-        $groupB = $itemB instanceof LinkedItem ? $itemB->getLinkedItemGroup() : '';
+        $groupA = $itemA instanceof LinkedItem ? $itemA->getLinkedItemGroup() : null;
+        $groupB = $itemB instanceof LinkedItem ? $itemB->getLinkedItemGroup() : null;
         if ($groupA !== $groupB) {
             return $groupA <=> $groupB;
         }
