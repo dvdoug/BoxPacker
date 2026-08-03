@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babylonjs/core": "^7.54.3",
-    "@babylonjs/gui": "^7.54.3"
+    "@babylonjs/core": "^9.19.0",
+    "@babylonjs/gui": "^9.19.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "vite": "^6.4.2"
+    "typescript": "^7.0.2",
+    "vite": "^8.2.0"
   }
 }
