@@ -64,18 +64,27 @@ document.addEventListener("DOMContentLoaded", function () {
         ],
     };
 
-    const urlParams = new URLSearchParams(window.location.search);
+    // Prefer #packing=; also accept legacy ?packing=.
+    const packingParam = (() => {
+        const hash = window.location.hash.startsWith("#")
+            ? window.location.hash.slice(1)
+            : window.location.hash;
+        const fromHash = new URLSearchParams(hash).get("packing");
+        if (fromHash !== null) {
+            return fromHash;
+        }
+        return new URLSearchParams(window.location.search).get("packing");
+    })();
 
-    if (urlParams.has("packing")) {
+    if (packingParam !== null) {
         const demotext = document.getElementsByClassName(
             "demotext",
         ) as HTMLCollectionOf<HTMLElement>;
         demotext[0].style.display = "none";
     }
 
-    const packingData = urlParams.has("packing")
-        ? JSON.parse(urlParams.get("packing")!)
-        : DEMO_PACKING;
+    const packingData =
+        packingParam !== null ? JSON.parse(packingParam) : DEMO_PACKING;
     const items: Item[] = [];
     packingData.items.forEach(
         (item: readonly [string, number, number, number], index: number) => {

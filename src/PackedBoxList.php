@@ -198,7 +198,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
             ];
         }
 
-        return 'https://boxpacker.io/en/master/visualiser.html?packing=' . rawurlencode(json_encode($data, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        return 'https://boxpacker.io/en/master/visualiser.html#packing=' . rawurlencode(json_encode($data, flags: JSON_THROW_ON_ERROR | JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     public function jsonSerialize(): array
