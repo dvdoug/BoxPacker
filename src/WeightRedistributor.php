@@ -169,7 +169,12 @@ class WeightRedistributor implements LoggerAwareInterface
         $packer->setBoxQuantity($currentBox, $this->boxQuantitiesAvailable[$currentBox] + 1);
         $packer->setItems($items);
 
-        return $packer->doBasicPacking(true);
+        $packedBoxes = $packer->doBasicPacking(true);
+        if ($packedBoxes->count() !== 1 || $packer->getUnpackedItems()->count() !== 0) {
+            return new PackedBoxList($this->packedBoxSorter);
+        }
+
+        return $packedBoxes;
     }
 
     /**
