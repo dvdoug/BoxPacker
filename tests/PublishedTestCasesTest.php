@@ -50,7 +50,7 @@ class PublishedTestCasesTest extends TestCase
 
         $fp = fopen(__DIR__ . '/data/thpack-expected.csv', 'rb');
         while (!feof($fp)) {
-            $data = fgetcsv($fp);
+            $data = fgetcsv($fp, escape: '');
             if (is_array($data)) {
                 self::$expectedResults[$data[0]] = $data[1];
             }
