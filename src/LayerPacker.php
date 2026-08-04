@@ -74,12 +74,6 @@ class LayerPacker implements LoggerAwareInterface
     public function packLayer(ItemList &$items, PackedItemList $packedItemList, int $startX, int $startY, int $startZ, int $widthForLayer, int $lengthForLayer, int $depthForLayer, int $guidelineLayerDepth, bool $considerStability, ?OrientatedItem $firstItem): PackedLayer
     {
         $layer = new PackedLayer();
-
-        // No usable space at all in this region
-        if ($widthForLayer - $startX <= 0 || $lengthForLayer - $startY <= 0 || $depthForLayer <= 0) {
-            return $layer;
-        }
-
         $x = $startX;
         $y = $startY;
         $z = $startZ;
@@ -121,7 +115,9 @@ class LayerPacker implements LoggerAwareInterface
                 $x += $packedItem->width;
 
                 // might be space available lengthwise across the width of this item, up to the current layer length
-                $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability, null));
+                if ($rowLength > $packedItem->length) {
+                    $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability, null));
+                }
 
                 if ($items->count() === 0 && $skippedItems) {
                     $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
