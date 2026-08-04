@@ -150,7 +150,7 @@ class OrientatedItemSorter
 
         $currentRowLength = max($prevItem->length, $this->rowLength);
 
-        $itemsToPack = $this->nextItems->topN(8); // cap lookahead as this gets recursive and slow
+        $itemsToPack = $this->nextItems->topN(7); // cap lookahead as this gets recursive and slow
 
         $cacheKey = $this->widthLeft .
             '|' .
