@@ -13,9 +13,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-use function array_map;
 use function count;
-use function max;
 use function reset;
 use function usort;
 
@@ -174,18 +172,73 @@ class VolumePacker implements LoggerAwareInterface
 
         if (!$this->singlePassMode && $layers) {
             $layers = $this->stabiliseLayers($layers);
-
-            // having packed layers, there may be tall, narrow gaps at the ends that can be utilised
-            $maxLayerWidth = max(array_map(static fn (PackedLayer $layer) => $layer->getEndX(), $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), $maxLayerWidth, 0, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false, null);
-
-            $maxLayerLength = max(array_map(static fn (PackedLayer $layer) => $layer->getEndY(), $layers));
-            $layers[] = $this->layerPacker->packLayer($items, $this->getPackedItemList($layers), 0, $maxLayerLength, 0, $boxWidth, $boxLength, $this->box->getInnerDepth(), $this->box->getInnerDepth(), false, null);
+            $layers = $this->fillVoids($layers, $items, $boxWidth, $boxLength);
         }
 
         $layers = $this->correctLayerRotation($layers, $boxWidth);
 
         return new PackedBox($this->box, $this->getPackedItemList($layers));
+    }
+
+    /**
+     * @param  PackedLayer[] $layers
+     * @return PackedLayer[]
+     */
+    private function fillVoids(array $layers, ItemList &$items, int $boxWidth, int $boxLength): array
+    {
+        $voidFinder = new VoidFinder();
+
+        while ($items->count() > 0) {
+            $packedItemList = $this->getPackedItemList($layers);
+            $voids = $voidFinder->find($boxWidth, $boxLength, $this->box->getInnerDepth(), $packedItemList);
+
+            // Prefer lower positions, then larger free regions (volume, then footprint)
+            usort(
+                $voids,
+                static function (VoidSpace $a, VoidSpace $b): int {
+                    return $a->z <=> $b->z
+                        ?: $b->getVolume() <=> $a->getVolume()
+                        ?: $b->getFootprint() <=> $a->getFootprint();
+                }
+            );
+
+            $progress = false;
+            foreach ($voids as $void) {
+                $packedBefore = $packedItemList->count();
+                $layer = $this->layerPacker->packLayer(
+                    $items,
+                    $packedItemList,
+                    $void->x,
+                    $void->y,
+                    $void->z,
+                    $void->x + $void->width,
+                    $void->y + $void->length,
+                    $void->depth,
+                    $void->depth,
+                    false, // gap fill; stability assumed from surrounding geometry
+                    null
+                );
+
+                if (count($layer->getItems()) > 0) {
+                    $layers[] = $layer;
+                    $progress = true;
+                    $this->logger->debug(
+                        'Filled void space',
+                        [
+                            'void' => $void,
+                            'itemsPlaced' => $packedItemList->count() - $packedBefore,
+                        ]
+                    );
+                    break; // rebuild voids after geometry changed
+                }
+            }
+
+            if (!$progress) {
+                break;
+            }
+        }
+
+        return $layers;
     }
 
     /**

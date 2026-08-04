@@ -1150,7 +1150,7 @@ class PackerTest extends TestCase
 
         $packedBoxes = $packer->pack();
 
-        self::assertCount(42, $packedBoxes);
+        self::assertCount(38, $packedBoxes);
         self::assertCount(62, $packer->getUnpackedItems());
     }
 
@@ -1202,7 +1202,6 @@ class PackerTest extends TestCase
 
     public function testIssue275B(): void
     {
-        $this->markTestSkipped();
         $packer = new Packer();
         $packer->setMaxBoxesToBalanceWeight(0);
         $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));
@@ -1230,7 +1229,6 @@ class PackerTest extends TestCase
 
     public function testIssue275D(): void
     {
-        $this->markTestSkipped();
         $packer = new Packer();
         $packer->setMaxBoxesToBalanceWeight(0);
         $packer->addBox(new TestBox('EuroPallet', 1200, 800, 2150, 0, 1200, 800, 2150, 400000));

@@ -2,7 +2,7 @@
 
 ## [4.x - Unreleased] - 2026-xx-xx
 ### Changed
-- Better orientation decisioning for flat items when BestFit is used
+- Improved efficiency in packing
 
 ### Fixed
 - In some rare cases `WeightRedistributor` would silently drop items
