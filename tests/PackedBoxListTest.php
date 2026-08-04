@@ -179,7 +179,8 @@ class PackedBoxListTest extends TestCase
      */
     public function testJsonSerialize(): void
     {
-        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
+        // emptyWeight 10 + item 10 requires maxWeight >= 20
+        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 20);
         $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, Rotation::KeepFlat), 4, 10, 10);
 
         $boxItems = new PackedItemList();
@@ -190,7 +191,7 @@ class PackedBoxListTest extends TestCase
         $packedBoxList = new PackedBoxList();
         $packedBoxList->insert($packedBox);
 
-        self::assertJsonStringEqualsJsonString('[{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20,"emptyWeight": 10,"maxWeight": 10},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"allowedRotation":2,"weight": 10}}]}]', json_encode($packedBoxList));
+        self::assertJsonStringEqualsJsonString('[{"box":{"reference":"Box","innerWidth":10,"innerLength":10,"innerDepth":20,"emptyWeight": 10,"maxWeight": 20},"items":[{"x":0,"y":0,"z":0,"width":4,"length":10,"depth":10,"item":{"description":"Item","width":4,"length":10,"depth":10,"allowedRotation":2,"weight": 10}}]}]', json_encode($packedBoxList));
     }
 
     /**
@@ -198,7 +199,8 @@ class PackedBoxListTest extends TestCase
      */
     public function testVisualisationURL(): void
     {
-        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 10);
+        // emptyWeight 10 + item 10 requires maxWeight >= 20
+        $box = new TestBox('Box', 10, 10, 20, 10, 10, 10, 20, 20);
         $item = new OrientatedItem(new TestItem('Item', 4, 10, 10, 10, Rotation::KeepFlat), 4, 10, 10);
 
         $boxItems = new PackedItemList();

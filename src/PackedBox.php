@@ -235,11 +235,13 @@ readonly class PackedBox implements JsonSerializable
     }
 
     /**
-     * Validate that all items are placed solely within the confines of the box, and that no two items are placed
-     * into the same physical space.
+     * Validate that all items are placed solely within the confines of the box, that no two items are placed
+     * into the same physical space, and that the packed weight does not exceed the box maximum.
      */
     private function assertPackingCompliesWithRealWorld(): true
     {
+        assert($this->getWeight() <= $this->box->getMaxWeight());
+
         /** @var PackedItem[] $itemsToCheck */
         $itemsToCheck = iterator_to_array($this->items);
         while (count($itemsToCheck) > 0) {
