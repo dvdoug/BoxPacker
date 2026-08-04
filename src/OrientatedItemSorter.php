@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 
 use function max;
 use function min;
+use function sort;
 
 use const PHP_INT_MAX;
 
@@ -22,6 +23,12 @@ use const PHP_INT_MAX;
  */
 class OrientatedItemSorter
 {
+    /**
+     * Max (smallest/largest) edge ratio for an item to be treated as slab-like.
+     * At or below this, BestFit scoring prefers KeepFlat-like orientations (thin edge vertical).
+     */
+    private const SLAB_ASPECT_RATIO = 0.3;
+
     /**
      * @var array<string, int>
      */
@@ -73,11 +80,37 @@ class OrientatedItemSorter
             return $followingItemDecider;
         }
 
+        // For slab-like BestFit items, prefer thin edge as depth (KeepFlat-style)
+        if (
+            $a->item->getAllowedRotation() === Rotation::BestFit
+            && self::isSlabLike($a->item)
+        ) {
+            $thin = min($a->item->getWidth(), $a->item->getLength(), $a->item->getDepth());
+            $slabDecider = ($b->depth === $thin) <=> ($a->depth === $thin);
+            if ($slabDecider !== 0) {
+                return $slabDecider;
+            }
+        }
+
         // otherwise prefer leaving minimum possible gap, or the greatest footprint
         $orientationAMinGap = min($orientationAWidthLeft, $orientationALengthLeft);
         $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
 
         return $orientationAMinGap <=> $orientationBMinGap ?: $a->surfaceFootprint <=> $b->surfaceFootprint;
+    }
+
+    /**
+     * Whether the item has one edge much shorter than the longest.
+     */
+    private static function isSlabLike(Item $item): bool
+    {
+        $dims = [$item->getWidth(), $item->getLength(), $item->getDepth()];
+        sort($dims);
+        if ($dims[2] === 0) {
+            return false; // avoid divide by zero
+        }
+
+        return ($dims[0] / $dims[2]) <= self::SLAB_ASPECT_RATIO;
     }
 
     private function lookAheadDecider(OrientatedItem $a, OrientatedItem $b, int $orientationAWidthLeft, int $orientationBWidthLeft): int

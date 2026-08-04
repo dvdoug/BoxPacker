@@ -539,7 +539,6 @@ class VolumePackerTest extends TestCase
     public function testIssue268(): void
     {
         foreach ([Rotation::KeepFlat, Rotation::BestFit] as $rotation) {
-            $this->markTestSkipped();
             $box = new TestBox('Box', 280, 175, 180, 0, 280, 175, 180, 100000);
 
             $items = new ItemList();

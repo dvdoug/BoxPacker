@@ -1,6 +1,9 @@
 # Changelog
 
 ## [4.x - Unreleased] - 2026-xx-xx
+### Changed
+- Better orientation decisioning for flat items when BestFit is used
+
 ### Fixed
 - In some rare cases `WeightRedistributor` would silently drop items
 - Sort linked items to give them the best chance of being packed together, to prevent no boxes being found due to the items being out of order.
