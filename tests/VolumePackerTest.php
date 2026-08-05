@@ -222,11 +222,11 @@ class VolumePackerTest extends TestCase
 
         self::assertCount(14, $packedBox->items);
 
-        // less efficient packing
+        // Same items with packing constrained across the width only (historically left one out).
         $packer->packAcrossWidthOnly();
         $packedBox = $packer->pack();
 
-        self::assertCount(13, $packedBox->items);
+        self::assertCount(14, $packedBox->items);
     }
 
     /**
@@ -458,7 +458,6 @@ class VolumePackerTest extends TestCase
 
     public function testIssue227(): void
     {
-        $this->markTestSkipped();
         $box = new TestBox('Box', 160, 180, 160, 0, 160, 180, 160, 1000);
 
         $items = new ItemList();
@@ -467,7 +466,7 @@ class VolumePackerTest extends TestCase
         $volumePacker = new VolumePacker($box, $items);
         $packedBox = $volumePacker->pack();
 
-        self::assertCount(4, $packedBox->items);
+        self::assertCount(11, $packedBox->items);
     }
 
     public function testIssue230(): void
@@ -580,7 +579,6 @@ class VolumePackerTest extends TestCase
 
     public function testIssue366(): void
     {
-        $this->markTestSkipped();
         $box = new TestBox('Pallet', 250, 160, 1, 0, 250, 160, 1, 100);
 
         $items = new ItemList();

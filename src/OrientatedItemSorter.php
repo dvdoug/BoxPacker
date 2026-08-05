@@ -11,6 +11,7 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerInterface;
 
+use function intdiv;
 use function max;
 use function min;
 use function sort;
@@ -28,6 +29,12 @@ class OrientatedItemSorter
      * At or below this, BestFit scoring prefers KeepFlat-like orientations (thin edge vertical).
      */
     private const SLAB_ASPECT_RATIO = 0.3;
+
+    /**
+     * Only special-case orientation when at least this many same-size items are still to place
+     * (including the current one). Requires the whole remaining list to be that size.
+     */
+    private const MIN_SAME_SIZE_ITEMS = 2;
 
     /**
      * @var array<string, int>
@@ -74,6 +81,13 @@ class OrientatedItemSorter
             return $depthDecider;
         }
 
+        // Many same-size items left: prefer the orientation that fits more of them in this free space
+        // simple arithmetic, not a recursive packer pass.
+        $sameSizeDecider = $this->sameSizeItemsDecider($a, $b);
+        if ($sameSizeDecider !== 0) {
+            return $sameSizeDecider;
+        }
+
         // prefer leaving room for next item(s)
         $followingItemDecider = $this->lookAheadDecider($a, $b, $orientationAWidthLeft, $orientationBWidthLeft);
         if ($followingItemDecider !== 0) {
@@ -97,6 +111,62 @@ class OrientatedItemSorter
         $orientationBMinGap = min($orientationBWidthLeft, $orientationBLengthLeft);
 
         return $orientationAMinGap <=> $orientationBMinGap ?: $a->surfaceFootprint <=> $b->surfaceFootprint;
+    }
+
+    /**
+     * When every remaining item is the same size, prefer the orientation that can fit more of them
+     * into the free width × length × depth on a regular grid.
+     */
+    private function sameSizeItemsDecider(OrientatedItem $a, OrientatedItem $b): int
+    {
+        if (!$this->allRemainingSameSize($a)) {
+            return 0;
+        }
+
+        $remaining = $this->nextItems->count() + 1;
+        if ($remaining < self::MIN_SAME_SIZE_ITEMS) {
+            return 0;
+        }
+
+        $fitA = $this->howManyFitWithOrientation($a->width, $a->length, $a->depth);
+        $fitB = $this->howManyFitWithOrientation($b->width, $b->length, $b->depth);
+
+        $coversAllA = $fitA >= $remaining;
+        $coversAllB = $fitB >= $remaining;
+        if ($coversAllA !== $coversAllB) {
+            return ($coversAllB ? 1 : 0) <=> ($coversAllA ? 1 : 0);
+        }
+
+        return $fitB <=> $fitA;
+    }
+
+    /**
+     * How many of this orientation fit in the free space if lined up on a regular grid.
+     */
+    private function howManyFitWithOrientation(int $width, int $length, int $depth): int
+    {
+        if ($width <= 0 || $length <= 0 || $depth <= 0) {
+            return 0;
+        }
+
+        return intdiv($this->widthLeft, $width)
+            * intdiv($this->lengthLeft, $length)
+            * intdiv($this->depthLeft, $depth);
+    }
+
+    private function allRemainingSameSize(OrientatedItem $oriented): bool
+    {
+        if ($this->nextItems->count() === 0) {
+            return true;
+        }
+
+        foreach ($this->nextItems as $next) {
+            if (!$oriented->isSameDimensions($next)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
