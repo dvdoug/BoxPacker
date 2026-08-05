@@ -41,6 +41,12 @@ class OrientatedItemSorter
      */
     protected static array $lookaheadCache = [];
 
+    /**
+     * Whether every remaining item matches the current item's size.
+     * Fixed for the life of this sorter (one orientation sort); computed once.
+     */
+    private ?bool $allRemainingSameSizeCache = null;
+
     public function __construct(
         private readonly OrientatedItemFactory $orientatedItemFactory,
         private readonly bool $singlePassMode,
@@ -156,15 +162,25 @@ class OrientatedItemSorter
 
     private function allRemainingSameSize(OrientatedItem $oriented): bool
     {
+        if ($this->allRemainingSameSizeCache !== null) {
+            return $this->allRemainingSameSizeCache;
+        }
+
         if ($this->nextItems->count() === 0) {
+            $this->allRemainingSameSizeCache = true;
+
             return true;
         }
 
         foreach ($this->nextItems as $next) {
             if (!$oriented->isSameDimensions($next)) {
+                $this->allRemainingSameSizeCache = false;
+
                 return false;
             }
         }
+
+        $this->allRemainingSameSizeCache = true;
 
         return true;
     }
