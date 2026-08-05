@@ -195,11 +195,9 @@ class VolumePacker implements LoggerAwareInterface
             // Prefer lower positions, then larger free regions (volume, then footprint)
             usort(
                 $voids,
-                static function (VoidSpace $a, VoidSpace $b): int {
-                    return $a->z <=> $b->z
+                static fn (VoidSpace $a, VoidSpace $b): int => $a->z <=> $b->z
                         ?: $b->getVolume() <=> $a->getVolume()
-                        ?: $b->getFootprint() <=> $a->getFootprint();
-                }
+                        ?: $b->getFootprint() <=> $a->getFootprint()
             );
 
             $progress = false;
