@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
+use ArrayIterator;
 use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -203,10 +204,7 @@ class ItemList implements Countable, IteratorAggregate
         }
 
         // External sort is largest at the start
-        $items = $this->list;
-        for (end($items); key($items) !== null; prev($items)) {
-            yield current($items);
-        }
+        return new ArrayIterator(array_reverse($this->list));
     }
 
     /**
