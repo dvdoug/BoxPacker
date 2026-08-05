@@ -42,6 +42,7 @@ class PackedItemList implements Countable, IteratorAggregate
     public function insert(PackedItem $item): void
     {
         $this->list[] = $item;
+        $this->isSorted = false;
         $this->weight += $item->item->getWeight();
         $this->volume += $item->width * $item->length * $item->depth;
         if ($item->item instanceof LinkedItem) {

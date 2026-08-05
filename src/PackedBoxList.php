@@ -151,7 +151,7 @@ class PackedBoxList implements IteratorAggregate, Countable, JsonSerializable
         $itemVolume = 0;
         $boxVolume = 0;
 
-        foreach ($this as $box) {
+        foreach ($this->list as $box) {
             $boxVolume += $box->getInnerVolume();
 
             foreach ($box->items as $item) {

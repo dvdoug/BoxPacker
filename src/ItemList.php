@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker;
 
-use ArrayIterator;
 use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -59,7 +58,7 @@ class ItemList implements Countable, IteratorAggregate
     public static function fromArray(array $items, bool $preSorted = false): self
     {
         $list = new self();
-        $list->list = array_reverse($items); // internal sort is largest at the end
+        $list->list = $preSorted ? array_reverse($items) : $items;  // internal sort is largest at the end
         $list->isSorted = $preSorted;
 
         foreach ($items as $item) {
@@ -103,8 +102,7 @@ class ItemList implements Countable, IteratorAggregate
     public function remove(Item $item): void
     {
         if (!$this->isSorted) {
-            usort($this->list, $this->sorter->compare(...));
-            $this->list = array_reverse($this->list); // internal sort is largest at the end
+            usort($this->list, fn (Item $a, Item $b) => $this->sorter->compare($b, $a)); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -150,8 +148,7 @@ class ItemList implements Countable, IteratorAggregate
     public function extract(): Item
     {
         if (!$this->isSorted) {
-            usort($this->list, $this->sorter->compare(...));
-            $this->list = array_reverse($this->list); // internal sort is largest at the end
+            usort($this->list, fn (Item $a, Item $b) => $this->sorter->compare($b, $a)); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -164,8 +161,7 @@ class ItemList implements Countable, IteratorAggregate
     public function top(): Item
     {
         if (!$this->isSorted) {
-            usort($this->list, $this->sorter->compare(...));
-            $this->list = array_reverse($this->list); // internal sort is largest at the end
+            usort($this->list, fn (Item $a, Item $b) => $this->sorter->compare($b, $a)); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -178,8 +174,7 @@ class ItemList implements Countable, IteratorAggregate
     public function topN(int $n): self
     {
         if (!$this->isSorted) {
-            usort($this->list, $this->sorter->compare(...));
-            $this->list = array_reverse($this->list); // internal sort is largest at the end
+            usort($this->list, fn (Item $a, Item $b) => $this->sorter->compare($b, $a)); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
@@ -203,12 +198,15 @@ class ItemList implements Countable, IteratorAggregate
     public function getIterator(): Traversable
     {
         if (!$this->isSorted) {
-            usort($this->list, $this->sorter->compare(...));
-            $this->list = array_reverse($this->list); // internal sort is largest at the end
+            usort($this->list, fn (Item $a, Item $b) => $this->sorter->compare($b, $a)); // internal sort is largest at the end
             $this->isSorted = true;
         }
 
-        return new ArrayIterator(array_reverse($this->list));
+        // External sort is largest at the start
+        $items = $this->list;
+        for (end($items); key($items) !== null; prev($items)) {
+            yield current($items);
+        }
     }
 
     /**
