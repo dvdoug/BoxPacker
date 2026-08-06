@@ -15,7 +15,10 @@ use Psr\Log\NullLogger;
 
 use function count;
 use function reset;
+use function sort;
 use function usort;
+
+use const PHP_INT_MAX;
 
 /**
  * Actual packer.
@@ -200,8 +203,15 @@ class VolumePacker implements LoggerAwareInterface
                         ?: $b->footprint <=> $a->footprint
             );
 
+            $minRemainingVolume = $this->minRemainingItemVolume($items);
+
             $progress = false;
             foreach ($voids as $void) {
+                // Pure performance: skip packLayer when no remaining item can geometrically fit
+                if ($void->volume < $minRemainingVolume || !$this->voidMayFitAnyRemainingItem($void, $items)) {
+                    continue;
+                }
+
                 $packedBefore = $packedItemList->count();
                 $layer = $this->layerPacker->packLayer(
                     $items,
@@ -237,6 +247,59 @@ class VolumePacker implements LoggerAwareInterface
         }
 
         return $layers;
+    }
+
+    private function minRemainingItemVolume(ItemList $items): int
+    {
+        $minVolume = PHP_INT_MAX;
+        foreach ($items as $item) {
+            $volume = $item->getWidth() * $item->getLength() * $item->getDepth();
+            if ($volume < $minVolume) {
+                $minVolume = $volume;
+            }
+        }
+
+        return $minVolume === PHP_INT_MAX ? 0 : $minVolume;
+    }
+
+    /**
+     * Cheap geometric reject: can any remaining item fit in this void under its rotation rules?
+     */
+    private function voidMayFitAnyRemainingItem(VoidSpace $void, ItemList $items): bool
+    {
+        foreach ($items as $item) {
+            if ($this->itemMayFitInVoid($item, $void)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function itemMayFitInVoid(Item $item, VoidSpace $void): bool
+    {
+        $w = $item->getWidth();
+        $l = $item->getLength();
+        $d = $item->getDepth();
+
+        return match ($item->getAllowedRotation()) {
+            Rotation::Never => $w <= $void->width && $l <= $void->length && $d <= $void->depth,
+            Rotation::KeepFlat => ($w <= $void->width && $l <= $void->length && $d <= $void->depth)
+                || ($l <= $void->width && $w <= $void->length && $d <= $void->depth),
+            Rotation::BestFit => $this->bestFitMayFitInVoid($w, $l, $d, $void),
+        };
+    }
+
+    private function bestFitMayFitInVoid(int $w, int $l, int $d, VoidSpace $void): bool
+    {
+        $itemEdges = [$w, $l, $d];
+        $voidEdges = [$void->width, $void->length, $void->depth];
+        sort($itemEdges);
+        sort($voidEdges);
+
+        return $itemEdges[0] <= $voidEdges[0]
+            && $itemEdges[1] <= $voidEdges[1]
+            && $itemEdges[2] <= $voidEdges[2];
     }
 
     /**
