@@ -191,10 +191,9 @@ class VolumePacker implements LoggerAwareInterface
     {
         $voidFinder = new VoidFinder();
         $packedItemList = $this->getPackedItemList($layers);
+        $voids = $voidFinder->find($boxWidth, $boxLength, $this->box->getInnerDepth(), $packedItemList);
 
-        while ($items->count() > 0) {
-            $voids = $voidFinder->find($boxWidth, $boxLength, $this->box->getInnerDepth(), $packedItemList);
-
+        while ($items->count() > 0 && $voids !== []) {
             // Prefer lower positions, then larger free regions (volume, then footprint)
             usort(
                 $voids,
@@ -229,6 +228,7 @@ class VolumePacker implements LoggerAwareInterface
 
                 if (count($layer->getItems()) > 0) {
                     $layers[] = $layer;
+                    $voids = $voidFinder->subtractItems($voids, $layer->getItems());
                     $progress = true;
                     $this->logger->debug(
                         'Filled void space',
@@ -237,7 +237,7 @@ class VolumePacker implements LoggerAwareInterface
                             'itemsPlaced' => $packedItemList->count() - $packedBefore,
                         ]
                     );
-                    break; // rebuild voids after geometry changed
+                    break;
                 }
             }
 

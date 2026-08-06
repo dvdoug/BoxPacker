@@ -87,6 +87,23 @@ class VoidFinderTest extends TestCase
         self::assertSame([], $spaces);
     }
 
+    public function testSubtractItemsAppendsToExistingPartition(): void
+    {
+        $left = new PackedItem(new TestItem('left', 40, 50, 50, 1, Rotation::BestFit), 0, 0, 0, 40, 50, 50);
+        $right = new PackedItem(new TestItem('right', 40, 50, 50, 1, Rotation::BestFit), 60, 0, 0, 40, 50, 50);
+
+        $finder = new VoidFinder();
+        $afterLeft = $finder->find(100, 50, 50, [$left]);
+        $afterBoth = $finder->subtractItems($afterLeft, [$right]);
+
+        $this->assertVoidsDoNotIntersectItems($afterBoth, [$left, $right]);
+        $this->assertVoidsInsideBox($afterBoth, 100, 50, 50);
+        self::assertTrue(
+            $this->containsVoid($afterBoth, 40, 0, 0, 20, 50, 50),
+            'Expected free space between the two packed items after incremental subtract'
+        );
+    }
+
     /**
      * @param VoidSpace[]  $spaces
      * @param PackedItem[] $items

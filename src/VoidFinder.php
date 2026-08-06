@@ -35,8 +35,14 @@ class VoidFinder
      */
     public function find(int $boxWidth, int $boxLength, int $boxDepth, iterable $packedItems): array
     {
-        $spaces = [new VoidSpace(0, 0, 0, $boxWidth, $boxLength, $boxDepth)];
+        return $this->subtractItems(
+            [new VoidSpace(0, 0, 0, $boxWidth, $boxLength, $boxDepth)],
+            $packedItems
+        );
+    }
 
+    public function subtractItems(array $spaces, iterable $packedItems): array
+    {
         foreach ($packedItems as $packedItem) {
             $next = [];
             foreach ($spaces as $space) {
