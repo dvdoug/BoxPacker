@@ -80,12 +80,13 @@ class LayerPacker implements LoggerAwareInterface
         $rowLength = 0;
         $prevItem = null;
         $skippedItems = [];
+        $boxWeightCapacity = $this->box->getMaxWeight() - $this->box->getEmptyWeight();
 
         while ($items->count() > 0) {
             $itemToPack = $items->extract();
 
             // skip items that will never fit e.g. too heavy
-            if ($itemToPack->getWeight() > ($this->box->getMaxWeight() - $this->box->getEmptyWeight() - $packedItemList->getWeight())) {
+            if ($itemToPack->getWeight() > $boxWeightCapacity - $packedItemList->getWeight()) {
                 continue;
             }
 
