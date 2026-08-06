@@ -190,9 +190,9 @@ class VolumePacker implements LoggerAwareInterface
     private function fillVoids(array $layers, ItemList &$items, int $boxWidth, int $boxLength): array
     {
         $voidFinder = new VoidFinder();
+        $packedItemList = $this->getPackedItemList($layers);
 
         while ($items->count() > 0) {
-            $packedItemList = $this->getPackedItemList($layers);
             $voids = $voidFinder->find($boxWidth, $boxLength, $this->box->getInnerDepth(), $packedItemList);
 
             // Prefer lower positions, then larger free regions (volume, then footprint)
