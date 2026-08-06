@@ -20,6 +20,8 @@ readonly class PackedItem implements JsonSerializable
 {
     public int $volume;
 
+    public int $weight;
+
     public function __construct(
         public Item $item,
         public int $x,
@@ -29,6 +31,8 @@ readonly class PackedItem implements JsonSerializable
         public int $length,
         public int $depth
     ) {
+        $this->volume = $width * $length * $depth;
+        $this->weight = $item->getWeight();
     }
 
     public static function fromOrientatedItem(OrientatedItem $orientatedItem, int $x, int $y, int $z): self

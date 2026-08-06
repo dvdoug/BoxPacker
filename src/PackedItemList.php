@@ -43,8 +43,8 @@ class PackedItemList implements Countable, IteratorAggregate
     {
         $this->list[] = $item;
         $this->isSorted = false;
-        $this->weight += $item->item->getWeight();
-        $this->volume += $item->width * $item->length * $item->depth;
+        $this->weight += $item->weight;
+        $this->volume += $item->volume;
         if ($item->item instanceof LinkedItem) {
             $group = $item->item->getLinkedItemGroup();
             $this->linkedGroupCounts[$group] = ($this->linkedGroupCounts[$group] ?? 0) + 1;
@@ -114,9 +114,6 @@ class PackedItemList implements Countable, IteratorAggregate
 
     private function compare(PackedItem $itemA, PackedItem $itemB): int
     {
-        $itemAVolume = $itemA->item->getWidth() * $itemA->item->getLength() * $itemA->item->getDepth();
-        $itemBVolume = $itemB->item->getWidth() * $itemB->item->getLength() * $itemB->item->getDepth();
-
-        return ($itemBVolume <=> $itemAVolume) ?: ($itemB->item->getWeight() <=> $itemA->item->getWeight());
+        return ($itemB->volume <=> $itemA->volume) ?: ($itemB->weight <=> $itemA->weight);
     }
 }
