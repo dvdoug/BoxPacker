@@ -196,8 +196,8 @@ class VolumePacker implements LoggerAwareInterface
             usort(
                 $voids,
                 static fn (VoidSpace $a, VoidSpace $b): int => $a->z <=> $b->z
-                        ?: $b->getVolume() <=> $a->getVolume()
-                        ?: $b->getFootprint() <=> $a->getFootprint()
+                        ?: $b->volume <=> $a->volume
+                        ?: $b->footprint <=> $a->footprint
             );
 
             $progress = false;

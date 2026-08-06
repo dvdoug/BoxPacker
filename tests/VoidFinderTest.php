@@ -28,7 +28,7 @@ class VoidFinderTest extends TestCase
         self::assertSame(100, $spaces[0]->width);
         self::assertSame(80, $spaces[0]->length);
         self::assertSame(60, $spaces[0]->depth);
-        self::assertSame(100 * 80 * 60, $spaces[0]->getVolume());
+        self::assertSame(100 * 80 * 60, $spaces[0]->volume);
     }
 
     public function testSingleItemInCornerProducesResidualsOnOpenSides(): void

@@ -16,6 +16,10 @@ use JsonSerializable;
  */
 readonly class VoidSpace implements JsonSerializable
 {
+    public int $volume;
+
+    public int $footprint;
+
     public function __construct(
         public int $x,
         public int $y,
@@ -24,19 +28,8 @@ readonly class VoidSpace implements JsonSerializable
         public int $length,
         public int $depth,
     ) {
-    }
-
-    public function getVolume(): int
-    {
-        return $this->width * $this->length * $this->depth;
-    }
-
-    /**
-     * Footprint area in the XY plane (mm²).
-     */
-    public function getFootprint(): int
-    {
-        return $this->width * $this->length;
+        $this->volume = $width * $length * $depth;
+        $this->footprint = $width * $length;
     }
 
     public function jsonSerialize(): array
