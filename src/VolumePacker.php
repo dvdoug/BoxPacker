@@ -160,12 +160,12 @@ class VolumePacker implements LoggerAwareInterface
             // do a preliminary layer pack to get the depth used
             $preliminaryItems = clone $items;
             $preliminaryLayer = $this->layerPacker->packLayer($preliminaryItems, clone $packedItemList, 0, 0, $layerStartDepth, $boxWidth, $boxLength, $this->box->getInnerDepth() - $layerStartDepth, 0, true, $firstItemOrientation);
-            if (count($preliminaryLayer->getItems()) === 0) {
+            if ($preliminaryLayer->items === []) {
                 break;
             }
 
-            $preliminaryLayerDepth = $preliminaryLayer->getDepth();
-            if ($preliminaryLayerDepth === $preliminaryLayer->getItems()[0]->depth) { // preliminary === final
+            $preliminaryLayerDepth = $preliminaryLayer->depth;
+            if ($preliminaryLayerDepth === $preliminaryLayer->items[0]->depth) { // preliminary === final
                 $layers[] = $preliminaryLayer;
                 $items = $preliminaryItems;
             } else { // redo with now-known-depth so that we can stack to that height from the first item
@@ -226,9 +226,9 @@ class VolumePacker implements LoggerAwareInterface
                     null
                 );
 
-                if (count($layer->getItems()) > 0) {
+                if ($layer->items !== []) {
                     $layers[] = $layer;
-                    $voids = $voidFinder->subtractItems($voids, $layer->getItems());
+                    $voids = $voidFinder->subtractItems($voids, $layer->items);
                     $progress = true;
                     $this->logger->debug(
                         'Filled void space',
@@ -338,7 +338,7 @@ class VolumePacker implements LoggerAwareInterface
         $newLayers = [];
         foreach ($oldLayers as $originalLayer) {
             $newLayer = new PackedLayer();
-            foreach ($originalLayer->getItems() as $item) {
+            foreach ($originalLayer->items as $item) {
                 $packedItem = new PackedItem($item->item, $item->y, $item->x, $item->z, $item->length, $item->width, $item->depth);
                 $newLayer->insert($packedItem);
             }
@@ -356,7 +356,7 @@ class VolumePacker implements LoggerAwareInterface
     {
         $packedItemList = new PackedItemList();
         foreach ($layers as $layer) {
-            foreach ($layer->getItems() as $packedItem) {
+            foreach ($layer->items as $packedItem) {
                 $packedItemList->insert($packedItem);
             }
         }
@@ -373,7 +373,7 @@ class VolumePacker implements LoggerAwareInterface
     {
         $depth = 0;
         foreach ($layers as $layer) {
-            $depth += $layer->getDepth();
+            $depth += $layer->depth;
         }
 
         return $depth;

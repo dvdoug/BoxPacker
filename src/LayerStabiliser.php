@@ -31,16 +31,16 @@ class LayerStabiliser
         // then for each item in the layer, re-calculate each item's z position
         $currentZ = 0;
         foreach ($packedLayers as $oldZLayer) {
-            $oldZStart = $oldZLayer->getStartZ();
+            $oldZStart = $oldZLayer->startZ;
             $newZLayer = new PackedLayer();
-            foreach ($oldZLayer->getItems() as $oldZItem) {
+            foreach ($oldZLayer->items as $oldZItem) {
                 $newZ = $oldZItem->z - $oldZStart + $currentZ;
                 $newZItem = new PackedItem($oldZItem->item, $oldZItem->x, $oldZItem->y, $newZ, $oldZItem->width, $oldZItem->length, $oldZItem->depth);
                 $newZLayer->insert($newZItem);
             }
 
             $stabilisedLayers[] = $newZLayer;
-            $currentZ += $newZLayer->getDepth();
+            $currentZ += $newZLayer->depth;
         }
 
         return $stabilisedLayers;
@@ -48,6 +48,6 @@ class LayerStabiliser
 
     private function compare(PackedLayer $layerA, PackedLayer $layerB): int
     {
-        return ($layerB->getFootprint() <=> $layerA->getFootprint()) ?: ($layerB->getDepth() <=> $layerA->getDepth());
+        return ($layerB->footprint <=> $layerA->footprint) ?: ($layerB->depth <=> $layerA->depth);
     }
 }

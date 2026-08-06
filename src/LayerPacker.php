@@ -107,7 +107,7 @@ class LayerPacker implements LoggerAwareInterface
 
                 // Figure out if we can stack items on top of this rather than side by side
                 // e.g. when we've packed a tall item, and have just put a shorter one next to it.
-                $stackableDepth = ($guidelineLayerDepth ?: $layer->getDepth()) - $packedItem->depth;
+                $stackableDepth = ($guidelineLayerDepth ?: $layer->depth) - $packedItem->depth;
                 if ($stackableDepth > 0) {
                     $stackedLayer = $this->packLayer($items, $packedItemList, $x, $y, $z + $packedItem->depth, $x + $packedItem->width, $y + $packedItem->length, $stackableDepth, $stackableDepth, $considerStability, null);
                     $layer->merge($stackedLayer);
@@ -117,7 +117,7 @@ class LayerPacker implements LoggerAwareInterface
 
                 // might be space available lengthwise across the width of this item, up to the current layer length
                 if ($rowLength > $packedItem->length) {
-                    $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->getDepth(), $considerStability, null));
+                    $layer->merge($this->packLayer($items, $packedItemList, $x - $packedItem->width, $y + $packedItem->length, $z, $x, $y + $rowLength, $depthForLayer, $layer->depth, $considerStability, null));
                 }
 
                 if ($items->count() === 0 && $skippedItems) {
