@@ -44,87 +44,78 @@ class VoidFinder
     public function subtractItems(array $spaces, iterable $packedItems): array
     {
         foreach ($packedItems as $packedItem) {
+            // Hoist item AABB once per packed item (not once per free space)
+            $itemX = $packedItem->x;
+            $itemY = $packedItem->y;
+            $itemZ = $packedItem->z;
+            $itemEndX = $itemX + $packedItem->width;
+            $itemEndY = $itemY + $packedItem->length;
+            $itemEndZ = $itemZ + $packedItem->depth;
+
             $next = [];
             foreach ($spaces as $space) {
-                foreach ($this->subtractItemFromSpace($space, $packedItem) as $residual) {
-                    $next[] = $residual;
+                $spaceX = $space->x;
+                $spaceY = $space->y;
+                $spaceZ = $space->z;
+                $spaceEndX = $spaceX + $space->width;
+                $spaceEndY = $spaceY + $space->length;
+                $spaceEndZ = $spaceZ + $space->depth;
+
+                // Item does not meet this free space — keep it unchanged
+                if ($itemX >= $spaceEndX || $itemEndX <= $spaceX
+                    || $itemY >= $spaceEndY || $itemEndY <= $spaceY
+                    || $itemZ >= $spaceEndZ || $itemEndZ <= $spaceZ) {
+                    $next[] = $space;
+                    continue;
+                }
+
+                // Part of the item that sits inside this free space
+                $overlapX = max($spaceX, $itemX);
+                $overlapY = max($spaceY, $itemY);
+                $overlapZ = max($spaceZ, $itemZ);
+                $overlapEndX = min($spaceEndX, $itemEndX);
+                $overlapEndY = min($spaceEndY, $itemEndY);
+                $overlapEndZ = min($spaceEndZ, $itemEndZ);
+
+                $spaceLength = $space->length;
+                $spaceDepth = $space->depth;
+                $overlapWidth = $overlapEndX - $overlapX;
+                $overlapLength = $overlapEndY - $overlapY;
+
+                // Up to six leftover pieces around that overlap (no gaps, no double-counting)
+                // Left (full free length and depth)
+                if ($overlapX > $spaceX) {
+                    $next[] = new VoidSpace($spaceX, $spaceY, $spaceZ, $overlapX - $spaceX, $spaceLength, $spaceDepth);
+                }
+
+                // Right (full free length and depth)
+                if ($overlapEndX < $spaceEndX) {
+                    $next[] = new VoidSpace($overlapEndX, $spaceY, $spaceZ, $spaceEndX - $overlapEndX, $spaceLength, $spaceDepth);
+                }
+
+                // Front — only across the overlap width (full free depth)
+                if ($overlapY > $spaceY) {
+                    $next[] = new VoidSpace($overlapX, $spaceY, $spaceZ, $overlapWidth, $overlapY - $spaceY, $spaceDepth);
+                }
+
+                // Back
+                if ($overlapEndY < $spaceEndY) {
+                    $next[] = new VoidSpace($overlapX, $overlapEndY, $spaceZ, $overlapWidth, $spaceEndY - $overlapEndY, $spaceDepth);
+                }
+
+                // Below — only across the overlap footprint
+                if ($overlapZ > $spaceZ) {
+                    $next[] = new VoidSpace($overlapX, $overlapY, $spaceZ, $overlapWidth, $overlapLength, $overlapZ - $spaceZ);
+                }
+
+                // Above
+                if ($overlapEndZ < $spaceEndZ) {
+                    $next[] = new VoidSpace($overlapX, $overlapY, $overlapEndZ, $overlapWidth, $overlapLength, $spaceEndZ - $overlapEndZ);
                 }
             }
             $spaces = $next;
         }
 
         return $spaces;
-    }
-
-    /**
-     * Split a free space by removing the part occupied by a packed item.
-     *
-     * @return VoidSpace[] remaining free pieces (or the original space if the item misses it)
-     */
-    private function subtractItemFromSpace(VoidSpace $space, PackedItem $item): array
-    {
-        $spaceX = $space->x;
-        $spaceY = $space->y;
-        $spaceZ = $space->z;
-        $spaceEndX = $space->x + $space->width;
-        $spaceEndY = $space->y + $space->length;
-        $spaceEndZ = $space->z + $space->depth;
-
-        $itemX = $item->x;
-        $itemY = $item->y;
-        $itemZ = $item->z;
-        $itemEndX = $item->x + $item->width;
-        $itemEndY = $item->y + $item->length;
-        $itemEndZ = $item->z + $item->depth;
-
-        // Item does not meet this free space — leave it alone
-        if ($itemX >= $spaceEndX || $itemEndX <= $spaceX
-            || $itemY >= $spaceEndY || $itemEndY <= $spaceY
-            || $itemZ >= $spaceEndZ || $itemEndZ <= $spaceZ) {
-            return [$space];
-        }
-
-        // Part of the item that sits inside this free space
-        $overlapX = max($spaceX, $itemX);
-        $overlapY = max($spaceY, $itemY);
-        $overlapZ = max($spaceZ, $itemZ);
-        $overlapEndX = min($spaceEndX, $itemEndX);
-        $overlapEndY = min($spaceEndY, $itemEndY);
-        $overlapEndZ = min($spaceEndZ, $itemEndZ);
-
-        // Up to six leftover pieces around that overlap (no gaps, no double-counting)
-        $residuals = [];
-
-        // Left (full free length and depth)
-        if ($overlapX > $spaceX) {
-            $residuals[] = new VoidSpace($spaceX, $spaceY, $spaceZ, $overlapX - $spaceX, $space->length, $space->depth);
-        }
-
-        // Right (full free length and depth)
-        if ($overlapEndX < $spaceEndX) {
-            $residuals[] = new VoidSpace($overlapEndX, $spaceY, $spaceZ, $spaceEndX - $overlapEndX, $space->length, $space->depth);
-        }
-
-        // Front — only across the overlap width (full free depth)
-        if ($overlapY > $spaceY) {
-            $residuals[] = new VoidSpace($overlapX, $spaceY, $spaceZ, $overlapEndX - $overlapX, $overlapY - $spaceY, $space->depth);
-        }
-
-        // Back
-        if ($overlapEndY < $spaceEndY) {
-            $residuals[] = new VoidSpace($overlapX, $overlapEndY, $spaceZ, $overlapEndX - $overlapX, $spaceEndY - $overlapEndY, $space->depth);
-        }
-
-        // Below — only across the overlap footprint
-        if ($overlapZ > $spaceZ) {
-            $residuals[] = new VoidSpace($overlapX, $overlapY, $spaceZ, $overlapEndX - $overlapX, $overlapEndY - $overlapY, $overlapZ - $spaceZ);
-        }
-
-        // Above
-        if ($overlapEndZ < $spaceEndZ) {
-            $residuals[] = new VoidSpace($overlapX, $overlapY, $overlapEndZ, $overlapEndX - $overlapX, $overlapEndY - $overlapY, $spaceEndZ - $overlapEndZ);
-        }
-
-        return $residuals;
     }
 }
