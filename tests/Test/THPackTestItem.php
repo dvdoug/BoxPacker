@@ -9,31 +9,24 @@ declare(strict_types=1);
 
 namespace DVDoug\BoxPacker\Test;
 
-use DVDoug\BoxPacker\ConstrainedPlacementItem;
-use DVDoug\BoxPacker\PackedBox;
+use DVDoug\BoxPacker\Item;
 use DVDoug\BoxPacker\Rotation;
 
 /**
- * OR-library style item: each edge may or may not be allowed as the vertical (depth) axis.
+ * Plain OR-library item (no placement hook).
+ *
+ * Vertical restrictions that reduce to {@see Rotation::KeepFlat} or unrestricted
+ * {@see Rotation::BestFit} are expressed here via dimensions + rotation only.
  */
-class THPackTestItem implements ConstrainedPlacementItem
+class THPackTestItem implements Item
 {
-    private readonly Rotation $allowedRotation;
-
     public function __construct(
         private readonly string $description,
         private readonly int $width,
-        private readonly bool $widthAllowedVertical,
         private readonly int $length,
-        private readonly bool $lengthAllowedVertical,
         private readonly int $depth,
-        private readonly bool $depthAllowedVertical
+        private readonly Rotation $allowedRotation = Rotation::BestFit
     ) {
-        $this->allowedRotation = (
-            !$widthAllowedVertical
-            && !$lengthAllowedVertical
-            && $depthAllowedVertical
-        ) ? Rotation::KeepFlat : Rotation::BestFit;
     }
 
     public function getDescription(): string
@@ -64,19 +57,5 @@ class THPackTestItem implements ConstrainedPlacementItem
     public function getAllowedRotation(): Rotation
     {
         return $this->allowedRotation;
-    }
-
-    public function canBePacked(
-        PackedBox $packedBox,
-        int $proposedX,
-        int $proposedY,
-        int $proposedZ,
-        int $width,
-        int $length,
-        int $depth
-    ): bool {
-        return ($depth === $this->width && $this->widthAllowedVertical)
-            || ($depth === $this->length && $this->lengthAllowedVertical)
-            || ($depth === $this->depth && $this->depthAllowedVertical);
     }
 }

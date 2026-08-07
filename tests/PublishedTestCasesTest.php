@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use DVDoug\BoxPacker\Test\TestBox;
+use DVDoug\BoxPacker\Test\THPackConstrainedTestItem;
 use DVDoug\BoxPacker\Test\THPackTestItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -39,6 +40,13 @@ use function trim;
  * possible between boxes, instead of e.g. cramming one to the top and having a second box mostly empty.
  *
  * Test data taken from the OR Library http://people.brunel.ac.uk/~mastjjb/jeb/orlib/thpackinfo.html
+ *
+ * OR placement constraint (Bischoff/Ratcliff et al.): each item edge has a flag for whether
+ * that edge may be used as the vertical (height) axis. Horizontal 90° turns of the other two
+ * edges are always allowed. That maps to BoxPacker as:
+ * - all three flags true → free {@see Rotation::BestFit} ({@see THPackTestItem})
+ * - exactly one flag true → {@see Rotation::KeepFlat} with that edge stored as depth
+ * - exactly two flags true → {@see THPackConstrainedTestItem} (BestFit + canBePacked)
  */
 class PublishedTestCasesTest extends TestCase
 {
@@ -143,7 +151,7 @@ class PublishedTestCasesTest extends TestCase
             $items = new ItemList();
             for ($i = 1; $i <= $itemTypeCount; ++$i) {
                 $itemDimensions = explode(' ', trim(fgets($handle)));
-                $item = new THPackTestItem(
+                $item = self::createThpackItem(
                     "Item {$itemDimensions[0]}",
                     (int) $itemDimensions[1],
                     (bool) $itemDimensions[2],
@@ -160,5 +168,49 @@ class PublishedTestCasesTest extends TestCase
         fclose($handle);
 
         return $data;
+    }
+
+    /**
+     * Build a fixture item from OR-library dimensions + vertical-edge flags.
+     */
+    public static function createThpackItem(
+        string $description,
+        int $width,
+        bool $widthAllowedVertical,
+        int $length,
+        bool $lengthAllowedVertical,
+        int $depth,
+        bool $depthAllowedVertical
+    ): Item {
+        $verticalAxes = (int) $widthAllowedVertical + (int) $lengthAllowedVertical + (int) $depthAllowedVertical;
+
+        // Unrestricted: any edge may stand vertical → free BestFit
+        if ($verticalAxes === 3) {
+            return new THPackTestItem($description, $width, $length, $depth, Rotation::BestFit);
+        }
+
+        // Single allowed vertical edge → KeepFlat with that edge as depth (planar swap of the other two)
+        if ($verticalAxes === 1) {
+            if ($depthAllowedVertical) {
+                return new THPackTestItem($description, $width, $length, $depth, Rotation::KeepFlat);
+            }
+            if ($widthAllowedVertical) {
+                return new THPackTestItem($description, $length, $depth, $width, Rotation::KeepFlat);
+            }
+
+            // lengthAllowedVertical
+            return new THPackTestItem($description, $width, $depth, $length, Rotation::KeepFlat);
+        }
+
+        // Two (or zero) allowed vertical edges — cannot express with Rotation alone
+        return new THPackConstrainedTestItem(
+            $description,
+            $width,
+            $widthAllowedVertical,
+            $length,
+            $lengthAllowedVertical,
+            $depth,
+            $depthAllowedVertical
+        );
     }
 }
