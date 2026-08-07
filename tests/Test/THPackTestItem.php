@@ -13,11 +13,13 @@ use DVDoug\BoxPacker\ConstrainedPlacementItem;
 use DVDoug\BoxPacker\PackedBox;
 use DVDoug\BoxPacker\Rotation;
 
+/**
+ * OR-library style item: each edge may or may not be allowed as the vertical (depth) axis.
+ */
 class THPackTestItem implements ConstrainedPlacementItem
 {
-    /**
-     * TestItem constructor.
-     */
+    private readonly Rotation $allowedRotation;
+
     public function __construct(
         private readonly string $description,
         private readonly int $width,
@@ -27,6 +29,11 @@ class THPackTestItem implements ConstrainedPlacementItem
         private readonly int $depth,
         private readonly bool $depthAllowedVertical
     ) {
+        $this->allowedRotation = (
+            !$widthAllowedVertical
+            && !$lengthAllowedVertical
+            && $depthAllowedVertical
+        ) ? Rotation::KeepFlat : Rotation::BestFit;
     }
 
     public function getDescription(): string
@@ -56,12 +63,9 @@ class THPackTestItem implements ConstrainedPlacementItem
 
     public function getAllowedRotation(): Rotation
     {
-        return (!$this->widthAllowedVertical && !$this->lengthAllowedVertical && $this->depthAllowedVertical) ? Rotation::KeepFlat : Rotation::BestFit;
+        return $this->allowedRotation;
     }
 
-    /**
-     * Hook for user implementation of item-specific constraints, e.g. max <x> batteries per box.
-     */
     public function canBePacked(
         PackedBox $packedBox,
         int $proposedX,
@@ -71,17 +75,8 @@ class THPackTestItem implements ConstrainedPlacementItem
         int $length,
         int $depth
     ): bool {
-        $ok = false;
-        if ($depth === $this->width) {
-            $ok = $ok || $this->widthAllowedVertical;
-        }
-        if ($depth === $this->length) {
-            $ok = $ok || $this->lengthAllowedVertical;
-        }
-        if ($depth === $this->depth) {
-            $ok = $ok || $this->depthAllowedVertical;
-        }
-
-        return $ok;
+        return ($depth === $this->width && $this->widthAllowedVertical)
+            || ($depth === $this->length && $this->lengthAllowedVertical)
+            || ($depth === $this->depth && $this->depthAllowedVertical);
     }
 }
