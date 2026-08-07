@@ -41,7 +41,9 @@ class OrientatedItemSorter
      */
     protected static array $lookaheadCache = [];
 
-    /** Cached for this sorter instance (one orientation sort). */
+    /**
+     * Cached for this sorter instance (one orientation sort).
+     */
     private ?bool $allRemainingSameSizeCache = null;
 
     public function __construct(

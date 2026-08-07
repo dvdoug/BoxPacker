@@ -17,7 +17,9 @@ use function count;
  */
 class PackedLayer
 {
-    /** @var PackedItem[] */
+    /**
+     * @var PackedItem[]
+     */
     public array $items = [];
 
     public int $startX = 0;

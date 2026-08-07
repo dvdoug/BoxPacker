@@ -25,6 +25,7 @@ use function end;
 use function key;
 use function prev;
 use function usort;
+use function array_merge;
 
 /**
  * List of items to be packed, ordered by volume.
@@ -198,7 +199,7 @@ class ItemList implements Countable, IteratorAggregate
      *
      * Extract order becomes: $skipped in the order given, then remaining items largest-first.
      *
-     * @param  Item[] $skipped
+     * @param Item[] $skipped
      * @internal
      */
     public function requeue(array $skipped): void
