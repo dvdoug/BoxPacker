@@ -13,9 +13,9 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-use function array_filter;
 use function count;
 use function usort;
+use function array_filter;
 
 /**
  * Figure out orientations for an item and a given set of dimensions.
@@ -130,21 +130,59 @@ class OrientatedItemFactory implements LoggerAwareInterface
         }
 
         if ($item instanceof ConstrainedPlacementItem && !$this->box instanceof WorkingVolume) {
-            $orientations = array_filter($orientations, function (OrientatedItem $i) use ($x, $y, $z, $prevPackedItemList): bool {
-                /** @var ConstrainedPlacementItem $constrainedItem */
-                $constrainedItem = $i->item;
+            /** @var ConstrainedPlacementItem $constrainedItem */
+            $constrainedItem = $item;
 
-                if ($this->boxIsRotated) {
-                    $rotatedPrevPackedItemList = new PackedItemList();
-                    foreach ($prevPackedItemList as $prevPackedItem) {
-                        $rotatedPrevPackedItemList->insert(new PackedItem($prevPackedItem->item, $prevPackedItem->y, $prevPackedItem->x, $prevPackedItem->z, $prevPackedItem->length, $prevPackedItem->width, $prevPackedItem->depth));
-                    }
-
-                    return $constrainedItem->canBePacked(new PackedBox($this->box, $rotatedPrevPackedItemList), $y, $x, $z, $i->length, $i->width, $i->depth);
+            if ($this->boxIsRotated) {
+                $contextItems = new PackedItemList();
+                foreach ($prevPackedItemList as $prevPackedItem) {
+                    $contextItems->insert(new PackedItem(
+                        $prevPackedItem->item,
+                        $prevPackedItem->y,
+                        $prevPackedItem->x,
+                        $prevPackedItem->z,
+                        $prevPackedItem->length,
+                        $prevPackedItem->width,
+                        $prevPackedItem->depth
+                    ));
                 }
+                $packedBox = new PackedBox($this->box, $contextItems);
+                $propX = $y;
+                $propY = $x;
+            } else {
+                $packedBox = new PackedBox($this->box, $prevPackedItemList);
+                $propX = $x;
+                $propY = $y;
+            }
 
-                return $constrainedItem->canBePacked(new PackedBox($this->box, $prevPackedItemList), $x, $y, $z, $i->width, $i->length, $i->depth);
-            });
+            $filtered = [];
+            foreach ($orientations as $orientation) {
+                if ($this->boxIsRotated) {
+                    $ok = $constrainedItem->canBePacked(
+                        $packedBox,
+                        $propX,
+                        $propY,
+                        $z,
+                        $orientation->length,
+                        $orientation->width,
+                        $orientation->depth
+                    );
+                } else {
+                    $ok = $constrainedItem->canBePacked(
+                        $packedBox,
+                        $propX,
+                        $propY,
+                        $z,
+                        $orientation->width,
+                        $orientation->length,
+                        $orientation->depth
+                    );
+                }
+                if ($ok) {
+                    $filtered[] = $orientation;
+                }
+            }
+            $orientations = $filtered;
         }
 
         return $orientations;
