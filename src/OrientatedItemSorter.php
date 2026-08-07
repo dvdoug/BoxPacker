@@ -41,10 +41,7 @@ class OrientatedItemSorter
      */
     protected static array $lookaheadCache = [];
 
-    /**
-     * Whether every remaining item matches the current item's size.
-     * Fixed for the life of this sorter (one orientation sort); computed once.
-     */
+    /** Cached for this sorter instance (one orientation sort). */
     private ?bool $allRemainingSameSizeCache = null;
 
     public function __construct(

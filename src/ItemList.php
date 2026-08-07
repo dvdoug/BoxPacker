@@ -194,6 +194,28 @@ class ItemList implements Countable, IteratorAggregate
     }
 
     /**
+     * Return skipped items to the front of the packing queue (before remaining items).
+     *
+     * Extract order becomes: $skipped in the order given, then remaining items largest-first.
+     *
+     * @param  Item[] $skipped
+     * @internal
+     */
+    public function requeue(array $skipped): void
+    {
+        if ($skipped === []) {
+            return;
+        }
+
+        if (!$this->isSorted) {
+            usort($this->list, fn (Item $a, Item $b) => $this->sorter->compare($b, $a));
+        }
+
+        $this->list = array_merge($this->list, array_reverse($skipped));
+        $this->isSorted = true;
+    }
+
+    /**
      * @return Traversable<Item>
      */
     public function getIterator(): Traversable

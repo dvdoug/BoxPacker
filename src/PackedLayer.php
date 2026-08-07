@@ -32,13 +32,10 @@ class PackedLayer
 
     public int $endZ = 0;
 
-    /** endX - startX when non-empty */
     public int $width = 0;
 
-    /** endY - startY when non-empty */
     public int $length = 0;
 
-    /** endZ - startZ when non-empty */
     public int $depth = 0;
 
     public int $footprint = 0;
@@ -58,7 +55,6 @@ class PackedLayer
         $itemEndZ = $packedItem->z + $packedItem->depth;
 
         if (count($this->items) === 1) {
-            // first item
             $this->startX = $packedItem->x;
             $this->endX = $itemEndX;
             $this->startY = $packedItem->y;

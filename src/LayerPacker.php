@@ -13,8 +13,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-use function array_merge;
-use function iterator_to_array;
 use function max;
 use function sort;
 
@@ -121,7 +119,7 @@ class LayerPacker implements LoggerAwareInterface
                 }
 
                 if ($items->count() === 0 && $skippedItems) {
-                    $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+                    $items->requeue($skippedItems);
                     $skippedItems = [];
                 }
 
@@ -144,7 +142,7 @@ class LayerPacker implements LoggerAwareInterface
                 $x = $startX;
                 $rowLength = 0;
                 $skippedItems[] = $itemToPack;
-                $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+                $items->requeue($skippedItems);
                 $skippedItems = [];
                 $prevItem = null;
                 continue;
@@ -153,7 +151,7 @@ class LayerPacker implements LoggerAwareInterface
             $this->logger->debug('no items fit, so starting next vertical layer');
             $skippedItems[] = $itemToPack;
 
-            $items = ItemList::fromArray(array_merge($skippedItems, iterator_to_array($items)), true);
+            $items->requeue($skippedItems);
 
             return $layer;
         }

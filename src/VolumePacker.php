@@ -263,7 +263,7 @@ class VolumePacker implements LoggerAwareInterface
     }
 
     /**
-     * Cheap geometric reject: can any remaining item fit in this void under its rotation rules?
+     * Whether any remaining item can fit in the void given its allowed rotations.
      */
     private function voidMayFitAnyRemainingItem(VoidSpace $void, ItemList $items): bool
     {

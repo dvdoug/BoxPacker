@@ -61,7 +61,7 @@ class VoidFinder
                 $spaceEndY = $spaceY + $space->length;
                 $spaceEndZ = $spaceZ + $space->depth;
 
-                // Item does not meet this free space — keep it unchanged
+                // No overlap — keep the free space as-is
                 if ($itemX >= $spaceEndX || $itemEndX <= $spaceX
                     || $itemY >= $spaceEndY || $itemEndY <= $spaceY
                     || $itemZ >= $spaceEndZ || $itemEndZ <= $spaceZ) {
@@ -82,34 +82,23 @@ class VoidFinder
                 $overlapWidth = $overlapEndX - $overlapX;
                 $overlapLength = $overlapEndY - $overlapY;
 
-                // Up to six leftover pieces around that overlap (no gaps, no double-counting)
-                // Left (full free length and depth)
-                if ($overlapX > $spaceX) {
+                // Residuals around the overlap (no gaps, no double-counting)
+                if ($overlapX > $spaceX) { // left
                     $next[] = new VoidSpace($spaceX, $spaceY, $spaceZ, $overlapX - $spaceX, $spaceLength, $spaceDepth);
                 }
-
-                // Right (full free length and depth)
-                if ($overlapEndX < $spaceEndX) {
+                if ($overlapEndX < $spaceEndX) { // right
                     $next[] = new VoidSpace($overlapEndX, $spaceY, $spaceZ, $spaceEndX - $overlapEndX, $spaceLength, $spaceDepth);
                 }
-
-                // Front — only across the overlap width (full free depth)
-                if ($overlapY > $spaceY) {
+                if ($overlapY > $spaceY) { // front
                     $next[] = new VoidSpace($overlapX, $spaceY, $spaceZ, $overlapWidth, $overlapY - $spaceY, $spaceDepth);
                 }
-
-                // Back
-                if ($overlapEndY < $spaceEndY) {
+                if ($overlapEndY < $spaceEndY) { // back
                     $next[] = new VoidSpace($overlapX, $overlapEndY, $spaceZ, $overlapWidth, $spaceEndY - $overlapEndY, $spaceDepth);
                 }
-
-                // Below — only across the overlap footprint
-                if ($overlapZ > $spaceZ) {
+                if ($overlapZ > $spaceZ) { // below
                     $next[] = new VoidSpace($overlapX, $overlapY, $spaceZ, $overlapWidth, $overlapLength, $overlapZ - $spaceZ);
                 }
-
-                // Above
-                if ($overlapEndZ < $spaceEndZ) {
+                if ($overlapEndZ < $spaceEndZ) { // above
                     $next[] = new VoidSpace($overlapX, $overlapY, $overlapEndZ, $overlapWidth, $overlapLength, $spaceEndZ - $overlapEndZ);
                 }
             }
