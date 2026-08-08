@@ -30,6 +30,16 @@ class OrientatedItemFactory implements LoggerAwareInterface
     protected bool $boxIsRotated = false;
 
     /**
+     * Cached X/Y-swapped packed context for ConstrainedPlacementItem when the box is tried rotated.
+     * Invalidated when the source list identity or item count changes (list only grows via insert).
+     */
+    private ?PackedItemList $rotatedContextSource = null;
+
+    private int $rotatedContextCount = -1;
+
+    private ?PackedBox $rotatedContextPackedBox = null;
+
+    /**
      * @var array<string, bool>
      */
     protected static array $emptyBoxStableItemOrientationCache = [];
@@ -134,19 +144,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
             $constrainedItem = $item;
 
             if ($this->boxIsRotated) {
-                $contextItems = new PackedItemList();
-                foreach ($prevPackedItemList as $prevPackedItem) {
-                    $contextItems->insert(new PackedItem(
-                        $prevPackedItem->item,
-                        $prevPackedItem->y,
-                        $prevPackedItem->x,
-                        $prevPackedItem->z,
-                        $prevPackedItem->length,
-                        $prevPackedItem->width,
-                        $prevPackedItem->depth
-                    ));
-                }
-                $packedBox = new PackedBox($this->box, $contextItems);
+                $packedBox = $this->getRotatedContextPackedBox($prevPackedItemList);
                 $propX = $y;
                 $propY = $x;
             } else {
@@ -264,6 +262,40 @@ class OrientatedItemFactory implements LoggerAwareInterface
         static::$emptyBoxStableItemOrientationCache[$cacheKey] = count($stableOrientations) > 0;
 
         return static::$emptyBoxStableItemOrientationCache[$cacheKey];
+    }
+
+    /**
+     * Build (or reuse) a PackedBox whose items have X/Y swapped to match a rotated box try.
+     */
+    private function getRotatedContextPackedBox(PackedItemList $prevPackedItemList): PackedBox
+    {
+        $count = $prevPackedItemList->count();
+        if (
+            $this->rotatedContextPackedBox !== null
+            && $this->rotatedContextSource === $prevPackedItemList
+            && $this->rotatedContextCount === $count
+        ) {
+            return $this->rotatedContextPackedBox;
+        }
+
+        $contextItems = new PackedItemList();
+        foreach ($prevPackedItemList as $prevPackedItem) {
+            $contextItems->insert(new PackedItem(
+                $prevPackedItem->item,
+                $prevPackedItem->y,
+                $prevPackedItem->x,
+                $prevPackedItem->z,
+                $prevPackedItem->length,
+                $prevPackedItem->width,
+                $prevPackedItem->depth
+            ));
+        }
+
+        $this->rotatedContextSource = $prevPackedItemList;
+        $this->rotatedContextCount = $count;
+        $this->rotatedContextPackedBox = new PackedBox($this->box, $contextItems);
+
+        return $this->rotatedContextPackedBox;
     }
 
     /**
