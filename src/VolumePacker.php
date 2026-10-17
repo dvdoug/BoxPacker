@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 use function reset;
 use function sort;
@@ -24,7 +23,7 @@ use const PHP_INT_MAX;
  */
 class VolumePacker implements LoggerAwareInterface
 {
-    protected LoggerInterface $logger;
+    protected ?LoggerInterface $logger = null;
 
     protected ItemList $items;
 
@@ -44,13 +43,10 @@ class VolumePacker implements LoggerAwareInterface
     {
         $this->items = clone $items;
 
-        $this->logger = new NullLogger();
-
         $this->hasConstrainedItems = $items->hasConstrainedItems();
         $this->hasNoRotationItems = $items->hasNoRotationItems();
 
         $this->layerPacker = new LayerPacker($this->box);
-        $this->layerPacker->setLogger($this->logger);
     }
 
     /**
@@ -93,8 +89,10 @@ class VolumePacker implements LoggerAwareInterface
     public function pack(): PackedBox
     {
         $orientatedItemFactory = new OrientatedItemFactory($this->box);
-        $orientatedItemFactory->setLogger($this->logger);
-        $this->logger->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
+        if ($this->logger !== null) {
+            $orientatedItemFactory->setLogger($this->logger);
+        }
+        $this->logger?->debug("[EVALUATING BOX] {$this->box->getReference()}", ['box' => $this->box]);
 
         // Sometimes "space available" decisions depend on orientation of the box, so try both ways
         $rotationsToTest = [false];
@@ -155,7 +153,9 @@ class VolumePacker implements LoggerAwareInterface
             }
 
             $attempt = new self($this->box, $items);
-            $attempt->setLogger($this->logger);
+            if ($this->logger !== null) {
+                $attempt->setLogger($this->logger);
+            }
             $attempt->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
             if ($this->packAcrossWidthOnly) {
                 $attempt->packAcrossWidthOnly();
@@ -184,7 +184,7 @@ class VolumePacker implements LoggerAwareInterface
      */
     private function packRotation(int $boxWidth, int $boxLength, ?OrientatedItem $firstItemOrientation): PackedBox
     {
-        $this->logger->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
+        $this->logger?->debug("[EVALUATING ROTATION] {$this->box->getReference()}", ['width' => $boxWidth, 'length' => $boxLength]);
         $this->layerPacker->setBoxIsRotated($this->box->getInnerWidth() !== $boxWidth);
 
         $layers = [];
@@ -271,7 +271,7 @@ class VolumePacker implements LoggerAwareInterface
                     $layers[] = $layer;
                     $voids = $voidFinder->subtractItems($voids, $layer->items);
                     $progress = true;
-                    $this->logger->debug(
+                    $this->logger?->debug(
                         'Filled void space',
                         [
                             'void' => $void,

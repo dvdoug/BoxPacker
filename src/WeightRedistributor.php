@@ -12,7 +12,6 @@ namespace DVDoug\BoxPacker;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
 use WeakMap;
 
 use function array_filter;
@@ -30,7 +29,7 @@ use function usort;
  */
 class WeightRedistributor implements LoggerAwareInterface
 {
-    private LoggerInterface $logger;
+    private ?LoggerInterface $logger = null;
 
     /**
      * @param WeakMap<Box, int> $boxQuantitiesAvailable
@@ -41,7 +40,6 @@ class WeightRedistributor implements LoggerAwareInterface
         private WeakMap $boxQuantitiesAvailable,
         private readonly ?TimeoutChecker $timeoutChecker,
     ) {
-        $this->logger = new NullLogger();
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -55,7 +53,7 @@ class WeightRedistributor implements LoggerAwareInterface
     public function redistributeWeight(PackedBoxList $originalBoxes): PackedBoxList
     {
         $targetWeight = $originalBoxes->getMeanItemWeight();
-        $this->logger->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
+        $this->logger?->log(LogLevel::DEBUG, "repacking for weight distribution, weight variance {$originalBoxes->getWeightVariance()}, target weight {$targetWeight}");
 
         $boxes = iterator_to_array($originalBoxes);
 
@@ -161,7 +159,9 @@ class WeightRedistributor implements LoggerAwareInterface
     {
         $packer = new Packer();
         $packer->throwOnUnpackableItem(false);
-        $packer->setLogger($this->logger);
+        if ($this->logger !== null) {
+            $packer->setLogger($this->logger);
+        }
         $packer->setBoxes($this->boxes); // use the full set of boxes to allow smaller/larger for full efficiency
         foreach ($this->boxes as $box) {
             $packer->setBoxQuantity($box, $this->boxQuantitiesAvailable[$box]);

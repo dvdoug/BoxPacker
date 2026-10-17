@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 use function count;
 
@@ -27,14 +26,9 @@ use function count;
  */
 class LinkedItemGroupEnforcer
 {
-    private LoggerInterface $logger;
+    private ?LoggerInterface $logger = null;
 
     private bool $beStrictAboutItemOrdering = false;
-
-    public function __construct()
-    {
-        $this->logger = new NullLogger();
-    }
 
     public function setLogger(LoggerInterface $logger): void
     {
@@ -124,7 +118,9 @@ class LinkedItemGroupEnforcer
         }
 
         $volumePacker = new VolumePacker($candidate->box, $eligibleItems);
-        $volumePacker->setLogger($this->logger);
+        if ($this->logger !== null) {
+            $volumePacker->setLogger($this->logger);
+        }
         $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
 
         return $volumePacker->pack();

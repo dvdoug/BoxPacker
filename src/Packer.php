@@ -13,7 +13,6 @@ use DVDoug\BoxPacker\Exception\NoBoxesAvailableException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
 use WeakMap;
 
 use function array_pop;
@@ -27,7 +26,7 @@ use const PHP_INT_MAX;
  */
 class Packer implements LoggerAwareInterface
 {
-    private LoggerInterface $logger;
+    private ?LoggerInterface $logger = null;
 
     protected int $maxBoxesToBalanceWeight = 12;
 
@@ -52,7 +51,7 @@ class Packer implements LoggerAwareInterface
         ItemList $items = new ItemList(),
         BoxList $boxes = new BoxList(),
         PackedBoxSorter $packedBoxSorter = new DefaultPackedBoxSorter(),
-        LoggerInterface $logger = new NullLogger(),
+        ?LoggerInterface $logger = null,
     ) {
         $this->items = $items;
         $this->boxes = $boxes;
@@ -73,7 +72,7 @@ class Packer implements LoggerAwareInterface
     public function addItem(Item $item, int $qty = 1): void
     {
         $this->items->insert($item, $qty);
-        $this->logger->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}", ['item' => $item]);
+        $this->logger?->log(LogLevel::INFO, "added {$qty} x {$item->getDescription()}", ['item' => $item]);
     }
 
     /**
@@ -99,7 +98,7 @@ class Packer implements LoggerAwareInterface
     {
         $this->boxes->insert($box);
         $this->setBoxQuantity($box, $box instanceof LimitedSupplyBox ? $box->getQuantityAvailable() : PHP_INT_MAX);
-        $this->logger->log(LogLevel::INFO, "added box {$box->getReference()}", ['box' => $box]);
+        $this->logger?->log(LogLevel::INFO, "added box {$box->getReference()}", ['box' => $box]);
     }
 
     /**
@@ -170,18 +169,20 @@ class Packer implements LoggerAwareInterface
      */
     public function pack(): PackedBoxList
     {
-        $this->logger->log(LogLevel::INFO, '[PACKING STARTED]');
+        $this->logger?->log(LogLevel::INFO, '[PACKING STARTED]');
         $this->timeoutChecker?->start();
         $packedBoxes = $this->doBasicPacking();
 
         // If we have multiple boxes, try and optimise/even-out weight distribution
         if (!$this->beStrictAboutItemOrdering && $packedBoxes->count() > 1 && $packedBoxes->count() <= $this->maxBoxesToBalanceWeight) {
             $redistributor = new WeightRedistributor($this->boxes, $this->packedBoxSorter, $this->boxQuantitiesAvailable, $this->timeoutChecker);
-            $redistributor->setLogger($this->logger);
+            if ($this->logger !== null) {
+                $redistributor->setLogger($this->logger);
+            }
             $packedBoxes = $redistributor->redistributeWeight($packedBoxes);
         }
 
-        $this->logger->log(LogLevel::INFO, "[PACKING COMPLETED], {$packedBoxes->count()} boxes");
+        $this->logger?->log(LogLevel::INFO, "[PACKING COMPLETED], {$packedBoxes->count()} boxes");
 
         return $packedBoxes;
     }
@@ -201,11 +202,15 @@ class Packer implements LoggerAwareInterface
             foreach ($this->getBoxList($enforceSingleBox) as $box) {
                 $this->timeoutChecker?->throwOnTimeout();
                 $volumePacker = new VolumePacker($box, $this->items);
-                $volumePacker->setLogger($this->logger);
+                if ($this->logger !== null) {
+                    $volumePacker->setLogger($this->logger);
+                }
                 $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                 $packedBox = $volumePacker->pack();
                 $linkedItemGroupEnforcer = new LinkedItemGroupEnforcer();
-                $linkedItemGroupEnforcer->setLogger($this->logger);
+                if ($this->logger !== null) {
+                    $linkedItemGroupEnforcer->setLogger($this->logger);
+                }
                 $linkedItemGroupEnforcer->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                 $packedBox = $linkedItemGroupEnforcer->enforceConstraint($packedBox, $this->items);
                 if ($packedBox->items->count()) {
@@ -213,7 +218,7 @@ class Packer implements LoggerAwareInterface
 
                     // Have we found a single box that contains everything?
                     if ($packedBox->items->count() === $this->items->count()) {
-                        $this->logger->log(LogLevel::DEBUG, "Single box found for remaining {$this->items->count()} items");
+                        $this->logger?->log(LogLevel::DEBUG, "Single box found for remaining {$this->items->count()} items");
                         break;
                     }
                 }
@@ -231,7 +236,7 @@ class Packer implements LoggerAwareInterface
             } elseif ($this->throwOnUnpackableItem) {
                 throw new NoBoxesAvailableException("No boxes could be found for item '{$this->items->top()->getDescription()}'", $this->items);
             } else {
-                $this->logger->log(LogLevel::INFO, "{$this->items->count()} unpackable items found");
+                $this->logger?->log(LogLevel::INFO, "{$this->items->count()} unpackable items found");
                 break;
             }
         }
@@ -247,7 +252,7 @@ class Packer implements LoggerAwareInterface
      */
     public function packAllPermutations(): array
     {
-        $this->logger->log(LogLevel::INFO, '[PACKING STARTED (all permutations)]');
+        $this->logger?->log(LogLevel::INFO, '[PACKING STARTED (all permutations)]');
         $this->timeoutChecker?->start();
 
         $boxQuantitiesAvailable = clone $this->boxQuantitiesAvailable;
@@ -272,11 +277,15 @@ class Packer implements LoggerAwareInterface
                 $this->timeoutChecker?->throwOnTimeout();
                 if ($remainingBoxQuantities[$box] > 0) {
                     $volumePacker = new VolumePacker($box, $wipPermutation['itemsLeft']);
-                    $volumePacker->setLogger($this->logger);
+                    if ($this->logger !== null) {
+                        $volumePacker->setLogger($this->logger);
+                    }
                     $volumePacker->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                     $packedBox = $volumePacker->pack();
                     $linkedGroupConstraint = new LinkedItemGroupEnforcer();
-                    $linkedGroupConstraint->setLogger($this->logger);
+                    if ($this->logger !== null) {
+                        $linkedGroupConstraint->setLogger($this->logger);
+                    }
                     $linkedGroupConstraint->beStrictAboutItemOrdering($this->beStrictAboutItemOrdering);
                     $packedBox = $linkedGroupConstraint->enforceConstraint($packedBox, $wipPermutation['itemsLeft']);
                     if ($packedBox->items->count()) {
@@ -296,14 +305,14 @@ class Packer implements LoggerAwareInterface
             } elseif ($this->throwOnUnpackableItem) {
                 throw new NoBoxesAvailableException("No boxes could be found for item '{$wipPermutation['itemsLeft']->top()->getDescription()}'", $wipPermutation['itemsLeft']);
             } else {
-                $this->logger->log(LogLevel::INFO, "{$this->items->count()} unpackable items found");
+                $this->logger?->log(LogLevel::INFO, "{$this->items->count()} unpackable items found");
                 if ($wipPermutation['permutation']->count() > 0) { // don't treat initial empty permutation as completed
                     $completedPermutations[] = $wipPermutation['permutation'];
                 }
             }
         }
 
-        $this->logger->log(LogLevel::INFO, '[PACKING COMPLETED], ' . count($completedPermutations) . ' permutations');
+        $this->logger?->log(LogLevel::INFO, '[PACKING COMPLETED], ' . count($completedPermutations) . ' permutations');
 
         foreach ($completedPermutations as $completedPermutation) {
             foreach ($completedPermutation as $packedBox) {
@@ -323,12 +332,12 @@ class Packer implements LoggerAwareInterface
      */
     protected function getBoxList(bool $enforceSingleBox = false): iterable
     {
-        $this->logger->log(LogLevel::INFO, 'Determining box search pattern', ['enforceSingleBox' => $enforceSingleBox]);
+        $this->logger?->log(LogLevel::INFO, 'Determining box search pattern', ['enforceSingleBox' => $enforceSingleBox]);
         $itemVolume = 0;
         foreach ($this->items as $item) {
             $itemVolume += $item->getWidth() * $item->getLength() * $item->getDepth();
         }
-        $this->logger->log(LogLevel::DEBUG, 'Item volume', ['itemVolume' => $itemVolume]);
+        $this->logger?->log(LogLevel::DEBUG, 'Item volume', ['itemVolume' => $itemVolume]);
 
         $preferredBoxes = [];
         $otherBoxes = [];
@@ -342,7 +351,7 @@ class Packer implements LoggerAwareInterface
             }
         }
 
-        $this->logger->log(LogLevel::INFO, 'Box search pattern complete', ['preferredBoxCount' => count($preferredBoxes), 'otherBoxCount' => count($otherBoxes)]);
+        $this->logger?->log(LogLevel::INFO, 'Box search pattern complete', ['preferredBoxCount' => count($preferredBoxes), 'otherBoxCount' => count($otherBoxes)]);
 
         return [...$preferredBoxes, ...$otherBoxes];
     }

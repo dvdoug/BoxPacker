@@ -58,7 +58,7 @@ class OrientatedItemSorter
         private readonly int $y,
         private readonly int $z,
         private readonly PackedItemList $prevPackedItemList,
-        private readonly LoggerInterface $logger
+        private readonly ?LoggerInterface $logger
     ) {
     }
 
@@ -278,7 +278,7 @@ class OrientatedItemSorter
             $itemsToPack->removePackedItems($nextRowsPacked->items);
 
             $packedCount = $this->nextItems->count() - $itemsToPack->count();
-            $this->logger->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
+            $this->logger?->debug('Lookahead with orientation', ['packedCount' => $packedCount, 'orientatedItem' => $prevItem]);
 
             static::$lookaheadCache[$cacheKey] = $packedCount;
         }

@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 use function count;
 use function usort;
@@ -23,7 +22,7 @@ use function array_filter;
  */
 class OrientatedItemFactory implements LoggerAwareInterface
 {
-    protected LoggerInterface $logger;
+    protected ?LoggerInterface $logger = null;
 
     protected bool $singlePassMode = false;
 
@@ -46,7 +45,6 @@ class OrientatedItemFactory implements LoggerAwareInterface
 
     public function __construct(protected Box $box)
     {
-        $this->logger = new NullLogger();
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -81,7 +79,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         PackedItemList $prevPackedItemList,
         bool $considerStability
     ): ?OrientatedItem {
-        $this->logger->debug(
+        $this->logger?->debug(
             "evaluating item {$item->getDescription()} for fit",
             [
                 'item' => $item,
@@ -108,7 +106,7 @@ class OrientatedItemFactory implements LoggerAwareInterface
         $sorter = new OrientatedItemSorter($this, $this->singlePassMode, $widthLeft, $lengthLeft, $depthLeft, $nextItems, $rowLength, $x, $y, $z, $prevPackedItemList, $this->logger);
         usort($usableOrientations, $sorter);
 
-        $this->logger->debug('Selected best fit orientation', ['orientation' => $usableOrientations[0]]);
+        $this->logger?->debug('Selected best fit orientation', ['orientation' => $usableOrientations[0]]);
 
         return $usableOrientations[0];
     }

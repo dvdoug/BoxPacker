@@ -11,7 +11,6 @@ namespace DVDoug\BoxPacker;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 use function max;
 use function sort;
@@ -22,7 +21,7 @@ use function sort;
  */
 class LayerPacker implements LoggerAwareInterface
 {
-    private LoggerInterface $logger;
+    private ?LoggerInterface $logger = null;
 
     private bool $singlePassMode = false;
 
@@ -34,10 +33,7 @@ class LayerPacker implements LoggerAwareInterface
 
     public function __construct(private readonly Box $box)
     {
-        $this->logger = new NullLogger();
-
         $this->orientatedItemFactory = new OrientatedItemFactory($this->box);
-        $this->orientatedItemFactory->setLogger($this->logger);
     }
 
     /**
@@ -127,7 +123,7 @@ class LayerPacker implements LoggerAwareInterface
             }
 
             if (!$this->beStrictAboutItemOrdering && $items->count() > 0) { // skip for now, move on to the next item
-                $this->logger->debug("doesn't fit, skipping for now");
+                $this->logger?->debug("doesn't fit, skipping for now");
                 $skippedItems[] = $itemToPack;
                 // abandon here if next item is the same, no point trying to keep going. Last time is not skipped, need that to trigger appropriate reset logic
                 while ($items->count() > 1 && self::isSameDimensions($itemToPack, $items->top())) {
@@ -137,7 +133,7 @@ class LayerPacker implements LoggerAwareInterface
             }
 
             if ($x > $startX) {
-                $this->logger->debug('No more fit in width wise, resetting for new row');
+                $this->logger?->debug('No more fit in width wise, resetting for new row');
                 $y += $rowLength;
                 $x = $startX;
                 $rowLength = 0;
@@ -148,7 +144,7 @@ class LayerPacker implements LoggerAwareInterface
                 continue;
             }
 
-            $this->logger->debug('no items fit, so starting next vertical layer');
+            $this->logger?->debug('no items fit, so starting next vertical layer');
             $skippedItems[] = $itemToPack;
 
             $items->requeue($skippedItems);
