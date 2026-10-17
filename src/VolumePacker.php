@@ -12,6 +12,7 @@ namespace DVDoug\BoxPacker;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
+use function assert;
 use function reset;
 use function sort;
 use function usort;
@@ -121,7 +122,7 @@ class VolumePacker implements LoggerAwareInterface
             foreach ($specialFirstItemOrientations as $firstItemOrientation) {
                 $boxPermutation = $this->packRotation($boxWidth, $boxLength, $firstItemOrientation);
                 if ($boxPermutation->items->count() === $this->items->count()) {
-                    return $boxPermutation;
+                    return $this->finished($boxPermutation);
                 }
 
                 $boxPermutations[] = $boxPermutation;
@@ -130,7 +131,7 @@ class VolumePacker implements LoggerAwareInterface
 
         usort($boxPermutations, static fn (PackedBox $a, PackedBox $b) => $b->getVolumeUtilisation() <=> $a->getVolumeUtilisation());
 
-        return reset($boxPermutations);
+        return $this->finished(reset($boxPermutations));
     }
 
     /**
@@ -174,7 +175,19 @@ class VolumePacker implements LoggerAwareInterface
             $items->extract();
         }
 
-        return $best;
+        return $this->finished($best);
+    }
+
+    /**
+     * Audit a box that is about to be returned. Lookahead packs a WorkingVolume and discards the result.
+     */
+    private function finished(PackedBox $packedBox): PackedBox
+    {
+        if (!$this->box instanceof WorkingVolume) {
+            assert($packedBox->assertPackingCompliesWithRealWorld());
+        }
+
+        return $packedBox;
     }
 
     /**

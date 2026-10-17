@@ -207,7 +207,6 @@ readonly class PackedBox implements JsonSerializable
 
     public function __construct(public Box $box, public PackedItemList $items)
     {
-        assert($this->assertPackingCompliesWithRealWorld());
     }
 
     public function jsonSerialize(): array
@@ -241,8 +240,10 @@ readonly class PackedBox implements JsonSerializable
      *
      * Placement callbacks and linked-group membership need the live unpacked list
      * and are enforced at pack time, not here.
+     *
+     * @internal called for a box about to be returned from VolumePacker
      */
-    private function assertPackingCompliesWithRealWorld(): true
+    public function assertPackingCompliesWithRealWorld(): true
     {
         assert($this->getWeight() <= $this->box->getMaxWeight());
 
