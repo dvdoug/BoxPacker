@@ -19,6 +19,7 @@ BoxPacker is licensed under the `MIT license`_.
     :caption: Contents
 
     installation
+    Demo <visualiser>
     principles
     getting-started
     rotation

@@ -4,6 +4,9 @@
 ### Added
 - `VolumePacker::packBestSubset()` for the single-container “fill this box as densely as possible” problem (leftover items are expected)
 
+### Changed
+- Visualisation URLs include each item's weight and allowed rotation. Older links still open, and the page leaves those cells empty
+
 ## [4.3.0] - 2026-08-09
 ### Changed
 - Improved efficiency in packing

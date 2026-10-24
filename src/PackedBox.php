@@ -175,6 +175,8 @@ readonly class PackedBox implements JsonSerializable
 
     /**
      * Create a custom website visualiser URL for this packing.
+     *
+     * Item entries are description, width, length, depth, weight, then allowed rotation.
      */
     public function generateVisualisationURL(): string
     {
@@ -188,7 +190,14 @@ readonly class PackedBox implements JsonSerializable
         }
 
         foreach ($dedupedItems as $item) {
-            $data['items'][$splIdToIntMap[spl_object_id($item)]] = [$item->getDescription(), $item->getWidth(), $item->getLength(), $item->getDepth()];
+            $data['items'][$splIdToIntMap[spl_object_id($item)]] = [
+                $item->getDescription(),
+                $item->getWidth(),
+                $item->getLength(),
+                $item->getDepth(),
+                $item->getWeight(),
+                $item->getAllowedRotation()->value,
+            ];
         }
 
         $data['boxes'][] = [

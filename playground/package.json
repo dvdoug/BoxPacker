@@ -1,0 +1,21 @@
+{
+  "name": "boxpacker-playground",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/bundle-library.mjs && tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^9.32.0",
+    "@babylonjs/gui": "^9.32.0",
+    "@php-wasm/universal": "^3.1.60",
+    "@php-wasm/web-8-5": "^3.1.60"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

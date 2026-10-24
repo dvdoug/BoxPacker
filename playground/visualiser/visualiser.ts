@@ -44,50 +44,30 @@ RegisterAnimatable(); // scene.beginAnimation / stopAnimation
 RegisterRay(); // scene.pick
 RegisterBoundingBoxRenderer(); // mesh.showBoundingBox
 
-document.addEventListener("DOMContentLoaded", function () {
-    const DEMO_PACKING = {
-        items: [
-            ["Demo Item #1", 100, 100, 50],
-            ["Demo Item #2", 100, 50, 25],
-        ],
-        boxes: [
-            [
-                "Demo Box",
-                100,
-                100,
-                100,
-                [
-                    [0, 0, 0, 0, 100, 100, 50],
-                    [1, 0, 0, 50, 50, 100, 25],
-                ],
-            ],
-        ],
-    };
+type PackingData = {
+    items: [string, number, number, number, ...number[]][];
+    boxes: [
+        string,
+        number,
+        number,
+        number,
+        [number, number, number, number, number, number, number][],
+    ][];
+};
 
-    // Prefer #packing=; also accept legacy ?packing=.
-    const packingParam = (() => {
-        const hash = window.location.hash.startsWith("#")
-            ? window.location.hash.slice(1)
-            : window.location.hash;
-        const fromHash = new URLSearchParams(hash).get("packing");
-        if (fromHash !== null) {
-            return fromHash;
-        }
-        return new URLSearchParams(window.location.search).get("packing");
-    })();
+let engine: Engine | undefined;
+let detachCanvasLeave: (() => void) | undefined;
+let controlsBound = false;
 
-    if (packingParam !== null) {
-        const demotext = document.getElementsByClassName(
-            "demotext",
-        ) as HTMLCollectionOf<HTMLElement>;
-        demotext[0].style.display = "none";
+export function showPacking(packingData: PackingData): void {
+    const canvas = document.getElementById("renderCanvas");
+    if (!(canvas instanceof HTMLCanvasElement)) {
+        return;
     }
 
-    const packingData =
-        packingParam !== null ? JSON.parse(packingParam) : DEMO_PACKING;
     const items: Item[] = [];
     packingData.items.forEach(
-        (item: readonly [string, number, number, number], index: number) => {
+        (item: readonly [string, number, number, number, ...number[]], index: number) => {
             items[index] = new Item(item[0], item[1], item[2], item[3]);
         },
     );
@@ -176,8 +156,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return Color3.FromHSV(hue, ITEM_SATURATION, ITEM_VALUE);
     };
 
+    let activeEngine!: Engine;
+
     const createScene = () => {
-        const scene = new Scene(engine);
+        const scene = new Scene(activeEngine);
 
         /*
          * Light equally from above and below. If was just boxes could use emissiveColor on the items and skip lighting
@@ -364,9 +346,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 clearHover(true);
             }
         });
-        canvas.addEventListener("pointerleave", () => {
+        const onLeave = () => {
             clearHover(true);
-        });
+        };
+        canvas.addEventListener("pointerleave", onLeave);
+        detachCanvasLeave = () => {
+            canvas.removeEventListener("pointerleave", onLeave);
+        };
 
         // Axes in group 1 (after the box/items). Clear depth for that group so
         // colored shafts are not occluded by the coplanar white bounding-box edges.
@@ -614,23 +600,25 @@ document.addEventListener("DOMContentLoaded", function () {
         return scene;
     };
 
-    const canvas = document.getElementById(
-        "renderCanvas",
-    ) as unknown as HTMLCanvasElement;
-    const engine = new Engine(canvas, true);
-    document
-        .getElementById("makeFullscreen")
-        ?.addEventListener("click", function () {
-            engine.enterFullscreen(false);
+    detachCanvasLeave?.();
+    detachCanvasLeave = undefined;
+    engine?.dispose();
+    activeEngine = new Engine(canvas, true);
+    engine = activeEngine;
+    if (!controlsBound) {
+        controlsBound = true;
+        document.getElementById("makeFullscreen")?.addEventListener("click", () => {
+            engine?.enterFullscreen(false);
         });
+        window.addEventListener("resize", () => {
+            engine?.resize();
+        });
+    }
     const scene = createScene();
-    engine.runRenderLoop(function () {
+    activeEngine.runRenderLoop(() => {
         scene.render();
     });
-    window.addEventListener("resize", function () {
-        engine.resize();
-    });
-});
+}
 
 class Item {
     constructor(

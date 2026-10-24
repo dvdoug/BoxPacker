@@ -14,11 +14,21 @@ build:
     # You can also specify other tool versions:
     # rust: "1.55"
     # golang: "1.17"
+  apt_packages:
+    # PHP is only here so Composer can install psr/log. There is no lock file
+    # on Read the Docs, so Composer still solves require-dev. php-xml provides
+    # ext-dom. php-mbstring is the other extension PHPUnit requires.
+    - php-cli
+    - php-curl
+    - php-xml
+    - php-mbstring
+    - unzip
   jobs:
     post_install:
-      # Build visualiser
-      - cd visualiser && npm ci
-      - cd visualiser && npm run build
+      - curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/tmp --filename=composer
+      - php /tmp/composer install --no-dev --no-interaction --no-progress
+      - cd playground && npm ci
+      - cd playground && npm run build
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:

@@ -39,6 +39,7 @@ return $config->setRules(
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(__DIR__ . '/features')
+            ->in(__DIR__ . '/playground')
             ->in(__DIR__ . '/src')
             ->in(__DIR__ . '/tests')
             ->append([__FILE__])

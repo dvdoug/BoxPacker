@@ -30,4 +30,4 @@ Example:
             }
         }
 
-A :ref:`visualiser<visualiser>` is also available.
+A :ref:`visualiser<visualiser_picture>` can draw that placement.
