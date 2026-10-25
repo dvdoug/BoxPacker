@@ -1,6 +1,9 @@
 Filling one container
 =====================
 
+.. meta::
+   :description: Fill one fixed container as densely as possible with VolumePacker::packBestSubset().
+
 ``Packer::pack()`` assumes the whole consignment has to leave today: if it
 will not fit in one carton, another is opened. That is the right default for
 e-commerce fulfilment.

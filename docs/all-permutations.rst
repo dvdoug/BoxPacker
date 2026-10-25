@@ -1,6 +1,9 @@
 Permutations
 ============
 
+.. meta::
+   :description: Calculate every box combination with Packer::packAllPermutations() instead of pack().
+
 Normally BoxPacker will try and make smart choice(s) of box when building a packing solution that minimise the both the
 number used and also their size (see :ref:`Sortation<sortation>`). This is usually the most optimal arrangement from a
 logistical point of view, both for efficiency and for shipping cost. Supplying custom sorters as outlined on that page

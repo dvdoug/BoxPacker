@@ -1,6 +1,9 @@
 Custom constraints
 ==================
 
+.. meta::
+   :description: Accept or reject a placement with ConstrainedPlacementItem.
+
 For more advanced use cases where greater control over the contents of each box is required (e.g. legal limits on the number of
 hazardous items per box, or perhaps fragile items requiring an extra-strong outer box) you may implement the ``BoxPacker\ConstrainedPlacementItem``
 interface which contains an additional callback method allowing you to decide whether to allow an item may be packed into a box

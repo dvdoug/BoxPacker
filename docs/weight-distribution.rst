@@ -1,6 +1,9 @@
 Weight distribution
 ===================
 
+.. meta::
+   :description: Spread weight across boxes. The balancing pass runs when the items fit into 12 boxes or fewer.
+
 If you are shipping a large number of items to a single customer as many businesses do, it might be that more than one box is
 required to accommodate all of the items. A common scenario which you'll have probably encountered when receiving your own
 deliveries is that the first box(es) will be absolutely full as the warehouse operative will have tried to fit in as much as

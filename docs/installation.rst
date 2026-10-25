@@ -1,6 +1,13 @@
 Installation
 ============
 
+.. meta::
+   :description: Install BoxPacker with Composer. Requires PHP 8.2+.
+
+.. only:: agent
+
+    Call ``DVDoug\BoxPacker\Packer::pack()`` when every item must ship. Call ``VolumePacker::packBestSubset()`` when one container is fixed and leftover items are expected. Implement ``Box`` and ``Item`` on the application's own objects. Dimensions are millimetres and weights are grams. ``TestBox`` and ``TestItem`` are examples only. Do not construct ``LayerPacker``, ``OrientatedItemFactory``, ``VoidFinder``, or ``WeightRedistributor``.
+
 The recommended way to install BoxPacker is to use `Composer`_. From the command line simply execute the following to add
 ``dvdoug/boxpacker`` to your project's ``composer.json`` file. Composer will automatically take care of downloading the source
 and configuring an autoloader:

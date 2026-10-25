@@ -1,6 +1,9 @@
 Used / remaining space
 ======================
 
+.. meta::
+   :description: See how full each packed box is, and how much width, length, and depth is unused.
+
 After packing it is possible to see how much physical space in each ``PackedBox`` is taken up with items,
 and how much space was unused (air). This information might be useful to determine whether it would be useful to source
 alternative/additional sizes of box.

@@ -1,6 +1,9 @@
 Limited supply boxes
 ====================
 
+.. meta::
+   :description: Cap how many of a box type can be used with LimitedSupplyBox::getQuantityAvailable().
+
 In standard/basic use, BoxPacker will assume you have an adequate enough supply of each box type on hand to cover all
 eventualities i.e. your warehouse will be very well stocked and the concept of "running low" is not applicable.
 

@@ -1,6 +1,9 @@
 Welcome to BoxPacker's documentation!
 =====================================
 
+.. meta::
+   :description: BoxPacker packs items into boxes: the 3D bin packing problem with weight.
+
 BoxPacker is an implementation of the "4D" bin packing/knapsack problem i.e. given a list of items, how many boxes do you need to
 fit them all in.
 

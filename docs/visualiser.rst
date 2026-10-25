@@ -5,6 +5,9 @@
 Visualiser and demo
 -------------------
 
+.. meta::
+   :description: Open a 3D view of a packing with generateVisualisationURL() on a PackedBox or PackedBoxList.
+
 .. container:: demotext
 
     Although one of the principles underlying this library is that "It doesn't require the person actually packing the box

@@ -3,6 +3,9 @@
 Sortation
 =========
 
+.. meta::
+   :description: Change the order in which items and boxes are considered, or supply your own sorters.
+
 BoxPacker (mostly) uses "online" algorithms, that is it packs sequentially, with no regard for what comes next.
 Therefore the order of items, or the order of boxes are of crucial importance in obtaining good results.
 

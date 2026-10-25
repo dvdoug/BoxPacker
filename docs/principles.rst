@@ -1,6 +1,9 @@
 Principles of operation
 =======================
 
+.. meta::
+   :description: BoxPacker follows a practical packing order instead of searching every permutation.
+
 Bin packing is an `NP-hard problem`_ and there is no way to always achieve an optimum solution without running through every
 single permutation. But that's OK because this implementation is designed to simulate a naive human approach to the problem
 rather than search for the "perfect" solution.

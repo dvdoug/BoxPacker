@@ -1,6 +1,9 @@
 Linked items
 ============
 
+.. meta::
+   :description: Keep items in the same box by giving them the same LinkedItem group.
+
 In some scenarios you may have two or more items that must always be packed into the same box — for example, a product and its
 mandatory accessory, or a set of items that are sold together and must ship as a unit.
 

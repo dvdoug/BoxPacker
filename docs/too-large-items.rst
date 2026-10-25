@@ -1,6 +1,9 @@
 Too-large items
 ===============
 
+.. meta::
+   :description: Items that fit in no box raise NoBoxesAvailableException, or stay unpacked when that is turned off.
+
 As a library, by default BoxPacker makes the design choice that any errors or exceptions thrown during operation are
 best handled by you and your own code as the appropriate way to to handle a failure will vary from application to application.
 There is no attempt made to handle/recover from them internally.

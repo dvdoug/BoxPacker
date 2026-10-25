@@ -1,6 +1,9 @@
 Rotation
 ========
 
+.. meta::
+   :description: Allow any orientation, keep an item flat, or forbid rotation with the Rotation enum.
+
 Items
 -----
 BoxPacker gives you full control of how (or if) an individual item may be rotated to fit into a box, controlled via the

@@ -1,6 +1,9 @@
 Getting started
 ===============
 
+.. meta::
+   :description: Implement Box and Item on your own objects and pass them to Packer.
+
 BoxPacker is designed to integrate as seamlessly as possible into your existing systems, and therefore makes strong use of
 PHP interfaces. Applications wanting to use this library will typically already have PHP domain objects/entities representing
 the items needing packing, so BoxPacker attempts to take advantage of these as much as possible by allowing you to pass them

@@ -3,6 +3,9 @@
 Positional information
 ======================
 
+.. meta::
+   :description: Read each packed item's x, y, and z coordinates and its packed width, length, and depth.
+
 It is possible to see the precise positional and dimensional information of each item as packed. This is exposed as x,y,z
 co-ordinates from origin, alongside width/length/depth in the packed orientation. ::
 
