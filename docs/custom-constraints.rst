@@ -22,6 +22,7 @@ Example - only allow 2 batteries per box
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
+            // ... standard Item methods ...
 
             /**
              * Max 2 batteries per box.
@@ -70,6 +71,7 @@ Example - don't allow batteries to be stacked
 
         class LithiumBattery implements ConstrainedPlacementItem
         {
+            // ... standard Item methods ...
 
             /**
              * Batteries cannot be stacked on top of each other.

@@ -24,10 +24,9 @@ BoxPacker v4 is compatible with PHP 8.2+
 
 Versioning
 ----------
-BoxPacker follows `Semantic Versioning`_. For details about differences between releases please see `What's new`_
+BoxPacker follows `Semantic Versioning`_. For details about differences between releases please see the :doc:`changelog`.
 
 
 .. _Composer: https://getcomposer.org
 .. _GitHub: https://github.com/dvdoug/BoxPacker/releases
 .. _Semantic Versioning: http://semver.org/
-.. _What's new: whatsnew.html

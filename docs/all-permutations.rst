@@ -38,6 +38,9 @@ combinations of box for you to then filter/select inside your own application. Y
     take advantage of these, and the number of permutations can easily become **very large** with corresponding
     impacts on runtime. Be absolutely sure you want to use this method, rather than use a custom sorter.
 
+    The same limit is available for any ``Packer`` run. Call ``setTimeoutChecker(new DefaultTimeoutChecker($seconds))``,
+    and packing throws ``TimeoutException``.
+
 .. rubric:: Footnotes
 
 .. [#f1] "all" refers to the permutations of boxes e.g. 1×large OR 2×medium OR 1×medium + 2×small etc. It does not refer

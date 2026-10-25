@@ -30,6 +30,7 @@ dimensions and therefore having BoxPacker sort them before commencing packing wo
 .. code-block:: php
 
     $itemList = ItemList::fromArray($anArrayOfItems, true); // set the 2nd param to true if presorted
+    $packer->setItems($itemList);
 
 Overriding the default algorithm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -98,6 +99,7 @@ If you already have your items in a pre-sorted array (e.g. when using a database
 .. code-block:: php
 
     $boxList = BoxList::fromArray($anArrayOfBoxes, true); // set the 2nd param to true if presorted
+    $packer->setBoxes($boxList);
 
 Overriding the default algorithm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -42,11 +42,14 @@ can take its place.
         // $loaded->items went on this departure
         // anything not in that list stays in the yard
 
-Use ``pack()`` when every item on the order must ship. Use
-``packBestSubset()`` when the vehicle is the scarce thing.
+Use ``Packer::pack()`` when every item on the order must ship: another box is
+used when one is full. Use ``VolumePacker::pack()`` to fill the single box you
+give it, stopping when the next item does not fit. Use
+``VolumePacker::packBestSubset()`` when skipping a bulky item would leave that
+box fuller.
 
 .. warning::
 
-    ``packBestSubset()`` does more work than ``pack()`` because it considers
+    ``packBestSubset()`` does more work than ``VolumePacker::pack()`` because it considers
     leaving items behind. Keep it for one container and a known pool of
     cargo, not as a substitute for packing a full day's orders.
